@@ -1,6 +1,7 @@
 package fun.freechat.util;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -8,9 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 public class PojoUtilsTest {
     @SuppressWarnings("unused")
@@ -39,12 +38,12 @@ public class PojoUtilsTest {
         private final List<Entry> l = new LinkedList<>();
 
         public Demo() {
-            l.add(new Entry("1").setHost(this)
+            l.add(new Entry("1")
+                    .setHost(this)
                     .setNext(new Entry("12")
                             .setNext(new Entry("123")
                                     .setNext(new Entry("1234")
-                                            .setNext(new Entry("12345")
-                                                    .setNext(new Entry("123456")))))));
+                                            .setNext(new Entry("12345").setNext(new Entry("123456")))))));
         }
 
         public List<Entry> getL() {
@@ -93,22 +92,17 @@ public class PojoUtilsTest {
 
         @Override
         public String toString() {
-            return "MapPojo{" +
-                    "str='" + str + '\'' +
-                    ", list=" + list +
-                    ", map=" + map +
-                    ", value=" + value +
-                    '}';
+            return "MapPojo{" + "str='" + str + '\'' + ", list=" + list + ", map=" + map + ", value=" + value + '}';
         }
 
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (!(o instanceof MapPojo mapPojo)) return false;
-            return Objects.equals(getStr(), mapPojo.getStr()) &&
-                    Objects.equals(getList(), mapPojo.getList()) &&
-                    Objects.equals(getMap(), mapPojo.getMap()) &&
-                    Objects.equals(getValue(), mapPojo.getValue());
+            return Objects.equals(getStr(), mapPojo.getStr())
+                    && Objects.equals(getList(), mapPojo.getList())
+                    && Objects.equals(getMap(), mapPojo.getMap())
+                    && Objects.equals(getValue(), mapPojo.getValue());
         }
 
         @Override
@@ -128,7 +122,9 @@ public class PojoUtilsTest {
     public void testCircleAndDepth() {
         Demo demo = new Demo();
         String objInfo = PojoUtils.object2JsonString(demo, false);
-        Pattern p = Pattern.compile(toPattern("{\"l\":[{\"v\":\"1\",\"host\":\"Demo@\\w+\",\"next\":{\"v\":\"12\",\"host\":null,\"next\":{\"v\":\"123\",\"host\":null,\"next\":{\"v\":\"1234\",\"host\":null,\"next\":{\"v\":\"12345\",\"host\":null,\"next\":\"Entry@\\w+\"}}}}}]}"));
+        Pattern p = Pattern.compile(
+                toPattern(
+                        "{\"l\":[{\"v\":\"1\",\"host\":\"Demo@\\w+\",\"next\":{\"v\":\"12\",\"host\":null,\"next\":{\"v\":\"123\",\"host\":null,\"next\":{\"v\":\"1234\",\"host\":null,\"next\":{\"v\":\"12345\",\"host\":null,\"next\":\"Entry@\\w+\"}}}}}]}"));
         Matcher m = p.matcher(objInfo);
         assertTrue(m.matches());
     }

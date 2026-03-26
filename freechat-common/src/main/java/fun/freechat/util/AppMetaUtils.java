@@ -1,12 +1,11 @@
 package fun.freechat.util;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("unused")
 public class AppMetaUtils {
@@ -89,7 +88,6 @@ public class AppMetaUtils {
     public static String getRunningEnv() {
         String activeProfile = System.getProperty("spring.profiles.active");
         return StringUtils.isBlank(activeProfile) ? "online" : activeProfile;
-
     }
 
     public static boolean isTestEnv() {

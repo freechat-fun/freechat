@@ -8,16 +8,17 @@ import fun.freechat.service.ai.message.ChatMessageJacksonDeserializer;
 import fun.freechat.service.ai.message.ChatMessageJacksonSerializer;
 import fun.freechat.service.ai.message.ChatMessageListJacksonDeserializer;
 import fun.freechat.service.ai.message.ChatMessageListJacksonSerializer;
-import lombok.Data;
-
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class ChatPromptContent {
     private String system;
+
     @JsonSerialize(using = ChatMessageJacksonSerializer.class)
     @JsonDeserialize(using = ChatMessageJacksonDeserializer.class)
     private UserMessage messageToSend;
+
     @JsonSerialize(using = ChatMessageListJacksonSerializer.class)
     @JsonDeserialize(using = ChatMessageListJacksonDeserializer.class)
     private List<ChatMessage> messages;

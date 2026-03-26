@@ -3,14 +3,13 @@ package fun.freechat.api.dto;
 import dev.langchain4j.data.message.UserMessage;
 import fun.freechat.service.prompt.ChatPromptContent;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
-
-import java.util.List;
-import java.util.Optional;
 
 @Schema(description = "Prompt chat template content")
 @Data
@@ -20,8 +19,10 @@ import java.util.Optional;
 public class ChatPromptContentDTO {
     @Schema(description = "Prompt system template")
     private String system;
+
     @Schema(description = "Chat new message template (usually as user role)")
     private ChatMessageDTO messageToSend;
+
     @Schema(description = "Pre-set chat messages in the Prompt")
     private List<ChatMessageDTO> messages;
 
@@ -52,9 +53,8 @@ public class ChatPromptContentDTO {
                 .ifPresent(chatPrompt::setMessageToSend);
 
         if (CollectionUtils.isNotEmpty(getMessages())) {
-            chatPrompt.setMessages(getMessages().stream()
-                    .map(ChatMessageDTO::toChatMessage)
-                    .toList());
+            chatPrompt.setMessages(
+                    getMessages().stream().map(ChatMessageDTO::toChatMessage).toList());
         }
         return chatPrompt;
     }

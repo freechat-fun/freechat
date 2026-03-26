@@ -1,16 +1,15 @@
 package fun.freechat.util;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import fun.freechat.service.organization.OrgService;
 import fun.freechat.util.graph.Graph;
+import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Component
 // See: https://seaking-image-yun.oss-cn-hangzhou.aliyuncs.com/CAF0AF99-6820-4DEF-A64A-6A978B53252B.png

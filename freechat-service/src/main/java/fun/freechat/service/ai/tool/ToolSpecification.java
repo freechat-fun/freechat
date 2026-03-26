@@ -8,4 +8,3 @@ public class ToolSpecification {
     private String description;
     private ToolParameters parameters;
 }
-

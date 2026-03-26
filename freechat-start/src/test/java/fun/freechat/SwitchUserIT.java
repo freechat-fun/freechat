@@ -1,9 +1,12 @@
 package fun.freechat;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 import fun.freechat.util.AuthorityUtils;
 import fun.freechat.util.TestAccountUtils;
 import fun.freechat.util.TestCommonUtils;
 import fun.freechat.util.TestOrgUtils;
+import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,14 +15,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 
-import java.util.Set;
-
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
 @Disabled
 class SwitchUserIT extends AbstractIntegrationTest {
     @Value("${auth.impersonate.headerName}")
     private String impersonateHeaderName;
+
     private String adminApiToken;
     private String orgApiToken;
 
@@ -29,10 +29,10 @@ class SwitchUserIT extends AbstractIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        Pair<String, String> adminAndToken = TestAccountUtils.createUserAndToken(
-                usernameOf("11"), Set.of(AuthorityUtils.bizRole()));
-        Pair<String, String> orgAndToken = TestAccountUtils.createUserAndToken(
-                usernameOf("21"), Set.of(AuthorityUtils.orgRole()));
+        Pair<String, String> adminAndToken =
+                TestAccountUtils.createUserAndToken(usernameOf("11"), Set.of(AuthorityUtils.bizRole()));
+        Pair<String, String> orgAndToken =
+                TestAccountUtils.createUserAndToken(usernameOf("21"), Set.of(AuthorityUtils.orgRole()));
         Pair<String, String> userAndToken = TestAccountUtils.createUserAndToken(usernameOf("31"));
         adminApiToken = adminAndToken.getRight();
         orgApiToken = orgAndToken.getRight();
@@ -52,37 +52,50 @@ class SwitchUserIT extends AbstractIntegrationTest {
 
     @Test
     void should_switch_user() {
-        testClient.get().uri("/api/v2/account/details")
+        testClient
+                .get()
+                .uri("/api/v2/account/details")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + adminApiToken)
                 .header(impersonateHeaderName, usernameOf("31"))
                 .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
-                    .jsonPath("$.username").isEqualTo(usernameOf("31"));
+                .jsonPath("$.username")
+                .isEqualTo(usernameOf("31"));
     }
 
     @Test
     void should_auto_register_and_switch_user() {
-        testClient.get().uri("/api/v2/account/details")
+        testClient
+                .get()
+                .uri("/api/v2/account/details")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + adminApiToken)
                 .header(impersonateHeaderName, usernameOf("51"))
                 .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
-                    .jsonPath("$.username").isEqualTo(usernameOf("51"));
+                .jsonPath("$.username")
+                .isEqualTo(usernameOf("51"));
     }
 
     @Test
     void should_failed_to_switch_user() {
-        testClient.get().uri("/api/v2/account/details")
+        testClient
+                .get()
+                .uri("/api/v2/account/details")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + orgApiToken)
                 .header(impersonateHeaderName, usernameOf("31"))
                 .exchange()
-                .expectStatus().isForbidden();
+                .expectStatus()
+                .isForbidden();
     }
 }

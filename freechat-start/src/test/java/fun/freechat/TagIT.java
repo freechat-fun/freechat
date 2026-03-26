@@ -1,5 +1,8 @@
 package fun.freechat;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 import fun.freechat.api.dto.HotTagDTO;
 import fun.freechat.util.TestAccountUtils;
 import fun.freechat.util.TestCommonUtils;
@@ -10,9 +13,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 class TagIT extends AbstractIntegrationTest {
     private String userId;
@@ -43,14 +43,18 @@ class TagIT extends AbstractIntegrationTest {
 
     @Test
     void should_list_hot_tags() {
-        testClient.get().uri("/api/v2/public/tags/hot/prompt/10")
+        testClient
+                .get()
+                .uri("/api/v2/public/tags/hot/prompt/10")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .contentType(MediaType.APPLICATION_JSON)
                 .expectBodyList(HotTagDTO.class)
-                .value(hotTags -> assertTrue(hotTags.stream().anyMatch(
-                        tag -> tag.getContent().equals("test-tag-1") && tag.getCount() == 2L)));
+                .value(hotTags -> assertTrue(hotTags.stream()
+                        .anyMatch(tag -> tag.getContent().equals("test-tag-1") && tag.getCount() == 2L)));
     }
 }

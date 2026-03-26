@@ -7,7 +7,6 @@ import dev.langchain4j.model.chat.request.DefaultChatRequestParameters;
 import dev.langchain4j.model.chat.request.ResponseFormat;
 import dev.langchain4j.model.ollama.*;
 import dev.langchain4j.model.openai.*;
-
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -50,8 +49,10 @@ public class LanguageModelFactory {
                 .frequencyPenalty(getDouble(parameters, "frequencyPenalty"))
                 .stopSequences((List<String>) parameters.get("stop"))
                 .seed(getInteger(parameters, "seed"))
-                .responseFormat("json_object".equals(parameters.get("responseFormat")) ?
-                        ResponseFormat.JSON : ResponseFormat.TEXT)
+                .responseFormat(
+                        "json_object".equals(parameters.get("responseFormat"))
+                                ? ResponseFormat.JSON
+                                : ResponseFormat.TEXT)
                 .reasoningEffort(getString(parameters, "reasoningEffort"))
                 .build();
 
@@ -74,8 +75,10 @@ public class LanguageModelFactory {
                 .frequencyPenalty(getDouble(parameters, "frequencyPenalty"))
                 .stopSequences((List<String>) parameters.get("stop"))
                 .seed(getInteger(parameters, "seed"))
-                .responseFormat("json_object".equals(parameters.get("responseFormat")) ?
-                        ResponseFormat.JSON : ResponseFormat.TEXT)
+                .responseFormat(
+                        "json_object".equals(parameters.get("responseFormat"))
+                                ? ResponseFormat.JSON
+                                : ResponseFormat.TEXT)
                 .reasoningEffort(getString(parameters, "reasoningEffort"))
                 .build();
 
@@ -151,8 +154,10 @@ public class LanguageModelFactory {
                 .temperature(getDouble(parameters, "temperature"))
                 .topP(getDouble(parameters, "topP"))
                 .stopSequences((List<String>) parameters.get("stop"))
-                .responseFormat("json_object".equals(parameters.get("responseFormat")) ?
-                        ResponseFormat.JSON : ResponseFormat.TEXT)
+                .responseFormat(
+                        "json_object".equals(parameters.get("responseFormat"))
+                                ? ResponseFormat.JSON
+                                : ResponseFormat.TEXT)
                 .presencePenalty(getDouble(parameters, "presencePenalty"))
                 .frequencyPenalty(getDouble(parameters, "frequencyPenalty"))
                 .build();
@@ -176,8 +181,10 @@ public class LanguageModelFactory {
                 .temperature(getDouble(parameters, "temperature"))
                 .topP(getDouble(parameters, "topP"))
                 .stopSequences((List<String>) parameters.get("stop"))
-                .responseFormat("json_object".equals(parameters.get("responseFormat")) ?
-                        ResponseFormat.JSON : ResponseFormat.TEXT)
+                .responseFormat(
+                        "json_object".equals(parameters.get("responseFormat"))
+                                ? ResponseFormat.JSON
+                                : ResponseFormat.TEXT)
                 .presencePenalty(getDouble(parameters, "presencePenalty"))
                 .frequencyPenalty(getDouble(parameters, "frequencyPenalty"))
                 .build();
@@ -202,8 +209,7 @@ public class LanguageModelFactory {
                 .build();
     }
 
-    public static OllamaLanguageModel createOllamaLanguageModel(
-            String modelName, Map<String, Object> parameters) {
+    public static OllamaLanguageModel createOllamaLanguageModel(String modelName, Map<String, Object> parameters) {
         return OllamaLanguageModel.builder()
                 .baseUrl(getString(parameters, "baseUrl"))
                 .modelName(modelName)
@@ -215,12 +221,12 @@ public class LanguageModelFactory {
                 .numPredict(getInteger(parameters, "numPredict"))
                 .numCtx(getInteger(parameters, "numCtx"))
                 .stop((List<String>) parameters.get("stop"))
-                .responseFormat("json".equals(getString(parameters, "format")) ?
-                        ResponseFormat.JSON : ResponseFormat.TEXT)
+                .responseFormat(
+                        "json".equals(getString(parameters, "format")) ? ResponseFormat.JSON : ResponseFormat.TEXT)
                 .build();
     }
 
-    public static OllamaStreamingLanguageModel createOllamaStreamingLanguageModel (
+    public static OllamaStreamingLanguageModel createOllamaStreamingLanguageModel(
             String modelName, Map<String, Object> parameters) {
         return OllamaStreamingLanguageModel.builder()
                 .baseUrl(getString(parameters, "baseUrl"))
@@ -233,13 +239,12 @@ public class LanguageModelFactory {
                 .numPredict(getInteger(parameters, "numPredict"))
                 .numCtx(getInteger(parameters, "numCtx"))
                 .stop((List<String>) parameters.get("stop"))
-                .responseFormat("json".equals(getString(parameters, "format")) ?
-                        ResponseFormat.JSON : ResponseFormat.TEXT)
+                .responseFormat(
+                        "json".equals(getString(parameters, "format")) ? ResponseFormat.JSON : ResponseFormat.TEXT)
                 .build();
     }
 
-    public static OllamaChatModel createOllamaChatModel(
-            String modelName, Map<String, Object> parameters) {
+    public static OllamaChatModel createOllamaChatModel(String modelName, Map<String, Object> parameters) {
         OllamaChatRequestParameters modelParameters = OllamaChatRequestParameters.builder()
                 .modelName(modelName)
                 .temperature(getDouble(parameters, "temperature"))
@@ -250,8 +255,8 @@ public class LanguageModelFactory {
                 .maxOutputTokens(getInteger(parameters, "numPredict"))
                 .numCtx(getInteger(parameters, "numCtx"))
                 .stopSequences((List<String>) parameters.get("stop"))
-                .responseFormat("json".equals(getString(parameters, "format")) ?
-                        ResponseFormat.JSON : ResponseFormat.TEXT)
+                .responseFormat(
+                        "json".equals(getString(parameters, "format")) ? ResponseFormat.JSON : ResponseFormat.TEXT)
                 .think(getBoolean(parameters, "think"))
                 .build();
 
@@ -273,8 +278,8 @@ public class LanguageModelFactory {
                 .maxOutputTokens(getInteger(parameters, "numPredict"))
                 .numCtx(getInteger(parameters, "numCtx"))
                 .stopSequences((List<String>) parameters.get("stop"))
-                .responseFormat("json".equals(getString(parameters, "format")) ?
-                        ResponseFormat.JSON : ResponseFormat.TEXT)
+                .responseFormat(
+                        "json".equals(getString(parameters, "format")) ? ResponseFormat.JSON : ResponseFormat.TEXT)
                 .think(getBoolean(parameters, "think"))
                 .build();
 
@@ -284,8 +289,7 @@ public class LanguageModelFactory {
                 .build();
     }
 
-    public static OllamaEmbeddingModel createOllamaEmbeddingModel (
-            String modelName, Map<String, Object> parameters) {
+    public static OllamaEmbeddingModel createOllamaEmbeddingModel(String modelName, Map<String, Object> parameters) {
         return OllamaEmbeddingModel.builder()
                 .baseUrl(getString(parameters, "baseUrl"))
                 .modelName(modelName)
@@ -309,7 +313,7 @@ public class LanguageModelFactory {
                 .build();
     }
 
-    public static QwenStreamingLanguageModel createQwenStreamingLanguageModel (
+    public static QwenStreamingLanguageModel createQwenStreamingLanguageModel(
             String apiKey, String modelName, Map<String, Object> parameters) {
         return QwenStreamingLanguageModel.builder()
                 .apiKey(apiKey)
@@ -326,8 +330,7 @@ public class LanguageModelFactory {
                 .build();
     }
 
-    public static QwenChatModel createQwenChatModel(
-            String apiKey, String modelName, Map<String, Object> parameters) {
+    public static QwenChatModel createQwenChatModel(String apiKey, String modelName, Map<String, Object> parameters) {
         QwenChatRequestParameters modelParameters = QwenChatRequestParameters.builder()
                 .modelName(modelName)
                 .topP(getDouble(parameters, "topP"))
@@ -370,7 +373,7 @@ public class LanguageModelFactory {
                 .build();
     }
 
-    public static QwenEmbeddingModel createQwenEmbeddingModel (
+    public static QwenEmbeddingModel createQwenEmbeddingModel(
             String apiKey, String modelName, Map<String, Object> parameters) {
         return QwenEmbeddingModel.builder()
                 .apiKey(apiKey)

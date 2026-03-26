@@ -13,15 +13,14 @@ import dev.langchain4j.service.tool.ToolExecutionErrorHandler;
 import dev.langchain4j.service.tool.ToolExecutor;
 import fun.freechat.service.enums.PromptFormat;
 import fun.freechat.service.prompt.ChatPromptContent;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @Getter
 @Slf4j
@@ -37,17 +36,18 @@ public class ChatSession {
     private MemoryUsage memoryUsage;
 
     @Builder
-    public ChatSession(ChatModel chatModel,
-                       StreamingChatModel streamingChatModel,
-                       ModerationModel moderationModel,
-                       ChatMemory chatMemory,
-                       ChatPromptContent prompt,
-                       PromptFormat promptFormat,
-                       Map<String, Object> variables,
-                       RetrievalAugmentor retriever,
-                       RetrievalAugmentor longTermMemoryRetriever,
-                       MemoryUsage memoryUsage,
-                       List<Object> objectsWithTools) {
+    public ChatSession(
+            ChatModel chatModel,
+            StreamingChatModel streamingChatModel,
+            ModerationModel moderationModel,
+            ChatMemory chatMemory,
+            ChatPromptContent prompt,
+            PromptFormat promptFormat,
+            Map<String, Object> variables,
+            RetrievalAugmentor retriever,
+            RetrievalAugmentor longTermMemoryRetriever,
+            MemoryUsage memoryUsage,
+            List<Object> objectsWithTools) {
         aiServiceContext = AiServiceContext.create(ChatService.class);
         aiServiceContext.chatModel = chatModel;
         aiServiceContext.streamingChatModel = streamingChatModel;

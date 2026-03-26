@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.ChatMessageSerializer;
-
 import java.io.IOException;
 
 public class ChatMessageJacksonSerializer extends JsonSerializer<ChatMessage> {

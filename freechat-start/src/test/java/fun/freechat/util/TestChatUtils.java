@@ -2,17 +2,16 @@ package fun.freechat.util;
 
 import fun.freechat.model.ChatContext;
 import fun.freechat.service.chat.ChatContextService;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
 @Component
-public class TestChatUtils  implements ApplicationContextAware {
+public class TestChatUtils implements ApplicationContextAware {
     public static String DEFAULT_SYSTEM_PROMPT = """
 You play a good conversationalist.
 Imitate conversations between people, which means:
@@ -88,18 +87,14 @@ Name: {{USER_NICKNAME}}
     private static ChatContextService chatContextService;
 
     public static String createChat(String userId, String backendId) {
-        ChatContext context = new ChatContext()
-                .withUserId(userId)
-                .withBackendId(backendId);
+        ChatContext context = new ChatContext().withUserId(userId).withBackendId(backendId);
 
         return chatContextService.create(context).getChatId();
     }
 
     public static void deleteChats(String userId) {
         List<String> ids = chatContextService.listIds(userId);
-        Optional.ofNullable(ids)
-                .orElse(Collections.emptyList())
-                .forEach(chatContextService::delete);
+        Optional.ofNullable(ids).orElse(Collections.emptyList()).forEach(chatContextService::delete);
     }
 
     @Override

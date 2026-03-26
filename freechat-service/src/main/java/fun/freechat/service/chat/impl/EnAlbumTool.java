@@ -11,10 +11,11 @@ import lombok.Builder;
 public class EnAlbumTool extends AlbumTool {
 
     @Builder
-    public EnAlbumTool(String homeUrl,
-                       CharacterService characterService,
-                       ChatContextService chatContextService,
-                       ShortLinkService shortLinkService) {
+    public EnAlbumTool(
+            String homeUrl,
+            CharacterService characterService,
+            ChatContextService chatContextService,
+            ShortLinkService shortLinkService) {
         super(homeUrl, characterService, chatContextService, shortLinkService);
     }
 
@@ -35,8 +36,9 @@ public class EnAlbumTool extends AlbumTool {
             - This tool may not find any images, in which case it will return the special content \
             "<NOT_FOUND>". You need to ignore the result of this tool and explain to the user \
             that you currently have no photos to provide.""")
-    public String findAnImage(@ToolMemoryId Object memoryId,
-                              @P(value = "A description of the picture being searched for.", required = false) String description) {
+    public String findAnImage(
+            @ToolMemoryId Object memoryId,
+            @P(value = "A description of the picture being searched for.", required = false) String description) {
         return super.findAnImage(memoryId, description);
     }
 }

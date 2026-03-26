@@ -10,14 +10,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 @RestController
 @Tag(name = "Character")
@@ -44,14 +43,12 @@ public class CharacterPublicApi {
                     - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending.
                     - The search result is the character summary content.
                     - Support pagination.
-                    """
-    )
+                    """)
     @PostMapping("/search")
     public List<CharacterSummaryDTO> search(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Query conditions",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "Query conditions",
+                            content = @Content(examples = @ExampleObject("""
                                     {
                                       "where": {
                                         "visibility": "public",
@@ -64,13 +61,10 @@ public class CharacterPublicApi {
                                       "pageNum": 0,
                                       "pageSize": 1
                                     }
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotNull
-            CharacterQueryDTO query) {
+                                    """)))
+                    @RequestBody
+                    @NotNull
+                    CharacterQueryDTO query) {
         if (query.getWhere() == null) {
             query.setWhere(new CharacterQueryDTO.Where());
         }
@@ -79,8 +73,7 @@ public class CharacterPublicApi {
         }
         // ensure 'visibility' is non-blank
         query.getWhere().setVisibility(Visibility.PUBLIC.text());
-        return characterService.search(query.toCharacterInfoQuery(), AccountUtils.currentUserOrNull())
-                .stream()
+        return characterService.search(query.toCharacterInfoQuery(), AccountUtils.currentUserOrNull()).stream()
                 .map(CharacterSummaryDTO::from)
                 .toList();
     }
@@ -88,14 +81,13 @@ public class CharacterPublicApi {
     @Operation(
             operationId = "countPublicCharacters",
             summary = "Calculate Number of Public Characters",
-            description = "Calculate the number of characters according to the specified query conditions."
-    )
+            description = "Calculate the number of characters according to the specified query conditions.")
     @PostMapping("/count")
     public Long count(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Query conditions")
-            @RequestBody
-            @NotNull
-            CharacterQueryDTO query) {
+                    @RequestBody
+                    @NotNull
+                    CharacterQueryDTO query) {
         if (query.getWhere() == null) {
             query.setWhere(new CharacterQueryDTO.Where());
         }

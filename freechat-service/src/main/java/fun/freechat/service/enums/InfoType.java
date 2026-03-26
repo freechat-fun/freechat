@@ -10,6 +10,7 @@ public enum InfoType {
     PLUGIN,
     CHARACTER,
     UNKNOWN;
+
     public static InfoType of(String text) {
         if (StringUtils.isBlank(text)) {
             return UNKNOWN;

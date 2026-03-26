@@ -1,18 +1,17 @@
 package fun.freechat.service.ai;
 
+import static fun.freechat.util.ByteUtils.isTrue;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+
 import fun.freechat.mapper.AiApiKeyDynamicSqlSupport;
 import fun.freechat.mapper.AiApiKeyMapper;
 import fun.freechat.model.AiApiKey;
 import fun.freechat.service.common.EncryptionService;
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
-
-import static fun.freechat.util.ByteUtils.isTrue;
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import org.apache.commons.lang3.StringUtils;
 
 public class CloseableAiApiKey implements Closeable {
     private final AiApiKeyMapper aiApiKeyMapper;
@@ -20,15 +19,14 @@ public class CloseableAiApiKey implements Closeable {
     private final String token;
     private boolean used;
 
-    public CloseableAiApiKey(EncryptionService encryptionService,
-                             AiApiKeyMapper aiApiKeyMapper,
-                             Long id) {
+    public CloseableAiApiKey(EncryptionService encryptionService, AiApiKeyMapper aiApiKeyMapper, Long id) {
         if (aiApiKeyMapper == null || id == null) {
             throw new IllegalArgumentException("aiApiKeyMapper and id must be defined!");
         }
         this.aiApiKeyMapper = aiApiKeyMapper;
         this.id = id;
-        this.token = aiApiKeyMapper.selectByPrimaryKey(id)
+        this.token = aiApiKeyMapper
+                .selectByPrimaryKey(id)
                 .filter(apiKey -> isTrue(apiKey.getEnabled()))
                 .map(AiApiKey::getToken)
                 .map(encryptionService::decrypt)
@@ -36,16 +34,14 @@ public class CloseableAiApiKey implements Closeable {
         this.used = false;
     }
 
-    public CloseableAiApiKey(EncryptionService encryptionService,
-                             AiApiKeyMapper aiApiKeyMapper,
-                             String userId,
-                             String name) {
+    public CloseableAiApiKey(
+            EncryptionService encryptionService, AiApiKeyMapper aiApiKeyMapper, String userId, String name) {
         if (aiApiKeyMapper == null || StringUtils.isBlank(userId) || StringUtils.isBlank(name)) {
             throw new IllegalArgumentException("aiApiKeyMapper, userId and name must be defined!");
         }
-        AiApiKey aiApiKey = aiApiKeyMapper.select(c ->
-                        c.where(AiApiKeyDynamicSqlSupport.userId, isEqualTo(userId))
-                                .and(AiApiKeyDynamicSqlSupport.name, isEqualTo(name)))
+        AiApiKey aiApiKey = aiApiKeyMapper
+                .select(c -> c.where(AiApiKeyDynamicSqlSupport.userId, isEqualTo(userId))
+                        .and(AiApiKeyDynamicSqlSupport.name, isEqualTo(name)))
                 .stream()
                 .filter(apiKey -> isTrue(apiKey.getEnabled()))
                 .findAny()
@@ -71,11 +67,8 @@ public class CloseableAiApiKey implements Closeable {
         if (StringUtils.isBlank(token) || id == null || !used) {
             return;
         }
-        AiApiKey aiApiKey = new AiApiKey()
-                .withId(id)
-                .withGmtUsed(new Date());
-        aiApiKeyMapper.updateByPrimaryKeySelective(
-                aiApiKey.withGmtUsed(new Date()));
+        AiApiKey aiApiKey = new AiApiKey().withId(id).withGmtUsed(new Date());
+        aiApiKeyMapper.updateByPrimaryKeySelective(aiApiKey.withGmtUsed(new Date()));
     }
 
     public String token() {

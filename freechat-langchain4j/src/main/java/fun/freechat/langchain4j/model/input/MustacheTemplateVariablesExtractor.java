@@ -2,11 +2,10 @@ package fun.freechat.langchain4j.model.input;
 
 import com.samskivert.mustache.Mustache;
 import com.samskivert.mustache.Template;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.Writer;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unused")
 public class MustacheTemplateVariablesExtractor {
@@ -27,8 +26,13 @@ public class MustacheTemplateVariablesExtractor {
     }
 
     private static class NullWriter extends Writer {
-        @Override public void write(@NotNull char[] buf, int off, int len) {}
-        @Override public void flush() {}
-        @Override public void close() {}
+        @Override
+        public void write(@NotNull char[] buf, int off, int len) {}
+
+        @Override
+        public void flush() {}
+
+        @Override
+        public void close() {}
     }
 }

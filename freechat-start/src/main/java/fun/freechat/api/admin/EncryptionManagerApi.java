@@ -11,7 +11,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@Tag(name = "Encryption Manager (for admin)", description = "System encryption service, callable only by super administrators.")
+@Tag(
+        name = "Encryption Manager (for admin)",
+        description = "System encryption service, callable only by super administrators.")
 @RequestMapping("/api/v2/admin/encryption")
 @Validated
 @SuppressWarnings("unused")
@@ -22,12 +24,10 @@ public class EncryptionManagerApi {
     @Operation(
             operationId = "encryptText",
             summary = "Encrypt Text",
-            description = "Encrypt a piece of text with the built-in key."
-    )
+            description = "Encrypt a piece of text with the built-in key.")
     @GetMapping(value = "/encrypt/{text}", produces = MediaType.TEXT_PLAIN_VALUE)
     public String encrypt(
-            @Parameter(description = "Text to be encrypted") @PathVariable("text") @NotBlank
-            String plainText) {
+            @Parameter(description = "Text to be encrypted") @PathVariable("text") @NotBlank String plainText) {
         return encryptionService.encrypt(plainText);
     }
 }

@@ -1,5 +1,8 @@
 package fun.freechat.service.rag.impl;
 
+import static dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey;
+import static fun.freechat.service.enums.EmbeddingRecordMeta.MEMORY_ID;
+
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.milvus.MilvusEmbeddingStore;
@@ -8,16 +11,12 @@ import fun.freechat.service.enums.EmbeddingStoreType;
 import fun.freechat.service.rag.EmbeddingModelService;
 import fun.freechat.service.rag.EmbeddingStoreService;
 import jakarta.annotation.PostConstruct;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey;
-import static fun.freechat.service.enums.EmbeddingRecordMeta.MEMORY_ID;
 
 @Service("milvusEmbeddingStoreService")
 @Primary
@@ -25,18 +24,25 @@ import static fun.freechat.service.enums.EmbeddingRecordMeta.MEMORY_ID;
 public class MilvusEmbeddingStoreServiceImpl implements EmbeddingStoreService<TextSegment> {
     @Value("${embedding.milvus.database:#{null}}")
     private String database;
+
     @Value("${embedding.milvus.retrieveEmbeddingsOnSearch:false}")
     private Boolean retrieveEmbeddingsOnSearch;
+
     @Value("${embedding.milvus.url}")
     private String url;
+
     @Value("${embedding.milvus.username:#{null}}")
     private String username;
+
     @Value("${embedding.milvus.password:#{null}}")
     private String password;
+
     @Value("${embedding.milvus.token:#{null}}")
     private String token;
+
     @Autowired
     private EmbeddingModelService embeddingModelService;
+
     private Map<EmbeddingStoreType, DelegatedEmbeddingStore> embeddingStores;
 
     private int dimensionForType(EmbeddingStoreType type) {

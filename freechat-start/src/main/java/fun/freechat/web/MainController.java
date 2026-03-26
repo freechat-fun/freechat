@@ -1,5 +1,7 @@
 package fun.freechat.web;
 
+import static fun.freechat.api.util.ConfigUtils.WEB_VERSION_KEY;
+
 import fun.freechat.api.util.AccountUtils;
 import fun.freechat.model.User;
 import fun.freechat.service.common.ShortLinkService;
@@ -9,6 +11,8 @@ import fun.freechat.util.AppMetaUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotBlank;
+import java.util.LinkedList;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,30 +25,28 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import static fun.freechat.api.util.ConfigUtils.WEB_VERSION_KEY;
-
 @Controller
 @SuppressWarnings("unused")
 public class MainController {
     @Value("${app.icpCode:#{null}}")
     private String icpCode;
+
     @Autowired
     private RuntimeConfig runtimeConfig;
+
     @Autowired
     private InMemoryClientRegistrationRepository clientRegistrationRepository;
+
     @Autowired
     private ShortLinkService shortLinkService;
-    private String registrations;
 
+    private String registrations;
 
     @PostConstruct
     public void cacheRegistrations() {
         List<String> registrationList = new LinkedList<>();
-        clientRegistrationRepository.forEach(clientRegistration ->
-                registrationList.add(clientRegistration.getRegistrationId()));
+        clientRegistrationRepository.forEach(
+                clientRegistration -> registrationList.add(clientRegistration.getRegistrationId()));
 
         registrations = String.join(",", registrationList);
     }

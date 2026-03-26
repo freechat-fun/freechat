@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 public enum TtsSpeakerType {
     IDX,
     WAV;
+
     public static TtsSpeakerType of(String text) {
         if (StringUtils.isBlank(text)) {
             return IDX;

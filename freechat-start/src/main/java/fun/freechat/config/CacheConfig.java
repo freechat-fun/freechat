@@ -1,6 +1,10 @@
 package fun.freechat.config;
 
+import static fun.freechat.service.util.CacheUtils.*;
+
 import com.github.benmanes.caffeine.cache.Caffeine;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import org.redisson.api.RedissonClient;
 import org.redisson.spring.cache.RedissonSpringCacheManager;
 import org.springframework.cache.CacheManager;
@@ -8,11 +12,6 @@ import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import static fun.freechat.service.util.CacheUtils.*;
 
 @Configuration
 @SuppressWarnings("unused")
@@ -36,10 +35,12 @@ public class CacheConfig {
         org.redisson.spring.cache.CacheConfig longPeriodCache =
                 new org.redisson.spring.cache.CacheConfig(3600_000, 1800_000);
 
-        RedissonSpringCacheManager cacheManager = new RedissonSpringCacheManager(redissonClient, Map.of(
-                SHORT_PERIOD_CACHE_NAME, shortPeriodCache,
-                MIDDLE_PERIOD_CACHE_NAME, middlePeriodCache,
-                LONG_PERIOD_CACHE_NAME, longPeriodCache));
+        RedissonSpringCacheManager cacheManager = new RedissonSpringCacheManager(
+                redissonClient,
+                Map.of(
+                        SHORT_PERIOD_CACHE_NAME, shortPeriodCache,
+                        MIDDLE_PERIOD_CACHE_NAME, middlePeriodCache,
+                        LONG_PERIOD_CACHE_NAME, longPeriodCache));
 
         cacheManager.setAllowNullValues(false);
         return cacheManager;

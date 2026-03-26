@@ -1,5 +1,7 @@
 package fun.freechat.service.account.impl;
 
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+
 import fun.freechat.mapper.ApiTokenDynamicSqlSupport;
 import fun.freechat.mapper.ApiTokenMapper;
 import fun.freechat.model.ApiToken;
@@ -8,25 +10,25 @@ import fun.freechat.service.account.MaskedApiToken;
 import fun.freechat.service.account.SysApiTokenService;
 import fun.freechat.service.enums.ApiTokenType;
 import fun.freechat.util.IdUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.time.temporal.TemporalAmount;
 import java.util.Date;
 import java.util.List;
-
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 @Service
 @SuppressWarnings("unused")
 public class SysApiTokenServiceImpl implements SysApiTokenService {
     @Value("${auth.token.prefix:#{null}}")
     private String prefix;
+
     @Value("${auth.token.limits:#{null}}")
     private Integer maxCount;
+
     @Autowired
     private SysApiTokenRepo apiTokenRepo;
+
     @Autowired
     private ApiTokenMapper apiTokenMapper;
 
@@ -52,7 +54,8 @@ public class SysApiTokenServiceImpl implements SysApiTokenService {
 
     @Override
     public List<MaskedApiToken> list(User user) {
-        return apiTokenMapper.select(c -> c.where(ApiTokenDynamicSqlSupport.userId, isEqualTo(user.getUserId())))
+        return apiTokenMapper
+                .select(c -> c.where(ApiTokenDynamicSqlSupport.userId, isEqualTo(user.getUserId())))
                 .stream()
                 .filter(this::isEnabled)
                 .map(MaskedApiToken::of)
@@ -67,15 +70,14 @@ public class SysApiTokenServiceImpl implements SysApiTokenService {
 
     @Override
     public boolean deleteByUserId(String userId) {
-        int rows = apiTokenMapper.delete(c ->
-                c.where(ApiTokenDynamicSqlSupport.userId, isEqualTo(userId)));
+        int rows = apiTokenMapper.delete(c -> c.where(ApiTokenDynamicSqlSupport.userId, isEqualTo(userId)));
         return rows > 0;
     }
 
     @Override
     public boolean delete(String token) {
         int rows = apiTokenMapper.delete(c -> c.where(ApiTokenDynamicSqlSupport.token, isEqualTo(token)));
-        if (rows > 0 ) {
+        if (rows > 0) {
             apiTokenRepo.onDelete(token);
             return true;
         }
@@ -85,7 +87,7 @@ public class SysApiTokenServiceImpl implements SysApiTokenService {
     @Override
     public boolean deleteById(Long id) {
         int rows = apiTokenMapper.deleteByPrimaryKey(id);
-        if (rows > 0 ) {
+        if (rows > 0) {
             apiTokenRepo.onDeleteById(id);
             return true;
         }
@@ -124,9 +126,9 @@ public class SysApiTokenServiceImpl implements SysApiTokenService {
 
     private boolean isEnabled(ApiToken apiToken) {
         Date now = new Date();
-        return apiToken != null &&
-                apiToken.getIssuedAt().before(now) &&
-                (apiToken.getExpiresAt() == null || apiToken.getExpiresAt().after(now));
+        return apiToken != null
+                && apiToken.getIssuedAt().before(now)
+                && (apiToken.getExpiresAt() == null || apiToken.getExpiresAt().after(now));
     }
 
     @Override

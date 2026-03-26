@@ -23,8 +23,10 @@ import org.springframework.web.server.ResponseStatusException;
 public class AuthController {
     @Value("${auth.login.uri}")
     private String loginUri;
+
     @Autowired
     private OAuth2AuthorizedClientService oAuth2ClientService;
+
     @Autowired
     private SysUserService userService;
 

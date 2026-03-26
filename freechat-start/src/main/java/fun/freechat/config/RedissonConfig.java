@@ -16,14 +16,17 @@ import org.springframework.context.annotation.Configuration;
 public class RedissonConfig {
     @Value("${redis.mode:cluster}")
     private String mode;
+
     @Value("${redis.datasource.url}")
     private String nodeAddress;
+
     @Value("${redis.datasource.password}")
     private String password;
+
     @Value("${redis.datasource.timeout}")
     private Integer timeout;
 
-    @Bean(destroyMethod="shutdown")
+    @Bean(destroyMethod = "shutdown")
     public RedissonClient redissonClient() {
         Config config = new Config().setCodec(codec());
 

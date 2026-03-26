@@ -1,5 +1,7 @@
 package fun.freechat.service.stats.impl;
 
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
+
 import fun.freechat.mapper.*;
 import fun.freechat.model.InteractiveStats;
 import fun.freechat.model.InteractiveStatsScoreDetails;
@@ -8,6 +10,10 @@ import fun.freechat.service.enums.StatsType;
 import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.stats.InteractiveStatsService;
 import fun.freechat.service.util.SortSpecificationWrapper;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.SortSpecification;
@@ -18,24 +24,18 @@ import org.mybatis.dynamic.sql.select.SelectModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
-
 @Service
 @Slf4j
 @SuppressWarnings("unused")
 public class InteractiveStatsServiceImpl implements InteractiveStatsService {
     @Autowired
     private InteractiveStatsMapper interactiveStatsMapper;
+
     @Autowired
     private InteractiveStatsScoreDetailsMapper interactiveStatsScoreDetailsMapper;
 
     private SqlColumn<Long> getStatsColumn(StatsType statsType) {
-        return  switch (statsType) {
+        return switch (statsType) {
             case VIEW_COUNT -> InteractiveStatsDynamicSqlSupport.viewCount;
             case REFER_COUNT -> InteractiveStatsDynamicSqlSupport.referCount;
             case RECOMMEND_COUNT -> InteractiveStatsDynamicSqlSupport.recommendCount;
@@ -99,7 +99,8 @@ public class InteractiveStatsServiceImpl implements InteractiveStatsService {
         Date now = new Date();
         QueryExpressionDSL.FromGatherer<SelectModel> fields;
         if (statsType == StatsType.SCORE) {
-            fields = select(InteractiveStatsDynamicSqlSupport.id,
+            fields = select(
+                    InteractiveStatsDynamicSqlSupport.id,
                     InteractiveStatsDynamicSqlSupport.score,
                     InteractiveStatsDynamicSqlSupport.scoreCount);
         } else {
@@ -173,8 +174,8 @@ public class InteractiveStatsServiceImpl implements InteractiveStatsService {
         if (infoType == InfoType.UNKNOWN || StringUtils.isBlank(infoId)) {
             return null;
         }
-        return interactiveStatsMapper.selectOne(c ->
-                c.where(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(infoType.text()))
+        return interactiveStatsMapper
+                .selectOne(c -> c.where(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(infoType.text()))
                         .and(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(infoId))
                         .orderBy(InteractiveStatsDynamicSqlSupport.gmtModified.descending())
                         .limit(1))
@@ -186,42 +187,58 @@ public class InteractiveStatsServiceImpl implements InteractiveStatsService {
         if (infoType == InfoType.UNKNOWN || StringUtils.isAnyBlank(userId, infoId)) {
             return null;
         }
-        return interactiveStatsScoreDetailsMapper.selectOne(c ->
-                c.where(InteractiveStatsScoreDetailsDynamicSqlSupport.referType, isEqualTo(infoType.text()))
+        return interactiveStatsScoreDetailsMapper
+                .selectOne(c -> c.where(
+                                InteractiveStatsScoreDetailsDynamicSqlSupport.referType, isEqualTo(infoType.text()))
                         .and(InteractiveStatsScoreDetailsDynamicSqlSupport.referId, isEqualTo(infoId))
                         .and(InteractiveStatsScoreDetailsDynamicSqlSupport.userId, isEqualTo(userId)))
                 .orElse(null);
     }
 
     @Override
-    public List<InteractiveStats> list(
-            InfoType infoType, StatsType statsType, Long limit, Long offset, boolean desc) {
+    public List<InteractiveStats> list(InfoType infoType, StatsType statsType, Long limit, Long offset, boolean desc) {
         if (infoType == InfoType.UNKNOWN || statsType == StatsType.UNKNOWN) {
             return null;
         }
         var fields = selectDistinct(InteractiveStatsDynamicSqlSupport.interactiveStats.allColumns())
                 .from(InteractiveStatsDynamicSqlSupport.interactiveStats, "s");
-        var table = switch (infoType) {
-            case PROMPT -> fields.join(PromptInfoDynamicSqlSupport.promptInfo, "i")
-                        .on(InteractiveStatsDynamicSqlSupport.referId, equalTo(PromptInfoDynamicSqlSupport.promptUid));
-            case AGENT -> fields.join(AgentInfoDynamicSqlSupport.agentInfo, "i")
-                    .on(InteractiveStatsDynamicSqlSupport.referId, equalTo(AgentInfoDynamicSqlSupport.agentUid));
-            case PLUGIN -> fields.join(PluginInfoDynamicSqlSupport.pluginInfo, "i")
-                    .on(InteractiveStatsDynamicSqlSupport.referId, equalTo(PluginInfoDynamicSqlSupport.pluginUid));
-            default -> throw new IllegalStateException("Unexpected value: " + infoType);
-        };
+        var table =
+                switch (infoType) {
+                    case PROMPT ->
+                        fields.join(PromptInfoDynamicSqlSupport.promptInfo, "i")
+                                .on(
+                                        InteractiveStatsDynamicSqlSupport.referId,
+                                        equalTo(PromptInfoDynamicSqlSupport.promptUid));
+                    case AGENT ->
+                        fields.join(AgentInfoDynamicSqlSupport.agentInfo, "i")
+                                .on(
+                                        InteractiveStatsDynamicSqlSupport.referId,
+                                        equalTo(AgentInfoDynamicSqlSupport.agentUid));
+                    case PLUGIN ->
+                        fields.join(PluginInfoDynamicSqlSupport.pluginInfo, "i")
+                                .on(
+                                        InteractiveStatsDynamicSqlSupport.referId,
+                                        equalTo(PluginInfoDynamicSqlSupport.pluginUid));
+                    default -> throw new IllegalStateException("Unexpected value: " + infoType);
+                };
         if (table == null) {
             return Collections.emptyList();
         }
         // conditions
         var conditions = table.where();
         conditions = switch (infoType) {
-            case PROMPT -> conditions.and(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.PROMPT.text()))
-                    .and(PromptInfoDynamicSqlSupport.visibility, isEqualTo(Visibility.PUBLIC.text()));
-            case AGENT ->  conditions.and(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.AGENT.text()))
-                    .and(AgentInfoDynamicSqlSupport.visibility, isEqualTo(Visibility.PUBLIC.text()));
-            case PLUGIN ->  conditions.and(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.PLUGIN.text()))
-                    .and(PluginInfoDynamicSqlSupport.visibility, isEqualTo(Visibility.PUBLIC.text()));
+            case PROMPT ->
+                conditions
+                        .and(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.PROMPT.text()))
+                        .and(PromptInfoDynamicSqlSupport.visibility, isEqualTo(Visibility.PUBLIC.text()));
+            case AGENT ->
+                conditions
+                        .and(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.AGENT.text()))
+                        .and(AgentInfoDynamicSqlSupport.visibility, isEqualTo(Visibility.PUBLIC.text()));
+            case PLUGIN ->
+                conditions
+                        .and(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.PLUGIN.text()))
+                        .and(PluginInfoDynamicSqlSupport.visibility, isEqualTo(Visibility.PUBLIC.text()));
             default -> throw new IllegalStateException("Unexpected value: " + infoType);
         };
         SortSpecification orderByField = getStatsColumn(statsType);

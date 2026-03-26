@@ -1,6 +1,10 @@
 package fun.freechat.access.auth.customizer;
 
 import jakarta.servlet.http.HttpServletRequest;
+import java.time.Duration;
+import java.util.Base64;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RBucket;
@@ -20,15 +24,11 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.time.Duration;
-import java.util.Base64;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-
 @Component
 @Slf4j
 @SuppressWarnings("unused")
-public class OAuth2AuthorizationRequestCustomizer implements Consumer<OAuth2AuthorizationRequest.Builder>, ApplicationContextAware {
+public class OAuth2AuthorizationRequestCustomizer
+        implements Consumer<OAuth2AuthorizationRequest.Builder>, ApplicationContextAware {
     private static final String BIND_MODE_PARAMETER_NAME = "bind";
     private static final String CACHED_AUTHENTICATION_PREFIX =
             OAuth2AuthorizationRequestCustomizer.class.getName() + "-";
@@ -38,6 +38,7 @@ public class OAuth2AuthorizationRequestCustomizer implements Consumer<OAuth2Auth
 
     @Autowired
     private RedissonClient persistentClient;
+
     private ApplicationContext applicationContext;
 
     private boolean isBinding() {
@@ -52,8 +53,7 @@ public class OAuth2AuthorizationRequestCustomizer implements Consumer<OAuth2Auth
     @Override
     public void accept(OAuth2AuthorizationRequest.Builder builder) {
         StringBuilder registrationIdBuilder = new StringBuilder();
-        builder.attributes(attrs ->
-                registrationIdBuilder.append(attrs.get("registration_id")));
+        builder.attributes(attrs -> registrationIdBuilder.append(attrs.get("registration_id")));
         String registrationId = registrationIdBuilder.toString();
         if (StringUtils.isBlank(registrationId)) {
             return;
@@ -104,9 +104,9 @@ public class OAuth2AuthorizationRequestCustomizer implements Consumer<OAuth2Auth
     }
 
     private BiConsumer<OAuth2AuthorizationRequest.Builder, Boolean> getBean(String beanName) {
-        if(applicationContext.containsBean(beanName)){
+        if (applicationContext.containsBean(beanName)) {
             return (BiConsumer<OAuth2AuthorizationRequest.Builder, Boolean>) applicationContext.getBean(beanName);
-        }else{
+        } else {
             return null;
         }
     }

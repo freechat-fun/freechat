@@ -15,8 +15,10 @@ import lombok.NoArgsConstructor;
 public class TokenUsageDTO {
     @Schema(description = "Input token count")
     private Integer inputTokenCount;
+
     @Schema(description = "Output token count")
     private Integer outputTokenCount;
+
     @Schema(description = "Total token count")
     private Integer totalTokenCount;
 

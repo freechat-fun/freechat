@@ -10,6 +10,7 @@ public enum EmbeddingStoreType {
     ZH_LONG_TERM_MEMORY,
     DEFAULT_CHARACTER_DOCUMENT,
     DEFAULT_LONG_TERM_MEMORY;
+
     public static EmbeddingStoreType of(String text) {
         if (StringUtils.isBlank(text)) {
             return DEFAULT_CHARACTER_DOCUMENT;

@@ -11,14 +11,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 @RestController
 @Tag(name = "AI Service")
@@ -32,19 +31,19 @@ public class AiApiKeyApi {
     @Operation(
             operationId = "addAiApiKey",
             summary = "Add Model Provider Credential",
-            description = "Add a credential for the model service."
-    )
+            description = "Add a credential for the model service.")
     @PostMapping("/apikey")
     public Long add(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Model call credential information"
-            )
-            @RequestBody
-            @NotNull
-            AiApiKeyCreateDTO aiApiKey) {
-        Long id = aiApiKeyService.create(AccountUtils.currentUser(),
-                aiApiKey.getName(), ModelProvider.of(aiApiKey.getProvider()),
-                aiApiKey.getToken(), aiApiKey.getEnabled());
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Model call credential information")
+                    @RequestBody
+                    @NotNull
+                    AiApiKeyCreateDTO aiApiKey) {
+        Long id = aiApiKeyService.create(
+                AccountUtils.currentUser(),
+                aiApiKey.getName(),
+                ModelProvider.of(aiApiKey.getProvider()),
+                aiApiKey.getToken(),
+                aiApiKey.getEnabled());
         if (id == null) {
             throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Too many api keys.");
         }
@@ -54,62 +53,51 @@ public class AiApiKeyApi {
     @Operation(
             operationId = "disableAiApiKey",
             summary = "Disable Model Provider Credential",
-            description = "Disable the credential information of the model provider."
-    )
+            description = "Disable the credential information of the model provider.")
     @PutMapping("/apikey/disable/{id}")
     @PreAuthorize("hasPermission(#p0, 'aiApiKeyOp')")
-    Boolean disable(
-            @Parameter(description = "Credential identifier") @PathVariable("id") @Positive Long id) {
+    Boolean disable(@Parameter(description = "Credential identifier") @PathVariable("id") @Positive Long id) {
         return aiApiKeyService.disable(id);
     }
 
     @Operation(
             operationId = "enableAiApiKey",
             summary = "Enable Model Provider Credential",
-            description = "Enable the credential information of the model provider."
-    )
+            description = "Enable the credential information of the model provider.")
     @PutMapping("/apikey/enable/{id}")
     @PreAuthorize("hasPermission(#p0, 'aiApiKeyOp')")
-    Boolean enable(
-            @Parameter(description = "Credential identifier") @PathVariable("id") @Positive Long id) {
+    Boolean enable(@Parameter(description = "Credential identifier") @PathVariable("id") @Positive Long id) {
         return aiApiKeyService.enable(id);
     }
 
     @Operation(
             operationId = "deleteAiApiKey",
             summary = "Delete Credential of Model Provider",
-            description = "Delete the credential information of the model provider."
-    )
+            description = "Delete the credential information of the model provider.")
     @DeleteMapping("/apikey/{id}")
     @PreAuthorize("hasPermission(#p0, 'aiApiKeyOp')")
-    Boolean delete(
-            @Parameter(description = "Credential identifier") @PathVariable("id") @Positive Long id) {
+    Boolean delete(@Parameter(description = "Credential identifier") @PathVariable("id") @Positive Long id) {
         return aiApiKeyService.delete(id);
     }
 
     @Operation(
             operationId = "getAiApiKey",
             summary = "Get credential of Model Provider",
-            description = "Get the credential information of the model provider."
-    )
+            description = "Get the credential information of the model provider.")
     @GetMapping("/apikey/{id}")
     @PreAuthorize("hasPermission(#p0, 'aiApiKeyOp')")
-    AiApiKeyInfoDTO get(
-            @Parameter(description = "Credential identifier") @PathVariable("id") @Positive Long id) {
+    AiApiKeyInfoDTO get(@Parameter(description = "Credential identifier") @PathVariable("id") @Positive Long id) {
         return AiApiKeyInfoDTO.from(aiApiKeyService.get(id));
     }
-
 
     @Operation(
             operationId = "listAiApiKeys",
             summary = "List Credentials of Model Provider",
-            description = "List all credential information of the model provider."
-    )
+            description = "List all credential information of the model provider.")
     @GetMapping("/apikeys/{provider}")
     List<AiApiKeyInfoDTO> list(
             @Parameter(description = "Model provider") @PathVariable("provider") @NotBlank String provider) {
-        return aiApiKeyService.list(AccountUtils.currentUser(), ModelProvider.of(provider))
-                .stream()
+        return aiApiKeyService.list(AccountUtils.currentUser(), ModelProvider.of(provider)).stream()
                 .map(AiApiKeyInfoDTO::from)
                 .toList();
     }

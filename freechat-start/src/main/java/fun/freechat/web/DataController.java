@@ -1,11 +1,17 @@
 package fun.freechat.web;
 
+import static org.springframework.http.MediaType.*;
+
 import fun.freechat.api.util.AccountUtils;
 import fun.freechat.api.util.FileUtils;
 import fun.freechat.service.common.FileStore;
 import fun.freechat.service.util.StoreUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotBlank;
+import java.io.IOException;
+import java.nio.file.AccessDeniedException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.CollectionUtils;
@@ -17,34 +23,35 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
-import java.nio.file.AccessDeniedException;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import static org.springframework.http.MediaType.*;
-
 @RestController
 @Slf4j
 @SuppressWarnings("unused")
 public class DataController {
-    private static final List<String> AVAILABLE_IMAGE_TYPES = List.of(
-            IMAGE_GIF_VALUE, IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE
-    );
-    
+    private static final List<String> AVAILABLE_IMAGE_TYPES =
+            List.of(IMAGE_GIF_VALUE, IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE);
+
     private static final List<String> AVAILABLE_VIDEO_TYPES = List.of(
-            "video/mp4", "video/webm", "video/ogg", "video/quicktime", "video/x-msvideo",
-            "video/x-flv", "video/3gpp", "video/3gpp2", "video/x-matroska", "video/mpeg", "video/x-m4v"
-    );
+            "video/mp4",
+            "video/webm",
+            "video/ogg",
+            "video/quicktime",
+            "video/x-msvideo",
+            "video/x-flv",
+            "video/3gpp",
+            "video/3gpp2",
+            "video/x-matroska",
+            "video/mpeg",
+            "video/x-m4v");
 
     @Autowired
     private Tika tika;
 
-    @GetMapping(value = "/public/image/{key}", produces = {IMAGE_GIF_VALUE, IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE})
+    @GetMapping(
+            value = "/public/image/{key}",
+            produces = {IMAGE_GIF_VALUE, IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE})
     @CrossOrigin(originPatterns = "*")
     public ResponseEntity<Resource> getPublicImage(
-            HttpServletRequest request,
-            @PathVariable("key") @NotBlank String key) {
+            HttpServletRequest request, @PathVariable("key") @NotBlank String key) {
         FileStore fileStore = StoreUtils.defaultFileStore();
         try {
             String pathStr = FileUtils.getDefaultPublicPath(key);
@@ -69,11 +76,12 @@ public class DataController {
         }
     }
 
-    @GetMapping(value = "/public/video/{key}", produces = {"video/*"})
+    @GetMapping(
+            value = "/public/video/{key}",
+            produces = {"video/*"})
     @CrossOrigin(originPatterns = "*")
     public ResponseEntity<Resource> getPublicVideo(
-            HttpServletRequest request,
-            @PathVariable("key") @NotBlank String key) {
+            HttpServletRequest request, @PathVariable("key") @NotBlank String key) {
         FileStore fileStore = StoreUtils.defaultFileStore();
         try {
             String pathStr = FileUtils.getDefaultPublicPath(key);
@@ -86,8 +94,8 @@ public class DataController {
                 return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
             }
 
-            HttpHeaders headers = getResponseHeaders(pathStr, lastModified, eTag,
-                    MediaType.parseMediaType("video/mp4"), AVAILABLE_VIDEO_TYPES);
+            HttpHeaders headers = getResponseHeaders(
+                    pathStr, lastModified, eTag, MediaType.parseMediaType("video/mp4"), AVAILABLE_VIDEO_TYPES);
             Resource resource = new PathResource(fileStore.toPath(pathStr));
             return ResponseEntity.ok().headers(headers).body(resource);
         } catch (AccessDeniedException e) {
@@ -101,11 +109,11 @@ public class DataController {
 
     @GetMapping(value = "/my/document/{key}", produces = ALL_VALUE)
     public ResponseEntity<Resource> getPrivateDocument(
-            HttpServletRequest request,
-            @PathVariable("key") @NotBlank String key) {
+            HttpServletRequest request, @PathVariable("key") @NotBlank String key) {
         FileStore fileStore = StoreUtils.defaultFileStore();
         try {
-            String pathStr = FileUtils.getDefaultPrivatePath(key, AccountUtils.currentUser().getUserId());
+            String pathStr = FileUtils.getDefaultPrivatePath(
+                    key, AccountUtils.currentUser().getUserId());
             long lastModified = fileStore.getLastModifiedTime(pathStr);
             String eTag = "\"" + DigestUtils.md5Hex(String.valueOf(lastModified)) + "\"";
 
@@ -127,11 +135,9 @@ public class DataController {
         }
     }
 
-    private HttpHeaders getResponseHeaders(String path,
-                                           long lastModified,
-                                           String eTag,
-                                           MediaType defaultMimeType,
-                                           List<String> availableTypes) throws IOException {
+    private HttpHeaders getResponseHeaders(
+            String path, long lastModified, String eTag, MediaType defaultMimeType, List<String> availableTypes)
+            throws IOException {
         HttpHeaders headers = new HttpHeaders();
         FileStore fileStore = StoreUtils.defaultFileStore();
         String mimeType = null;

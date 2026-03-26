@@ -1,18 +1,16 @@
 package fun.freechat.service.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Arrays;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 public enum StatsType {
     VIEW_COUNT("viewCount"),
     REFER_COUNT("referCount"),
     RECOMMEND_COUNT("recommendCount"),
     SCORE("score"),
-    UNKNOWN("unknown")
-    ;
+    UNKNOWN("unknown");
 
     private static final List<String> fields =
             Arrays.stream(StatsType.values()).map(StatsType::fieldName).toList();

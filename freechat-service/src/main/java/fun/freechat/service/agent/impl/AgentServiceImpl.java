@@ -1,5 +1,7 @@
 package fun.freechat.service.agent.impl;
 
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
+
 import fun.freechat.mapper.*;
 import fun.freechat.model.*;
 import fun.freechat.service.agent.AgentService;
@@ -14,6 +16,7 @@ import fun.freechat.service.util.CacheUtils;
 import fun.freechat.service.util.InfoUtils;
 import fun.freechat.service.util.SortSpecificationWrapper;
 import fun.freechat.util.IdUtils;
+import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -32,10 +35,6 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
-
 @Service
 @Slf4j
 @SuppressWarnings({"unused", "rawtypes"})
@@ -45,23 +44,28 @@ public class AgentServiceImpl implements AgentService {
 
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
+
     @Autowired
     private AgentInfoMapper agentInfoMapper;
+
     @Autowired
     private TagMapper tagMapper;
+
     @Autowired
     private AiModelMapper aiModelMapper;
+
     @Autowired
     private OrgService orgService;
+
     @Autowired
     private InteractiveStatsMapper interactiveStatsMapper;
 
     private QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder wrapQueryExpression(
             QueryExpressionDSL<SelectModel> c, String currentUserId) {
-        return c.where(Info.visibility,
+        return c.where(
+                Info.visibility,
                 isIn(Visibility.PUBLIC.text(), Visibility.PUBLIC_ORG.text()),
-                or(Info.visibility, isEqualTo(Visibility.PRIVATE.text()),
-                        and(Info.userId, isEqualTo(currentUserId))));
+                or(Info.visibility, isEqualTo(Visibility.PRIVATE.text()), and(Info.userId, isEqualTo(currentUserId))));
     }
 
     private boolean filterVisibility(AgentInfo info, User user) {
@@ -121,16 +125,16 @@ public class AgentServiceImpl implements AgentService {
         if (info == null) {
             return null;
         }
-        List<String> tags = tagMapper.select(c ->
-                        c.where(TagDynamicSqlSupport.referType, isEqualTo(InfoType.AGENT.text()))
-                                .and(TagDynamicSqlSupport.referId, isEqualTo(info.getAgentUid())))
+        List<String> tags = tagMapper
+                .select(c -> c.where(TagDynamicSqlSupport.referType, isEqualTo(InfoType.AGENT.text()))
+                        .and(TagDynamicSqlSupport.referId, isEqualTo(info.getAgentUid())))
                 .stream()
                 .map(Tag::getContent)
                 .distinct()
                 .toList();
-        List<String> aiModels = aiModelMapper.select(c ->
-                        c.where(AiModelDynamicSqlSupport.referType, isEqualTo(InfoType.AGENT.text()))
-                                .and(AiModelDynamicSqlSupport.referId, isEqualTo(info.getAgentUid())))
+        List<String> aiModels = aiModelMapper
+                .select(c -> c.where(AiModelDynamicSqlSupport.referType, isEqualTo(InfoType.AGENT.text()))
+                        .and(AiModelDynamicSqlSupport.referId, isEqualTo(info.getAgentUid())))
                 .stream()
                 .map(AiModel::getModelId)
                 .distinct()
@@ -154,9 +158,7 @@ public class AgentServiceImpl implements AgentService {
     private void doCreate(Triple<AgentInfo, List<String>, List<String>> infoTriple) {
         AgentInfo info = infoTriple.getLeft();
         Date now = new Date();
-        int rows = agentInfoMapper.insertSelective(info
-                .withGmtCreate(now)
-                .withGmtModified(now));
+        int rows = agentInfoMapper.insertSelective(info.withGmtCreate(now).withGmtModified(now));
         if (rows <= 0) {
             throw new RuntimeException("Insert agent " + info.getName() + " failed!");
         }
@@ -203,16 +205,14 @@ public class AgentServiceImpl implements AgentService {
         var table = fields.from(Info.table, "a");
         List<String> tags = InfoUtils.trimListElements(query.getWhere().getTags());
         if (CollectionUtils.isNotEmpty(tags)) {
-            table.leftJoin(TagDynamicSqlSupport.tag, "t")
-                    .on(Info.agentUid, equalTo(TagDynamicSqlSupport.referId));
-
+            table.leftJoin(TagDynamicSqlSupport.tag, "t").on(Info.agentUid, equalTo(TagDynamicSqlSupport.referId));
         }
         List<String> modelIds = InfoUtils.trimListElements(query.getWhere().getAiModels());
         if (CollectionUtils.isNotEmpty(modelIds)) {
             table.leftJoin(AiModelDynamicSqlSupport.aiModel, "m")
                     .on(Info.agentUid, equalTo(AiModelDynamicSqlSupport.referId));
         }
-        List<String> orderByStats =  new LinkedList<>(InfoUtils.trimListElements(query.getOrderBy()));
+        List<String> orderByStats = new LinkedList<>(InfoUtils.trimListElements(query.getOrderBy()));
         orderByStats.retainAll(StatsType.fieldNames());
         if (!orderByStats.isEmpty()) {
             table.leftJoin(InteractiveStatsDynamicSqlSupport.interactiveStats, "i")
@@ -226,12 +226,13 @@ public class AgentServiceImpl implements AgentService {
         boolean hasDraft;
         if (StringUtils.isBlank(visibilityStr)) {
             if (StringUtils.isBlank(userIdStr) || userIdStr.equals(user.getUserId())) {
-                conditions.and(Info.visibility, isNotEqualTo(Visibility.HIDDEN.text()))
+                conditions
+                        .and(Info.visibility, isNotEqualTo(Visibility.HIDDEN.text()))
                         .and(Info.userId, isEqualTo(user.getUserId()));
                 hasDraft = true;
             } else {
-                conditions.and(Info.visibility,
-                                isIn(Visibility.PUBLIC.text(), Visibility.PUBLIC_ORG.text()))
+                conditions
+                        .and(Info.visibility, isIn(Visibility.PUBLIC.text(), Visibility.PUBLIC_ORG.text()))
                         .and(Info.userId, isEqualTo(userIdStr));
                 hasDraft = false;
             }
@@ -254,8 +255,11 @@ public class AgentServiceImpl implements AgentService {
             conditions.and(Info.format, isEqualTo(format.text()));
         }
         // name
-        conditions.and(Info.name,
-                isLike(query.getWhere().getName()).filter(StringUtils::isNotBlank).map(s -> s + "%"));
+        conditions.and(
+                Info.name,
+                isLike(query.getWhere().getName())
+                        .filter(StringUtils::isNotBlank)
+                        .map(s -> s + "%"));
         // version
         if (!hasDraft) {
             conditions.and(Info.version, isGreaterThan(0));
@@ -264,7 +268,9 @@ public class AgentServiceImpl implements AgentService {
         String commonText = query.getWhere().getText();
         if (StringUtils.isNotBlank(commonText)) {
             var commonTextCondition = isLike(commonText).map(s -> "%" + s + "%");
-            conditions.and(Info.name, commonTextCondition,
+            conditions.and(
+                    Info.name,
+                    commonTextCondition,
                     or(Info.description, commonTextCondition),
                     or(Info.example, commonTextCondition));
         }
@@ -288,20 +294,15 @@ public class AgentServiceImpl implements AgentService {
             if (orderByInfo.length < 2 || !"asc".equalsIgnoreCase(orderByInfo[1])) {
                 orderByField = orderByField.descending();
             }
-            orderByFields.add(SortSpecificationWrapper.of(
-                    orderByStats.contains(orderBy) ? "i" : "a", orderByField));
+            orderByFields.add(SortSpecificationWrapper.of(orderByStats.contains(orderBy) ? "i" : "a", orderByField));
         }
         if (CollectionUtils.isNotEmpty(orderByFields)) {
             conditions.orderBy(orderByFields);
         }
 
         // limits
-        Optional.ofNullable(query.getLimit())
-                .filter(limit -> limit > 0)
-                .ifPresent(conditions::limit);
-        Optional.ofNullable(query.getOffset())
-                .filter(offset -> offset > 0)
-                .ifPresent(conditions::offset);
+        Optional.ofNullable(query.getLimit()).filter(limit -> limit > 0).ifPresent(conditions::limit);
+        Optional.ofNullable(query.getOffset()).filter(offset -> offset > 0).ifPresent(conditions::offset);
 
         return Pair.of(conditions.build().render(RenderingStrategies.MYBATIS3), hasDraft);
     }
@@ -309,8 +310,7 @@ public class AgentServiceImpl implements AgentService {
     private List<Triple<AgentInfo, List<String>, List<String>>> doSearch(
             Query query, User user, QueryExpressionDSL.FromGatherer<SelectModel> fields) {
         var statement = getSelectStatement(query, user, fields);
-        return agentInfoMapper.selectMany(statement.getLeft())
-                .stream()
+        return agentInfoMapper.selectMany(statement.getLeft()).stream()
                 .filter(info -> filterVisibility(info, user))
                 .peek(info -> handleDraft(info, statement.getRight()))
                 .map(this::toInfoTriple)
@@ -322,25 +322,25 @@ public class AgentServiceImpl implements AgentService {
     @Override
     public List<Triple<AgentInfo, List<String>, List<String>>> search(Query query, User user) {
         /*
-select distinct a.user_id, a.agent_id, a.visibility... \
-  from agent_info f \
-  left join tag t on a.agent_id = t.refer_id \
-  left join ai_model m on a.agent_id = m.refer_id \
-  where t.refer_type = 'agent' and m.refer_type= 'agent' \
-  and ((a.visibility = 'public' and a.user_id = '{userId}') or a.user_id = '{me}') \
-  and a.format = '{format}' \
-  and t.content in '{tags}' \
-  and m.model_id in '{modelIds}' \
-  and a.name like '{name}%' \
-  and a.version > 0 \
-  and (a.name like '%{text}%' or \
-    a.description like '%{text}%' or \
-    a.example like '%{text}%' \
-  ) \
-  order by a.{orderBy[0]}, a.{orderBy[1]}... \
-  limit {limit} offset {offset} \
-;
-         */
+        select distinct a.user_id, a.agent_id, a.visibility... \
+          from agent_info f \
+          left join tag t on a.agent_id = t.refer_id \
+          left join ai_model m on a.agent_id = m.refer_id \
+          where t.refer_type = 'agent' and m.refer_type= 'agent' \
+          and ((a.visibility = 'public' and a.user_id = '{userId}') or a.user_id = '{me}') \
+          and a.format = '{format}' \
+          and t.content in '{tags}' \
+          and m.model_id in '{modelIds}' \
+          and a.name like '{name}%' \
+          and a.version > 0 \
+          and (a.name like '%{text}%' or \
+            a.description like '%{text}%' or \
+            a.example like '%{text}%' \
+          ) \
+          order by a.{orderBy[0]}, a.{orderBy[1]}... \
+          limit {limit} offset {offset} \
+        ;
+                 */
 
         // fields
         List<BasicColumn> columns = new LinkedList<>(Info.summaryColumns());
@@ -370,7 +370,7 @@ select distinct a.user_id, a.agent_id, a.visibility... \
         var statement = getSelectStatement(query, user, fields);
         return agentInfoMapper.count(statement.getLeft());
     }
-    
+
     @Override
     public boolean create(Triple<AgentInfo, List<String>, List<String>> infoTriple) {
         SqlSession session = sqlSessionFactory.openSession();
@@ -469,17 +469,15 @@ select distinct a.user_id, a.agent_id, a.visibility... \
         if (agentId == null) {
             return false;
         }
-        AgentInfo AgentInfo = agentInfoMapper.selectOne(c ->
-                        c.where(Info.userId, isEqualTo(user.getUserId()))
-                                .and(Info.agentId, isEqualTo(agentId)))
+        AgentInfo AgentInfo = agentInfoMapper
+                .selectOne(
+                        c -> c.where(Info.userId, isEqualTo(user.getUserId())).and(Info.agentId, isEqualTo(agentId)))
                 .orElse(null);
-        if (AgentInfo == null ||
-                Visibility.HIDDEN.text().equals(AgentInfo.getVisibility())) {
+        if (AgentInfo == null || Visibility.HIDDEN.text().equals(AgentInfo.getVisibility())) {
             return false;
         }
         Date now = new Date();
-        AgentInfo.withGmtModified(new Date())
-                .withVisibility(Visibility.HIDDEN.text());
+        AgentInfo.withGmtModified(new Date()).withVisibility(Visibility.HIDDEN.text());
         int rows = agentInfoMapper.updateByPrimaryKeySelective(AgentInfo);
         return rows > 0;
     }
@@ -490,8 +488,8 @@ select distinct a.user_id, a.agent_id, a.visibility... \
         if (agentId == null) {
             return false;
         }
-        int rows = agentInfoMapper.delete(c -> c.where(Info.agentId, isEqualTo(agentId))
-                .and(Info.userId, isEqualTo(user.getUserId())));
+        int rows = agentInfoMapper.delete(
+                c -> c.where(Info.agentId, isEqualTo(agentId)).and(Info.userId, isEqualTo(user.getUserId())));
         return rows > 0;
     }
 
@@ -506,7 +504,8 @@ select distinct a.user_id, a.agent_id, a.visibility... \
                 }
             }
             session.commit();
-            CacheUtils.longPeriodCacheEvict(deletedIds.stream().map(id -> CACHE_KEY_PREFIX + id).toList());
+            CacheUtils.longPeriodCacheEvict(
+                    deletedIds.stream().map(id -> CACHE_KEY_PREFIX + id).toList());
         } catch (Exception e) {
             log.error("Failed to delete agents", e);
             deletedIds.clear();
@@ -519,14 +518,14 @@ select distinct a.user_id, a.agent_id, a.visibility... \
 
     @Override
     public Triple<AgentInfo, List<String>, List<String>> summary(Long agentId, User user) {
-        var fields = select(Info.summaryColumns())
-                .from(Info.table);
+        var fields = select(Info.summaryColumns()).from(Info.table);
 
         var statement = wrapQueryExpression(fields, user.getUserId())
                 .and(Info.agentId, isEqualTo(agentId))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        return agentInfoMapper.selectOne(statement)
+        return agentInfoMapper
+                .selectOne(statement)
                 .filter(info -> filterVisibility(info, user))
                 .map(this::toInfoTriple)
                 .orElse(null);
@@ -534,15 +533,13 @@ select distinct a.user_id, a.agent_id, a.visibility... \
 
     @Override
     public List<Triple<AgentInfo, List<String>, List<String>>> summary(Collection<Long> agentIds, User user) {
-        var fields = select(Info.summaryColumns())
-                .from(Info.table);
+        var fields = select(Info.summaryColumns()).from(Info.table);
 
         var statement = wrapQueryExpression(fields, user.getUserId())
                 .and(Info.agentId, isIn(agentIds))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        return agentInfoMapper.selectMany(statement)
-                .stream()
+        return agentInfoMapper.selectMany(statement).stream()
                 .filter(info -> filterVisibility(info, user))
                 .map(this::toInfoTriple)
                 .toList();
@@ -551,8 +548,8 @@ select distinct a.user_id, a.agent_id, a.visibility... \
     @Override
     @LongPeriodCache(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public Triple<AgentInfo, List<String>, List<String>> details(Long agentId, User user) {
-        return agentInfoMapper.selectOne(c -> wrapQueryExpression(c, user.getUserId())
-                        .and(Info.agentId, isEqualTo(agentId)))
+        return agentInfoMapper
+                .selectOne(c -> wrapQueryExpression(c, user.getUserId()).and(Info.agentId, isEqualTo(agentId)))
                 .filter(info -> filterVisibility(info, user))
                 .map(this::toInfoTriple)
                 .orElse(null);
@@ -560,8 +557,8 @@ select distinct a.user_id, a.agent_id, a.visibility... \
 
     @Override
     public List<Triple<AgentInfo, List<String>, List<String>>> details(Collection<Long> agentIds, User user) {
-        return agentInfoMapper.select(c -> wrapQueryExpression(c, user.getUserId())
-                        .and(Info.agentId, isIn(agentIds)))
+        return agentInfoMapper
+                .select(c -> wrapQueryExpression(c, user.getUserId()).and(Info.agentId, isIn(agentIds)))
                 .stream()
                 .filter(info -> filterVisibility(info, user))
                 .map(this::toInfoTriple)
@@ -578,14 +575,15 @@ select distinct a.user_id, a.agent_id, a.visibility... \
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        return agentInfoMapper.selectMany(statement)
-                .stream()
+        return agentInfoMapper.selectMany(statement).stream()
                 .map(info -> {
-                    InteractiveStats stats = interactiveStatsMapper.selectOne(c ->
-                                    c.where(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.AGENT.text()))
-                                            .and(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(info.getAgentUid()))
-                                            .orderBy(InteractiveStatsDynamicSqlSupport.gmtModified.descending())
-                                            .limit(1))
+                    InteractiveStats stats = interactiveStatsMapper
+                            .selectOne(c -> c.where(
+                                            InteractiveStatsDynamicSqlSupport.referType,
+                                            isEqualTo(InfoType.AGENT.text()))
+                                    .and(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(info.getAgentUid()))
+                                    .orderBy(InteractiveStatsDynamicSqlSupport.gmtModified.descending())
+                                    .limit(1))
                             .orElse(null);
                     return Triple.of(info.getAgentId(), info.getVersion(), stats);
                 })
@@ -724,7 +722,7 @@ select distinct a.user_id, a.agent_id, a.visibility... \
         public static final SqlColumn<String> parameters = AgentInfoDynamicSqlSupport.parameters;
         public static final SqlColumn<String> ext = AgentInfoDynamicSqlSupport.ext;
 
-        public static List<BasicColumn> summaryColumns () {
+        public static List<BasicColumn> summaryColumns() {
             return List.of(
                     Info.gmtCreate,
                     Info.gmtModified,
@@ -737,6 +735,5 @@ select distinct a.user_id, a.agent_id, a.visibility... \
                     Info.name,
                     Info.description);
         }
-
     }
 }

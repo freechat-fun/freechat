@@ -2,11 +2,6 @@ package fun.freechat.service.common.impl;
 
 import fun.freechat.service.common.FileStore;
 import jakarta.annotation.PostConstruct;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -18,6 +13,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 @Service("localFileStore")
 @Slf4j
@@ -25,6 +24,7 @@ import java.util.stream.Stream;
 public class LocalFileStoreImpl implements FileStore {
     @Value("${disk.workdir}")
     private String basePathStr;
+
     private Path basePath;
 
     private Path relativePath(Path path) {
@@ -61,9 +61,7 @@ public class LocalFileStoreImpl implements FileStore {
             }
 
             if (regex == null) {
-                return listing.map(this::relativePath)
-                        .map(Path::toString)
-                        .toList();
+                return listing.map(this::relativePath).map(Path::toString).toList();
             }
             Pattern pattern = Pattern.compile(regex);
             return listing.map(this::relativePath)

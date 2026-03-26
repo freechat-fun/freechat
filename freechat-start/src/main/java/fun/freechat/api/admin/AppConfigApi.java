@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Tag(name = "App Config (for admin)", description = "Application configuration information, viewable only by super administrators.")
+@Tag(
+        name = "App Config (for admin)",
+        description = "Application configuration information, viewable only by super administrators.")
 @RequestMapping("/api/v2/admin/app")
 @Validated
 @SuppressWarnings("unused")
@@ -22,8 +24,7 @@ public class AppConfigApi {
     @Operation(
             operationId = "getDefaultConfig",
             summary = "Get Default Config",
-            description = "Get default configuration information of the application."
-    )
+            description = "Get default configuration information of the application.")
     @GetMapping(value = "/configs/default", produces = MediaType.TEXT_PLAIN_VALUE)
     public String getDefaultConfig() {
         return runtimeConfig.getContent();

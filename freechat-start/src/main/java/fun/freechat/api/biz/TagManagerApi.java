@@ -12,7 +12,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@Tag(name = "Tag Manager (for biz, admin)", description = "Manage tags, callable only by super administrators and business administrators.")
+@Tag(
+        name = "Tag Manager (for biz, admin)",
+        description = "Manage tags, callable only by super administrators and business administrators.")
 @RequestMapping("/api/v2/biz/admin/tag")
 @Validated
 @SuppressWarnings("unused")
@@ -23,34 +25,28 @@ public class TagManagerApi {
     @Operation(
             operationId = "createTag",
             summary = "Create Tag",
-            description = "Create a tag, tags created by the administrator cannot be deleted by ordinary users."
-    )
+            description = "Create a tag, tags created by the administrator cannot be deleted by ordinary users.")
     @PostMapping("/{referType}/{referId}/{tag}")
     public Boolean create(
             @Parameter(description = "Tag type (prompt, agent, plugin...)") @PathVariable("referType") @NotBlank
-            String referType,
+                    String referType,
             @Parameter(description = "Resource identifier of the tag") @PathVariable("referId") @NotBlank
-            String referId,
-            @Parameter(description = "Tag content") @PathVariable("tag") @NotBlank
-            String tag) {
-        return tagService.create(AccountUtils.currentUser(),
-                InfoType.of(referType), referId, tag);
+                    String referId,
+            @Parameter(description = "Tag content") @PathVariable("tag") @NotBlank String tag) {
+        return tagService.create(AccountUtils.currentUser(), InfoType.of(referType), referId, tag);
     }
 
     @Operation(
             operationId = "deleteTag",
             summary = "Delete Tag",
-            description = "Delete a tag, any tag created by anyone can be deleted."
-    )
+            description = "Delete a tag, any tag created by anyone can be deleted.")
     @DeleteMapping("/{referType}/{referId}/{tag}")
     public Boolean delete(
             @Parameter(description = "Tag type (prompt, agent, plugin...)") @PathVariable("referType") @NotBlank
-            String referType,
+                    String referType,
             @Parameter(description = "Resource identifier of the tag") @PathVariable("referId") @NotBlank
-            String referId,
-            @Parameter(description = "Tag content") @PathVariable("tag") @NotBlank
-            String tag) {
-        return tagService.delete(AccountUtils.currentUser(),
-                InfoType.of(referType), referId, tag);
+                    String referId,
+            @Parameter(description = "Tag content") @PathVariable("tag") @NotBlank String tag) {
+        return tagService.delete(AccountUtils.currentUser(), InfoType.of(referType), referId, tag);
     }
 }

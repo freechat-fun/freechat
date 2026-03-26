@@ -1,6 +1,7 @@
 package fun.freechat.config;
 
 import fun.freechat.util.TraceUtils;
+import java.util.Map;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.boot.autoconfigure.task.TaskExecutionProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -10,8 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-
-import java.util.Map;
 
 @Configuration
 @SuppressWarnings("unused")
@@ -31,8 +30,7 @@ public class AsyncConfig {
 
         @Bean(name = DEFAULT_EXECUTOR)
         public ThreadPoolTaskExecutor threadPoolTaskExecutor() {
-            return builderFor(taskExecutionProperties())
-                    .build(TraceThreadPoolTaskExecutor.class);
+            return builderFor(taskExecutionProperties()).build(TraceThreadPoolTaskExecutor.class);
         }
     }
 
@@ -46,8 +44,7 @@ public class AsyncConfig {
 
         @Bean(name = EVENT_EXECUTOR)
         public ThreadPoolTaskExecutor threadPoolTaskExecutor() {
-            return builderFor(taskExecutionProperties())
-                    .build(TraceThreadPoolTaskExecutor.class);
+            return builderFor(taskExecutionProperties()).build(TraceThreadPoolTaskExecutor.class);
         }
     }
 
@@ -61,8 +58,7 @@ public class AsyncConfig {
 
         @Bean(name = RAG_EXECUTOR)
         public ThreadPoolTaskExecutor threadPoolTaskExecutor() {
-            return builderFor(taskExecutionProperties())
-                    .build(TraceThreadPoolTaskExecutor.class);
+            return builderFor(taskExecutionProperties()).build(TraceThreadPoolTaskExecutor.class);
         }
     }
 
@@ -90,7 +86,7 @@ public class AsyncConfig {
         return builder;
     }
 
-    //========
+    // ========
     public static class TraceThreadPoolTaskExecutor extends ThreadPoolTaskExecutor {
         @Override
         public void execute(@NonNull Runnable task) {

@@ -1,5 +1,7 @@
 package fun.freechat;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 import fun.freechat.util.TestAccountUtils;
 import fun.freechat.util.TestCommonUtils;
 import fun.freechat.util.TestOrgUtils;
@@ -10,8 +12,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
 @Disabled
 class OrganizationApiOwnersIT extends AbstractIntegrationTest {
     private String userId;
@@ -19,7 +19,8 @@ class OrganizationApiOwnersIT extends AbstractIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        Pair<String, String> userAndToken = TestAccountUtils.createUserAndToken(OrganizationApiOwnersIT.class.getName());
+        Pair<String, String> userAndToken =
+                TestAccountUtils.createUserAndToken(OrganizationApiOwnersIT.class.getName());
         userId = userAndToken.getLeft();
         apiToken = userAndToken.getRight();
         TestOrgUtils.addOwners(userId);
@@ -34,68 +35,95 @@ class OrganizationApiOwnersIT extends AbstractIntegrationTest {
 
     @Test
     void should_get_solid_owners() {
-        testClient.get().uri("/api/v2/org/owners")
+        testClient
+                .get()
+                .uri("/api/v2/org/owners")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
-                    .jsonPath("$.length()").isEqualTo(4);
+                .jsonPath("$.length()")
+                .isEqualTo(4);
     }
 
     @Test
     void should_get_all_owners() {
-        testClient.get().uri("/api/v2/org/manage/41/owners")
+        testClient
+                .get()
+                .uri("/api/v2/org/manage/41/owners")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
-                    .jsonPath("$.length()").isEqualTo(5);
+                .jsonPath("$.length()")
+                .isEqualTo(5);
     }
 
     @Test
     void should_get_subordinate_solid_owners() {
-        testClient.get().uri("/api/v2/org/manage/41/owners")
+        testClient
+                .get()
+                .uri("/api/v2/org/manage/41/owners")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
-                    .jsonPath("$.length()").isEqualTo(5);
+                .jsonPath("$.length()")
+                .isEqualTo(5);
     }
 
     @Test
     void should_update_subordinate_owners() {
-        testClient.get().uri("/api/v2/org/manage/40/owners")
+        testClient
+                .get()
+                .uri("/api/v2/org/manage/40/owners")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
-                    .jsonPath("$.length()").isEqualTo(5);
+                .jsonPath("$.length()")
+                .isEqualTo(5);
 
-        testClient.put().uri("/api/v2/org/manage/40/owners")
+        testClient
+                .put()
+                .uri("/api/v2/org/manage/40/owners")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .bodyValue("[\"" + userId + "\", \"41\"]")
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(Void.class);
 
-        testClient.get().uri("/api/v2/org/manage/40/owners")
+        testClient
+                .get()
+                .uri("/api/v2/org/manage/40/owners")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
-                    .jsonPath("$.length()").isEqualTo(6);
-
+                .jsonPath("$.length()")
+                .isEqualTo(6);
     }
 }

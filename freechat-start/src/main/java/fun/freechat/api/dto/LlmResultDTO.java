@@ -1,15 +1,14 @@
 package fun.freechat.api.dto;
 
+import static dev.langchain4j.data.message.ContentType.TEXT;
+
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.output.Response;
 import fun.freechat.service.enums.PromptRole;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
-
 import java.util.List;
-
-import static dev.langchain4j.data.message.ContentType.TEXT;
+import lombok.*;
 
 @Schema(description = "Prompt service result")
 @Data
@@ -18,19 +17,21 @@ import static dev.langchain4j.data.message.ContentType.TEXT;
 @Builder
 @EqualsAndHashCode(callSuper = true)
 public class LlmResultDTO extends TraceableDTO {
-    @Schema(description = "Model response content, the complete content is included in non-streaming responses; only the delta content is included in streaming responses (the complete content of streaming responses is in the content of the last frame message field)")
+    @Schema(
+            description =
+                    "Model response content, the complete content is included in non-streaming responses; only the delta content is included in streaming responses (the complete content of streaming responses is in the content of the last frame message field)")
     private String text;
+
     @Schema(description = "Chat response message (usually as assistant, sometimes tool_call)")
     private ChatMessageDTO message;
+
     @Schema(description = "Model end reason: stop | length | tool_execution | content_filter")
     private String finishReason;
+
     @Schema(description = "Token usage information")
     private TokenUsageDTO tokenUsage;
 
-    public static LlmResultDTO from(String text,
-                                    ChatMessageDTO message,
-                                    String finishReason,
-                                    TokenUsageDTO usage) {
+    public static LlmResultDTO from(String text, ChatMessageDTO message, String finishReason, TokenUsageDTO usage) {
         return LlmResultDTO.builder()
                 .text(text)
                 .message(message)
@@ -65,8 +66,7 @@ public class LlmResultDTO extends TraceableDTO {
                                     .name(request.name())
                                     .arguments(request.arguments())
                                     .build())
-                            .toList()
-                    );
+                            .toList());
                     messageBuilder.role(PromptRole.FUNCTION_CALL.text());
                 } else {
                     messageBuilder.role(PromptRole.ASSISTANT.text());
@@ -79,17 +79,13 @@ public class LlmResultDTO extends TraceableDTO {
             }
         }
 
-        String finishReason = response.finishReason() != null ? response.finishReason().name().toLowerCase() : null;
+        String finishReason =
+                response.finishReason() != null ? response.finishReason().name().toLowerCase() : null;
 
-        return LlmResultDTO.from(
-                text,
-                messageBuilder.build(),
-                finishReason,
-                TokenUsageDTO.from(response.tokenUsage()));
+        return LlmResultDTO.from(text, messageBuilder.build(), finishReason, TokenUsageDTO.from(response.tokenUsage()));
     }
 
     public static LlmResultDTO from(ChatResponse response, Long messageId) {
-        return from(
-                new Response<>(response.aiMessage(), response.tokenUsage(), response.finishReason()), messageId);
+        return from(new Response<>(response.aiMessage(), response.tokenUsage(), response.finishReason()), messageId);
     }
 }

@@ -1,5 +1,7 @@
 package fun.freechat.service.plugin.impl;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fun.freechat.model.PluginInfo;
@@ -17,6 +19,9 @@ import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.parameters.RequestBody;
 import io.swagger.v3.parser.core.models.ParseOptions;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -26,12 +31,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MimeTypeUtils;
-
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @Service
 @Slf4j
@@ -44,8 +43,8 @@ public class OpenAIToolSpecFormatter implements PluginToolSpecFormatService {
             if (apiFormat != ApiFormat.OPENAPI_V3) {
                 throw new NotImplementedException("Only support OpenAPI v3 api docs!");
             }
-            return Pair.of(ToolSpecFormat.OPEN_AI,
-                    convertOpenApiV3(pluginInfo.getApiInfo(), pluginInfo.getManifestInfo()));
+            return Pair.of(
+                    ToolSpecFormat.OPEN_AI, convertOpenApiV3(pluginInfo.getApiInfo(), pluginInfo.getManifestInfo()));
         } catch (Exception e) {
             log.warn("Failed to convert plugin {} (id:{})", pluginInfo.getName(), pluginInfo.getPluginId(), e);
             return Pair.of(ToolSpecFormat.UNKNOWN, "");
@@ -53,9 +52,7 @@ public class OpenAIToolSpecFormatter implements PluginToolSpecFormatService {
     }
 
     private String mergeStrings(String... strings) {
-        return Stream.of(strings)
-                .filter(StringUtils::isNotBlank)
-                .collect(Collectors.joining("|"));
+        return Stream.of(strings).filter(StringUtils::isNotBlank).collect(Collectors.joining("|"));
     }
 
     @SuppressWarnings("rawtypes")
@@ -149,16 +146,16 @@ public class OpenAIToolSpecFormatter implements PluginToolSpecFormatService {
         parameters.setType("object");
         HashMap<String, ToolProperties> properties = new HashMap<>();
         for (var p : swaggerParameters) {
-             ToolProperties infoProperties = new ToolProperties();
-             String type = "string";
+            ToolProperties infoProperties = new ToolProperties();
+            String type = "string";
             //noinspection rawtypes
             Schema schema = p.getSchema();
-             if (schema != null) {
-                 type = getType(schema);
-             }
-             infoProperties.setType(type);
-             infoProperties.setDescription(p.getDescription());
-             Object example = p.getExample();
+            if (schema != null) {
+                type = getType(schema);
+            }
+            infoProperties.setType(type);
+            infoProperties.setDescription(p.getDescription());
+            Object example = p.getExample();
             if (example != null) {
                 infoProperties.setExample(example.toString());
             }
@@ -173,9 +170,7 @@ public class OpenAIToolSpecFormatter implements PluginToolSpecFormatService {
     }
 
     private ToolParameters mergeParameters(ToolParameters... parameters) {
-        var parametersList = Arrays.stream(parameters)
-                .filter(Objects::nonNull)
-                .toList();
+        var parametersList = Arrays.stream(parameters).filter(Objects::nonNull).toList();
         if (CollectionUtils.isEmpty(parametersList)) {
             return null;
         } else if (parametersList.size() == 1) {
@@ -201,9 +196,9 @@ public class OpenAIToolSpecFormatter implements PluginToolSpecFormatService {
         return allParameters;
     }
 
-    private String convertOpenApiV3(String apiInfo, String manifestInfo) throws JsonProcessingException, NullPointerException {
-        ObjectMapper stringMapper = new ObjectMapper()
-                .setSerializationInclusion(NON_NULL);
+    private String convertOpenApiV3(String apiInfo, String manifestInfo)
+            throws JsonProcessingException, NullPointerException {
+        ObjectMapper stringMapper = new ObjectMapper().setSerializationInclusion(NON_NULL);
         String openApiDesc = null;
         if (StringUtils.isNotBlank(manifestInfo)) {
             //noinspection rawtypes
@@ -212,9 +207,8 @@ public class OpenAIToolSpecFormatter implements PluginToolSpecFormatService {
         }
         ParseOptions options = new ParseOptions();
         options.setResolve(true);
-        OpenAPI openApi = new OpenAPIParser()
-                .readContents(apiInfo, null, options)
-                .getOpenAPI();
+        OpenAPI openApi =
+                new OpenAPIParser().readContents(apiInfo, null, options).getOpenAPI();
         if (openApi == null) {
             throw new RuntimeException("Failed to parse api docs: " + apiInfo);
         }

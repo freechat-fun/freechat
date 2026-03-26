@@ -5,6 +5,11 @@ import fun.freechat.annotation.Trace;
 import fun.freechat.exception.BadRequestException;
 import fun.freechat.util.SpELUtils;
 import fun.freechat.util.TraceUtils;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.security.Principal;
+import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -21,12 +26,6 @@ import org.springframework.expression.spel.support.SimpleEvaluationContext;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.security.Principal;
-import java.util.Map;
-import java.util.Optional;
 
 @Aspect
 @Service
@@ -110,7 +109,8 @@ public class TraceAspect {
         }
 
         SpelExpressionParser parser = new SpelExpressionParser();
-        SimpleEvaluationContext context = SimpleEvaluationContext.forReadOnlyDataBinding().build();
+        SimpleEvaluationContext context =
+                SimpleEvaluationContext.forReadOnlyDataBinding().build();
         Map<String, Object> contextInfo = SpELUtils.extractInfo(target, method, params);
         contextInfo.forEach(context::setVariable);
         try {

@@ -31,7 +31,6 @@ class OrganizationServiceIT extends AbstractIntegrationTest {
         } finally {
             TestOrgUtils.removeOwners(userId);
         }
-
     }
 
     @Test
@@ -52,6 +51,5 @@ class OrganizationServiceIT extends AbstractIntegrationTest {
         } finally {
             TestOrgUtils.removeSubordinates(userId);
         }
-
     }
 }

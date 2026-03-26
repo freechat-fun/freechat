@@ -1,5 +1,7 @@
 package fun.freechat.service.ai.impl;
 
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
+
 import fun.freechat.mapper.AiApiKeyDynamicSqlSupport;
 import fun.freechat.mapper.AiApiKeyMapper;
 import fun.freechat.model.AiApiKey;
@@ -11,33 +13,31 @@ import fun.freechat.service.cache.LongPeriodCache;
 import fun.freechat.service.common.EncryptionService;
 import fun.freechat.service.enums.ModelProvider;
 import fun.freechat.util.ByteUtils;
+import java.util.Date;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
-
 @Service
 @SuppressWarnings("unused")
 public class AiApiKeyServiceImpl implements AiApiKeyService {
     @Value("${auth.aiApiKey.limits:#{null}}")
     private Integer maxCount;
+
     @Autowired
     private AiApiKeyMapper aiApiKeyMapper;
+
     @Autowired
     private EncryptionService encryptionService;
 
     @Override
-    public Long create(User user, String name, ModelProvider provider,
-                       String token, boolean enabled) {
-        if (StringUtils.isBlank(name) ||
-                StringUtils.isBlank(token) ||
-                (maxCount != null && list(user, provider).size() >= maxCount)) {
+    public Long create(User user, String name, ModelProvider provider, String token, boolean enabled) {
+        if (StringUtils.isBlank(name)
+                || StringUtils.isBlank(token)
+                || (maxCount != null && list(user, provider).size() >= maxCount)) {
             return null;
         }
         Date now = new Date();
@@ -48,27 +48,21 @@ public class AiApiKeyServiceImpl implements AiApiKeyService {
                 .withToken(encryptionService.encrypt(token))
                 .withProvider(provider.text())
                 .withUserId(user.getUserId())
-                .withEnabled(enabled ? (byte)1 : (byte)0);
+                .withEnabled(enabled ? (byte) 1 : (byte) 0);
         aiApiKeyMapper.insert(aiApiKey);
         return aiApiKey.getId();
     }
 
     @Override
     public boolean disable(Long id) {
-        AiApiKey aiApiKey = new AiApiKey()
-                .withId(id)
-                .withEnabled((byte)0)
-                .withGmtModified(new Date());
+        AiApiKey aiApiKey = new AiApiKey().withId(id).withEnabled((byte) 0).withGmtModified(new Date());
         int rows = aiApiKeyMapper.updateByPrimaryKeySelective(aiApiKey);
         return rows > 0;
     }
 
     @Override
     public boolean enable(Long id) {
-        AiApiKey aiApiKey = new AiApiKey()
-                .withId(id)
-                .withEnabled((byte)1)
-                .withGmtModified(new Date());
+        AiApiKey aiApiKey = new AiApiKey().withId(id).withEnabled((byte) 1).withGmtModified(new Date());
         int rows = aiApiKeyMapper.updateByPrimaryKeySelective(aiApiKey);
         return rows > 0;
     }
@@ -96,16 +90,17 @@ public class AiApiKeyServiceImpl implements AiApiKeyService {
 
     @Override
     public MaskedAiApiKey get(Long id) {
-        return aiApiKeyMapper.selectByPrimaryKey(id)
+        return aiApiKeyMapper
+                .selectByPrimaryKey(id)
                 .map(aiApiKey -> MaskedAiApiKey.of(aiApiKey, encryptionService))
                 .orElse(null);
     }
 
     @Override
     public List<MaskedAiApiKey> list(User user, ModelProvider provider) {
-        return aiApiKeyMapper.select(c ->
-                        c.where(AiApiKeyDynamicSqlSupport.userId, isEqualTo(user.getUserId()))
-                                .and(AiApiKeyDynamicSqlSupport.provider, isEqualTo(provider.text())))
+        return aiApiKeyMapper
+                .select(c -> c.where(AiApiKeyDynamicSqlSupport.userId, isEqualTo(user.getUserId()))
+                        .and(AiApiKeyDynamicSqlSupport.provider, isEqualTo(provider.text())))
                 .stream()
                 .filter(aiApiKey -> ByteUtils.isTrue(aiApiKey.getEnabled()))
                 .map(aiApiKey -> MaskedAiApiKey.of(aiApiKey, encryptionService))

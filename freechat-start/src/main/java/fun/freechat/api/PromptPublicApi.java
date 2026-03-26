@@ -10,13 +10,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 @RestController
 @Tag(name = "Prompt")
@@ -27,10 +26,7 @@ public class PromptPublicApi {
     @Autowired
     private PromptService promptService;
 
-    @Operation(
-            operationId = "searchPublicPromptSummary",
-            summary = "Search Public Prompt Summary",
-            description = """
+    @Operation(operationId = "searchPublicPromptSummary", summary = "Search Public Prompt Summary", description = """
                     Search prompts:
                     - Specifiable query fields, and relationship:
                       - Scope: public(fixed).
@@ -44,14 +40,12 @@ public class PromptPublicApi {
                     - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending.
                     - The search result is the prompt summary content.
                     - Support pagination.
-                    """
-    )
+                    """)
     @PostMapping("/search")
     public List<PromptSummaryDTO> search(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Query conditions",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "Query conditions",
+                            content = @Content(examples = @ExampleObject("""
                                     {
                                       "where": {
                                         "visibility": "public",
@@ -65,13 +59,10 @@ public class PromptPublicApi {
                                       "pageNum": 0,
                                       "pageSize": 1
                                     }
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotNull
-            PromptQueryDTO query) {
+                                    """)))
+                    @RequestBody
+                    @NotNull
+                    PromptQueryDTO query) {
         if (query.getWhere() == null) {
             query.setWhere(new PromptQueryDTO.Where());
         }
@@ -80,8 +71,7 @@ public class PromptPublicApi {
         }
         // ensure 'visibility' is non-blank
         query.getWhere().setVisibility(Visibility.PUBLIC.text());
-        return promptService.search(query.toPromptInfoQuery(), AccountUtils.currentUserOrNull())
-                .stream()
+        return promptService.search(query.toPromptInfoQuery(), AccountUtils.currentUserOrNull()).stream()
                 .map(PromptSummaryDTO::from)
                 .toList();
     }
@@ -89,12 +79,13 @@ public class PromptPublicApi {
     @Operation(
             operationId = "countPublicPrompts",
             summary = "Calculate Number of Public Prompts",
-            description = "Calculate the number of prompts according to the specified query conditions."
-    )
+            description = "Calculate the number of prompts according to the specified query conditions.")
     @PostMapping("/count")
     public Long count(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Query conditions") @RequestBody @NotNull
-            PromptQueryDTO query) {
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Query conditions")
+                    @RequestBody
+                    @NotNull
+                    PromptQueryDTO query) {
         if (query.getWhere() == null) {
             query.setWhere(new PromptQueryDTO.Where());
         }

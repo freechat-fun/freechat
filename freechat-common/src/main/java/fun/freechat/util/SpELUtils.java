@@ -1,12 +1,11 @@
 package fun.freechat.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("unused")
 public class SpELUtils {
@@ -23,8 +22,10 @@ public class SpELUtils {
 
         Parameter[] parameters = method.getParameters();
         if (parameters.length != args.length) {
-            log.error("Oops...The method parameters length is {} but runtime arguments length is {}",
-                    parameters.length, args.length);
+            log.error(
+                    "Oops...The method parameters length is {} but runtime arguments length is {}",
+                    parameters.length,
+                    args.length);
         }
 
         for (int i = 0; i < args.length; ++i) {

@@ -1,24 +1,23 @@
 package fun.freechat.service.util;
 
+import static fun.freechat.service.util.InfoUtils.defaultMapper;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.langchain4j.data.message.*;
 import fun.freechat.service.enums.ChatVar;
 import fun.freechat.service.enums.PromptType;
 import fun.freechat.service.prompt.ChatPromptContent;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import static fun.freechat.service.util.InfoUtils.defaultMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 @Slf4j
 public class PromptUtils {
@@ -37,9 +36,7 @@ public class PromptUtils {
      * ...
      */
     public static String toPrompt(List<ChatMessage> messages) {
-        return messages.stream()
-                .map(PromptUtils::toSingleBlock)
-                .collect(Collectors.joining("\n\n"));
+        return messages.stream().map(PromptUtils::toSingleBlock).collect(Collectors.joining("\n\n"));
     }
 
     public static String toSingleBlock(ChatMessage message) {
@@ -48,12 +45,13 @@ public class PromptUtils {
 
     public static String toSingleText(ChatMessage message) {
         return switch (message.type()) {
-            case USER -> ((UserMessage) message).contents()
-                    .stream()
-                    .filter(TextContent.class::isInstance)
-                    .map(TextContent.class::cast)
-                    .map(TextContent::text)
-                    .collect(Collectors.joining("\n"));
+            case USER ->
+                ((UserMessage) message)
+                        .contents().stream()
+                                .filter(TextContent.class::isInstance)
+                                .map(TextContent.class::cast)
+                                .map(TextContent::text)
+                                .collect(Collectors.joining("\n"));
             case AI -> ((AiMessage) message).text();
             case SYSTEM -> ((SystemMessage) message).text();
             case TOOL_EXECUTION_RESULT -> ((ToolExecutionResultMessage) message).text();
@@ -62,7 +60,7 @@ public class PromptUtils {
                     yield defaultMapper().writeValueAsString(((CustomMessage) message).attributes());
                 } catch (JsonProcessingException e) {
                     log.warn("Failed to serialize {}", ((CustomMessage) message).attributes(), e);
-                    yield  "";
+                    yield "";
                 }
             }
         };
@@ -113,6 +111,7 @@ public class PromptUtils {
     }
 
     private static final Pattern NORMAL_URL_PATTERN = Pattern.compile("[a-zA-Z]+://.+");
+
     public static Pair<String, String> parseDataMimeType(String data) {
         if (StringUtils.isBlank(data) || NORMAL_URL_PATTERN.matcher(data).matches()) {
             return Pair.of(data, null);

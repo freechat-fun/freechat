@@ -1,5 +1,11 @@
 package fun.freechat.api.dto;
 
+import static dev.langchain4j.data.message.ContentType.*;
+import static fun.freechat.api.util.ChatUtils.contentTypeOf;
+import static fun.freechat.api.util.ChatUtils.contentTypeText;
+import static fun.freechat.api.util.ValidationUtils.ensureNotNull;
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 import dev.langchain4j.data.audio.Audio;
 import dev.langchain4j.data.image.Image;
 import dev.langchain4j.data.message.*;
@@ -15,12 +21,6 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-import static dev.langchain4j.data.message.ContentType.*;
-import static fun.freechat.api.util.ChatUtils.contentTypeOf;
-import static fun.freechat.api.util.ChatUtils.contentTypeText;
-import static fun.freechat.api.util.ValidationUtils.ensureNotNull;
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
-
 @Schema(description = "Chat content")
 @Data
 @NoArgsConstructor
@@ -30,6 +30,7 @@ public class ChatContentDTO {
     @Schema(description = "Chat type: text (default) | image | video | audio | pdf | ...")
     @Pattern(regexp = "text|image|video|audio|pdf|...")
     private String type;
+
     @Schema(description = "Chat content(for image, it might be a normal url or data url)", requiredMode = REQUIRED)
     private String content;
 
@@ -85,27 +86,27 @@ public class ChatContentDTO {
         return switch (contentType) {
             case IMAGE -> {
                 Pair<String, String> imageInfo = PromptUtils.parseDataMimeType(getContent());
-                yield StringUtils.isBlank(imageInfo.getRight()) ?
-                        ImageContent.from(imageInfo.getLeft()) :
-                        ImageContent.from(imageInfo.getLeft(), imageInfo.getRight());
+                yield StringUtils.isBlank(imageInfo.getRight())
+                        ? ImageContent.from(imageInfo.getLeft())
+                        : ImageContent.from(imageInfo.getLeft(), imageInfo.getRight());
             }
             case VIDEO -> {
                 Pair<String, String> videoInfo = PromptUtils.parseDataMimeType(getContent());
-                yield StringUtils.isBlank(videoInfo.getRight()) ?
-                        VideoContent.from(videoInfo.getLeft()) :
-                        VideoContent.from(videoInfo.getLeft(), videoInfo.getRight());
+                yield StringUtils.isBlank(videoInfo.getRight())
+                        ? VideoContent.from(videoInfo.getLeft())
+                        : VideoContent.from(videoInfo.getLeft(), videoInfo.getRight());
             }
             case AUDIO -> {
                 Pair<String, String> audioInfo = PromptUtils.parseDataMimeType(getContent());
-                yield StringUtils.isBlank(audioInfo.getRight()) ?
-                        AudioContent.from(audioInfo.getLeft()) :
-                        AudioContent.from(audioInfo.getLeft(), audioInfo.getRight());
+                yield StringUtils.isBlank(audioInfo.getRight())
+                        ? AudioContent.from(audioInfo.getLeft())
+                        : AudioContent.from(audioInfo.getLeft(), audioInfo.getRight());
             }
             case PDF -> {
                 Pair<String, String> pdfInfo = PromptUtils.parseDataMimeType(getContent());
-                yield StringUtils.isBlank(pdfInfo.getRight()) ?
-                        PdfFileContent.from(pdfInfo.getLeft()) :
-                        PdfFileContent.from(pdfInfo.getLeft(), pdfInfo.getRight());
+                yield StringUtils.isBlank(pdfInfo.getRight())
+                        ? PdfFileContent.from(pdfInfo.getLeft())
+                        : PdfFileContent.from(pdfInfo.getLeft(), pdfInfo.getRight());
             }
             default -> TextContent.from(getContent());
         };

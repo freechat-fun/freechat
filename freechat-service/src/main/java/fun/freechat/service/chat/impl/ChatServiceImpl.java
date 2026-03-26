@@ -1,5 +1,12 @@
 package fun.freechat.service.chat.impl;
 
+import static dev.langchain4j.data.message.ChatMessageType.SYSTEM;
+import static dev.langchain4j.data.message.ChatMessageType.USER;
+import static dev.langchain4j.data.message.ToolExecutionResultMessage.toolExecutionResultMessage;
+import static fun.freechat.service.chat.ChatService.asMemoryId;
+import static fun.freechat.service.enums.ChatVar.*;
+import static fun.freechat.service.util.PromptUtils.toSingleText;
+
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.data.message.*;
@@ -34,6 +41,11 @@ import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.prompt.PromptService;
 import fun.freechat.service.rag.RagTaskService;
 import fun.freechat.util.TraceUtils;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -41,19 +53,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
-
-import static dev.langchain4j.data.message.ChatMessageType.SYSTEM;
-import static dev.langchain4j.data.message.ChatMessageType.USER;
-import static dev.langchain4j.data.message.ToolExecutionResultMessage.toolExecutionResultMessage;
-import static fun.freechat.service.chat.ChatService.asMemoryId;
-import static fun.freechat.service.enums.ChatVar.*;
-import static fun.freechat.service.util.PromptUtils.toSingleText;
 
 @Service
 @Slf4j
@@ -63,31 +62,39 @@ public class ChatServiceImpl implements ChatService {
 
     @Autowired
     private ChatContextService chatContextService;
+
     @Autowired
     private ChatSessionService chatSessionService;
+
     @Autowired
     private ChatMemoryService chatMemoryService;
+
     @Autowired
     private LongTermChatMemoryStore longTermChatMemoryStore;
+
     @Autowired
     private PromptService promptService;
+
     @Autowired
     private CharacterService characterService;
+
     @Autowired
     private OrgService orgService;
+
     @Autowired
     private RagTaskService ragTaskService;
 
     @Override
-    public String start(User user,
-                        String userNickname,
-                        String userProfile,
-                        String characterNickname,
-                        String about,
-                        String backendId,
-                        String apiKeyName,
-                        String apiKeyValue,
-                        String ext) {
+    public String start(
+            User user,
+            String userNickname,
+            String userProfile,
+            String characterNickname,
+            String about,
+            String backendId,
+            String apiKeyName,
+            String apiKeyValue,
+            String ext) {
         String chatId = chatContextService.getChatIdByBackend(user.getUserId(), backendId);
         if (StringUtils.isNotBlank(chatId)) {
             return chatId;
@@ -143,20 +150,19 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public List<Triple<ChatContext, CharacterInfo, ChatMessageRecord>> list(User user) {
         String userId = user.getUserId();
-        return chatContextService.list(userId)
-                .stream()
+        return chatContextService.list(userId).stream()
                 .map(chatContext -> Optional.ofNullable(chatContext.getBackendId())
-                            .filter(StringUtils::isNotBlank)
-                            .map(characterService::getBackendCharacterUid)
-                            .filter(StringUtils::isNotBlank)
-                            .map(characterService::getLatestIdByUid)
-                            .map(characterService::summary)
-                            .map(summary -> {
-                                String chatId = chatContext.getChatId();
-                                ChatMessageRecord latestMessage = chatMemoryService.getLatestChatMessage(chatId);
-                                return Triple.of(chatContext, summary, latestMessage);
-                            })
-                            .orElse(null))
+                        .filter(StringUtils::isNotBlank)
+                        .map(characterService::getBackendCharacterUid)
+                        .filter(StringUtils::isNotBlank)
+                        .map(characterService::getLatestIdByUid)
+                        .map(characterService::summary)
+                        .map(summary -> {
+                            String chatId = chatContext.getChatId();
+                            ChatMessageRecord latestMessage = chatMemoryService.getLatestChatMessage(chatId);
+                            return Triple.of(chatContext, summary, latestMessage);
+                        })
+                        .orElse(null))
                 .filter(Objects::nonNull)
                 .toList();
     }
@@ -164,12 +170,14 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public String getDefaultChatId(User user, String characterUid) {
         CharacterBackend defaultBackend = characterService.getDefaultBackend(characterUid);
-        return defaultBackend != null ?
-                chatContextService.getChatIdByBackend(user.getUserId(), defaultBackend.getBackendId()) : null;
+        return defaultBackend != null
+                ? chatContextService.getChatIdByBackend(user.getUserId(), defaultBackend.getBackendId())
+                : null;
     }
 
     @Override
-    // @Trace(ignoreArgs = true, extInfo = "'chat:' + #p0 + ',role:' + #p1.type().name() + ',message:' + #p1.text() + ',context:' + #p2")
+    // @Trace(ignoreArgs = true, extInfo = "'chat:' + #p0 + ',role:' + #p1.type().name() + ',message:' + #p1.text() +
+    // ',context:' + #p2")
     public Pair<ChatResponse, Long> send(String chatId, ChatMessage message, String context) {
         ChatSession session = chatSessionService.get(chatId);
         if (session == null || message == null || !session.acquire()) {
@@ -181,18 +189,19 @@ public class ChatServiceImpl implements ChatService {
             ChatMemory chatMemory = session.getChatMemory(memoryId);
             var messages = handleMessages(message, context, memoryId, session);
 
-            Future<Moderation> moderationFuture = session.getModerationModel() != null ?
-                    chatSessionService.triggerModerationIfNeeded(session, messages) : null;
+            Future<Moderation> moderationFuture = session.getModerationModel() != null
+                    ? chatSessionService.triggerModerationIfNeeded(session, messages)
+                    : null;
 
             ChatModel chatModel = session.getChatModel();
             List<ToolSpecification> toolSpecifications = session.getToolSpecifications();
 
-            ChatResponse response = toolSpecifications != null ?
-                    chatModel.chat(ChatRequest.builder()
+            ChatResponse response = toolSpecifications != null
+                    ? chatModel.chat(ChatRequest.builder()
                             .messages(messages)
                             .toolSpecifications(toolSpecifications)
-                            .build()) :
-                    chatModel.chat(messages);
+                            .build())
+                    : chatModel.chat(messages);
             TokenUsage tokenUsageAccumulator = response.tokenUsage();
 
             chatSessionService.verifyModerationIfNeeded(moderationFuture);
@@ -215,8 +224,8 @@ public class ChatServiceImpl implements ChatService {
                 for (ToolExecutionRequest toolExecutionRequest : aiMessage.toolExecutionRequests()) {
                     ToolExecutor toolExecutor = session.getToolExecutors().get(toolExecutionRequest.name());
                     String toolExecutionResult = toolExecutor.execute(toolExecutionRequest, memoryId);
-                    ToolExecutionResultMessage toolExecutionResultMessage
-                            = toolExecutionResultMessage(toolExecutionRequest, toolExecutionResult);
+                    ToolExecutionResultMessage toolExecutionResultMessage =
+                            toolExecutionResultMessage(toolExecutionRequest, toolExecutionResult);
                     chatMemory.add(toolExecutionResultMessage);
                 }
 
@@ -240,7 +249,8 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    // @Trace(ignoreArgs = true, extInfo = "'chat:' + #p0 + ',role:' + #p1.type().name() + ',message:' + #p1.text() + ',context:' + #p2")
+    // @Trace(ignoreArgs = true, extInfo = "'chat:' + #p0 + ',role:' + #p1.type().name() + ',message:' + #p1.text() +
+    // ',context:' + #p2")
     public TokenStream streamSend(String chatId, ChatMessage message, String context) {
         ChatSession session = chatSessionService.get(chatId);
         if (session == null || message == null || !session.acquire()) {
@@ -286,8 +296,8 @@ public class ChatServiceImpl implements ChatService {
         ChatMemory chatMemory = session.getChatMemory(chatId);
         chatMemory.clear();
 
-        chatMemory.add(SystemMessage.from(promptService.apply(
-                prompt.getSystem(), variables, session.getPromptFormat())));
+        chatMemory.add(
+                SystemMessage.from(promptService.apply(prompt.getSystem(), variables, session.getPromptFormat())));
 
         if (CollectionUtils.isNotEmpty(prompt.getMessages())) {
             prompt.getMessages().forEach(chatMemory::add);
@@ -311,18 +321,19 @@ public class ChatServiceImpl implements ChatService {
 
         var messages = handleMessages(null, null, assistantChatId, assistantSession);
 
-        Future<Moderation> moderationFuture = assistantSession.getModerationModel() != null ?
-                chatSessionService.triggerModerationIfNeeded(assistantSession, messages) : null;
+        Future<Moderation> moderationFuture = assistantSession.getModerationModel() != null
+                ? chatSessionService.triggerModerationIfNeeded(assistantSession, messages)
+                : null;
 
         ChatModel chatModel = assistantSession.getChatModel();
         List<ToolSpecification> toolSpecifications = assistantSession.getToolSpecifications();
 
-        ChatResponse response = toolSpecifications != null ?
-                chatModel.chat(ChatRequest.builder()
+        ChatResponse response = toolSpecifications != null
+                ? chatModel.chat(ChatRequest.builder()
                         .messages(messages)
                         .toolSpecifications(toolSpecifications)
-                        .build()) :
-                chatModel.chat(messages);
+                        .build())
+                : chatModel.chat(messages);
         TokenUsage tokenUsageAccumulator = response.tokenUsage();
 
         chatSessionService.verifyModerationIfNeeded(moderationFuture);
@@ -339,8 +350,8 @@ public class ChatServiceImpl implements ChatService {
             for (ToolExecutionRequest toolExecutionRequest : aiMessage.toolExecutionRequests()) {
                 ToolExecutor toolExecutor = session.getToolExecutors().get(toolExecutionRequest.name());
                 String toolExecutionResult = toolExecutor.execute(toolExecutionRequest, assistantMemoryId);
-                ToolExecutionResultMessage toolExecutionResultMessage
-                        = toolExecutionResultMessage(toolExecutionRequest, toolExecutionResult);
+                ToolExecutionResultMessage toolExecutionResultMessage =
+                        toolExecutionResultMessage(toolExecutionRequest, toolExecutionResult);
                 chatMemory.add(toolExecutionResultMessage);
             }
 
@@ -393,7 +404,6 @@ public class ChatServiceImpl implements ChatService {
                 .context(assistantSession.getAiServiceContext())
                 .invocationContext(assistantInvocationContext)
                 .build());
-
     }
 
     private ChatSession createTemporarySession(ChatSession session, String chatId, String assistantUid) {
@@ -408,9 +418,9 @@ public class ChatServiceImpl implements ChatService {
         String assistantChatId = assistantChatId(chatId);
         Object assistantMemoryId = asMemoryId(assistantChatId);
         InMemoryChatMemoryStore assistantMemoryStore = new InMemoryChatMemoryStore();
-        assistantMemoryStore.updateMessages(assistantMemoryId,
-                reverseMessages(session.getChatMemory(chatId).messages(),
-                                (String) variables.get(CHARACTER_GREETING.text())));
+        assistantMemoryStore.updateMessages(
+                assistantMemoryId, reverseMessages(session.getChatMemory(chatId).messages(), (String)
+                        variables.get(CHARACTER_GREETING.text())));
 
         ChatContext assistantChatContext = new ChatContext()
                 .withChatId(assistantChatId)
@@ -431,16 +441,16 @@ public class ChatServiceImpl implements ChatService {
         ChatMemory chatMemory = session.getChatMemory(memoryId);
         Map<String, Object> variables = session.getVariables();
         variables.put(MESSAGE_CONTEXT.text(), getOrBlank(context));
-        variables.put(CURRENT_TIME.text(),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        variables.put(
+                CURRENT_TIME.text(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
         String relevantConcatenated = null;
         List<ChatMessage> longTermMemoryMessages = null;
         RetrievalAugmentor knowledgeRetriever = session.getRetriever();
         RetrievalAugmentor longTermMemoryRetriever = session.getLongTermMemoryRetriever();
-        if (message != null &&
-                message.type() == USER &&
-                (knowledgeRetriever != null || longTermMemoryRetriever != null)) {
+        if (message != null
+                && message.type() == USER
+                && (knowledgeRetriever != null || longTermMemoryRetriever != null)) {
             List<ChatMessage> messages = chatMemory.messages();
             UserMessage userMessage = (UserMessage) message;
 
@@ -453,8 +463,8 @@ public class ChatServiceImpl implements ChatService {
                 Throwable throwable = null;
                 try {
                     relevantConcatenated = Optional.of(knowledgeRetriever)
-                            .map(retriever -> retriever.augment(
-                                    new AugmentationRequest(userMessage, Metadata.from(userMessage, memoryId, messages))))
+                            .map(retriever -> retriever.augment(new AugmentationRequest(
+                                    userMessage, Metadata.from(userMessage, memoryId, messages))))
                             .map(AugmentationResult::contents)
                             .orElse(Collections.emptyList())
                             .stream()
@@ -466,10 +476,10 @@ public class ChatServiceImpl implements ChatService {
                     throwable = ex;
                 } finally {
                     long endTime = System.currentTimeMillis();
-                    TraceUtils.TraceStatus status = throwable == null ?
-                            TraceUtils.TraceStatus.SUCCESSFUL : TraceUtils.TraceStatus.FAILED;
+                    TraceUtils.TraceStatus status =
+                            throwable == null ? TraceUtils.TraceStatus.SUCCESSFUL : TraceUtils.TraceStatus.FAILED;
                     String traceInfo = new TraceUtils.TraceInfoBuilder()
-                            .args(new String[]{characterName, characterUid})
+                            .args(new String[] {characterName, characterUid})
                             .elapseTime(endTime - startTime)
                             .method("ChatServiceImpl::retrieveKnowledge")
                             .status(status)
@@ -481,8 +491,9 @@ public class ChatServiceImpl implements ChatService {
                 }
             }
 
-            if (longTermMemoryRetriever != null &&
-                    chatMemoryService.roughCount(memoryId) >= ((SystemAlwaysOnTopMessageWindowChatMemory) chatMemory).getMaxMessages()) {
+            if (longTermMemoryRetriever != null
+                    && chatMemoryService.roughCount(memoryId)
+                            >= ((SystemAlwaysOnTopMessageWindowChatMemory) chatMemory).getMaxMessages()) {
                 long startTime = System.currentTimeMillis();
                 Throwable throwable = null;
                 try {
@@ -493,10 +504,10 @@ public class ChatServiceImpl implements ChatService {
                     throwable = ex;
                 } finally {
                     long endTime = System.currentTimeMillis();
-                    TraceUtils.TraceStatus status = throwable == null ?
-                            TraceUtils.TraceStatus.SUCCESSFUL : TraceUtils.TraceStatus.FAILED;
+                    TraceUtils.TraceStatus status =
+                            throwable == null ? TraceUtils.TraceStatus.SUCCESSFUL : TraceUtils.TraceStatus.FAILED;
                     String traceInfo = new TraceUtils.TraceInfoBuilder()
-                            .args(new String[]{characterName, characterUid})
+                            .args(new String[] {characterName, characterUid})
                             .elapseTime(endTime - startTime)
                             .method("ChatServiceImpl::retrieveLongTermMemory")
                             .status(status)
@@ -516,13 +527,11 @@ public class ChatServiceImpl implements ChatService {
         if (message != null && message.type() == USER && prompt.getMessageToSend() != null) {
             variables.put(INPUT.text().toLowerCase(), toSingleText(message));
             messageToSend = promptService.apply(
-                    UserMessage.from(prompt.getMessageToSend().contents()),
-                    variables,
-                    session.getPromptFormat());
+                    UserMessage.from(prompt.getMessageToSend().contents()), variables, session.getPromptFormat());
         }
 
-        SystemMessage systemMessage = SystemMessage.from(promptService.apply(
-                prompt.getSystem(), variables, session.getPromptFormat()));
+        SystemMessage systemMessage =
+                SystemMessage.from(promptService.apply(prompt.getSystem(), variables, session.getPromptFormat()));
 
         chatMemory.add(systemMessage);
         if (messageToSend != null) {
@@ -536,8 +545,8 @@ public class ChatServiceImpl implements ChatService {
         return StringUtils.isBlank(content) ? "" : content;
     }
 
-    private static List<ChatMessage> mergeMessages(List<ChatMessage> messages,
-                                                   List<ChatMessage> longTermMemoryMessages) {
+    private static List<ChatMessage> mergeMessages(
+            List<ChatMessage> messages, List<ChatMessage> longTermMemoryMessages) {
         if (CollectionUtils.isEmpty(longTermMemoryMessages) || CollectionUtils.isEmpty(messages)) {
             return messages;
         }
@@ -557,25 +566,32 @@ public class ChatServiceImpl implements ChatService {
         LinkedList<ChatMessage> reversedMessages = messages.stream()
                 .map(message -> switch (message.type()) {
                     case SYSTEM -> message;
-                    case AI -> ((AiMessage) message).hasToolExecutionRequests() ? null : UserMessage.from(toSingleText(message));
+                    case AI ->
+                        ((AiMessage) message).hasToolExecutionRequests()
+                                ? null
+                                : UserMessage.from(toSingleText(message));
                     case USER -> AiMessage.from(toSingleText(message));
                     case null, default -> null;
                 })
                 .filter(Objects::nonNull)
                 .collect(LinkedList::new, LinkedList::add, LinkedList::addAll);
 
-        int firstNonSystemMessageIndex = CollectionUtils.isNotEmpty(reversedMessages) &&
-                reversedMessages.getFirst().type() == SYSTEM ? 1: 0;
+        int firstNonSystemMessageIndex = CollectionUtils.isNotEmpty(reversedMessages)
+                        && reversedMessages.getFirst().type() == SYSTEM
+                ? 1
+                : 0;
 
         if (StringUtils.isNotBlank(greeting)) {
             reversedMessages.add(firstNonSystemMessageIndex, UserMessage.from(greeting));
         } else {
-            ChatMessage firstNonSystemMessage = firstNonSystemMessageIndex < reversedMessages.size() ?
-                    reversedMessages.get(firstNonSystemMessageIndex) : null;
+            ChatMessage firstNonSystemMessage = firstNonSystemMessageIndex < reversedMessages.size()
+                    ? reversedMessages.get(firstNonSystemMessageIndex)
+                    : null;
             while (firstNonSystemMessage != null && firstNonSystemMessage.type() != USER) {
                 reversedMessages.remove(firstNonSystemMessageIndex);
-                firstNonSystemMessage = firstNonSystemMessageIndex < reversedMessages.size() ?
-                        reversedMessages.get(firstNonSystemMessageIndex) : null;
+                firstNonSystemMessage = firstNonSystemMessageIndex < reversedMessages.size()
+                        ? reversedMessages.get(firstNonSystemMessageIndex)
+                        : null;
             }
         }
 

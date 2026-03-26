@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 public enum PromptFormat {
     F_STRING,
     MUSTACHE;
+
     public static PromptFormat of(String text) {
         if (StringUtils.isBlank(text)) {
             return MUSTACHE;

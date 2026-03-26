@@ -1,16 +1,15 @@
 package fun.freechat.util;
 
 import com.github.dockerjava.api.command.InspectContainerResponse;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.testcontainers.containers.Container;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.ollama.OllamaContainer;
 import org.testcontainers.utility.DockerImageName;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 @Slf4j
 public class TestOllamaContainer extends OllamaContainer {
@@ -29,7 +28,7 @@ public class TestOllamaContainer extends OllamaContainer {
     @Override
     protected void containerIsStarted(InspectContainerResponse containerInfo) {
         if (CollectionUtils.isNotEmpty(models)) {
-            for (String model: models) {
+            for (String model : models) {
                 try {
                     log.info("Start pulling the '{}' model ... would take several minutes ...", model);
                     Container.ExecResult result = execInContainer("ollama", "pull", model);

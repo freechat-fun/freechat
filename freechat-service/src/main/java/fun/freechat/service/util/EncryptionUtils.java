@@ -1,26 +1,24 @@
 package fun.freechat.service.util;
 
 import fun.freechat.util.IdUtils;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
 public class EncryptionUtils {
     private final Cipher encryptCipher;
     private final Cipher decryptCipher;
 
-    public EncryptionUtils(String aesKey)
-            throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public EncryptionUtils(String aesKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         byte[] bytes = aesKey.getBytes(StandardCharsets.UTF_8);
         SecretKeySpec keySpec = new SecretKeySpec(bytes, "AES");
         encryptCipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
@@ -56,15 +54,16 @@ public class EncryptionUtils {
         }
     }
 
-    public static void main(String[] args) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public static void main(String[] args)
+            throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         String aesKey = IdUtils.newId();
         System.out.println(aesKey);
         String text = "Hello World!";
         EncryptionUtils service = new EncryptionUtils(aesKey);
         String cipherText = service.encrypt(text);
-        System.out.println(text + ": " + cipherText + " -> " +  service.decrypt(cipherText));
+        System.out.println(text + ": " + cipherText + " -> " + service.decrypt(cipherText));
         text = "I am robot!";
         cipherText = service.encrypt(text);
-        System.out.println(text + ": " + cipherText + " -> " +  service.decrypt(cipherText));
+        System.out.println(text + ": " + cipherText + " -> " + service.decrypt(cipherText));
     }
 }

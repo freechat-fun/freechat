@@ -3,6 +3,8 @@ package fun.freechat.access.auth;
 import fun.freechat.access.user.SysUserDetailsManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.time.Duration;
+import java.util.Optional;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
 import org.springframework.security.core.Authentication;
@@ -13,9 +15,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.util.StringUtils;
-
-import java.time.Duration;
-import java.util.Optional;
 
 public class OAuth2TokenBasedRememberMeServices extends TokenBasedRememberMeServices {
     private final String BLACKLIST_KEY_PREFIX = "remember_me:blacklist:";
@@ -38,8 +37,7 @@ public class OAuth2TokenBasedRememberMeServices extends TokenBasedRememberMeServ
 
         RBucket<String> blacklistedBucket = redissonClient.getBucket(BLACKLIST_KEY_PREFIX + tokenSignature);
         if (blacklistedBucket.isExists()) {
-            throw new InvalidCookieException(
-                    "Invalid remember-me token signature: " + tokenSignature);
+            throw new InvalidCookieException("Invalid remember-me token signature: " + tokenSignature);
         }
 
         return super.processAutoLoginCookie(cookieTokens, request, response);
@@ -68,8 +66,8 @@ public class OAuth2TokenBasedRememberMeServices extends TokenBasedRememberMeServ
 
     @Override
     protected String retrieveUserName(Authentication authentication) {
-        if (getUserDetailsService() instanceof SysUserDetailsManager sysUserDetailsManager &&
-                authentication instanceof OAuth2AuthenticationToken oAuth2Authentication) {
+        if (getUserDetailsService() instanceof SysUserDetailsManager sysUserDetailsManager
+                && authentication instanceof OAuth2AuthenticationToken oAuth2Authentication) {
             OAuth2User oAuth2User = oAuth2Authentication.getPrincipal();
             String platform = oAuth2Authentication.getAuthorizedClientRegistrationId();
             return sysUserDetailsManager.getUsername(oAuth2User, platform);
@@ -79,8 +77,8 @@ public class OAuth2TokenBasedRememberMeServices extends TokenBasedRememberMeServ
 
     @Override
     protected String retrievePassword(Authentication authentication) {
-        if (getUserDetailsService() instanceof SysUserDetailsManager sysUserDetailsManager &&
-                authentication instanceof OAuth2AuthenticationToken oAuth2Authentication) {
+        if (getUserDetailsService() instanceof SysUserDetailsManager sysUserDetailsManager
+                && authentication instanceof OAuth2AuthenticationToken oAuth2Authentication) {
             OAuth2User oAuth2User = oAuth2Authentication.getPrincipal();
             String platform = oAuth2Authentication.getAuthorizedClientRegistrationId();
             return sysUserDetailsManager.getPassword(oAuth2User, platform);

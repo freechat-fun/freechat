@@ -13,6 +13,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -40,13 +46,6 @@ import org.springframework.security.web.authentication.switchuser.SwitchUserFilt
 import org.springframework.security.web.authentication.switchuser.SwitchUserGrantedAuthority;
 import org.springframework.util.Assert;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 @SuppressWarnings("unused")
 @Slf4j
 public class ApiSwitchUserFilter extends SwitchUserFilter {
@@ -55,9 +54,12 @@ public class ApiSwitchUserFilter extends SwitchUserFilter {
 
     @Setter
     private String headerName;
+
     private boolean enableAutoRegister;
+
     @Setter
     private OrgService orgService;
+
     private SysUserDetailsManager sysUserDetailsManager;
     private SysUserService sysUserService;
     private SysAuthorityService sysAuthorityService;
@@ -93,8 +95,7 @@ public class ApiSwitchUserFilter extends SwitchUserFilter {
 
     @Override
     protected boolean requiresSwitchUser(HttpServletRequest request) {
-        return super.requiresSwitchUser(request) &&
-                StringUtils.isNotBlank(request.getHeader(headerName));
+        return super.requiresSwitchUser(request) && StringUtils.isNotBlank(request.getHeader(headerName));
     }
 
     @Override
@@ -144,14 +145,13 @@ public class ApiSwitchUserFilter extends SwitchUserFilter {
         return targetUserRequest;
     }
 
-    private UsernamePasswordAuthenticationToken createSwitchUserToken(HttpServletRequest request,
-                                                                      UserDetails targetUser) {
+    private UsernamePasswordAuthenticationToken createSwitchUserToken(
+            HttpServletRequest request, UserDetails targetUser) {
         UsernamePasswordAuthenticationToken targetUserRequest;
         // grant an additional authority that contains the original Authentication object
         // which will be used to 'exit' from the current switched user.
         Authentication currentAuthentication = getCurrentAuthenticationAndExitUser(request);
-        GrantedAuthority switchAuthority = new SwitchUserGrantedAuthority(
-                switchAuthorityRole, currentAuthentication);
+        GrantedAuthority switchAuthority = new SwitchUserGrantedAuthority(switchAuthorityRole, currentAuthentication);
         // get the original authorities
         Collection<? extends GrantedAuthority> orig = targetUser.getAuthorities();
         // Allow subclasses to change the authorities to be granted
@@ -162,8 +162,8 @@ public class ApiSwitchUserFilter extends SwitchUserFilter {
         List<GrantedAuthority> newAuths = new ArrayList<>(orig);
         newAuths.add(switchAuthority);
         // create the new authentication token
-        targetUserRequest = UsernamePasswordAuthenticationToken.authenticated(
-                targetUser, targetUser.getPassword(), newAuths);
+        targetUserRequest =
+                UsernamePasswordAuthenticationToken.authenticated(targetUser, targetUser.getPassword(), newAuths);
         // set details
         targetUserRequest.setDetails(authenticationDetailsSource.buildDetails(request));
         return targetUserRequest;
@@ -171,8 +171,7 @@ public class ApiSwitchUserFilter extends SwitchUserFilter {
 
     private void checkPermission(Authentication currentAuthentication) {
         int requiredPriority = AuthorityUtils.getPriority(AuthorityUtils.BIZ_ADMIN);
-        boolean hasPermission = currentAuthentication.getAuthorities()
-                .stream()
+        boolean hasPermission = currentAuthentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .anyMatch(authority -> AuthorityUtils.getPriority(authority) >= requiredPriority);
         if (!hasPermission) {
@@ -383,8 +382,18 @@ public class ApiSwitchUserFilter extends SwitchUserFilter {
     }
 
     public static void main(String[] args) {
-        List<String> samples = List.of("a12", "a12:b34", "a12@cd", "a12:b34@cd", "a12:@cd",
-                ":b34@cd", "a12:","a12:@", ":@cd", "a12:a12", "a12:a12@cd");
+        List<String> samples = List.of(
+                "a12",
+                "a12:b34",
+                "a12@cd",
+                "a12:b34@cd",
+                "a12:@cd",
+                ":b34@cd",
+                "a12:",
+                "a12:@",
+                ":@cd",
+                "a12:a12",
+                "a12:a12@cd");
         for (String s : samples) {
             Matcher m = HEADER_PATTERN.matcher(s);
             log.info("'{}', m.matches: {}", s, m.matches());

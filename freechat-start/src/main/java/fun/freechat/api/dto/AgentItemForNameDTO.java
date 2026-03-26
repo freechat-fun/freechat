@@ -16,8 +16,10 @@ import org.apache.commons.lang3.tuple.Triple;
 public class AgentItemForNameDTO {
     @Schema(description = "agentId")
     private Long agentId;
+
     @Schema(description = "version")
     private Integer version;
+
     @Schema(description = "Interactive statistics information")
     InteractiveStatsDTO stats;
 

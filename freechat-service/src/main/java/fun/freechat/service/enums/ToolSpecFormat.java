@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 public enum ToolSpecFormat {
     OPEN_AI,
     UNKNOWN;
+
     public static ToolSpecFormat of(String text) {
         if (StringUtils.isBlank(text)) {
             return UNKNOWN;

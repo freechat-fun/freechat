@@ -8,14 +8,13 @@ import fun.freechat.service.enums.PromptType;
 import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 @Schema(description = "Prompt detailed content")
 @Slf4j
@@ -24,25 +23,28 @@ import java.util.List;
 public class PromptDetailsDTO extends PromptSummaryDTO {
     @Schema(description = "Prompt text template content")
     private String template;
+
     @Schema(description = "Prompt chat template content")
     private ChatPromptContentDTO chatTemplate;
+
     @Schema(description = "Prompt example")
     private String example;
+
     @Schema(description = "Prompt inputs, JSON format")
     private String inputs;
+
     @Schema(description = "Additional information, JSON format")
     private String ext;
+
     @Schema(description = "Draft content")
     private String draft;
 
-    public static PromptDetailsDTO from(
-            Triple<PromptInfo, List<String>, List<String>> promptInfoTriple) {
+    public static PromptDetailsDTO from(Triple<PromptInfo, List<String>, List<String>> promptInfoTriple) {
         if (promptInfoTriple == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find prompt!");
         }
         PromptInfo info = promptInfoTriple.getLeft();
-        PromptDetailsDTO dto =
-                CommonUtils.convert(info, PromptDetailsDTO.class);
+        PromptDetailsDTO dto = CommonUtils.convert(info, PromptDetailsDTO.class);
         dto.setUsername(AccountUtils.userIdToName(promptInfoTriple.getLeft().getUserId()));
         if (PromptType.of(info.getType()) == PromptType.CHAT) {
             try {
@@ -56,8 +58,7 @@ public class PromptDetailsDTO extends PromptSummaryDTO {
             }
         }
         dto.setTags(promptInfoTriple.getMiddle());
-        dto.setAiModels(promptInfoTriple.getRight()
-                .stream()
+        dto.setAiModels(promptInfoTriple.getRight().stream()
                 .map(AiModelInfoDTO::from)
                 .peek(aiModelInfo -> aiModelInfo.setRequestId(null))
                 .toList());

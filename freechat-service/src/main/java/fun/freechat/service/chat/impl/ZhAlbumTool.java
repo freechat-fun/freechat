@@ -10,10 +10,11 @@ import lombok.Builder;
 
 public class ZhAlbumTool extends AlbumTool {
     @Builder
-    public ZhAlbumTool(String homeUrl,
-                       CharacterService characterService,
-                       ChatContextService chatContextService,
-                       ShortLinkService shortLinkService) {
+    public ZhAlbumTool(
+            String homeUrl,
+            CharacterService characterService,
+            ChatContextService chatContextService,
+            ShortLinkService shortLinkService) {
         super(homeUrl, characterService, chatContextService, shortLinkService);
     }
 
@@ -28,8 +29,8 @@ public class ZhAlbumTool extends AlbumTool {
             并放置在响应内容的适当位置。
             - 此工具可能找不到任何图片，在这种情况下，它将返回特殊内容 "<NOT_FOUND>"。你需要忽略此工具的结果，\
             并向用户解释你目前没有可以提供的照片。""")
-    public String findAnImage(@ToolMemoryId Object memoryId,
-                              @P(value = "需要检索的图片的描述。", required = false) String description) {
+    public String findAnImage(
+            @ToolMemoryId Object memoryId, @P(value = "需要检索的图片的描述。", required = false) String description) {
         return super.findAnImage(memoryId, description);
     }
 }

@@ -1,5 +1,9 @@
 package fun.freechat.util;
 
+import static fun.freechat.util.TestCommonUtils.parametersFor;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import fun.freechat.model.PromptInfo;
 import fun.freechat.model.PromptTask;
@@ -18,10 +22,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
-
-import static fun.freechat.util.TestCommonUtils.parametersFor;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Component
 @Slf4j
@@ -44,7 +44,7 @@ public class TestPromptUtils implements ApplicationContextAware {
         assertNotNull(promptInfo.getPromptId());
         return promptInfo.getPromptId();
     }
-    
+
     public static Long createChatPrompt(String userId, ChatPromptContent promptContent) throws JsonProcessingException {
         String template = InfoUtils.defaultMapper().writeValueAsString(promptContent);
         PromptInfo promptInfo = new PromptInfo()
@@ -60,7 +60,8 @@ public class TestPromptUtils implements ApplicationContextAware {
         return promptInfo.getPromptId();
     }
 
-    public static String createChatPromptTask(Long promptId, String modelId, String apiKey) throws JsonProcessingException {
+    public static String createChatPromptTask(Long promptId, String modelId, String apiKey)
+            throws JsonProcessingException {
         String params = InfoUtils.defaultMapper().writeValueAsString(parametersFor(modelId));
         PromptTask task = new PromptTask()
                 .withApiKeyValue(apiKey)

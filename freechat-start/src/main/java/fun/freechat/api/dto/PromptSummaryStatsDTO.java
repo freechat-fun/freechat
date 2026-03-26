@@ -5,11 +5,10 @@ import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.InteractiveStats;
 import fun.freechat.model.PromptInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.tuple.Triple;
-
-import java.util.List;
 
 @Schema(description = "Prompt template summary content, including interactive statistical information")
 @Data
@@ -17,12 +16,16 @@ import java.util.List;
 public class PromptSummaryStatsDTO extends PromptSummaryDTO {
     @Schema(description = "View count")
     private Long viewCount;
+
     @Schema(description = "Reference count")
     private Long referCount;
+
     @Schema(description = "Recommendation count")
     private Long recommendCount;
+
     @Schema(description = "Score count")
     private Long scoreCount;
+
     @Schema(description = "Average score")
     private Long score;
 
@@ -31,12 +34,10 @@ public class PromptSummaryStatsDTO extends PromptSummaryDTO {
         if (promptInfoTriple == null || stats == null) {
             return null;
         }
-        PromptSummaryStatsDTO dto =
-                CommonUtils.convert(promptInfoTriple.getLeft(), PromptSummaryStatsDTO.class);
+        PromptSummaryStatsDTO dto = CommonUtils.convert(promptInfoTriple.getLeft(), PromptSummaryStatsDTO.class);
         dto.setUsername(AccountUtils.userIdToName(promptInfoTriple.getLeft().getUserId()));
         dto.setTags(promptInfoTriple.getMiddle());
-        dto.setAiModels(promptInfoTriple.getRight()
-                .stream()
+        dto.setAiModels(promptInfoTriple.getRight().stream()
                 .map(AiModelInfoDTO::from)
                 .peek(aiModelInfo -> aiModelInfo.setRequestId(null))
                 .toList());

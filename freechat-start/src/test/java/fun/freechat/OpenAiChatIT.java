@@ -1,31 +1,5 @@
 package fun.freechat;
 
-import fun.freechat.api.dto.*;
-import fun.freechat.service.common.ShortLinkService;
-import fun.freechat.service.enums.*;
-import fun.freechat.util.*;
-import io.micrometer.common.util.StringUtils;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.tika.Tika;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-
 import static dev.langchain4j.data.message.ContentType.TEXT;
 import static fun.freechat.api.util.FileUtils.getKeyFromUrl;
 import static fun.freechat.service.enums.ModelProvider.OPEN_AI;
@@ -40,6 +14,31 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
+import fun.freechat.api.dto.*;
+import fun.freechat.service.common.ShortLinkService;
+import fun.freechat.service.enums.*;
+import fun.freechat.util.*;
+import io.micrometer.common.util.StringUtils;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.tika.Tika;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 @EnabledIfEnvironmentVariable(named = "OPENAI_API_KEY", matches = ".+")
 class OpenAiChatIT extends AbstractIntegrationTest {
@@ -110,8 +109,10 @@ class OpenAiChatIT extends AbstractIntegrationTest {
 
     @Value("${app.homeUrl}")
     private String homeUrl;
+
     @Autowired
     private ShortLinkService shortLinkService;
+
     private String developerId;
     private String developerApiKey;
     private String userId;
@@ -174,7 +175,8 @@ class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_create_prompt() {
-        ChatPromptContentDTO prompt = ChatPromptContentDTO.builder().system(SYSTEM_PROMPT).build();
+        ChatPromptContentDTO prompt =
+                ChatPromptContentDTO.builder().system(SYSTEM_PROMPT).build();
 
         PromptCreateDTO dto = PromptCreateDTO.builder()
                 .name("test_character_prompt")
@@ -184,17 +186,19 @@ class OpenAiChatIT extends AbstractIntegrationTest {
                 .chatTemplate(prompt)
                 .build();
 
-        promptId = testClient.post().uri("/api/v2/prompt")
+        promptId = testClient
+                .post()
+                .uri("/api/v2/prompt")
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .bodyValue(dto)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(Long.class)
                 .returnResult()
                 .getResponseBody();
 
         assertNotNull(promptId);
-
     }
 
     private void should_create_prompt_task() {
@@ -206,12 +210,15 @@ class OpenAiChatIT extends AbstractIntegrationTest {
                 .promptRef(promptRef)
                 .build();
 
-        promptTaskId = testClient.post().uri("/api/v2/prompt/task")
+        promptTaskId = testClient
+                .post()
+                .uri("/api/v2/prompt/task")
                 .accept(MediaType.TEXT_PLAIN)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .bodyValue(dto)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(String.class)
                 .returnResult()
                 .getResponseBody();
@@ -230,11 +237,14 @@ class OpenAiChatIT extends AbstractIntegrationTest {
                 .visibility(Visibility.PRIVATE.text())
                 .build();
 
-        Long characterId = testClient.post().uri("/api/v2/character")
+        Long characterId = testClient
+                .post()
+                .uri("/api/v2/character")
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .bodyValue(dto)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(Long.class)
                 .returnResult()
                 .getResponseBody();
@@ -246,10 +256,13 @@ class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_publish_character() {
-        Long characterId = testClient.post().uri("/api/v2/character/publish/" + uidToId(characterUid))
+        Long characterId = testClient
+                .post()
+                .uri("/api/v2/character/publish/" + uidToId(characterUid))
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(Long.class)
                 .returnResult()
                 .getResponseBody();
@@ -273,12 +286,15 @@ class OpenAiChatIT extends AbstractIntegrationTest {
                 .ttsSpeakerType(TtsSpeakerType.IDX.text())
                 .build();
 
-        backendId = testClient.post().uri("/api/v2/character/backend/" + characterUid)
+        backendId = testClient
+                .post()
+                .uri("/api/v2/character/backend/" + characterUid)
                 .accept(MediaType.TEXT_PLAIN)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .bodyValue(dto)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(String.class)
                 .returnResult()
                 .getResponseBody();
@@ -287,15 +303,17 @@ class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_update_character_backend() {
-        CharacterBackendDTO dto = CharacterBackendDTO.builder()
-                .longTermMemoryWindowSize(2)
-                .build();
+        CharacterBackendDTO dto =
+                CharacterBackendDTO.builder().longTermMemoryWindowSize(2).build();
 
-        testClient.put().uri("/api/v2/character/backend/" + backendId)
+        testClient
+                .put()
+                .uri("/api/v2/character/backend/" + backendId)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .bodyValue(dto)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(Boolean.class)
                 .isEqualTo(true);
     }
@@ -309,12 +327,15 @@ class OpenAiChatIT extends AbstractIntegrationTest {
                 .characterUid(characterUid)
                 .build();
 
-        testClient.post().uri("/api/v2/chat")
+        testClient
+                .post()
+                .uri("/api/v2/chat")
                 .accept(MediaType.TEXT_PLAIN)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(dto)
                 .exchange()
-                .expectStatus().isForbidden();
+                .expectStatus()
+                .isForbidden();
     }
 
     private void should_create_chat() {
@@ -326,12 +347,15 @@ class OpenAiChatIT extends AbstractIntegrationTest {
                 .characterUid(characterUid)
                 .build();
 
-        chatId = testClient.post().uri("/api/v2/chat")
+        chatId = testClient
+                .post()
+                .uri("/api/v2/chat")
                 .accept(MediaType.TEXT_PLAIN)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(dto)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(String.class)
                 .returnResult()
                 .getResponseBody();
@@ -340,19 +364,21 @@ class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_send_message() throws ExecutionException, InterruptedException, TimeoutException {
-        ChatContentDTO content = ChatContentDTO.from(TEXT, "My wife's name is Lily! Did you married? If you had a wife, what's her name?");
+        ChatContentDTO content = ChatContentDTO.from(
+                TEXT, "My wife's name is Lily! Did you married? If you had a wife, what's her name?");
 
-        ChatMessageDTO dto = ChatMessageDTO.builder()
-                .role("user")
-                .contents(List.of(content))
-                .build();
+        ChatMessageDTO dto =
+                ChatMessageDTO.builder().role("user").contents(List.of(content)).build();
 
-        LlmResultDTO result = testClient.post().uri("/api/v2/chat/send/" + chatId)
+        LlmResultDTO result = testClient
+                .post()
+                .uri("/api/v2/chat/send/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(dto)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(LlmResultDTO.class)
                 .returnResult()
                 .getResponseBody();
@@ -361,8 +387,8 @@ class OpenAiChatIT extends AbstractIntegrationTest {
         assertNotNull(result.getMessage());
         assertNotNull(result.getMessage().getMessageId());
         System.out.println(USER_NICKNAME + ": " + content.getContent());
-        System.out.println(CHARACTER_NICKNAME + ": " + result.getMessage().getContents().getFirst().getContent() +
-                " (" + result.getTokenUsage() + ")");
+        System.out.println(CHARACTER_NICKNAME + ": "
+                + result.getMessage().getContents().getFirst().getContent() + " (" + result.getTokenUsage() + ")");
 
         content.setContent("How about the weather today?");
 
@@ -370,12 +396,15 @@ class OpenAiChatIT extends AbstractIntegrationTest {
         CompletableFuture<String> futureAnswer = new CompletableFuture<>();
 
         System.out.println(USER_NICKNAME + ": " + content.getContent());
-        testClient.post().uri("/api/v2/chat/send/stream/" + chatId)
+        testClient
+                .post()
+                .uri("/api/v2/chat/send/stream/" + chatId)
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(dto)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .returnResult(LlmResultDTO.class)
                 .getResponseBody()
                 .doOnComplete(() -> futureAnswer.complete(answerBuilder.toString()))
@@ -383,7 +412,8 @@ class OpenAiChatIT extends AbstractIntegrationTest {
                     String text = event.getText();
                     if (text == null) {
                         // last event
-                        answerBuilder.append(" (")
+                        answerBuilder
+                                .append(" (")
                                 .append(event.getTokenUsage().toString())
                                 .append(")");
                         assertNotNull(event.getMessage());
@@ -398,11 +428,14 @@ class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_get_message_usage() {
-        MemoryUsageDTO usage = testClient.get().uri("/api/v2/chat/memory/usage/" + chatId)
+        MemoryUsageDTO usage = testClient
+                .get()
+                .uri("/api/v2/chat/memory/usage/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(MemoryUsageDTO.class)
                 .returnResult()
                 .getResponseBody();
@@ -415,52 +448,60 @@ class OpenAiChatIT extends AbstractIntegrationTest {
     private void should_failed_to_send_message_by_quota() {
         ChatContentDTO content = ChatContentDTO.from(TEXT, "Sorry, I forgot your name. what's it?");
 
-        ChatMessageDTO dto = ChatMessageDTO.builder()
-                .role("user")
-                .contents(List.of(content))
-                .build();
+        ChatMessageDTO dto =
+                ChatMessageDTO.builder().role("user").contents(List.of(content)).build();
 
-        testClient.post().uri("/api/v2/chat/send/" + chatId)
+        testClient
+                .post()
+                .uri("/api/v2/chat/send/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(dto)
                 .exchange()
-                .expectStatus().isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
+                .expectStatus()
+                .isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
 
-        testClient.post().uri("/api/v2/chat/send/stream/" + chatId)
+        testClient
+                .post()
+                .uri("/api/v2/chat/send/stream/" + chatId)
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(dto)
                 .exchange()
-                .expectStatus().isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
+                .expectStatus()
+                .isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
     }
 
     private void should_resend_message_with_specialized_api_key() {
         ChatUpdateDTO updateDto = ChatUpdateDTO.builder().build();
         updateDto.setApiKeyValue(apiKey());
 
-        testClient.put().uri("/api/v2/chat/" + chatId)
+        testClient
+                .put()
+                .uri("/api/v2/chat/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(updateDto)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(Boolean.class)
                 .isEqualTo(Boolean.TRUE);
 
         ChatContentDTO content = ChatContentDTO.from(TEXT, "Sorry, I forgot your name. what's it?");
 
-        ChatMessageDTO dto = ChatMessageDTO.builder()
-                .role("user")
-                .contents(List.of(content))
-                .build();
+        ChatMessageDTO dto =
+                ChatMessageDTO.builder().role("user").contents(List.of(content)).build();
 
-        LlmResultDTO result = testClient.post().uri("/api/v2/chat/send/" + chatId)
+        LlmResultDTO result = testClient
+                .post()
+                .uri("/api/v2/chat/send/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(dto)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(LlmResultDTO.class)
                 .returnResult()
                 .getResponseBody();
@@ -469,24 +510,25 @@ class OpenAiChatIT extends AbstractIntegrationTest {
         assertNotNull(result.getMessage());
         assertNotNull(result.getMessage().getMessageId());
         System.out.println(USER_NICKNAME + ": " + content.getContent());
-        System.out.println(CHARACTER_NICKNAME + ": " + result.getMessage().getContents().getFirst().getContent() +
-                " (" + result.getTokenUsage() + ")");
+        System.out.println(CHARACTER_NICKNAME + ": "
+                + result.getMessage().getContents().getFirst().getContent() + " (" + result.getTokenUsage() + ")");
     }
 
     private void should_send_message_without_long_term_memory() {
         ChatContentDTO content = ChatContentDTO.from(TEXT, "Do you remember my wife's name?");
 
-        ChatMessageDTO dto = ChatMessageDTO.builder()
-                .role("user")
-                .contents(List.of(content))
-                .build();
+        ChatMessageDTO dto =
+                ChatMessageDTO.builder().role("user").contents(List.of(content)).build();
 
-        LlmResultDTO result = testClient.post().uri("/api/v2/chat/send/" + chatId)
+        LlmResultDTO result = testClient
+                .post()
+                .uri("/api/v2/chat/send/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(dto)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(LlmResultDTO.class)
                 .returnResult()
                 .getResponseBody();
@@ -496,30 +538,32 @@ class OpenAiChatIT extends AbstractIntegrationTest {
         assertNotNull(result.getMessage().getMessageId());
         assertThat(result.getMessage().getContents()).isNotEmpty();
         System.out.println(USER_NICKNAME + ": " + content.getContent());
-        System.out.println(CHARACTER_NICKNAME + ": " + result.getMessage().getContents().getFirst().getContent() +
-                " (" + result.getTokenUsage() + ")");
+        System.out.println(CHARACTER_NICKNAME + ": "
+                + result.getMessage().getContents().getFirst().getContent() + " (" + result.getTokenUsage() + ")");
 
         assertFalse(result.getMessage().getContents().getFirst().getContent().contains("Lily"));
     }
 
-    private void should_send_message_without_long_term_memory_in_streaming_mode() throws ExecutionException, InterruptedException, TimeoutException {
+    private void should_send_message_without_long_term_memory_in_streaming_mode()
+            throws ExecutionException, InterruptedException, TimeoutException {
         ChatContentDTO content = ChatContentDTO.from(TEXT, "Do you remember my wife's name?");
 
-        ChatMessageDTO dto = ChatMessageDTO.builder()
-                .role("user")
-                .contents(List.of(content))
-                .build();
+        ChatMessageDTO dto =
+                ChatMessageDTO.builder().role("user").contents(List.of(content)).build();
 
         StringBuilder answerBuilder = new StringBuilder();
         CompletableFuture<String> futureAnswer = new CompletableFuture<>();
 
         System.out.println(USER_NICKNAME + ": " + content.getContent());
-        testClient.post().uri("/api/v2/chat/send/stream/" + chatId)
+        testClient
+                .post()
+                .uri("/api/v2/chat/send/stream/" + chatId)
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(dto)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .returnResult(LlmResultDTO.class)
                 .getResponseBody()
                 .doOnComplete(() -> futureAnswer.complete(answerBuilder.toString()))
@@ -527,7 +571,8 @@ class OpenAiChatIT extends AbstractIntegrationTest {
                     String text = event.getText();
                     if (text == null) {
                         // last event
-                        answerBuilder.append(" (")
+                        answerBuilder
+                                .append(" (")
                                 .append(event.getTokenUsage().toString())
                                 .append(")");
                         assertNotNull(event.getMessage());
@@ -546,21 +591,22 @@ class OpenAiChatIT extends AbstractIntegrationTest {
 
         ChatContentDTO content = ChatContentDTO.from(TEXT, "Do you remember my wife's name?");
 
-        ChatMessageDTO dto = ChatMessageDTO.builder()
-                .role("user")
-                .contents(List.of(content))
-                .build();
+        ChatMessageDTO dto =
+                ChatMessageDTO.builder().role("user").contents(List.of(content)).build();
 
         StringBuilder answerBuilder = new StringBuilder();
         CompletableFuture<String> futureAnswer = new CompletableFuture<>();
 
         System.out.println(USER_NICKNAME + ": " + content.getContent());
-        testClient.post().uri("/api/v2/chat/send/stream/" + chatId)
+        testClient
+                .post()
+                .uri("/api/v2/chat/send/stream/" + chatId)
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(dto)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .returnResult(LlmResultDTO.class)
                 .getResponseBody()
                 .doOnComplete(() -> futureAnswer.complete(answerBuilder.toString()))
@@ -568,7 +614,8 @@ class OpenAiChatIT extends AbstractIntegrationTest {
                     String text = event.getText();
                     if (text == null) {
                         // last event
-                        answerBuilder.append(" (")
+                        answerBuilder
+                                .append(" (")
                                 .append(event.getTokenUsage().toString())
                                 .append(")");
                         assertNotNull(event.getMessage());
@@ -583,14 +630,18 @@ class OpenAiChatIT extends AbstractIntegrationTest {
         assertTrue(answer.contains("Lily"));
     }
 
-    private void should_send_message_and_get_an_image() throws ExecutionException, InterruptedException, TimeoutException {
-        String url = testClient.post().uri("/api/v2/character/picture/" + characterUid)
+    private void should_send_message_and_get_an_image()
+            throws ExecutionException, InterruptedException, TimeoutException {
+        String url = testClient
+                .post()
+                .uri("/api/v2/character/picture/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
                 .bodyValue(bodyFrom("/freechat_light.png"))
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(String.class)
                 .returnResult()
                 .getResponseBody();
@@ -600,21 +651,22 @@ class OpenAiChatIT extends AbstractIntegrationTest {
 
         ChatContentDTO content = ChatContentDTO.from(TEXT, "Please show me your picture.");
 
-        ChatMessageDTO dto = ChatMessageDTO.builder()
-                .role("user")
-                .contents(List.of(content))
-                .build();
+        ChatMessageDTO dto =
+                ChatMessageDTO.builder().role("user").contents(List.of(content)).build();
 
         StringBuilder answerBuilder = new StringBuilder();
         CompletableFuture<String> futureAnswer = new CompletableFuture<>();
 
         System.out.println(USER_NICKNAME + ": " + content.getContent());
-        testClient.post().uri("/api/v2/chat/send/stream/" + chatId)
+        testClient
+                .post()
+                .uri("/api/v2/chat/send/stream/" + chatId)
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(dto)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .returnResult(LlmResultDTO.class)
                 .getResponseBody()
                 .doOnComplete(() -> futureAnswer.complete(answerBuilder.toString()))
@@ -622,7 +674,8 @@ class OpenAiChatIT extends AbstractIntegrationTest {
                     String text = event.getText();
                     if (text == null) {
                         // last event
-                        answerBuilder.append(" (")
+                        answerBuilder
+                                .append(" (")
                                 .append(event.getTokenUsage().toString())
                                 .append(")");
                         assertNotNull(event.getMessage());
@@ -638,12 +691,16 @@ class OpenAiChatIT extends AbstractIntegrationTest {
         assertThat(answer).contains("![img](" + homeUrl + "/s/" + shortToken);
     }
 
-    private void should_send_message_and_failed_to_get_an_image() throws ExecutionException, InterruptedException, TimeoutException {
-        Boolean success = testClient.delete().uri("/api/v2/character/picture/" + pictureKey)
+    private void should_send_message_and_failed_to_get_an_image()
+            throws ExecutionException, InterruptedException, TimeoutException {
+        Boolean success = testClient
+                .delete()
+                .uri("/api/v2/character/picture/" + pictureKey)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(Boolean.class)
                 .returnResult()
                 .getResponseBody();
@@ -652,21 +709,22 @@ class OpenAiChatIT extends AbstractIntegrationTest {
 
         ChatContentDTO content = ChatContentDTO.from(TEXT, "Please show me your picture again.");
 
-        ChatMessageDTO dto = ChatMessageDTO.builder()
-                .role("user")
-                .contents(List.of(content))
-                .build();
+        ChatMessageDTO dto =
+                ChatMessageDTO.builder().role("user").contents(List.of(content)).build();
 
         StringBuilder answerBuilder = new StringBuilder();
         CompletableFuture<String> futureAnswer = new CompletableFuture<>();
 
         System.out.println(USER_NICKNAME + ": " + content.getContent());
-        testClient.post().uri("/api/v2/chat/send/stream/" + chatId)
+        testClient
+                .post()
+                .uri("/api/v2/chat/send/stream/" + chatId)
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(dto)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .returnResult(LlmResultDTO.class)
                 .getResponseBody()
                 .doOnComplete(() -> futureAnswer.complete(answerBuilder.toString()))
@@ -674,7 +732,8 @@ class OpenAiChatIT extends AbstractIntegrationTest {
                     String text = event.getText();
                     if (text == null) {
                         // last event
-                        answerBuilder.append(" (")
+                        answerBuilder
+                                .append(" (")
                                 .append(event.getTokenUsage().toString())
                                 .append(")");
                         assertNotNull(event.getMessage());
@@ -690,19 +749,25 @@ class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_failed_to_list_messages() {
-        testClient.get().uri("/api/v2/chat/messages/" + chatId)
+        testClient
+                .get()
+                .uri("/api/v2/chat/messages/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .exchange()
-                .expectStatus().isForbidden();
+                .expectStatus()
+                .isForbidden();
     }
 
     private void should_list_messages() {
-        List<ChatMessageRecordDTO> messages = testClient.get().uri("/api/v2/chat/messages/" + chatId)
+        List<ChatMessageRecordDTO> messages = testClient
+                .get()
+                .uri("/api/v2/chat/messages/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBodyList(ChatMessageRecordDTO.class)
                 .returnResult()
                 .getResponseBody();
@@ -717,15 +782,18 @@ class OpenAiChatIT extends AbstractIntegrationTest {
         messages.stream()
                 .map(ChatMessageRecordDTO::getMessage)
                 .map(message -> {
-                    String content = CollectionUtils.isNotEmpty(message.getContents()) ?
-                            message.getContents().getFirst().getContent() : "<no content>";
+                    String content = CollectionUtils.isNotEmpty(message.getContents())
+                            ? message.getContents().getFirst().getContent()
+                            : "<no content>";
                     return "[" + message.getRole().toUpperCase() + "]: " + content;
                 })
                 .forEach(System.out::println);
     }
 
     private void should_not_allow_to_speak_message() {
-        testClient.get().uri("/api/v2/tts/speak/" + aiMessageId)
+        testClient
+                .get()
+                .uri("/api/v2/tts/speak/" + aiMessageId)
                 .accept(MediaType.valueOf("audio/*"))
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .exchange()
@@ -734,7 +802,9 @@ class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_not_found_message_to_speak() {
-        testClient.get().uri("/api/v2/tts/speak/" + (aiMessageId - 1))
+        testClient
+                .get()
+                .uri("/api/v2/tts/speak/" + (aiMessageId - 1))
                 .accept(MediaType.valueOf("audio/*"))
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
@@ -746,12 +816,16 @@ class OpenAiChatIT extends AbstractIntegrationTest {
         CompletableFuture<byte[]> futureAnswer = new CompletableFuture<>();
 
         try (ByteArrayOutputStream audioDataStream = new ByteArrayOutputStream()) {
-            testClient.get().uri("/api/v2/tts/speak/" + aiMessageId)
+            testClient
+                    .get()
+                    .uri("/api/v2/tts/speak/" + aiMessageId)
                     .accept(MediaType.valueOf("audio/*"))
                     .header(AUTHORIZATION, "Bearer " + userApiKey)
                     .exchange()
-                    .expectStatus().isOk()
-                    .expectHeader().contentTypeCompatibleWith(MediaType.valueOf("audio/*"))
+                    .expectStatus()
+                    .isOk()
+                    .expectHeader()
+                    .contentTypeCompatibleWith(MediaType.valueOf("audio/*"))
                     .returnResult(byte[].class)
                     .getResponseBody()
                     .doOnComplete(() -> futureAnswer.complete(audioDataStream.toByteArray()))
@@ -769,16 +843,21 @@ class OpenAiChatIT extends AbstractIntegrationTest {
         assertThat(tika.detect(audioData)).isEqualTo("audio/mpeg");
     }
 
-    private void should_speak_message_by_cached_voice() throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    private void should_speak_message_by_cached_voice()
+            throws IOException, ExecutionException, InterruptedException, TimeoutException {
         CompletableFuture<byte[]> futureAnswer = new CompletableFuture<>();
 
         try (ByteArrayOutputStream audioDataStream = new ByteArrayOutputStream()) {
-            testClient.get().uri("/api/v2/tts/speak/" + aiMessageId)
+            testClient
+                    .get()
+                    .uri("/api/v2/tts/speak/" + aiMessageId)
                     .accept(MediaType.valueOf("audio/*"))
                     .header(AUTHORIZATION, "Bearer " + userApiKey)
                     .exchange()
-                    .expectStatus().isOk()
-                    .expectHeader().contentTypeCompatibleWith(MediaType.valueOf("audio/*"))
+                    .expectStatus()
+                    .isOk()
+                    .expectHeader()
+                    .contentTypeCompatibleWith(MediaType.valueOf("audio/*"))
                     .returnResult(byte[].class)
                     .getResponseBody()
                     .doOnComplete(() -> futureAnswer.complete(audioDataStream.toByteArray()))
@@ -796,45 +875,58 @@ class OpenAiChatIT extends AbstractIntegrationTest {
         assertThat(tika.detect(audioData)).isEqualTo("audio/mpeg");
     }
 
-    private void should_speak_message_by_custom_voice() throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    private void should_speak_message_by_custom_voice()
+            throws IOException, ExecutionException, InterruptedException, TimeoutException {
         // create voice
-        String wav = testClient.post().uri("/api/v2/character/voice/" + backendId)
+        String wav = testClient
+                .post()
+                .uri("/api/v2/character/voice/" + backendId)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
                 .bodyValue(bodyFrom("/voice.mp3"))
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(String.class)
                 .returnResult()
                 .getResponseBody();
 
         assertTrue(StringUtils.isNotBlank(wav));
 
-        testClient.post().uri("/api/v2/character/voice/" + backendId)
+        testClient
+                .post()
+                .uri("/api/v2/character/voice/" + backendId)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
                 .bodyValue(bodyFrom("/voice.mp3"))
                 .exchange()
-                .expectStatus().isForbidden();
+                .expectStatus()
+                .isForbidden();
 
-        List<String> wavs = testClient.get().uri("/api/v2/character/voices/" + backendId)
+        List<String> wavs = testClient
+                .get()
+                .uri("/api/v2/character/voices/" + backendId)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(new ParameterizedTypeReference<List<String>>() {})
                 .returnResult()
                 .getResponseBody();
 
         assertThat(wavs).hasSize(1);
 
-        testClient.get().uri("/api/v2/character/voices/" + backendId)
+        testClient
+                .get()
+                .uri("/api/v2/character/voices/" + backendId)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus().isForbidden();
+                .expectStatus()
+                .isForbidden();
 
         // test voice
         CharacterBackendDTO dto = CharacterBackendDTO.builder()
@@ -842,23 +934,30 @@ class OpenAiChatIT extends AbstractIntegrationTest {
                 .ttsSpeakerWav(wav)
                 .build();
 
-        testClient.put().uri("/api/v2/character/backend/" + backendId)
+        testClient
+                .put()
+                .uri("/api/v2/character/backend/" + backendId)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .bodyValue(dto)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(Boolean.class)
                 .isEqualTo(true);
 
         CompletableFuture<byte[]> futureAnswer = new CompletableFuture<>();
 
         try (ByteArrayOutputStream audioDataStream = new ByteArrayOutputStream()) {
-            testClient.get().uri("/api/v2/tts/speak/" + aiMessageId)
+            testClient
+                    .get()
+                    .uri("/api/v2/tts/speak/" + aiMessageId)
                     .accept(MediaType.valueOf("audio/*"))
                     .header(AUTHORIZATION, "Bearer " + userApiKey)
                     .exchange()
-                    .expectStatus().isOk()
-                    .expectHeader().contentTypeCompatibleWith(MediaType.valueOf("audio/*"))
+                    .expectStatus()
+                    .isOk()
+                    .expectHeader()
+                    .contentTypeCompatibleWith(MediaType.valueOf("audio/*"))
                     .returnResult(byte[].class)
                     .getResponseBody()
                     .doOnComplete(() -> futureAnswer.complete(audioDataStream.toByteArray()))
@@ -876,17 +975,23 @@ class OpenAiChatIT extends AbstractIntegrationTest {
         assertThat(tika.detect(audioData)).isEqualTo("audio/mpeg");
 
         // delete voice
-        testClient.delete().uri("/api/v2/character/voice/" + backendId + "/" + wav)
+        testClient
+                .delete()
+                .uri("/api/v2/character/voice/" + backendId + "/" + wav)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus().isForbidden();
+                .expectStatus()
+                .isForbidden();
 
-        Boolean success = testClient.delete().uri("/api/v2/character/voice/" + backendId + "/" + wav)
+        Boolean success = testClient
+                .delete()
+                .uri("/api/v2/character/voice/" + backendId + "/" + wav)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(Boolean.class)
                 .returnResult()
                 .getResponseBody();
@@ -895,17 +1000,22 @@ class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_rollback_messages() {
-        testClient.post().uri("/api/v2/chat/messages/rollback/" + chatId + "/2")
+        testClient
+                .post()
+                .uri("/api/v2/chat/messages/rollback/" + chatId + "/2")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBodyList(Long.class)
                 .hasSize(2);
     }
 
     private void should_failed_to_send_assistant() {
-        testClient.get().uri("/api/v2/chat/send/assistant/" + chatId + "/" + characterUid)
+        testClient
+                .get()
+                .uri("/api/v2/chat/send/assistant/" + chatId + "/" + characterUid)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
@@ -917,11 +1027,14 @@ class OpenAiChatIT extends AbstractIntegrationTest {
         TestCharacterUtils.prioritizeCharacter(characterUid);
         waitAWhile();
 
-        LlmResultDTO result = testClient.get().uri("/api/v2/chat/send/assistant/" + chatId + "/" + characterUid)
+        LlmResultDTO result = testClient
+                .get()
+                .uri("/api/v2/chat/send/assistant/" + chatId + "/" + characterUid)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(LlmResultDTO.class)
                 .returnResult()
                 .getResponseBody();
@@ -929,19 +1042,23 @@ class OpenAiChatIT extends AbstractIntegrationTest {
         assertNotNull(result);
         assertNotNull(result.getMessage());
         assertNull(result.getMessage().getMessageId());
-        System.out.println(CHARACTER_NICKNAME + " (Assistant): " + result.getMessage().getContents().getFirst().getContent() +
-                " (" + result.getTokenUsage() + ")");
+        System.out.println(CHARACTER_NICKNAME + " (Assistant): "
+                + result.getMessage().getContents().getFirst().getContent() + " (" + result.getTokenUsage() + ")");
     }
 
-    private void should_send_assistant_in_streaming_mode() throws ExecutionException, InterruptedException, TimeoutException {
+    private void should_send_assistant_in_streaming_mode()
+            throws ExecutionException, InterruptedException, TimeoutException {
         StringBuilder answerBuilder = new StringBuilder();
         CompletableFuture<String> futureAnswer = new CompletableFuture<>();
 
-        testClient.get().uri("/api/v2/chat/send/stream/assistant/" + chatId + "/" + characterUid)
+        testClient
+                .get()
+                .uri("/api/v2/chat/send/stream/assistant/" + chatId + "/" + characterUid)
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .returnResult(LlmResultDTO.class)
                 .getResponseBody()
                 .doOnComplete(() -> futureAnswer.complete(answerBuilder.toString()))
@@ -949,7 +1066,8 @@ class OpenAiChatIT extends AbstractIntegrationTest {
                     String text = event.getText();
                     if (text == null) {
                         // last event
-                        answerBuilder.append(" (")
+                        answerBuilder
+                                .append(" (")
                                 .append(event.getTokenUsage().toString())
                                 .append(")");
                         assertNotNull(event.getMessage());
@@ -964,19 +1082,25 @@ class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_failed_to_delete_chat() {
-        testClient.delete().uri("/api/v2/chat/" + chatId)
+        testClient
+                .delete()
+                .uri("/api/v2/chat/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .exchange()
-                .expectStatus().isForbidden();
+                .expectStatus()
+                .isForbidden();
     }
 
     private void should_delete_chat() {
-        Boolean succeed = testClient.delete().uri("/api/v2/chat/" + chatId)
+        Boolean succeed = testClient
+                .delete()
+                .uri("/api/v2/chat/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(Boolean.class)
                 .returnResult()
                 .getResponseBody();
@@ -985,13 +1109,15 @@ class OpenAiChatIT extends AbstractIntegrationTest {
         assertTrue(succeed);
     }
 
-
     private void should_delete_character_backend() {
-        Boolean succeed = testClient.delete().uri("/api/v2/character/backend/" + backendId)
+        Boolean succeed = testClient
+                .delete()
+                .uri("/api/v2/character/backend/" + backendId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(Boolean.class)
                 .returnResult()
                 .getResponseBody();
@@ -1001,11 +1127,14 @@ class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_delete_character() {
-        List<Long> ids = testClient.delete().uri("/api/v2/character/uid/" + characterUid)
+        List<Long> ids = testClient
+                .delete()
+                .uri("/api/v2/character/uid/" + characterUid)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBodyList(Long.class)
                 .returnResult()
                 .getResponseBody();
@@ -1014,11 +1143,14 @@ class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_delete_prompt_task() {
-        Boolean succeed = testClient.delete().uri("/api/v2/prompt/task/" + promptTaskId)
+        Boolean succeed = testClient
+                .delete()
+                .uri("/api/v2/prompt/task/" + promptTaskId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(Boolean.class)
                 .returnResult()
                 .getResponseBody();
@@ -1028,11 +1160,14 @@ class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_delete_prompt() {
-        Boolean succeed = testClient.delete().uri("/api/v2/prompt/" + promptId)
+        Boolean succeed = testClient
+                .delete()
+                .uri("/api/v2/prompt/" + promptId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(Boolean.class)
                 .returnResult()
                 .getResponseBody();

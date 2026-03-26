@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 public enum AgentFormat {
     LANGFLOW,
     UNKNOWN;
+
     public static AgentFormat of(String text) {
         if (StringUtils.isBlank(text)) {
             return UNKNOWN;

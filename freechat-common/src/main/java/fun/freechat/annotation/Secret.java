@@ -8,5 +8,4 @@ import java.lang.annotation.Target;
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @SuppressWarnings("unused")
-public @interface Secret {
-}
+public @interface Secret {}

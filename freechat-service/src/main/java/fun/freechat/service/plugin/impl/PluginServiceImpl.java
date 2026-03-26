@@ -1,5 +1,7 @@
 package fun.freechat.service.plugin.impl;
 
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
+
 import fun.freechat.mapper.*;
 import fun.freechat.model.AiModel;
 import fun.freechat.model.PluginInfo;
@@ -16,6 +18,7 @@ import fun.freechat.service.util.InfoUtils;
 import fun.freechat.service.util.SortSpecificationWrapper;
 import fun.freechat.util.HttpUtils;
 import fun.freechat.util.IdUtils;
+import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -33,10 +36,6 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
-
 @Service
 @Slf4j
 @SuppressWarnings({"unused", "rawtypes"})
@@ -46,27 +45,34 @@ public class PluginServiceImpl implements PluginService {
 
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
+
     @Autowired
     private PluginInfoMapper pluginInfoMapper;
+
     @Autowired
     private TagMapper tagMapper;
+
     @Autowired
     private AiModelMapper aiModelMapper;
+
     @Autowired
     private PluginFetchService fetchService;
+
     @Autowired
     private OrgService orgService;
+
     @Autowired
     private InteractiveStatsMapper interactiveStatsMapper;
+
     @Autowired
     private InteractiveStatsScoreDetailsMapper interactiveStatsScoreDetailsMapper;
 
     private QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder wrapQueryExpression(
             QueryExpressionDSL<SelectModel> c, String currentUserId) {
-        return c.where(Info.visibility,
+        return c.where(
+                Info.visibility,
                 isIn(Visibility.PUBLIC.text(), Visibility.PUBLIC_ORG.text()),
-                or(Info.visibility, isEqualTo(Visibility.PRIVATE.text()),
-                        and(Info.userId, isEqualTo(currentUserId))));
+                or(Info.visibility, isEqualTo(Visibility.PRIVATE.text()), and(Info.userId, isEqualTo(currentUserId))));
     }
 
     private boolean filterVisibility(PluginInfo info, User user) {
@@ -136,16 +142,16 @@ public class PluginServiceImpl implements PluginService {
         if (info == null) {
             return null;
         }
-        List<String> tags = tagMapper.select(c ->
-                        c.where(TagDynamicSqlSupport.referType, isEqualTo(InfoType.PLUGIN.text()))
-                                .and(TagDynamicSqlSupport.referId, isEqualTo(info.getPluginUid())))
+        List<String> tags = tagMapper
+                .select(c -> c.where(TagDynamicSqlSupport.referType, isEqualTo(InfoType.PLUGIN.text()))
+                        .and(TagDynamicSqlSupport.referId, isEqualTo(info.getPluginUid())))
                 .stream()
                 .map(Tag::getContent)
                 .distinct()
                 .toList();
-        List<String> aiModels = aiModelMapper.select(c ->
-                        c.where(AiModelDynamicSqlSupport.referType, isEqualTo(InfoType.PLUGIN.text()))
-                                .and(AiModelDynamicSqlSupport.referId, isEqualTo(info.getPluginUid())))
+        List<String> aiModels = aiModelMapper
+                .select(c -> c.where(AiModelDynamicSqlSupport.referType, isEqualTo(InfoType.PLUGIN.text()))
+                        .and(AiModelDynamicSqlSupport.referId, isEqualTo(info.getPluginUid())))
                 .stream()
                 .map(AiModel::getModelId)
                 .distinct()
@@ -168,9 +174,7 @@ public class PluginServiceImpl implements PluginService {
     private void doCreate(Triple<PluginInfo, List<String>, List<String>> infoTriple) {
         PluginInfo info = infoTriple.getLeft();
         Date now = new Date();
-        int rows = pluginInfoMapper.insertSelective(info
-                .withGmtCreate(now)
-                .withGmtModified(now));
+        int rows = pluginInfoMapper.insertSelective(info.withGmtCreate(now).withGmtModified(now));
         if (rows <= 0) {
             throw new RuntimeException("Insert plugin " + info.getName() + " failed!");
         }
@@ -217,16 +221,14 @@ public class PluginServiceImpl implements PluginService {
         var table = fields.from(Info.table, "p");
         List<String> tags = InfoUtils.trimListElements(query.getWhere().getTags());
         if (CollectionUtils.isNotEmpty(tags)) {
-            table.leftJoin(TagDynamicSqlSupport.tag, "t")
-                    .on(Info.pluginUid, equalTo(TagDynamicSqlSupport.referId));
-
+            table.leftJoin(TagDynamicSqlSupport.tag, "t").on(Info.pluginUid, equalTo(TagDynamicSqlSupport.referId));
         }
         List<String> modelIds = InfoUtils.trimListElements(query.getWhere().getAiModels());
         if (CollectionUtils.isNotEmpty(modelIds)) {
             table.leftJoin(AiModelDynamicSqlSupport.aiModel, "m")
                     .on(Info.pluginUid, equalTo(AiModelDynamicSqlSupport.referId));
         }
-        List<String> orderByStats =  new LinkedList<>(InfoUtils.trimListElements(query.getOrderBy()));
+        List<String> orderByStats = new LinkedList<>(InfoUtils.trimListElements(query.getOrderBy()));
         orderByStats.retainAll(StatsType.fieldNames());
         if (!orderByStats.isEmpty()) {
             table.leftJoin(InteractiveStatsDynamicSqlSupport.interactiveStats, "i")
@@ -239,11 +241,12 @@ public class PluginServiceImpl implements PluginService {
         String userIdStr = query.getWhere().getUserId();
         if (StringUtils.isBlank(visibilityStr)) {
             if (StringUtils.isBlank(userIdStr) || userIdStr.equals(user.getUserId())) {
-                conditions.and(Info.visibility, isNotEqualTo(Visibility.HIDDEN.text()))
+                conditions
+                        .and(Info.visibility, isNotEqualTo(Visibility.HIDDEN.text()))
                         .and(Info.userId, isEqualTo(user.getUserId()));
             } else {
-                conditions.and(Info.visibility,
-                                isIn(Visibility.PUBLIC.text(), Visibility.PUBLIC_ORG.text()))
+                conditions
+                        .and(Info.visibility, isIn(Visibility.PUBLIC.text(), Visibility.PUBLIC_ORG.text()))
                         .and(Info.userId, isEqualTo(userIdStr));
             }
         } else {
@@ -268,13 +271,18 @@ public class PluginServiceImpl implements PluginService {
             conditions.and(Info.apiFormat, isEqualTo(apiFormat.text()));
         }
         // name
-        conditions.and(Info.name,
-                isLike(query.getWhere().getName()).filter(StringUtils::isNotBlank).map(s -> s + "%"));
+        conditions.and(
+                Info.name,
+                isLike(query.getWhere().getName())
+                        .filter(StringUtils::isNotBlank)
+                        .map(s -> s + "%"));
         // text
         String commonText = query.getWhere().getText();
         if (StringUtils.isNotBlank(commonText)) {
             var commonTextCondition = isLike(commonText).map(s -> "%" + s + "%");
-            conditions.and(Info.name, commonTextCondition,
+            conditions.and(
+                    Info.name,
+                    commonTextCondition,
                     or(Info.provider, commonTextCondition),
                     or(Info.manifestInfo, commonTextCondition));
         }
@@ -298,28 +306,22 @@ public class PluginServiceImpl implements PluginService {
             if (orderByInfo.length < 2 || !"asc".equalsIgnoreCase(orderByInfo[1])) {
                 orderByField = orderByField.descending();
             }
-            orderByFields.add(SortSpecificationWrapper.of(
-                    orderByStats.contains(orderBy) ? "i" : "p", orderByField));
+            orderByFields.add(SortSpecificationWrapper.of(orderByStats.contains(orderBy) ? "i" : "p", orderByField));
         }
         if (CollectionUtils.isNotEmpty(orderByFields)) {
             conditions.orderBy(orderByFields);
         }
 
         // limits
-        Optional.ofNullable(query.getLimit())
-                .filter(limit -> limit > 0)
-                .ifPresent(conditions::limit);
-        Optional.ofNullable(query.getOffset())
-                .filter(offset -> offset > 0)
-                .ifPresent(conditions::offset);
+        Optional.ofNullable(query.getLimit()).filter(limit -> limit > 0).ifPresent(conditions::limit);
+        Optional.ofNullable(query.getOffset()).filter(offset -> offset > 0).ifPresent(conditions::offset);
 
         return conditions.build().render(RenderingStrategies.MYBATIS3);
     }
 
     private List<Triple<PluginInfo, List<String>, List<String>>> doSearch(
             Query query, User user, QueryExpressionDSL.FromGatherer<SelectModel> fields) {
-        return pluginInfoMapper.selectMany(getSelectStatement(query, user, fields))
-                .stream()
+        return pluginInfoMapper.selectMany(getSelectStatement(query, user, fields)).stream()
                 .filter(info -> filterVisibility(info, user))
                 .peek(this::fetchInfo)
                 .map(this::toInfoTriple)
@@ -330,27 +332,27 @@ public class PluginServiceImpl implements PluginService {
 
     @Override
     public List<Triple<PluginInfo, List<String>, List<String>>> search(Query query, User user) {
-                /*
-select distinct p.user_id, p.plugin_id, p.visibility... \
-  from plugin_info p \
-  left join tag t on p.plugin_id = t.refer_id \
-  left join ai_model m on p.plugin_id = m.refer_id \
-  where t.refer_type = 'plugin' and m.refer_type= 'plugin' \
-  and ((p.visibility = 'public' and p.user_id = '{userId}') or p.user_id = '{me}') \
-  and p.manifest_format = '{manifestFormat}' \
-  and p.api_format = '{apiFormat}' \
-  and t.content in '{tags}' \
-  and m.model_id in '{modelIds}' \
-  and p.name like '{name}%' \
-  and p.provider like '{provider}%' \
-  and (p.name like '%{text}%' or \
-    p.provider like '%{text}%' or \
-    p.manifest_info like '%{text}%' \
-  ) \
-  order by p.{orderBy[0]}, p.{orderBy[1]}... \
-  limit {limit} offset {offset} \
-;
-         */
+        /*
+        select distinct p.user_id, p.plugin_id, p.visibility... \
+          from plugin_info p \
+          left join tag t on p.plugin_id = t.refer_id \
+          left join ai_model m on p.plugin_id = m.refer_id \
+          where t.refer_type = 'plugin' and m.refer_type= 'plugin' \
+          and ((p.visibility = 'public' and p.user_id = '{userId}') or p.user_id = '{me}') \
+          and p.manifest_format = '{manifestFormat}' \
+          and p.api_format = '{apiFormat}' \
+          and t.content in '{tags}' \
+          and m.model_id in '{modelIds}' \
+          and p.name like '{name}%' \
+          and p.provider like '{provider}%' \
+          and (p.name like '%{text}%' or \
+            p.provider like '%{text}%' or \
+            p.manifest_info like '%{text}%' \
+          ) \
+          order by p.{orderBy[0]}, p.{orderBy[1]}... \
+          limit {limit} offset {offset} \
+        ;
+                 */
         List<BasicColumn> columns = new LinkedList<>(Info.summaryColumns());
         if (CollectionUtils.isNotEmpty(query.getOrderBy())) {
             for (String orderBy : query.getOrderBy()) {
@@ -444,8 +446,9 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
                 }
             }
             if (CollectionUtils.isNotEmpty(infoTriple.getRight())) {
-                aiModelMapper.delete(c -> c.where(AiModelDynamicSqlSupport.referId, isEqualTo(pluginInfo.getPluginUid()))
-                        .and(AiModelDynamicSqlSupport.referType, isEqualTo(InfoType.PLUGIN.text())));
+                aiModelMapper.delete(
+                        c -> c.where(AiModelDynamicSqlSupport.referId, isEqualTo(pluginInfo.getPluginUid()))
+                                .and(AiModelDynamicSqlSupport.referType, isEqualTo(InfoType.PLUGIN.text())));
                 Set<String> aiModelSet = new HashSet<>(infoTriple.getRight());
                 for (String aiModelId : aiModelSet) {
                     rows = aiModelMapper.insert(new AiModel()
@@ -476,17 +479,15 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
         if (pluginId == null) {
             return false;
         }
-        PluginInfo pluginInfo = pluginInfoMapper.selectOne(c ->
-                        c.where(Info.userId, isEqualTo(user.getUserId()))
-                                .and(Info.pluginId, isEqualTo(pluginId)))
+        PluginInfo pluginInfo = pluginInfoMapper
+                .selectOne(
+                        c -> c.where(Info.userId, isEqualTo(user.getUserId())).and(Info.pluginId, isEqualTo(pluginId)))
                 .orElse(null);
-        if (pluginInfo == null ||
-                Visibility.HIDDEN.text().equals(pluginInfo.getVisibility())) {
+        if (pluginInfo == null || Visibility.HIDDEN.text().equals(pluginInfo.getVisibility())) {
             return false;
         }
         Date now = new Date();
-        pluginInfo.withGmtModified(new Date())
-                .withVisibility(Visibility.HIDDEN.text());
+        pluginInfo.withGmtModified(new Date()).withVisibility(Visibility.HIDDEN.text());
         int rows = pluginInfoMapper.updateByPrimaryKeySelective(pluginInfo);
         return rows > 0;
     }
@@ -497,8 +498,8 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
         if (pluginId == null) {
             return false;
         }
-        int rows = pluginInfoMapper.delete(c -> c.where(Info.pluginId, isEqualTo(pluginId))
-                .and(Info.userId, isEqualTo(user.getUserId())));
+        int rows = pluginInfoMapper.delete(
+                c -> c.where(Info.pluginId, isEqualTo(pluginId)).and(Info.userId, isEqualTo(user.getUserId())));
         return rows > 0;
     }
 
@@ -513,7 +514,8 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
                 }
             }
             session.commit();
-            CacheUtils.longPeriodCacheEvict(deletedIds.stream().map(id -> CACHE_KEY_PREFIX + id).toList());
+            CacheUtils.longPeriodCacheEvict(
+                    deletedIds.stream().map(id -> CACHE_KEY_PREFIX + id).toList());
         } catch (Exception e) {
             log.error("Failed to delete plugins", e);
             deletedIds.clear();
@@ -526,14 +528,14 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
 
     @Override
     public Triple<PluginInfo, List<String>, List<String>> summary(Long pluginId, User user) {
-        var fields = select(Info.summaryColumns())
-                .from(Info.table);
+        var fields = select(Info.summaryColumns()).from(Info.table);
 
         var statement = wrapQueryExpression(fields, user.getUserId())
                 .and(Info.pluginId, isEqualTo(pluginId))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        return pluginInfoMapper.selectOne(statement)
+        return pluginInfoMapper
+                .selectOne(statement)
                 .filter(info -> filterVisibility(info, user))
                 .map(this::fetchInfo)
                 .map(this::toInfoTriple)
@@ -542,15 +544,13 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
 
     @Override
     public List<Triple<PluginInfo, List<String>, List<String>>> summary(Collection<Long> pluginIds, User user) {
-        var fields = select(Info.summaryColumns())
-                .from(Info.table);
+        var fields = select(Info.summaryColumns()).from(Info.table);
 
         var statement = wrapQueryExpression(fields, user.getUserId())
                 .and(Info.pluginId, isIn(pluginIds))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        return pluginInfoMapper.selectMany(statement)
-                .stream()
+        return pluginInfoMapper.selectMany(statement).stream()
                 .filter(info -> filterVisibility(info, user))
                 .map(this::fetchInfo)
                 .map(this::toInfoTriple)
@@ -560,8 +560,8 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
     @Override
     @LongPeriodCache(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public Triple<PluginInfo, List<String>, List<String>> details(Long pluginId, User user) {
-        return pluginInfoMapper.selectOne(c -> wrapQueryExpression(c, user.getUserId())
-                        .and(Info.pluginId, isEqualTo(pluginId)))
+        return pluginInfoMapper
+                .selectOne(c -> wrapQueryExpression(c, user.getUserId()).and(Info.pluginId, isEqualTo(pluginId)))
                 .filter(info -> filterVisibility(info, user))
                 .map(this::fetchInfo)
                 .map(this::toInfoTriple)
@@ -570,8 +570,8 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
 
     @Override
     public List<Triple<PluginInfo, List<String>, List<String>>> details(Collection<Long> pluginIds, User user) {
-        return pluginInfoMapper.select(c -> wrapQueryExpression(c, user.getUserId())
-                        .and(Info.pluginId, isIn(pluginIds)))
+        return pluginInfoMapper
+                .select(c -> wrapQueryExpression(c, user.getUserId()).and(Info.pluginId, isIn(pluginIds)))
                 .stream()
                 .filter(info -> filterVisibility(info, user))
                 .peek(this::fetchInfo)
@@ -591,7 +591,10 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        return pluginInfoMapper.selectOne(statement).map(PluginInfo::getPluginId).orElse(null);
+        return pluginInfoMapper
+                .selectOne(statement)
+                .map(PluginInfo::getPluginId)
+                .orElse(null);
     }
 
     @Override
@@ -626,7 +629,10 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        return pluginInfoMapper.selectOne(statement).map(PluginInfo::getPluginUid).orElse(null);
+        return pluginInfoMapper
+                .selectOne(statement)
+                .map(PluginInfo::getPluginUid)
+                .orElse(null);
     }
 
     private static class Info {
@@ -656,8 +662,7 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
                     Info.name,
                     Info.provider,
                     Info.manifestFormat,
-                    Info.apiFormat
-            );
+                    Info.apiFormat);
         }
     }
 }

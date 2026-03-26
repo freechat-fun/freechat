@@ -1,12 +1,11 @@
 package fun.freechat.util.graph;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.IteratorUtils;
-
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IteratorUtils;
 
 /**
  * Directed Graph, uses adjacency list storage structure, refer to:
@@ -52,10 +51,11 @@ public class DiGraph<T> implements Graph<T> {
             // 2. 如果有前继顶点，找到其中的最大数值（即位于最长路径中的前继顶点的数值），增加 1 作为新值
 
             return predecessors.stream()
-                    .filter(v -> !excludeVertexes.contains(v))
-                    .mapToInt(Vertex::getValue)
-                    .max()
-                    .orElse(-1) + 1;
+                            .filter(v -> !excludeVertexes.contains(v))
+                            .mapToInt(Vertex::getValue)
+                            .max()
+                            .orElse(-1)
+                    + 1;
         }
 
         public boolean updateValueIfNecessary() {
@@ -124,12 +124,11 @@ public class DiGraph<T> implements Graph<T> {
 
         @Override
         public String toString() {
-            return "Vertex{" +
-                    "successors=" + successors +
-                    ", predecessors=" + predecessors +
-                    ", o=" + o +
-                    ", v=" + v +
-                    '}';
+            return "Vertex{" + "successors="
+                    + successors + ", predecessors="
+                    + predecessors + ", o="
+                    + o + ", v="
+                    + v + '}';
         }
     }
 
@@ -139,8 +138,7 @@ public class DiGraph<T> implements Graph<T> {
     private final HashMap<T, Vertex<T>> indexMap = new HashMap<>();
 
     private List<Vertex<T>> findVertexesInCycle(Vertex<T> entryVertex) {
-        return entryVertex.getSuccessors()
-                .stream()
+        return entryVertex.getSuccessors().stream()
                 .filter(successor -> canReach(successor, entryVertex, new LinkedList<>()))
                 .toList();
     }
@@ -192,8 +190,7 @@ public class DiGraph<T> implements Graph<T> {
         }
     }
 
-    private boolean canReach(Vertex<T> sourceVertex, Vertex<T> sinkVertex,
-                             List<Vertex<T>> touchedVertexList) {
+    private boolean canReach(Vertex<T> sourceVertex, Vertex<T> sinkVertex, List<Vertex<T>> touchedVertexList) {
         // 如果已经遍历过这个顶点，说明已经成环，不再继续遍历
         if (touchedVertexList.contains(sourceVertex)) {
             return false;
@@ -220,8 +217,7 @@ public class DiGraph<T> implements Graph<T> {
 
     private SortedSet<T> subSet(Vertex<T> fromVertex, Vertex<T> toVertex) {
         return vertexList.stream()
-                .filter(v -> v.getValue() >= fromVertex.getValue() &&
-                        v.getValue() < toVertex.getValue())
+                .filter(v -> v.getValue() >= fromVertex.getValue() && v.getValue() < toVertex.getValue())
                 .map(Vertex::getData)
                 .collect(Collectors.toCollection(() -> new TreeSet<>(comparator())));
     }
@@ -356,9 +352,7 @@ public class DiGraph<T> implements Graph<T> {
     public Comparator<? super T> comparator() {
         // vertexList 已有序
         return Comparator.comparingInt(o ->
-                Optional.ofNullable(indexMap.get(o))
-                        .map(vertexList::indexOf)
-                        .orElse(0));
+                Optional.ofNullable(indexMap.get(o)).map(vertexList::indexOf).orElse(0));
     }
 
     @Override
@@ -445,7 +439,7 @@ public class DiGraph<T> implements Graph<T> {
         if (vertex != null) {
             // 断开前继顶点与本顶点的边
             List<Vertex<T>> predecessors = vertex.getPredecessors();
-            for (Iterator<Vertex<T>> it = predecessors.iterator(); it.hasNext();) {
+            for (Iterator<Vertex<T>> it = predecessors.iterator(); it.hasNext(); ) {
                 it.next().removeSuccessor(vertex);
                 it.remove();
             }
@@ -456,7 +450,7 @@ public class DiGraph<T> implements Graph<T> {
 
             // 子图顶点值都已经更新，可以安全断开连接
             List<Vertex<T>> successors = vertex.getSuccessors();
-            for (Iterator<Vertex<T>> it = successors.iterator(); it.hasNext();) {
+            for (Iterator<Vertex<T>> it = successors.iterator(); it.hasNext(); ) {
                 it.next().removePredecessor(vertex);
                 it.remove();
             }
@@ -484,9 +478,7 @@ public class DiGraph<T> implements Graph<T> {
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        List<T> keys = indexMap.keySet().stream()
-                .filter(o -> !c.contains(o))
-                .toList();
+        List<T> keys = indexMap.keySet().stream().filter(o -> !c.contains(o)).toList();
 
         //noinspection SlowAbstractSetRemoveAll
         return removeAll(keys);

@@ -1,23 +1,22 @@
 package fun.freechat.service.rag.impl;
 
+import static fun.freechat.service.util.CacheUtils.IN_PROCESS_LONG_CACHE_MANAGER;
+import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
+
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
 import fun.freechat.service.common.FileStore;
 import fun.freechat.service.enums.EmbeddingStoreType;
 import fun.freechat.service.rag.EmbeddingStoreService;
 import fun.freechat.service.util.StoreUtils;
+import java.io.File;
+import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
-
-import java.io.File;
-import java.io.IOException;
-
-import static fun.freechat.service.util.CacheUtils.IN_PROCESS_LONG_CACHE_MANAGER;
-import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
 
 @Service("inMemoryEmbeddingStoreService")
 @Slf4j
@@ -29,6 +28,7 @@ public class InMemoryEmbeddingStoreServiceImpl<TextSegment> implements Embedding
     @Autowired
     @Qualifier(IN_PROCESS_LONG_CACHE_MANAGER)
     private CacheManager cacheManager;
+
     private Cache cache;
 
     private String memoryDirectory(EmbeddingStoreType storeType) {

@@ -7,6 +7,7 @@ public enum GenderType {
     MALE,
     FEMALE,
     OTHER;
+
     public static GenderType of(String text) {
         if (StringUtils.isBlank(text)) {
             return OTHER;

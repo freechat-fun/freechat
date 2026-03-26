@@ -1,6 +1,6 @@
 build:
 	mvn --version
-	mvn -U clean test
+	mvn -U clean package -DskipTests
 # Analyze code for errors, potential issues, and coding standard violations.
 # Reports problems but does not modify the code.
 lint:

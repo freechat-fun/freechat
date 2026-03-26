@@ -4,6 +4,15 @@ import fun.freechat.model.User;
 import fun.freechat.service.account.SysAuthorityService;
 import fun.freechat.service.account.SysBindService;
 import fun.freechat.service.account.SysUserService;
+import java.net.URL;
+import java.time.DateTimeException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.*;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -21,22 +30,14 @@ import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.provisioning.UserDetailsManager;
 
-import java.net.URL;
-import java.time.DateTimeException;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.*;
-import java.util.stream.Collectors;
-
 @Slf4j
 @SuppressWarnings({"unused", "UnusedReturnValue"})
-public record SysUserDetailsManager(SysUserService userService,
-                                    SysBindService bindService,
-                                    SysAuthorityService authorityService,
-                                    PasswordEncoder passwordEncoder) implements UserDetailsManager {
+public record SysUserDetailsManager(
+        SysUserService userService,
+        SysBindService bindService,
+        SysAuthorityService authorityService,
+        PasswordEncoder passwordEncoder)
+        implements UserDetailsManager {
 
     private User mapUser(UserDetails userDetails, User user) {
         Date now = new Date();
@@ -101,7 +102,8 @@ public record SysUserDetailsManager(SysUserService userService,
 
     @Override
     public void changePassword(String oldPassword, String newPassword) {
-        SysUserDetails sysUser = Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+        SysUserDetails sysUser = Optional.ofNullable(
+                        SecurityContextHolder.getContext().getAuthentication())
                 .map(Authentication::getPrincipal)
                 .filter(SysUserDetails.class::isInstance)
                 .map(SysUserDetails.class::cast)
@@ -279,8 +281,8 @@ public record SysUserDetailsManager(SysUserService userService,
         return bool != null && bool ? (byte) 1 : (byte) 0;
     }
 
-    public SysUserDetails createSysUserFromOAuth2UserIfNecessary(OAuth2User oAuth2User,
-                                                                 OAuth2AuthorizedClient oAuth2Client) {
+    public SysUserDetails createSysUserFromOAuth2UserIfNecessary(
+            OAuth2User oAuth2User, OAuth2AuthorizedClient oAuth2Client) {
         String platform = oAuth2Client.getClientRegistration().getRegistrationId();
         String sub = getSub(oAuth2User, platform);
         User user = Optional.ofNullable(bindService.getUserIdByPlatformAndSub(platform, sub))
@@ -336,9 +338,8 @@ public record SysUserDetailsManager(SysUserService userService,
                 .build();
     }
 
-    public boolean bindSysUserAndOAuth2UserIfNecessary(SysUserDetails sysUser,
-                                                       OAuth2User oAuth2User,
-                                                       OAuth2AuthorizedClient oAuth2Client) {
+    public boolean bindSysUserAndOAuth2UserIfNecessary(
+            SysUserDetails sysUser, OAuth2User oAuth2User, OAuth2AuthorizedClient oAuth2Client) {
         String platform = oAuth2Client.getClientRegistration().getRegistrationId();
         OAuth2RefreshToken refreshToken = oAuth2Client.getRefreshToken();
         if (refreshToken == null && bindService.isBound(sysUser, platform)) {

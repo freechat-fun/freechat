@@ -10,6 +10,7 @@ public enum ModelProvider {
     DASH_SCOPE,
     OLLAMA,
     UNKNOWN;
+
     public static ModelProvider of(String text) {
         if (StringUtils.isBlank(text)) {
             return UNKNOWN;

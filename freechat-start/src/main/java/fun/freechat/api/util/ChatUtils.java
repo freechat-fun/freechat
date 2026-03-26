@@ -1,5 +1,8 @@
 package fun.freechat.api.util;
 
+import static dev.langchain4j.data.message.ChatMessageType.USER;
+import static dev.langchain4j.data.message.ContentType.*;
+
 import dev.langchain4j.data.message.ContentType;
 import fun.freechat.service.chat.ChatMemoryService;
 import fun.freechat.service.chat.ChatMessageRecord;
@@ -8,9 +11,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
-
-import static dev.langchain4j.data.message.ChatMessageType.USER;
-import static dev.langchain4j.data.message.ContentType.*;
 
 @Slf4j
 @Component

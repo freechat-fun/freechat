@@ -18,6 +18,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -30,11 +34,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 @RestController
 @Tag(name = "Prompt")
 @RequestMapping("/api/v2/prompt")
@@ -43,18 +42,16 @@ import java.util.Map;
 public class PromptApi {
     @Autowired
     private PromptService promptService;
+
     @Autowired
     private InteractiveStatsService interactiveStatsService;
 
     private void increaseReferCount(String promptUid) {
-        interactiveStatsService.add(AccountUtils.currentUser().getUserId(),
-                InfoType.PROMPT, promptUid, StatsType.REFER_COUNT, 1L);
+        interactiveStatsService.add(
+                AccountUtils.currentUser().getUserId(), InfoType.PROMPT, promptUid, StatsType.REFER_COUNT, 1L);
     }
 
-    @Operation(
-            operationId = "searchPromptSummary",
-            summary = "Search Prompt Summary",
-            description = """
+    @Operation(operationId = "searchPromptSummary", summary = "Search Prompt Summary", description = """
                     Search prompts:
                     - Specifiable query fields, and relationship:
                       - Scope: private, public_org or public. Private can only search this account.
@@ -68,14 +65,12 @@ public class PromptApi {
                     - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending.
                     - The search result is the prompt summary content.
                     - Support pagination.
-                    """
-    )
+                    """)
     @PostMapping("/search")
     public List<PromptSummaryDTO> search(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Query conditions",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "Query conditions",
+                            content = @Content(examples = @ExampleObject("""
                                     {
                                       "where": {
                                         "visibility": "public",
@@ -89,15 +84,11 @@ public class PromptApi {
                                       "pageNum": 0,
                                       "pageSize": 1
                                     }
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotNull
-            PromptQueryDTO query) {
-        return promptService.search(query.toPromptInfoQuery(), AccountUtils.currentUser())
-                .stream()
+                                    """)))
+                    @RequestBody
+                    @NotNull
+                    PromptQueryDTO query) {
+        return promptService.search(query.toPromptInfoQuery(), AccountUtils.currentUser()).stream()
                 .map(PromptSummaryDTO::from)
                 .toList();
     }
@@ -105,14 +96,12 @@ public class PromptApi {
     @Operation(
             operationId = "searchPromptDetails",
             summary = "Search Prompt Details",
-            description = "Same as /api/v2/prompt/search, but returns detailed information of the prompt."
-    )
+            description = "Same as /api/v2/prompt/search, but returns detailed information of the prompt.")
     @PostMapping("/details/search")
     public List<PromptDetailsDTO> detailsSearch(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Query conditions",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "Query conditions",
+                            content = @Content(examples = @ExampleObject("""
                                     {
                                       "where": {
                                         "visibility": "public",
@@ -126,15 +115,11 @@ public class PromptApi {
                                       "pageNum": 0,
                                       "pageSize": 1
                                     }
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotNull
-            PromptQueryDTO query) {
-        return promptService.searchDetails(query.toPromptInfoQuery(), AccountUtils.currentUser())
-                .stream()
+                                    """)))
+                    @RequestBody
+                    @NotNull
+                    PromptQueryDTO query) {
+        return promptService.searchDetails(query.toPromptInfoQuery(), AccountUtils.currentUser()).stream()
                 .map(PromptDetailsDTO::from)
                 .toList();
     }
@@ -142,14 +127,12 @@ public class PromptApi {
     @Operation(
             operationId = "batchSearchPromptSummary",
             summary = "Batch Search Prompt Summaries",
-            description = "Batch call shortcut for /api/v2/prompt/search."
-    )
+            description = "Batch call shortcut for /api/v2/prompt/search.")
     @PostMapping("/batch/search")
     public List<List<PromptSummaryDTO>> batchSearch(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Query conditions",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "Query conditions",
+                            content = @Content(examples = @ExampleObject("""
                                     [{
                                       "where": {
                                         "visibility": "public",
@@ -185,13 +168,10 @@ public class PromptApi {
                                       "pageNum": 0,
                                       "pageSize": 1
                                     }]
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotNull
-            List<PromptQueryDTO> queries) {
+                                    """)))
+                    @RequestBody
+                    @NotNull
+                    List<PromptQueryDTO> queries) {
         List<List<PromptSummaryDTO>> results = new ArrayList<>(queries.size());
         for (PromptQueryDTO query : queries) {
             results.add(search(query));
@@ -202,14 +182,12 @@ public class PromptApi {
     @Operation(
             operationId = "batchSearchPromptDetails",
             summary = "Batch Search Prompt Details",
-            description = "Batch call shortcut for /api/v2/prompt/details/search."
-    )
+            description = "Batch call shortcut for /api/v2/prompt/details/search.")
     @PostMapping("/batch/details/search")
     public List<List<PromptDetailsDTO>> batchDetailsSearch(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Query conditions",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "Query conditions",
+                            content = @Content(examples = @ExampleObject("""
                                     [{
                                       "where": {
                                         "visibility": "public",
@@ -245,13 +223,10 @@ public class PromptApi {
                                       "pageNum": 0,
                                       "pageSize": 1
                                     }]
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotNull
-            List<PromptQueryDTO> queries) {
+                                    """)))
+                    @RequestBody
+                    @NotNull
+                    List<PromptQueryDTO> queries) {
         List<List<PromptDetailsDTO>> results = new ArrayList<>(queries.size());
         for (PromptQueryDTO query : queries) {
             results.add(detailsSearch(query));
@@ -259,30 +234,25 @@ public class PromptApi {
         return results;
     }
 
-    @Operation(
-            operationId = "createPrompt",
-            summary = "Create Prompt",
-            description = """
+    @Operation(operationId = "createPrompt", summary = "Create Prompt", description = """
                     Create a prompt, required fields:
                     - Prompt name
                     - Prompt content
                     - Applicable model
-                                                 
+
                     Limitations:
                     - Description: 300 characters
                     - Template: 1000 characters
                     - Example: 2000 characters
                     - Tags: 5
                     - Parameters: 10
-                    """
-    )
+                    """)
     @PostMapping("")
     @PreAuthorize("hasPermission(#p0.visibility, 'promptCreateOp')")
     public Long create(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Information of the prompt to be created",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "Information of the prompt to be created",
+                            content = @Content(examples = @ExampleObject("""
                                     {
                                       "name": "A Test Prompt",
                                       "description": "A prompt description",
@@ -295,13 +265,10 @@ public class PromptApi {
                                         "123"
                                       ]
                                     }
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotNull
-            PromptCreateDTO prompt) {
+                                    """)))
+                    @RequestBody
+                    @NotNull
+                    PromptCreateDTO prompt) {
         var promptInfo = prompt.toPromptInfo();
         if (!promptService.create(promptInfo)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create prompt.");
@@ -312,15 +279,14 @@ public class PromptApi {
     @Operation(
             operationId = "createPrompts",
             summary = "Batch Create Prompts",
-            description = "Batch create multiple prompts. Ensure transactionality, return the promptId list after success."
-    )
+            description =
+                    "Batch create multiple prompts. Ensure transactionality, return the promptId list after success.")
     @PostMapping("/batch")
     @PreFilter("hasPermission(filterObject.visibility, 'promptCreateOp')")
     public List<Long> batchCreate(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "List of prompt information to be created",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "List of prompt information to be created",
+                            content = @Content(examples = @ExampleObject("""
                                     [{
                                       "name": "First Test Prompt",
                                       "description": "First prompt description",
@@ -346,33 +312,26 @@ public class PromptApi {
                                         "123", "456"
                                       ]
                                     }]
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotEmpty
-            List<PromptCreateDTO> prompts) {
-        var promptInfoList = prompts.stream()
-                .map(PromptCreateDTO::toPromptInfo)
-                .toList();
+                                    """)))
+                    @RequestBody
+                    @NotEmpty
+                    List<PromptCreateDTO> prompts) {
+        var promptInfoList = prompts.stream().map(PromptCreateDTO::toPromptInfo).toList();
         return promptService.create(promptInfoList);
     }
 
     @Operation(
             operationId = "updatePrompt",
             summary = "Update Prompt",
-            description = "Update prompt, refer to /api/v2/prompt/create, required field: promptId. Returns success or failure."
-    )
+            description =
+                    "Update prompt, refer to /api/v2/prompt/create, required field: promptId. Returns success or failure.")
     @PutMapping("/{promptId}")
     @PreAuthorize("hasPermission(#p0 + '|' + #p1.visibility, 'promptUpdateOp')")
     public Boolean update(
-            @Parameter(description = "The promptId to be updated") @PathVariable("promptId") @Positive
-            Long promptId,
+            @Parameter(description = "The promptId to be updated") @PathVariable("promptId") @Positive Long promptId,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "The prompt information to be updated",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "The prompt information to be updated",
+                            content = @Content(examples = @ExampleObject("""
                                     {
                                       "version": 2,
                                       "name": "Second Test Prompt (New)",
@@ -387,35 +346,27 @@ public class PromptApi {
                                         "123", "456"
                                       ]
                                     }
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotNull
-            PromptUpdateDTO prompt) {
+                                    """)))
+                    @RequestBody
+                    @NotNull
+                    PromptUpdateDTO prompt) {
         var promptInfo = prompt.toPromptInfo(promptId);
         return promptService.update(promptInfo);
     }
 
-    @Operation(
-            operationId = "clonePrompt",
-            summary = "Clone Prompt",
-            description = """
+    @Operation(operationId = "clonePrompt", summary = "Clone Prompt", description = """
                     Enter the promptId, generate a new record, the content is basically the same as the original prompt, but the following fields are different:
                     - Version number is 1
                     - Visibility is private
                     - The parent prompt is the source promptId
                     - The creation time is the current moment.
                     - All statistical indicators are zeroed.
-                                 
+
                     Return the new promptId.
-                    """
-    )
+                    """)
     @PostMapping("/clone/{promptId}")
     public Long clone(
-            @Parameter(description = "The referenced promptId") @PathVariable("promptId") @Positive
-            Long promptId) {
+            @Parameter(description = "The referenced promptId") @PathVariable("promptId") @Positive Long promptId) {
         var promptInfo = promptService.details(promptId, AccountUtils.currentUser());
         if (promptInfo == null) {
             return null;
@@ -432,14 +383,15 @@ public class PromptApi {
     @Operation(
             operationId = "clonePrompts",
             summary = "Batch Clone Prompts",
-            description = "Batch clone multiple prompts. Ensure transactionality, return the promptId list after success."
-    )
+            description =
+                    "Batch clone multiple prompts. Ensure transactionality, return the promptId list after success.")
     @PostMapping("/batch/clone")
     public List<Long> batchClone(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "List of prompt information to be created")
-            @RequestBody
-            @NotEmpty
-            List<Long> promptIds) {
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                            description = "List of prompt information to be created")
+                    @RequestBody
+                    @NotEmpty
+                    List<Long> promptIds) {
         var promptInfoList = promptService.details(promptIds, AccountUtils.currentUser());
         if (CollectionUtils.isEmpty(promptInfoList)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to find prompts " + promptIds);
@@ -465,52 +417,46 @@ public class PromptApi {
     @Operation(
             operationId = "deletePrompt",
             summary = "Delete Prompt",
-            description = "Delete prompt. Returns success or failure."
-    )
+            description = "Delete prompt. Returns success or failure.")
     @DeleteMapping("/{promptId}")
     @PreAuthorize("hasPermission(#p0, 'promptDeleteOp')")
     public Boolean delete(
-            @Parameter(description = "The promptId to be deleted") @PathVariable("promptId") @Positive
-            Long promptId) {
+            @Parameter(description = "The promptId to be deleted") @PathVariable("promptId") @Positive Long promptId) {
         return promptService.delete(promptId, AccountUtils.currentUser());
     }
 
     @Operation(
             operationId = "deletePromptByName",
             summary = "Delete Prompt by Name",
-            description = "Delete prompt by name. return the list of successfully deleted promptIds."
-    )
+            description = "Delete prompt by name. return the list of successfully deleted promptIds.")
     @DeleteMapping("/name/{name}")
     public List<Long> deleteByName(
-            @Parameter(description = "The prompt name to be deleted") @PathVariable("name") @NotBlank
-            String name) {
+            @Parameter(description = "The prompt name to be deleted") @PathVariable("name") @NotBlank String name) {
         return promptService.deleteByName(name, AccountUtils.currentUser());
     }
 
     @Operation(
             operationId = "deletePrompts",
             summary = "Batch Delete Prompts",
-            description = "Delete multiple prompts. Ensure transactionality, return the list of successfully deleted promptIds."
-    )
+            description =
+                    "Delete multiple prompts. Ensure transactionality, return the list of successfully deleted promptIds.")
     @DeleteMapping("/batch")
     @PreFilter("hasPermission(filterObject, 'promptDeleteOp')")
     public List<Long> batchDelete(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "List of promptIds to be deleted")
-            @RequestBody
-            @NotEmpty
-            List<Long> promptIds) {
+                    @RequestBody
+                    @NotEmpty
+                    List<Long> promptIds) {
         return promptService.delete(promptIds, AccountUtils.currentUser());
     }
 
     @Operation(
             operationId = "getPromptSummary",
             summary = "Get Prompt Summary",
-            description = "Get prompt summary information."
-    )
+            description = "Get prompt summary information.")
     @GetMapping("/summary/{promptId}")
     public PromptSummaryDTO summary(
-            @Parameter(description = "PromptId to be obtained") @PathVariable("promptId") @Positive
-            Long promptId) {
+            @Parameter(description = "PromptId to be obtained") @PathVariable("promptId") @Positive Long promptId) {
         var promptInfo = promptService.summary(promptId, AccountUtils.currentUser());
         return PromptSummaryDTO.from(promptInfo);
     }
@@ -518,12 +464,10 @@ public class PromptApi {
     @Operation(
             operationId = "getPromptDetails",
             summary = "Get Prompt Details",
-            description = "Get prompt detailed information."
-    )
+            description = "Get prompt detailed information.")
     @GetMapping("/details/{promptId}")
     public PromptDetailsDTO details(
-            @Parameter(description = "PromptId to be obtained") @PathVariable("promptId") @Positive
-            Long promptId) {
+            @Parameter(description = "PromptId to be obtained") @PathVariable("promptId") @Positive Long promptId) {
         var promptInfo = promptService.details(promptId, AccountUtils.currentUser());
         return PromptDetailsDTO.from(promptInfo);
     }
@@ -531,12 +475,13 @@ public class PromptApi {
     @Operation(
             operationId = "countPrompts",
             summary = "Calculate Number of Prompts",
-            description = "Calculate the number of prompts according to the specified query conditions."
-    )
+            description = "Calculate the number of prompts according to the specified query conditions.")
     @PostMapping("/count")
     public Long count(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Query conditions") @RequestBody @NotNull
-            PromptQueryDTO query) {
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Query conditions")
+                    @RequestBody
+                    @NotNull
+                    PromptQueryDTO query) {
         PromptService.Query infoQuery = query.toPromptInfoQuery();
         infoQuery.setOffset(null);
         infoQuery.setLimit(null);
@@ -547,14 +492,11 @@ public class PromptApi {
     @Operation(
             operationId = "listPromptVersionsByName",
             summary = "List Versions by Prompt Name",
-            description = "List the versions and corresponding promptIds by prompt name."
-    )
+            description = "List the versions and corresponding promptIds by prompt name.")
     @PostMapping("/versions/{name}")
     public List<PromptItemForNameDTO> versions(
-            @Parameter(description = "Prompt name") @PathVariable("name") @NotBlank
-            String name) {
-        return promptService.listVersionsByName(name, AccountUtils.currentUser())
-                .stream()
+            @Parameter(description = "Prompt name") @PathVariable("name") @NotBlank String name) {
+        return promptService.listVersionsByName(name, AccountUtils.currentUser()).stream()
                 .map(PromptItemForNameDTO::from)
                 .toList();
     }
@@ -562,41 +504,38 @@ public class PromptApi {
     @Operation(
             operationId = "publishPrompt",
             summary = "Publish Prompt",
-            description = "Publish prompt, draft content becomes formal content, version number increases by 1. After successful publication, a new promptId will be generated and returned. You need to specify the visibility for publication."
-    )
+            description =
+                    "Publish prompt, draft content becomes formal content, version number increases by 1. After successful publication, a new promptId will be generated and returned. You need to specify the visibility for publication.")
     @PostMapping("/publish/{promptId}/{visibility}")
     @PreAuthorize("hasPermission(#p0 + '|' + #p1, 'promptUpdateOp')")
     public Long publish(
-            @Parameter(description = "The promptId to be published") @PathVariable("promptId") @Positive
-            Long promptId,
+            @Parameter(description = "The promptId to be published") @PathVariable("promptId") @Positive Long promptId,
             @Parameter(description = "Visibility: public | private | ...") @PathVariable("visibility") @NotBlank
-            String visibility){
+                    String visibility) {
         return promptService.publish(promptId, Visibility.of(visibility), AccountUtils.currentUser());
     }
 
     @Operation(
             operationId = "applyPromptTemplate",
             summary = "Apply Parameters to Prompt Template",
-            description = "Apply parameters to prompt template."
-    )
+            description = "Apply parameters to prompt template.")
     @PostMapping(value = "/apply/template", produces = MediaType.TEXT_PLAIN_VALUE)
     public String apply(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "String type prompt template")
-            @RequestBody
-            @NotNull
-            PromptTemplateDTO promptTemplate) {
+                    @RequestBody
+                    @NotNull
+                    PromptTemplateDTO promptTemplate) {
         String template = promptTemplate.getTemplate();
         if (StringUtils.isNotBlank(template)) {
-            return promptService.apply(template, promptTemplate.getVariables(),
-                    PromptFormat.of(promptTemplate.getFormat()));
+            return promptService.apply(
+                    template, promptTemplate.getVariables(), PromptFormat.of(promptTemplate.getFormat()));
         }
         if (promptTemplate.getChatTemplate() != null) {
             try {
                 ChatPromptContentDTO chatTemplate = promptTemplate.getChatTemplate();
                 Map<String, Object> variables = promptTemplate.getVariables();
                 PromptFormat format = PromptFormat.of(promptTemplate.getFormat());
-                ChatPromptContent applied = promptService.apply(
-                        chatTemplate.toChatPromptContent(),variables, format);
+                ChatPromptContent applied = promptService.apply(chatTemplate.toChatPromptContent(), variables, format);
                 return InfoUtils.defaultMapper().writeValueAsString(ChatPromptContentDTO.from(applied));
             } catch (JsonProcessingException e) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -609,36 +548,30 @@ public class PromptApi {
     @Operation(
             operationId = "applyPromptRef",
             summary = "Apply Parameters to Prompt Record",
-            description = "Apply parameters to prompt record."
-    )
+            description = "Apply parameters to prompt record.")
     @PostMapping(value = "/apply/ref", produces = MediaType.TEXT_PLAIN_VALUE)
     @PreAuthorize("hasPermission(#p0.promptId, 'promptDefaultOp')")
     public String apply(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Prompt record")
-            @RequestBody
-            @NotNull
-            PromptRefDTO promptRef) {
-        Pair<String, PromptType> applied = promptService.apply(
-                promptRef.getPromptId(), promptRef.getVariables(), promptRef.getDraft());
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Prompt record") @RequestBody @NotNull
+                    PromptRefDTO promptRef) {
+        Pair<String, PromptType> applied =
+                promptService.apply(promptRef.getPromptId(), promptRef.getVariables(), promptRef.getDraft());
         return applied != null ? applied.getLeft() : null;
     }
 
     @Operation(
             operationId = "existsPromptName",
             summary = "Check If Prompt Name Exists",
-            description = "Check if the prompt name already exists."
-    )
+            description = "Check if the prompt name already exists.")
     @GetMapping("/exists/name/{name}")
-    public Boolean existsName(
-            @Parameter(description = "Name") @PathVariable("name") @NotBlank String name) {
+    public Boolean existsName(@Parameter(description = "Name") @PathVariable("name") @NotBlank String name) {
         return promptService.existsName(name, AccountUtils.currentUser());
     }
 
     @Operation(
             operationId = "newPromptName",
             summary = "Create New Prompt Name",
-            description = "Create a new prompt name starting with a desired name."
-    )
+            description = "Create a new prompt name starting with a desired name.")
     @GetMapping(value = "/create/name/{desired}", produces = MediaType.TEXT_PLAIN_VALUE)
     public String createName(
             @Parameter(description = "Desired name") @PathVariable("desired") @NotBlank String desired) {

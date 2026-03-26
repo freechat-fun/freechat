@@ -1,5 +1,8 @@
 package fun.freechat.service.chat.impl;
 
+import static dev.langchain4j.internal.ValidationUtils.ensureNotNull;
+import static fun.freechat.service.util.StoreUtils.PUBLIC_DIR;
+
 import fun.freechat.model.CharacterInfo;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.ChatContextService;
@@ -7,18 +10,14 @@ import fun.freechat.service.chat.ChatService;
 import fun.freechat.service.common.FileStore;
 import fun.freechat.service.common.ShortLinkService;
 import fun.freechat.service.util.StoreUtils;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-
-import static dev.langchain4j.internal.ValidationUtils.ensureNotNull;
-import static fun.freechat.service.util.StoreUtils.PUBLIC_DIR;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
 public class AlbumTool {
@@ -29,10 +28,11 @@ public class AlbumTool {
     private final ChatContextService chatContextService;
     private final ShortLinkService shortLinkService;
 
-    public AlbumTool(String homeUrl,
-                     CharacterService characterService,
-                     ChatContextService chatContextService,
-                     ShortLinkService shortLinkService) {
+    public AlbumTool(
+            String homeUrl,
+            CharacterService characterService,
+            ChatContextService chatContextService,
+            ShortLinkService shortLinkService) {
         this.homeUrl = ensureNotNull(homeUrl, "homeUrl");
         this.characterService = ensureNotNull(characterService, "characterService");
         this.chatContextService = ensureNotNull(chatContextService, "chatContextService");
@@ -57,17 +57,19 @@ public class AlbumTool {
 
         FileStore fileStore = StoreUtils.defaultFileStore();
         try {
-            String dstDir = PUBLIC_DIR + characterInfo.getUserId() + "/character/picture/" + characterInfo.getCharacterUid();
-            List<String> pictures = fileStore.list(dstDir, null, false)
-                    .stream()
+            String dstDir =
+                    PUBLIC_DIR + characterInfo.getUserId() + "/character/picture/" + characterInfo.getCharacterUid();
+            List<String> pictures = fileStore.list(dstDir, null, false).stream()
                     // order by last modified time
-                    .sorted(Comparator.comparing(path -> {
-                        try {
-                            return fileStore.getLastModifiedTime(path);
-                        } catch (IOException e) {
-                            return Long.MAX_VALUE;
-                        }
-                    }, Long::compareTo))
+                    .sorted(Comparator.comparing(
+                            path -> {
+                                try {
+                                    return fileStore.getLastModifiedTime(path);
+                                } catch (IOException e) {
+                                    return Long.MAX_VALUE;
+                                }
+                            },
+                            Long::compareTo))
                     .toList();
 
             if (pictures.isEmpty()) {
@@ -78,7 +80,7 @@ public class AlbumTool {
             String pictureUrl = fileStore.getShareUrl(picturePath, Integer.MAX_VALUE);
             if (StringUtils.isBlank(pictureUrl)) {
                 String subPath = picturePath.substring(PUBLIC_DIR.length());
-                String key =  Base64.getUrlEncoder().encodeToString(subPath.getBytes(StandardCharsets.UTF_8));
+                String key = Base64.getUrlEncoder().encodeToString(subPath.getBytes(StandardCharsets.UTF_8));
                 // use short link to reduce token usage
                 String shortPath = shortLinkService.shorten("/public/image/" + key);
                 pictureUrl = "%s/s/%s".formatted(homeUrl, shortPath);
@@ -89,12 +91,17 @@ public class AlbumTool {
                 fileStore.setLastModifiedTime(picturePath, System.currentTimeMillis());
             }
 
-            log.info("Found a picture for character {}, description: {}, path: {}, url: {}",
-                    characterInfo.getName(), description, picturePath, pictureUrl);
+            log.info(
+                    "Found a picture for character {}, description: {}, path: {}, url: {}",
+                    characterInfo.getName(),
+                    description,
+                    picturePath,
+                    pictureUrl);
 
             return pictureUrl;
         } catch (IOException e) {
-            log.warn("Failed to list album of character: {} ({})",
+            log.warn(
+                    "Failed to list album of character: {} ({})",
                     characterInfo.getName(),
                     characterInfo.getCharacterUid());
             return defaultPicture(characterAvatar, characterPicture);
@@ -102,9 +109,9 @@ public class AlbumTool {
     }
 
     private String defaultPicture(String avatar, String picture) {
-        return StringUtils.isNotBlank(avatar) ?
-                shortenPictureUrl(avatar) :
-                StringUtils.isNotBlank(picture) ? shortenPictureUrl(picture) : DEFAULT_PICTURE;
+        return StringUtils.isNotBlank(avatar)
+                ? shortenPictureUrl(avatar)
+                : StringUtils.isNotBlank(picture) ? shortenPictureUrl(picture) : DEFAULT_PICTURE;
     }
 
     private String shortenPictureUrl(String pictureUrl) {

@@ -1,35 +1,5 @@
 package fun.freechat.service.prompt.impl;
 
-import dev.langchain4j.data.message.AiMessage;
-import dev.langchain4j.data.message.UserMessage;
-import dev.langchain4j.model.StreamingResponseHandler;
-import dev.langchain4j.model.chat.ChatModel;
-import dev.langchain4j.model.chat.StreamingChatModel;
-import dev.langchain4j.model.chat.response.ChatResponse;
-import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
-import dev.langchain4j.model.embedding.EmbeddingModel;
-import dev.langchain4j.model.language.LanguageModel;
-import dev.langchain4j.model.language.StreamingLanguageModel;
-import fun.freechat.service.ai.AiModelInfo;
-import fun.freechat.model.User;
-import fun.freechat.service.ai.AiApiKeyService;
-import fun.freechat.service.ai.CloseableAiApiKey;
-import fun.freechat.service.enums.ModelProvider;
-import fun.freechat.service.enums.ModelType;
-import fun.freechat.service.enums.PromptType;
-import fun.freechat.service.prompt.ChatPromptContent;
-import fun.freechat.service.prompt.PromptAiService;
-import fun.freechat.service.util.InfoUtils;
-import fun.freechat.service.util.PromptUtils;
-import fun.freechat.util.PojoUtils;
-import org.apache.commons.lang3.NotImplementedException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.Map;
-import java.util.Optional;
-
 import static fun.freechat.service.ai.LanguageModelFactory.createAzureOpenAiChatModel;
 import static fun.freechat.service.ai.LanguageModelFactory.createAzureOpenAiEmbeddingModel;
 import static fun.freechat.service.ai.LanguageModelFactory.createAzureOpenAiLanguageModel;
@@ -51,6 +21,35 @@ import static fun.freechat.service.ai.LanguageModelFactory.createQwenLanguageMod
 import static fun.freechat.service.ai.LanguageModelFactory.createQwenStreamingChatModel;
 import static fun.freechat.service.ai.LanguageModelFactory.createQwenStreamingLanguageModel;
 
+import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.UserMessage;
+import dev.langchain4j.model.StreamingResponseHandler;
+import dev.langchain4j.model.chat.ChatModel;
+import dev.langchain4j.model.chat.StreamingChatModel;
+import dev.langchain4j.model.chat.response.ChatResponse;
+import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
+import dev.langchain4j.model.embedding.EmbeddingModel;
+import dev.langchain4j.model.language.LanguageModel;
+import dev.langchain4j.model.language.StreamingLanguageModel;
+import fun.freechat.model.User;
+import fun.freechat.service.ai.AiApiKeyService;
+import fun.freechat.service.ai.AiModelInfo;
+import fun.freechat.service.ai.CloseableAiApiKey;
+import fun.freechat.service.enums.ModelProvider;
+import fun.freechat.service.enums.ModelType;
+import fun.freechat.service.enums.PromptType;
+import fun.freechat.service.prompt.ChatPromptContent;
+import fun.freechat.service.prompt.PromptAiService;
+import fun.freechat.service.util.InfoUtils;
+import fun.freechat.service.util.PromptUtils;
+import fun.freechat.util.PojoUtils;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Optional;
+import org.apache.commons.lang3.NotImplementedException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 @Service
 @SuppressWarnings("unused")
 public class PromptAiServiceImpl implements PromptAiService {
@@ -67,23 +66,28 @@ public class PromptAiServiceImpl implements PromptAiService {
 
     @Override
     // @Trace(ignoreArgs = true, extInfo = "'prompt:' + #p0 + ',model:' + #p4.modelId + ',parameters:' + #p5")
-    public ChatResponse send(String prompt,
-                             PromptType promptType,
-                             User user,
-                             String apiKeyInfo,
-                             AiModelInfo modelInfo,
-                             Map<String, Object> parameters) {
+    public ChatResponse send(
+            String prompt,
+            PromptType promptType,
+            User user,
+            String apiKeyInfo,
+            AiModelInfo modelInfo,
+            Map<String, Object> parameters) {
         ModelProvider provider = ModelProvider.of(modelInfo.getProvider());
-        ModelType type  = ModelType.of(modelInfo.getType());
+        ModelType type = ModelType.of(modelInfo.getType());
         try (var apiKeyClient = getCloseableAiApiKey(user, apiKeyInfo)) {
             if (type == ModelType.TEXT2TEXT) {
-                LanguageModel model = switch (provider) {
-                    case OPEN_AI -> createOpenAiLanguageModel(apiKeyClient.token(), modelInfo.getName(), parameters);
-                    case AZURE_OPEN_AI -> createAzureOpenAiLanguageModel(apiKeyClient.token(), modelInfo.getName(), parameters);
-                    case DASH_SCOPE -> createQwenLanguageModel(apiKeyClient.token(), modelInfo.getName(), parameters);
-                    case OLLAMA -> createOllamaLanguageModel(modelInfo.getName(), parameters);
-                    default -> throw new NotImplementedException("Not implemented.");
-                };
+                LanguageModel model =
+                        switch (provider) {
+                            case OPEN_AI ->
+                                createOpenAiLanguageModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                            case AZURE_OPEN_AI ->
+                                createAzureOpenAiLanguageModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                            case DASH_SCOPE ->
+                                createQwenLanguageModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                            case OLLAMA -> createOllamaLanguageModel(modelInfo.getName(), parameters);
+                            default -> throw new NotImplementedException("Not implemented.");
+                        };
                 if (promptType == PromptType.CHAT) {
                     var promptTemplate = InfoUtils.defaultMapper().readValue(prompt, ChatPromptContent.class);
                     var messages = PromptUtils.toMessages(promptTemplate);
@@ -97,13 +101,17 @@ public class PromptAiServiceImpl implements PromptAiService {
                                 .build())
                         .orElse(null);
             } else if (type == ModelType.TEXT2CHAT) {
-                ChatModel model = switch (provider) {
-                    case OPEN_AI -> createOpenAiChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
-                    case AZURE_OPEN_AI -> createAzureOpenAiChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
-                    case DASH_SCOPE -> createQwenChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
-                    case OLLAMA -> createOllamaChatModel(modelInfo.getName(), parameters);
-                    default -> throw new NotImplementedException("Not implemented.");
-                };
+                ChatModel model =
+                        switch (provider) {
+                            case OPEN_AI ->
+                                createOpenAiChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                            case AZURE_OPEN_AI ->
+                                createAzureOpenAiChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                            case DASH_SCOPE ->
+                                createQwenChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                            case OLLAMA -> createOllamaChatModel(modelInfo.getName(), parameters);
+                            default -> throw new NotImplementedException("Not implemented.");
+                        };
                 if (promptType == PromptType.CHAT) {
                     var promptTemplate = InfoUtils.defaultMapper().readValue(prompt, ChatPromptContent.class);
                     var messages = PromptUtils.toMessages(promptTemplate);
@@ -112,16 +120,21 @@ public class PromptAiServiceImpl implements PromptAiService {
                     return model.chat(UserMessage.from(prompt));
                 }
             } else if (type == ModelType.EMBEDDING) {
-                EmbeddingModel model = switch (provider) {
-                    case OPEN_AI -> createOpenAiEmbeddingModel(apiKeyClient.token(), modelInfo.getName(), parameters);
-                    case AZURE_OPEN_AI -> createAzureOpenAiEmbeddingModel(apiKeyClient.token(), modelInfo.getName(), parameters);
-                    case DASH_SCOPE -> createQwenEmbeddingModel(apiKeyClient.token(), modelInfo.getName(), parameters);
-                    case OLLAMA -> createOllamaEmbeddingModel(modelInfo.getName(), parameters);
-                    default -> throw new NotImplementedException("Not implemented.");
-                };
+                EmbeddingModel model =
+                        switch (provider) {
+                            case OPEN_AI ->
+                                createOpenAiEmbeddingModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                            case AZURE_OPEN_AI ->
+                                createAzureOpenAiEmbeddingModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                            case DASH_SCOPE ->
+                                createQwenEmbeddingModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                            case OLLAMA -> createOllamaEmbeddingModel(modelInfo.getName(), parameters);
+                            default -> throw new NotImplementedException("Not implemented.");
+                        };
                 return Optional.ofNullable(model.embed(prompt))
                         .map(resp -> ChatResponse.builder()
-                                .aiMessage(AiMessage.from(PojoUtils.object2JsonString(resp.content().vector())))
+                                .aiMessage(AiMessage.from(PojoUtils.object2JsonString(
+                                        resp.content().vector())))
                                 .tokenUsage(resp.tokenUsage())
                                 .finishReason(resp.finishReason())
                                 .build())
@@ -136,24 +149,31 @@ public class PromptAiServiceImpl implements PromptAiService {
 
     @Override
     // @Trace(ignoreArgs = true, extInfo = "'prompt:' + #p0 + ',model:' + #p4.modelId + ',parameters:' + #p5")
-    public void streamSend(String prompt,
-                           PromptType promptType,
-                           User user,
-                           String apiKeyInfo,
-                           AiModelInfo modelInfo,
-                           Map<String, Object> parameters,
-                           StreamingChatResponseHandler handler) {
+    public void streamSend(
+            String prompt,
+            PromptType promptType,
+            User user,
+            String apiKeyInfo,
+            AiModelInfo modelInfo,
+            Map<String, Object> parameters,
+            StreamingChatResponseHandler handler) {
         ModelProvider provider = ModelProvider.of(modelInfo.getProvider());
-        ModelType type  = ModelType.of(modelInfo.getType());
+        ModelType type = ModelType.of(modelInfo.getType());
         try (var apiKeyClient = getCloseableAiApiKey(user, apiKeyInfo)) {
             if (type == ModelType.TEXT2TEXT) {
-                StreamingLanguageModel model = switch (provider) {
-                    case OPEN_AI -> createOpenAiStreamingLanguageModel(apiKeyClient.token(), modelInfo.getName(), parameters);
-                    case AZURE_OPEN_AI -> createAzureOpenAiStreamingLanguageModel(apiKeyClient.token(), modelInfo.getName(), parameters);
-                    case DASH_SCOPE -> createQwenStreamingLanguageModel(apiKeyClient.token(), modelInfo.getName(), parameters);
-                    case OLLAMA -> createOllamaStreamingLanguageModel(modelInfo.getName(), parameters);
-                    default -> throw new NotImplementedException("Not implemented.");
-                };
+                StreamingLanguageModel model =
+                        switch (provider) {
+                            case OPEN_AI ->
+                                createOpenAiStreamingLanguageModel(
+                                        apiKeyClient.token(), modelInfo.getName(), parameters);
+                            case AZURE_OPEN_AI ->
+                                createAzureOpenAiStreamingLanguageModel(
+                                        apiKeyClient.token(), modelInfo.getName(), parameters);
+                            case DASH_SCOPE ->
+                                createQwenStreamingLanguageModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                            case OLLAMA -> createOllamaStreamingLanguageModel(modelInfo.getName(), parameters);
+                            default -> throw new NotImplementedException("Not implemented.");
+                        };
                 if (promptType == PromptType.CHAT) {
                     var promptTemplate = InfoUtils.defaultMapper().readValue(prompt, ChatPromptContent.class);
                     var messages = PromptUtils.toMessages(promptTemplate);
@@ -161,13 +181,18 @@ public class PromptAiServiceImpl implements PromptAiService {
                 }
                 model.generate(prompt, (StreamingResponseHandler<String>) handler);
             } else if (type == ModelType.TEXT2CHAT) {
-                StreamingChatModel model = switch (provider) {
-                    case OPEN_AI -> createOpenAiStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
-                    case AZURE_OPEN_AI -> createAzureOpenAiStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
-                    case DASH_SCOPE -> createQwenStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
-                    case OLLAMA -> createOllamaStreamingChatModel(modelInfo.getName(), parameters);
-                    default -> throw new NotImplementedException("Not implemented.");
-                };
+                StreamingChatModel model =
+                        switch (provider) {
+                            case OPEN_AI ->
+                                createOpenAiStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                            case AZURE_OPEN_AI ->
+                                createAzureOpenAiStreamingChatModel(
+                                        apiKeyClient.token(), modelInfo.getName(), parameters);
+                            case DASH_SCOPE ->
+                                createQwenStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                            case OLLAMA -> createOllamaStreamingChatModel(modelInfo.getName(), parameters);
+                            default -> throw new NotImplementedException("Not implemented.");
+                        };
                 if (promptType == PromptType.CHAT) {
                     var promptTemplate = InfoUtils.defaultMapper().readValue(prompt, ChatPromptContent.class);
                     var messages = PromptUtils.toMessages(promptTemplate);

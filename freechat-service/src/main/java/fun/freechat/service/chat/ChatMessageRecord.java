@@ -1,5 +1,6 @@
 package fun.freechat.service.chat;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -8,12 +9,9 @@ import dev.langchain4j.data.message.ChatMessage;
 import fun.freechat.service.ai.message.ChatMessageJacksonDeserializer;
 import fun.freechat.service.ai.message.ChatMessageJacksonSerializer;
 import fun.freechat.service.enums.TtsSpeakerType;
+import java.util.Date;
 import lombok.Builder;
 import lombok.Data;
-
-import java.util.Date;
-
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @Data
 @Builder
@@ -22,6 +20,7 @@ public class ChatMessageRecord {
     @JsonSerialize(using = ChatMessageJacksonSerializer.class)
     @JsonDeserialize(using = ChatMessageJacksonDeserializer.class)
     private ChatMessage message;
+
     private Long id;
     private Date gmtCreate;
     private String ext;

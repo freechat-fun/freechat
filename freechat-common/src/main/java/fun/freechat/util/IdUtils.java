@@ -12,9 +12,7 @@ public class IdUtils {
     public static String newShortId() {
         UUID uuid = UUID.randomUUID();
         byte[] uuidBytes = new byte[16];
-        ByteBuffer.wrap(uuidBytes)
-                .putLong(uuid.getMostSignificantBits())
-                .putLong(uuid.getLeastSignificantBits());
+        ByteBuffer.wrap(uuidBytes).putLong(uuid.getMostSignificantBits()).putLong(uuid.getLeastSignificantBits());
         return Base64.getUrlEncoder().withoutPadding().encodeToString(uuidBytes);
     }
 }

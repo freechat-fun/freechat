@@ -1,5 +1,8 @@
 package fun.freechat.api;
 
+import static fun.freechat.service.util.CacheUtils.IN_PROCESS_LONG_CACHE_MANAGER;
+import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessageType;
@@ -26,6 +29,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.AccessDeniedException;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.regex.Matcher;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
@@ -43,19 +55,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.AccessDeniedException;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.regex.Matcher;
-
-import static fun.freechat.service.util.CacheUtils.IN_PROCESS_LONG_CACHE_MANAGER;
-import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
 
 @RestController
 @Tag(name = "TTS Service")
@@ -77,30 +76,34 @@ public class TtsApi {
 
     @Autowired
     private CharacterService characterService;
+
     @Autowired
     private ChatContextService chatContextService;
+
     @Autowired
     private ChatMemoryService chatMemoryService;
+
     @Autowired
     private ChatService chatService;
+
     @Autowired
     private TtsService ttsService;
+
     @Autowired
     private Tika tika;
 
     @Operation(
             operationId = "listTtsBuiltinSpeakers",
             summary = "List Builtin Speakers",
-            description = "Return builtin TTS speakers."
-    )
-    @Cacheable(cacheNames = LONG_PERIOD_CACHE_NAME,
+            description = "Return builtin TTS speakers.")
+    @Cacheable(
+            cacheNames = LONG_PERIOD_CACHE_NAME,
             cacheManager = IN_PROCESS_LONG_CACHE_MANAGER,
-            key ="'f.f.a.TtsApi::list'",
-            unless="#result == null")
+            key = "'f.f.a.TtsApi::list'",
+            unless = "#result == null")
     @GetMapping("/public/tts/builtin/speakers")
     public List<String> list() {
-        try (InputStream inputStream =
-                     this.getClass().getResourceAsStream("/xtts_v2_speaker_idxs.json")) {
+        try (InputStream inputStream = this.getClass().getResourceAsStream("/xtts_v2_speaker_idxs.json")) {
             return InfoUtils.defaultMapper().readValue(inputStream, new TypeReference<>() {});
         } catch (IOException | NullPointerException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No speakers for TTS", e);
@@ -110,12 +113,13 @@ public class TtsApi {
     @Operation(
             operationId = "playSample",
             summary = "Play Sample Audio",
-            description = "Play TTS sample audio of the builtin/custom speaker."
-    )
-    @GetMapping(value = "/public/tts/play/sample/{speakerType}/{speaker}",
+            description = "Play TTS sample audio of the builtin/custom speaker.")
+    @GetMapping(
+            value = "/public/tts/play/sample/{speakerType}/{speaker}",
             produces = {"audio/mpeg", "audio/aac", "audio/mp3", "audio/wav", "audio/octet-stream"})
     public ResponseEntity<StreamingResponseBody> playSample(
-            @Parameter(description = "The speaker type") @PathVariable("speakerType") @Pattern(regexp = "idx|wav") String speakerType,
+            @Parameter(description = "The speaker type") @PathVariable("speakerType") @Pattern(regexp = "idx|wav")
+                    String speakerType,
             @Parameter(description = "The speaker") @PathVariable("speaker") @NotBlank String speaker) {
         String validSpeaker;
         String platform;
@@ -142,12 +146,9 @@ public class TtsApi {
         return doSpeak(messageRecord, "en");
     }
 
-    @Operation(
-            operationId = "speakMessage",
-            summary = "Speak Message",
-            description = "Read out the message."
-    )
-    @GetMapping(value = "/tts/speak/{messageId}",
+    @Operation(operationId = "speakMessage", summary = "Speak Message", description = "Read out the message.")
+    @GetMapping(
+            value = "/tts/speak/{messageId}",
             produces = {"audio/mpeg", "audio/aac", "audio/mp3", "audio/wav", "audio/octet-stream"})
     @PreAuthorize("hasPermission(#p0, 'ttsSpeakDefaultOp')")
     public ResponseEntity<StreamingResponseBody> speakMessage(
@@ -168,7 +169,8 @@ public class TtsApi {
                     .filter(StringUtils::isNotBlank)
                     .map(AiMessage::from)
                     .ifPresentOrElse(messageRecord::setMessage, () -> {
-                        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find message record by " + messageId);
+                        throw new ResponseStatusException(
+                                HttpStatus.NOT_FOUND, "Failed to find message record by " + messageId);
                     });
         } else if (messageType != ChatMessageType.AI) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find message record by " + messageId);
@@ -200,11 +202,7 @@ public class TtsApi {
                     }
                     InputStream voiceStream = fileStore.newInputStream(cachePath);
                     return doSpeakByCachedVoice(
-                            messageRecord.getSpeaker(),
-                            messageRecord.getSpeakerType(),
-                            text,
-                            lang,
-                                voiceStream);
+                            messageRecord.getSpeaker(), messageRecord.getSpeakerType(), text, lang, voiceStream);
                 } catch (IOException e) {
                     log.warn("Failed to read cached wav file: {}", cachePath, e);
                     fileStore.tryDelete(cachePath);
@@ -212,22 +210,12 @@ public class TtsApi {
             }
 
             return doSpeakByTtsService(
-                    messageRecord.getSpeaker(),
-                    messageRecord.getSpeakerType(),
-                    text,
-                    lang,
-                    cachePath,
-                    fileStore);
+                    messageRecord.getSpeaker(), messageRecord.getSpeakerType(), text, lang, cachePath, fileStore);
         }
 
         // speak without caching
         return doSpeakByTtsService(
-                messageRecord.getSpeaker(),
-                messageRecord.getSpeakerType(),
-                text,
-                lang,
-                null,
-                fileStore);
+                messageRecord.getSpeaker(), messageRecord.getSpeakerType(), text, lang, null, fileStore);
     }
 
     private ResponseEntity<StreamingResponseBody> doSpeakByCachedVoice(
@@ -239,16 +227,7 @@ public class TtsApi {
 
         StreamingResponseBody streamingResponseBody = outputStream -> {
             pipeTransfer(
-                    voiceStream,
-                    outputStream,
-                    null,
-                    speaker,
-                    speakerType,
-                    text,
-                    lang,
-                    traceId,
-                    username,
-                    startTime);
+                    voiceStream, outputStream, null, speaker, speakerType, text, lang, traceId, username, startTime);
 
             try {
                 voiceStream.close();
@@ -263,8 +242,12 @@ public class TtsApi {
     }
 
     private ResponseEntity<StreamingResponseBody> doSpeakByTtsService(
-            String speaker, TtsSpeakerType speakerType, String text, String lang,
-            String cacheFile, FileStore fileStore) {
+            String speaker,
+            TtsSpeakerType speakerType,
+            String text,
+            String lang,
+            String cacheFile,
+            FileStore fileStore) {
         String traceId = TraceUtils.getTraceId();
         User currentUser = AccountUtils.currentUserOrNull();
         String username = currentUser != null ? currentUser.getUsername() : null;
@@ -273,7 +256,6 @@ public class TtsApi {
         if (speakerType == TtsSpeakerType.WAV && !ttsService.existsVoice(speaker)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Speaker " + speaker + " not found!");
         }
-
 
         OutputStream cacheFileStream = null;
         if (cacheFile != null) {
@@ -287,7 +269,8 @@ public class TtsApi {
         AtomicBoolean failed = new AtomicBoolean(false);
 
         StreamingResponseBody streamingResponseBody = outputStream -> {
-            ttsService.speak(speaker, speakerType, text, lang)
+            ttsService
+                    .speak(speaker, speakerType, text, lang)
                     .thenAccept(voiceStream -> pipeTransfer(
                             voiceStream,
                             outputStream,
@@ -324,21 +307,22 @@ public class TtsApi {
                 .body(streamingResponseBody);
     }
 
-    private void pipeTransfer(InputStream voiceStream,
-                              OutputStream outputStream,
-                              OutputStream extraOutputStream,
-                              String speaker,
-                              TtsSpeakerType speakerType,
-                              String text,
-                              String lang,
-                              String traceId,
-                              String username,
-                              AtomicLong startTime) {
+    private void pipeTransfer(
+            InputStream voiceStream,
+            OutputStream outputStream,
+            OutputStream extraOutputStream,
+            String speaker,
+            TtsSpeakerType speakerType,
+            String text,
+            String lang,
+            String traceId,
+            String username,
+            AtomicLong startTime) {
         TraceUtils.putTraceAttribute("traceId", traceId);
         TraceUtils.putTraceAttribute("username", username);
 
         String traceInfo = new TraceUtils.TraceInfoBuilder()
-                .args(new String[]{speaker, speakerType.text(), text, lang})
+                .args(new String[] {speaker, speakerType.text(), text, lang})
                 .elapseTime(System.currentTimeMillis() - startTime.get())
                 .method("TtsApi::firstPackageReceived")
                 .status(TraceUtils.TraceStatus.SUCCESSFUL)
@@ -366,7 +350,7 @@ public class TtsApi {
             }
         } catch (IOException e) {
             traceInfo = new TraceUtils.TraceInfoBuilder()
-                    .args(new String[]{speaker, speakerType.text(), text, lang})
+                    .args(new String[] {speaker, speakerType.text(), text, lang})
                     .elapseTime(System.currentTimeMillis() - startTime.get())
                     .method("TtsApi::lastPackageReceived")
                     .status(TraceUtils.TraceStatus.FAILED)
@@ -378,7 +362,7 @@ public class TtsApi {
         }
 
         traceInfo = new TraceUtils.TraceInfoBuilder()
-                .args(new String[]{speaker, speakerType.text(), text, lang})
+                .args(new String[] {speaker, speakerType.text(), text, lang})
                 .elapseTime(System.currentTimeMillis() - startTime.get())
                 .method("TtsApi::lastPackageReceived")
                 .status(TraceUtils.TraceStatus.SUCCESSFUL)
@@ -389,12 +373,13 @@ public class TtsApi {
     }
 
     private String getCachePath(ChatMessageRecord messageRecord) {
-        return "%s/%s-%s-%d.%s".formatted(
-                CACHE_HOME,
-                messageRecord.getSpeakerType().text(),
-                messageRecord.getSpeaker().replaceAll(" ", ""),
-                messageRecord.getId(),
-                ttsService.audioFormat());
+        return "%s/%s-%s-%d.%s"
+                .formatted(
+                        CACHE_HOME,
+                        messageRecord.getSpeakerType().text(),
+                        messageRecord.getSpeaker().replaceAll(" ", ""),
+                        messageRecord.getId(),
+                        ttsService.audioFormat());
     }
 
     private static String getDisplayMessage(String message) {
@@ -413,8 +398,7 @@ public class TtsApi {
 
         String reply = processedReply.toString().trim();
 
-        if ((reply.startsWith("\"") || reply.startsWith("“"))
-                && (reply.endsWith("\"") || reply.endsWith("”"))) {
+        if ((reply.startsWith("\"") || reply.startsWith("“")) && (reply.endsWith("\"") || reply.endsWith("”"))) {
             reply = reply.substring(1, reply.length() - 1);
         }
 

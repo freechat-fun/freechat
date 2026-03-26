@@ -7,6 +7,17 @@ import fun.freechat.service.cache.LongPeriodCache;
 import fun.freechat.util.HttpUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotBlank;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
@@ -20,18 +31,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Controller
 @Slf4j
@@ -84,7 +83,6 @@ public class DocController {
         return "api";
     }
 
-
     @GetMapping(value = "/public/openapi/v3/api-docs/{lang}/{group}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @LongPeriodCache(keyBy = "'DocController::localizedApiDocs_' + #p1 + '_' + #p2")
@@ -126,7 +124,7 @@ public class DocController {
     private JsonNode replaceValue(JsonNode value, Map.Entry<Object, Object> property) {
         Object propertyValue = property.getValue();
         // type-safe mapping
-        return switch(value.getNodeType()) {
+        return switch (value.getNodeType()) {
             case STRING -> TextNode.valueOf(propertyValue.toString());
             case BOOLEAN -> {
                 if (propertyValue instanceof Boolean booleanValue) {

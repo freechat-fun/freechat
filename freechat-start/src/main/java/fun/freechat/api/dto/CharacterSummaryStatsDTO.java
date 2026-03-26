@@ -5,11 +5,10 @@ import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.CharacterInfo;
 import fun.freechat.model.InteractiveStats;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.List;
 
 @Schema(description = "Character summary content, including interactive statistical information")
 @Data
@@ -17,12 +16,16 @@ import java.util.List;
 public class CharacterSummaryStatsDTO extends CharacterSummaryDTO {
     @Schema(description = "View count")
     private Long viewCount;
+
     @Schema(description = "Reference count")
     private Long referCount;
+
     @Schema(description = "Recommendation count")
     private Long recommendCount;
+
     @Schema(description = "Score count")
     private Long scoreCount;
+
     @Schema(description = "Average score")
     private Long score;
 
@@ -31,8 +34,7 @@ public class CharacterSummaryStatsDTO extends CharacterSummaryDTO {
         if (characterInfoPair == null || stats == null) {
             return null;
         }
-        CharacterSummaryStatsDTO dto =
-                CommonUtils.convert(characterInfoPair.getLeft(), CharacterSummaryStatsDTO.class);
+        CharacterSummaryStatsDTO dto = CommonUtils.convert(characterInfoPair.getLeft(), CharacterSummaryStatsDTO.class);
         dto.setUsername(AccountUtils.userIdToName(characterInfoPair.getLeft().getUserId()));
         dto.setTags(characterInfoPair.getRight());
         dto.setViewCount(stats.getViewCount());

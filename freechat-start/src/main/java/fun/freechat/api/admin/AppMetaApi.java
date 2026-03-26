@@ -20,8 +20,7 @@ public class AppMetaApi {
     @Operation(
             operationId = "getAppMeta",
             summary = "Get Application Information",
-            description = "Get application information to accurately locate the corresponding project version."
-    )
+            description = "Get application information to accurately locate the corresponding project version.")
     @GetMapping("/meta")
     public AppMetaDTO meta() {
         String buildNumber = AppMetaUtils.getBuildNumber().substring(0, BUILD_NUM_LEN);

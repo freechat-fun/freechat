@@ -5,7 +5,10 @@ import dev.langchain4j.model.embedding.EmbeddingModel;
 
 public interface EmbeddingModelService {
     EmbeddingModel modelForLang(String lang);
+
     TokenCountEstimator tokenCountEstimatorForLang(String lang);
+
     String queryPrefixForLang(String lang);
+
     int dimensionForLang(String lang);
 }

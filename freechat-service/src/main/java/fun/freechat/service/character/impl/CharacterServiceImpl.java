@@ -1,5 +1,9 @@
 package fun.freechat.service.character.impl;
 
+import static dev.langchain4j.internal.Utils.getOrDefault;
+import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
+
 import fun.freechat.mapper.*;
 import fun.freechat.model.*;
 import fun.freechat.service.cache.LongPeriodCache;
@@ -17,6 +21,8 @@ import fun.freechat.service.util.InfoUtils;
 import fun.freechat.service.util.SortSpecificationWrapper;
 import fun.freechat.util.IdUtils;
 import fun.freechat.util.PojoUtils;
+import java.util.*;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -38,13 +44,6 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Stream;
-
-import static dev.langchain4j.internal.Utils.getOrDefault;
-import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
-
 @Service
 @Slf4j
 @SuppressWarnings({"unused", "rawtypes"})
@@ -52,28 +51,37 @@ public class CharacterServiceImpl implements CharacterService {
     private static final String CACHE_KEY_PREFIX = "CharacterService_";
     private static final String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "_character_' + ";
     private static final String BACKEND_CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "_backend_' + ";
-    private static final String DEFAULT_BACKEND_CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "_default_backend_' + ";
+    private static final String DEFAULT_BACKEND_CACHE_KEY_SPEL_PREFIX =
+            "'" + CACHE_KEY_PREFIX + "_default_backend_' + ";
     private static final String BACKEND_CHARACTER_ID_CACHE_KEY_PREFIX = CACHE_KEY_PREFIX + "_backend_character_id_";
-    private static final String BACKEND_CHARACTER_ID_CACHE_KEY_SPEL_PREFIX = "'" + BACKEND_CHARACTER_ID_CACHE_KEY_PREFIX + "' + ";
+    private static final String BACKEND_CHARACTER_ID_CACHE_KEY_SPEL_PREFIX =
+            "'" + BACKEND_CHARACTER_ID_CACHE_KEY_PREFIX + "' + ";
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
+
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
+
     @Autowired
     private CharacterInfoMapper characterInfoMapper;
+
     @Autowired
     private CharacterBackendMapper characterBackendMapper;
+
     @Autowired
     private TagMapper tagMapper;
+
     @Autowired
     private OrgService orgService;
+
     @Autowired
     private InteractiveStatsMapper interactiveStatsMapper;
 
     private QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder wrapQueryExpression(
             QueryExpressionDSL<SelectModel> c, String currentUserId) {
-        return c.where(Info.visibility,
+        return c.where(
+                Info.visibility,
                 isIn(Visibility.PUBLIC.text(), Visibility.PUBLIC_ORG.text()),
                 or(Info.userId, isEqualTo(currentUserId)));
     }
@@ -116,9 +124,9 @@ public class CharacterServiceImpl implements CharacterService {
         if (info == null) {
             return null;
         }
-        List<String> tags = tagMapper.select(c ->
-                        c.where(TagDynamicSqlSupport.referType, isEqualTo(InfoType.CHARACTER.text()))
-                                .and(TagDynamicSqlSupport.referId, isEqualTo(info.getCharacterUid())))
+        List<String> tags = tagMapper
+                .select(c -> c.where(TagDynamicSqlSupport.referType, isEqualTo(InfoType.CHARACTER.text()))
+                        .and(TagDynamicSqlSupport.referId, isEqualTo(info.getCharacterUid())))
                 .stream()
                 .map(Tag::getContent)
                 .distinct()
@@ -132,9 +140,9 @@ public class CharacterServiceImpl implements CharacterService {
         if (infoPair == null) {
             return null;
         }
-        List<CharacterBackend> backends = characterBackendMapper.select(c ->
-                        c.where(CharacterBackendDynamicSqlSupport.characterUid,
-                                isEqualTo(infoPair.getLeft().getCharacterUid())));
+        List<CharacterBackend> backends = characterBackendMapper.select(c -> c.where(
+                CharacterBackendDynamicSqlSupport.characterUid,
+                isEqualTo(infoPair.getLeft().getCharacterUid())));
 
         return Triple.of(infoPair.getLeft(), infoPair.getRight(), backends);
     }
@@ -166,9 +174,7 @@ public class CharacterServiceImpl implements CharacterService {
     private void doCreate(Pair<CharacterInfo, List<String>> infoPair) {
         CharacterInfo info = infoPair.getLeft();
         Date now = new Date();
-        int rows = characterInfoMapper.insertSelective(info
-                .withGmtCreate(now)
-                .withGmtModified(now));
+        int rows = characterInfoMapper.insertSelective(info.withGmtCreate(now).withGmtModified(now));
         if (rows <= 0) {
             throw new IllegalStateException("Insert character " + info.getName() + " failed!");
         }
@@ -198,11 +204,9 @@ public class CharacterServiceImpl implements CharacterService {
         var table = fields.from(Info.table, "c");
         List<String> tags = InfoUtils.trimListElements(query.getWhere().getTags());
         if (CollectionUtils.isNotEmpty(tags)) {
-            table.leftJoin(TagDynamicSqlSupport.tag, "t")
-                    .on(Info.characterUid, equalTo(TagDynamicSqlSupport.referId));
-
+            table.leftJoin(TagDynamicSqlSupport.tag, "t").on(Info.characterUid, equalTo(TagDynamicSqlSupport.referId));
         }
-        List<String> orderByStats =  new LinkedList<>(InfoUtils.trimListElements(query.getOrderBy()));
+        List<String> orderByStats = new LinkedList<>(InfoUtils.trimListElements(query.getOrderBy()));
         orderByStats.retainAll(StatsType.fieldNames());
         if (!orderByStats.isEmpty()) {
             table.leftJoin(InteractiveStatsDynamicSqlSupport.interactiveStats, "i")
@@ -217,12 +221,13 @@ public class CharacterServiceImpl implements CharacterService {
         boolean hasDraft;
         if (StringUtils.isBlank(visibilityStr)) {
             if (StringUtils.isBlank(userIdStr) || userIdStr.equals(user.getUserId())) {
-                conditions.and(Info.visibility, isNotEqualTo(Visibility.HIDDEN.text()))
+                conditions
+                        .and(Info.visibility, isNotEqualTo(Visibility.HIDDEN.text()))
                         .and(Info.userId, isEqualTo(user.getUserId()));
                 hasDraft = true;
             } else {
-                conditions.and(Info.visibility,
-                                isIn(Visibility.PUBLIC.text(), Visibility.PUBLIC_ORG.text()))
+                conditions
+                        .and(Info.visibility, isIn(Visibility.PUBLIC.text(), Visibility.PUBLIC_ORG.text()))
                         .and(Info.userId, isEqualTo(userIdStr));
                 hasDraft = false;
             }
@@ -240,11 +245,13 @@ public class CharacterServiceImpl implements CharacterService {
             }
         }
         // name
-        conditions.and(Info.name,
-                isLike(query.getWhere().getName()).filter(StringUtils::isNotBlank).map(s -> s + "%"));
+        conditions.and(
+                Info.name,
+                isLike(query.getWhere().getName())
+                        .filter(StringUtils::isNotBlank)
+                        .map(s -> s + "%"));
         // lang
-        conditions.and(Info.lang,
-                isEqualTo(query.getWhere().getLang()).filter(StringUtils::isNotBlank));
+        conditions.and(Info.lang, isEqualTo(query.getWhere().getLang()).filter(StringUtils::isNotBlank));
         // priority
         Boolean highPriority = query.getWhere().getHighPriority();
         if (highPriority != null) {
@@ -262,7 +269,9 @@ public class CharacterServiceImpl implements CharacterService {
         String commonText = query.getWhere().getText();
         if (StringUtils.isNotBlank(commonText)) {
             var commonTextCondition = isLike(commonText).map(s -> "%" + s + "%");
-            conditions.and(Info.name, commonTextCondition,
+            conditions.and(
+                    Info.name,
+                    commonTextCondition,
                     or(Info.description, commonTextCondition),
                     or(Info.profile, commonTextCondition),
                     or(Info.chatStyle, commonTextCondition));
@@ -284,20 +293,15 @@ public class CharacterServiceImpl implements CharacterService {
             if (orderByInfo.length < 2 || !"asc".equalsIgnoreCase(orderByInfo[1])) {
                 orderByField = orderByField.descending();
             }
-            orderByFields.add(SortSpecificationWrapper.of(
-                    orderByStats.contains(orderBy) ? "i" : "c", orderByField));
+            orderByFields.add(SortSpecificationWrapper.of(orderByStats.contains(orderBy) ? "i" : "c", orderByField));
         }
         if (CollectionUtils.isNotEmpty(orderByFields)) {
             conditions.orderBy(orderByFields);
         }
 
         // limits
-        Optional.ofNullable(query.getLimit())
-                .filter(limit -> limit > 0)
-                .ifPresent(conditions::limit);
-        Optional.ofNullable(query.getOffset())
-                .filter(offset -> offset > 0)
-                .ifPresent(conditions::offset);
+        Optional.ofNullable(query.getLimit()).filter(limit -> limit > 0).ifPresent(conditions::limit);
+        Optional.ofNullable(query.getOffset()).filter(offset -> offset > 0).ifPresent(conditions::offset);
 
         return Pair.of(conditions.build().render(RenderingStrategies.MYBATIS3), hasDraft);
     }
@@ -305,8 +309,7 @@ public class CharacterServiceImpl implements CharacterService {
     private Stream<Pair<CharacterInfo, List<String>>> doSearch(
             Query query, User user, QueryExpressionDSL.FromGatherer<SelectModel> fields) {
         var statement = getSelectStatement(query, user, fields);
-        return characterInfoMapper.selectMany(statement.getLeft())
-                .stream()
+        return characterInfoMapper.selectMany(statement.getLeft()).stream()
                 .filter(info -> filterVisibility(info, user))
                 .peek(info -> handleDraft(info, statement.getRight()))
                 .map(this::toInfoPair)
@@ -326,24 +329,24 @@ public class CharacterServiceImpl implements CharacterService {
     @Override
     public List<Pair<CharacterInfo, List<String>>> search(Query query, User user) {
         /*
-select distinct c.user_id, c.character_id, c.visibility... \
-  from character_info c \
-  left join tag t on c.character_id = t.refer_id \
-  where t.refer_type = 'character' \
-  and ((c.visibility = 'public' and c.user_id = '{userId}') or c.user_id = '{me}') \
-  and t.content in '{tags}' \
-  and c.name like '{name}%' \
-  and c.lang = '{lang}' \
-  and c.priority = {priority} \
-  and c.version > 0 \
-  and (c.name like '%{text}%' or \
-    c.description like '%{text}%' or \
-    c.profile like '%{text}%' or \
-    c.chat_style like '%{text}%' \
-  ) \
-  order by c.{orderBy[0]}, p.{orderBy[1]}... \
-  limit {limit} offset {offset}; \
-         */
+        select distinct c.user_id, c.character_id, c.visibility... \
+          from character_info c \
+          left join tag t on c.character_id = t.refer_id \
+          where t.refer_type = 'character' \
+          and ((c.visibility = 'public' and c.user_id = '{userId}') or c.user_id = '{me}') \
+          and t.content in '{tags}' \
+          and c.name like '{name}%' \
+          and c.lang = '{lang}' \
+          and c.priority = {priority} \
+          and c.version > 0 \
+          and (c.name like '%{text}%' or \
+            c.description like '%{text}%' or \
+            c.profile like '%{text}%' or \
+            c.chat_style like '%{text}%' \
+          ) \
+          order by c.{orderBy[0]}, p.{orderBy[1]}... \
+          limit {limit} offset {offset}; \
+                 */
         List<BasicColumn> columns = new LinkedList<>(Info.summaryColumns());
         if (CollectionUtils.isNotEmpty(query.getOrderBy())) {
             for (String orderBy : query.getOrderBy()) {
@@ -432,17 +435,15 @@ select distinct c.user_id, c.character_id, c.visibility... \
         if (characterId == null) {
             return false;
         }
-        CharacterInfo characterInfo = characterInfoMapper.selectOne(c ->
-                        c.where(Info.userId, isEqualTo(user.getUserId()))
-                                .and(Info.characterId, isEqualTo(characterId)))
+        CharacterInfo characterInfo = characterInfoMapper
+                .selectOne(c ->
+                        c.where(Info.userId, isEqualTo(user.getUserId())).and(Info.characterId, isEqualTo(characterId)))
                 .orElse(null);
-        if (characterInfo == null ||
-                Visibility.HIDDEN.text().equals(characterInfo.getVisibility())) {
+        if (characterInfo == null || Visibility.HIDDEN.text().equals(characterInfo.getVisibility())) {
             return false;
         }
         Date now = new Date();
-        characterInfo.withGmtModified(new Date())
-                .withVisibility(Visibility.HIDDEN.text());
+        characterInfo.withGmtModified(new Date()).withVisibility(Visibility.HIDDEN.text());
         int rows = characterInfoMapper.updateByPrimaryKeySelective(characterInfo);
         return rows > 0;
     }
@@ -453,8 +454,8 @@ select distinct c.user_id, c.character_id, c.visibility... \
         if (characterId == null) {
             return false;
         }
-        int rows = characterInfoMapper.delete(c -> c.where(Info.characterId, isEqualTo(characterId))
-                .and(Info.userId, isEqualTo(user.getUserId())));
+        int rows = characterInfoMapper.delete(
+                c -> c.where(Info.characterId, isEqualTo(characterId)).and(Info.userId, isEqualTo(user.getUserId())));
         return rows > 0;
     }
 
@@ -465,8 +466,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 .where(Info.userId, isEqualTo(user.getUserId()))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        List<Long> ids = characterInfoMapper.selectMany(statement)
-                .stream()
+        List<Long> ids = characterInfoMapper.selectMany(statement).stream()
                 .map(CharacterInfo::getCharacterId)
                 .toList();
 
@@ -481,8 +481,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 .and(Info.name, isEqualTo(name))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        List<Long> ids = characterInfoMapper.selectMany(statement)
-                .stream()
+        List<Long> ids = characterInfoMapper.selectMany(statement).stream()
                 .map(CharacterInfo::getCharacterId)
                 .toList();
 
@@ -497,8 +496,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 .and(Info.characterUid, isEqualTo(characterUid))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        List<Long> ids = characterInfoMapper.selectMany(statement)
-                .stream()
+        List<Long> ids = characterInfoMapper.selectMany(statement).stream()
                 .map(CharacterInfo::getCharacterId)
                 .toList();
 
@@ -515,7 +513,8 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 }
             }
             session.commit();
-            CacheUtils.longPeriodCacheEvict(deletedIds.stream().map(id -> CACHE_KEY_PREFIX + id).toList());
+            CacheUtils.longPeriodCacheEvict(
+                    deletedIds.stream().map(id -> CACHE_KEY_PREFIX + id).toList());
         } catch (Exception e) {
             log.error("Failed to delete characters", e);
             deletedIds.clear();
@@ -540,14 +539,14 @@ select distinct c.user_id, c.character_id, c.visibility... \
 
     @Override
     public Pair<CharacterInfo, List<String>> summary(Long characterId, User user) {
-        var fields = select(Info.summaryColumns())
-                .from(Info.table);
+        var fields = select(Info.summaryColumns()).from(Info.table);
 
         var statement = wrapQueryExpression(fields, user.getUserId())
                 .and(Info.characterId, isEqualTo(characterId))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        return characterInfoMapper.selectOne(statement)
+        return characterInfoMapper
+                .selectOne(statement)
                 .filter(info -> filterVisibility(info, user))
                 .map(this::toInfoPair)
                 .orElse(null);
@@ -555,15 +554,13 @@ select distinct c.user_id, c.character_id, c.visibility... \
 
     @Override
     public List<Pair<CharacterInfo, List<String>>> summary(Collection<Long> characterIds, User user) {
-        var fields = select(Info.summaryColumns())
-                .from(Info.table);
+        var fields = select(Info.summaryColumns()).from(Info.table);
 
         var statement = wrapQueryExpression(fields, user.getUserId())
                 .and(Info.characterId, isIn(characterIds))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        return characterInfoMapper.selectMany(statement)
-                .stream()
+        return characterInfoMapper.selectMany(statement).stream()
                 .filter(info -> filterVisibility(info, user))
                 .map(this::toInfoPair)
                 .toList();
@@ -585,8 +582,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
 
     @Override
     public CharacterInfo summaryByUid(String characterUid, User user) {
-        var fields = select(Info.summaryColumns())
-                .from(Info.table);
+        var fields = select(Info.summaryColumns()).from(Info.table);
 
         var statement = wrapQueryExpression(fields, user.getUserId())
                 .and(Info.characterUid, isEqualTo(characterUid))
@@ -601,8 +597,8 @@ select distinct c.user_id, c.character_id, c.visibility... \
     @Override
     @LongPeriodCache(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public Triple<CharacterInfo, List<String>, List<CharacterBackend>> details(Long characterId, User user) {
-        return characterInfoMapper.selectOne(c -> wrapQueryExpression(c, user.getUserId())
-                        .and(Info.characterId, isEqualTo(characterId)))
+        return characterInfoMapper
+                .selectOne(c -> wrapQueryExpression(c, user.getUserId()).and(Info.characterId, isEqualTo(characterId)))
                 .filter(info -> filterVisibility(info, user))
                 .map(this::toInfoPair)
                 .map(this::toInfoTriple)
@@ -610,9 +606,10 @@ select distinct c.user_id, c.character_id, c.visibility... \
     }
 
     @Override
-    public List<Triple<CharacterInfo, List<String>, List<CharacterBackend>>> details(Collection<Long> characterIds, User user) {
-        return characterInfoMapper.select(c -> wrapQueryExpression(c, user.getUserId())
-                        .and(Info.characterId, isIn(characterIds)))
+    public List<Triple<CharacterInfo, List<String>, List<CharacterBackend>>> details(
+            Collection<Long> characterIds, User user) {
+        return characterInfoMapper
+                .select(c -> wrapQueryExpression(c, user.getUserId()).and(Info.characterId, isIn(characterIds)))
                 .stream()
                 .filter(info -> filterVisibility(info, user))
                 .map(this::toInfoPair)
@@ -630,14 +627,15 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        return characterInfoMapper.selectMany(statement)
-                .stream()
+        return characterInfoMapper.selectMany(statement).stream()
                 .map(info -> {
-                    InteractiveStats stats = interactiveStatsMapper.selectOne(c ->
-                                    c.where(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.CHARACTER.text()))
-                                            .and(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(info.getCharacterUid()))
-                                            .orderBy(InteractiveStatsDynamicSqlSupport.gmtModified.descending())
-                                            .limit(1))
+                    InteractiveStats stats = interactiveStatsMapper
+                            .selectOne(c -> c.where(
+                                            InteractiveStatsDynamicSqlSupport.referType,
+                                            isEqualTo(InfoType.CHARACTER.text()))
+                                    .and(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(info.getCharacterUid()))
+                                    .orderBy(InteractiveStatsDynamicSqlSupport.gmtModified.descending())
+                                    .limit(1))
                             .orElse(null);
                     return Triple.of(info.getCharacterId(), info.getVersion(), stats);
                 })
@@ -656,7 +654,10 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        return characterInfoMapper.selectOne(statement).map(CharacterInfo::getCharacterId).orElse(null);
+        return characterInfoMapper
+                .selectOne(statement)
+                .map(CharacterInfo::getCharacterId)
+                .orElse(null);
     }
 
     @Override
@@ -672,7 +673,10 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        return characterInfoMapper.selectOne(statement).map(CharacterInfo::getCharacterId).orElse(null);
+        return characterInfoMapper
+                .selectOne(statement)
+                .map(CharacterInfo::getCharacterId)
+                .orElse(null);
     }
 
     @Override
@@ -732,7 +736,10 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        return characterInfoMapper.selectOne(statement).map(CharacterInfo::getUserId).orElse(null);
+        return characterInfoMapper
+                .selectOne(statement)
+                .map(CharacterInfo::getUserId)
+                .orElse(null);
     }
 
     @Override
@@ -745,7 +752,10 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        return characterInfoMapper.selectOne(statement).map(CharacterInfo::getUserId).orElse(null);
+        return characterInfoMapper
+                .selectOne(statement)
+                .map(CharacterInfo::getUserId)
+                .orElse(null);
     }
 
     @Override
@@ -757,7 +767,10 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        return characterInfoMapper.selectOne(statement).map(CharacterInfo::getCharacterUid).orElse(null);
+        return characterInfoMapper
+                .selectOne(statement)
+                .map(CharacterInfo::getCharacterUid)
+                .orElse(null);
     }
 
     @Override
@@ -771,7 +784,10 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        return characterInfoMapper.selectOne(statement).map(CharacterInfo::getName).orElse(null);
+        return characterInfoMapper
+                .selectOne(statement)
+                .map(CharacterInfo::getName)
+                .orElse(null);
     }
 
     @Override
@@ -826,8 +842,8 @@ select distinct c.user_id, c.character_id, c.visibility... \
             return;
         }
 
-        List<CharacterBackend> defaultBackends = characterBackendMapper.select(c ->
-                c.where(CharacterBackendDynamicSqlSupport.backendId, isNotEqualTo(characterBackend.getBackendId()))
+        List<CharacterBackend> defaultBackends = characterBackendMapper.select(
+                c -> c.where(CharacterBackendDynamicSqlSupport.backendId, isNotEqualTo(characterBackend.getBackendId()))
                         .and(CharacterBackendDynamicSqlSupport.characterUid, isEqualTo(characterUid))
                         .and(CharacterBackendDynamicSqlSupport.isDefault, isEqualTo((byte) 1)));
 
@@ -840,12 +856,13 @@ select distinct c.user_id, c.character_id, c.visibility... \
     }
 
     private void ensureDefaultBackend(String characterUid, Date now) {
-        List<CharacterBackend> defaultBackends = characterBackendMapper.select(c ->
-                c.where(CharacterBackendDynamicSqlSupport.characterUid, isEqualTo(characterUid))
+        List<CharacterBackend> defaultBackends = characterBackendMapper.select(
+                c -> c.where(CharacterBackendDynamicSqlSupport.characterUid, isEqualTo(characterUid))
                         .and(CharacterBackendDynamicSqlSupport.isDefault, isEqualTo((byte) 1)));
 
         if (CollectionUtils.isEmpty(defaultBackends)) {
-            characterBackendMapper.select(c -> c.where(CharacterBackendDynamicSqlSupport.characterUid, isEqualTo(characterUid)))
+            characterBackendMapper
+                    .select(c -> c.where(CharacterBackendDynamicSqlSupport.characterUid, isEqualTo(characterUid)))
                     .stream()
                     .findAny()
                     .ifPresent(backend -> characterBackendMapper.updateByPrimaryKeySelective(
@@ -866,8 +883,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
             int rows = characterBackendMapper.insertSelective(characterBackend
                     .withGmtCreate(now)
                     .withGmtModified(now)
-                    .withProactiveChatWaitingTime(
-                            getOrDefault(characterBackend.getProactiveChatWaitingTime(), 0))
+                    .withProactiveChatWaitingTime(getOrDefault(characterBackend.getProactiveChatWaitingTime(), 0))
                     .withBackendId(IdUtils.newId()));
 
             if (rows > 0) {
@@ -886,10 +902,11 @@ select distinct c.user_id, c.character_id, c.visibility... \
     }
 
     @Override
-    @Caching(evict = {
-            @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = DEFAULT_BACKEND_CACHE_KEY_SPEL_PREFIX + "#p0"),
-            @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = BACKEND_CACHE_KEY_SPEL_PREFIX + "#p1")
-    })
+    @Caching(
+            evict = {
+                @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = DEFAULT_BACKEND_CACHE_KEY_SPEL_PREFIX + "#p0"),
+                @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = BACKEND_CACHE_KEY_SPEL_PREFIX + "#p1")
+            })
     public boolean removeBackend(String characterUid, String characterBackendId) {
         int rows = characterBackendMapper.deleteByPrimaryKey(characterBackendId);
         if (rows > 0) {
@@ -900,24 +917,25 @@ select distinct c.user_id, c.character_id, c.visibility... \
     }
 
     @Override
-    @Caching(evict = {
-            @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = DEFAULT_BACKEND_CACHE_KEY_SPEL_PREFIX + "#p0.characterUid"),
-            @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = BACKEND_CACHE_KEY_SPEL_PREFIX + "#p0.backendId")
-    })
+    @Caching(
+            evict = {
+                @CacheEvict(
+                        cacheNames = LONG_PERIOD_CACHE_NAME,
+                        key = DEFAULT_BACKEND_CACHE_KEY_SPEL_PREFIX + "#p0.characterUid"),
+                @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = BACKEND_CACHE_KEY_SPEL_PREFIX + "#p0.backendId")
+            })
     public boolean updateBackend(CharacterBackend characterBackend) {
         int rows = 0;
         SqlSession session = sqlSessionFactory.openSession();
         try {
             Date now = new Date();
-            rows = characterBackendMapper.updateByPrimaryKeySelective(characterBackend
-                    .withGmtModified(now)
-                    .withCharacterUid(null));
+            rows = characterBackendMapper.updateByPrimaryKeySelective(
+                    characterBackend.withGmtModified(now).withCharacterUid(null));
 
             if (rows > 0) {
                 ensureDefaultBackend(characterBackend, now);
 
-                CharacterBackendEvent event = new CharacterBackendEvent(
-                        null, characterBackend.getBackendId());
+                CharacterBackendEvent event = new CharacterBackendEvent(null, characterBackend.getBackendId());
                 eventPublisher.publishEvent(event);
             }
         } catch (Exception e) {
@@ -930,10 +948,11 @@ select distinct c.user_id, c.character_id, c.visibility... \
     }
 
     @Override
-    @Caching(evict = {
-            @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = DEFAULT_BACKEND_CACHE_KEY_SPEL_PREFIX + "#p0"),
-            @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = BACKEND_CACHE_KEY_SPEL_PREFIX + "#p1")
-    })
+    @Caching(
+            evict = {
+                @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = DEFAULT_BACKEND_CACHE_KEY_SPEL_PREFIX + "#p0"),
+                @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = BACKEND_CACHE_KEY_SPEL_PREFIX + "#p1")
+            })
     public boolean setDefaultBackend(String characterUid, String characterBackendId) {
         return updateBackend(new CharacterBackend()
                 .withCharacterUid(characterUid)
@@ -944,8 +963,8 @@ select distinct c.user_id, c.character_id, c.visibility... \
     @Override
     @LongPeriodCache(keyBy = DEFAULT_BACKEND_CACHE_KEY_SPEL_PREFIX + "#p0")
     public CharacterBackend getDefaultBackend(String characterUid) {
-        return characterBackendMapper.selectOne(c ->
-                c.where(CharacterBackendDynamicSqlSupport.characterUid, isEqualTo(characterUid))
+        return characterBackendMapper
+                .selectOne(c -> c.where(CharacterBackendDynamicSqlSupport.characterUid, isEqualTo(characterUid))
                         .and(CharacterBackendDynamicSqlSupport.isDefault, isEqualTo((byte) 1)))
                 .orElse(null);
     }
@@ -963,16 +982,15 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 .where(CharacterBackendDynamicSqlSupport.characterUid, isEqualTo(characterUid))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        return characterBackendMapper.selectMany(statement)
-                .stream()
+        return characterBackendMapper.selectMany(statement).stream()
                 .map(CharacterBackend::getBackendId)
                 .toList();
     }
 
     @Override
     public List<CharacterBackend> listBackends(String characterUid) {
-        return characterBackendMapper.select(c ->
-                c.where(CharacterBackendDynamicSqlSupport.characterUid, isEqualTo(characterUid)));
+        return characterBackendMapper.select(
+                c -> c.where(CharacterBackendDynamicSqlSupport.characterUid, isEqualTo(characterUid)));
     }
 
     @Override
@@ -983,8 +1001,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        List<String> characterUidList = characterInfoMapper.selectMany(statement)
-                .stream()
+        List<String> characterUidList = characterInfoMapper.selectMany(statement).stream()
                 .map(CharacterInfo::getCharacterUid)
                 .toList();
 
@@ -992,8 +1009,8 @@ select distinct c.user_id, c.character_id, c.visibility... \
             return 0;
         }
 
-        return characterBackendMapper.delete(c ->
-                c.where(CharacterBackendDynamicSqlSupport.characterUid, isIn(characterUidList)));
+        return characterBackendMapper.delete(
+                c -> c.where(CharacterBackendDynamicSqlSupport.characterUid, isIn(characterUidList)));
     }
 
     @Override
@@ -1015,11 +1032,15 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        return characterBackendMapper.selectOne(statement).map(CharacterBackend::getCharacterUid).orElse(null);
+        return characterBackendMapper
+                .selectOne(statement)
+                .map(CharacterBackend::getCharacterUid)
+                .orElse(null);
     }
 
     private static class Info {
-        public static final CharacterInfoDynamicSqlSupport.CharacterInfo table = CharacterInfoDynamicSqlSupport.characterInfo;
+        public static final CharacterInfoDynamicSqlSupport.CharacterInfo table =
+                CharacterInfoDynamicSqlSupport.characterInfo;
         public static final SqlColumn<Long> characterId = CharacterInfoDynamicSqlSupport.characterId;
         public static final SqlColumn<String> characterUid = CharacterInfoDynamicSqlSupport.characterUid;
         public static final SqlColumn<Date> gmtCreate = CharacterInfoDynamicSqlSupport.gmtCreate;
@@ -1064,8 +1085,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
                     Info.defaultScene,
                     Info.description,
                     Info.lang,
-                    Info.priority
-            );
+                    Info.priority);
         }
     }
 }

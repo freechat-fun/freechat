@@ -1,11 +1,10 @@
 package fun.freechat.service.cache;
 
-import org.springframework.cache.annotation.Cacheable;
-
-import java.lang.annotation.*;
-
 import static fun.freechat.service.util.CacheUtils.KEY_GENERATOR;
 import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
+
+import java.lang.annotation.*;
+import org.springframework.cache.annotation.Cacheable;
 
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

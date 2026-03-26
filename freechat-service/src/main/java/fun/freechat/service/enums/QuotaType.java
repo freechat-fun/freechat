@@ -7,6 +7,7 @@ public enum QuotaType {
     MESSAGES,
     TOKENS,
     NONE;
+
     public static QuotaType of(String text) {
         if (StringUtils.isBlank(text)) {
             return NONE;

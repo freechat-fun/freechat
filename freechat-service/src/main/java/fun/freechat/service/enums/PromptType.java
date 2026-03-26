@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 public enum PromptType {
     STRING,
     CHAT;
+
     public static PromptType of(String text) {
         if (StringUtils.isBlank(text)) {
             return STRING;

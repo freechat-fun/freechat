@@ -7,15 +7,14 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @Slf4j
@@ -28,30 +27,35 @@ public class OpenApiConfig {
         OpenAPI openAPI = new OpenAPI();
         if (securityHeaderName == null && securityParameterName == null) {
             openAPI.components(new Components()
-                            .addSecuritySchemes("bearerAuth", new SecurityScheme()
-                                    .type(SecurityScheme.Type.HTTP)
-                                    .scheme("bearer")))
+                            .addSecuritySchemes(
+                                    "bearerAuth",
+                                    new SecurityScheme()
+                                            .type(SecurityScheme.Type.HTTP)
+                                            .scheme("bearer")))
                     .addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
         } else {
             Components components = new Components();
             SecurityRequirement securityRequirement = new SecurityRequirement();
             if (securityHeaderName != null) {
-                components.addSecuritySchemes("SysApiTokenHeader", new SecurityScheme()
-                        .type(SecurityScheme.Type.APIKEY)
-                        .in(SecurityScheme.In.HEADER)
-                        .name(securityHeaderName));
+                components.addSecuritySchemes(
+                        "SysApiTokenHeader",
+                        new SecurityScheme()
+                                .type(SecurityScheme.Type.APIKEY)
+                                .in(SecurityScheme.In.HEADER)
+                                .name(securityHeaderName));
                 securityRequirement.addList("SysApiTokenHeader");
             }
 
             if (securityParameterName != null) {
-                components.addSecuritySchemes("SysApiTokenParameter", new SecurityScheme()
-                        .type(SecurityScheme.Type.APIKEY)
-                        .in(SecurityScheme.In.QUERY)
-                        .name(securityParameterName));
+                components.addSecuritySchemes(
+                        "SysApiTokenParameter",
+                        new SecurityScheme()
+                                .type(SecurityScheme.Type.APIKEY)
+                                .in(SecurityScheme.In.QUERY)
+                                .name(securityParameterName));
                 securityRequirement.addList("SysApiTokenParameter");
             }
-            openAPI.components(components)
-                    .addSecurityItem(securityRequirement);
+            openAPI.components(components).addSecurityItem(securityRequirement);
         }
 
         openAPI.info(new Info()

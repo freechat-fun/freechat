@@ -1,32 +1,27 @@
 package fun.freechat.util;
 
+import static fun.freechat.AbstractIntegrationTest.ollama;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import fun.freechat.api.dto.AiModelInfoDTO;
 import fun.freechat.model.User;
 import fun.freechat.service.account.SysUserService;
 import fun.freechat.service.ai.AiApiKeyService;
 import fun.freechat.service.ai.MaskedAiApiKey;
 import fun.freechat.service.enums.ModelProvider;
+import java.util.List;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.util.List;
-
-import static fun.freechat.AbstractIntegrationTest.ollama;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 @Component
 public class TestAiApiKeyUtils implements ApplicationContextAware {
     private static SysUserService userService;
     private static AiApiKeyService aiApiKeyService;
 
-    public static void addAiApiKey(String userId,
-                                   String name,
-                                   ModelProvider provider,
-                                   String token,
-                                   boolean enabled) {
+    public static void addAiApiKey(String userId, String name, ModelProvider provider, String token, boolean enabled) {
         User user = userService.loadByUserId(userId);
         assertNotNull(user);
         aiApiKeyService.create(user, name, provider, token, enabled);

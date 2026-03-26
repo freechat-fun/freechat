@@ -5,6 +5,9 @@ import fun.freechat.service.account.MaskedApiToken;
 import fun.freechat.service.account.SysApiTokenService;
 import fun.freechat.service.account.SysAuthorityService;
 import fun.freechat.service.account.SysUserService;
+import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -12,10 +15,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
-
-import java.util.Collections;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -37,13 +36,13 @@ public class TestAccountUtils implements ApplicationContextAware {
         }
 
         if (CollectionUtils.isNotEmpty(roles)) {
-            authorityService.update(user.getUserId(),
+            authorityService.update(
+                    user.getUserId(),
                     roles.stream().map(AuthorityUtils::fromRole).collect(Collectors.toSet()));
         }
 
         final User activeUser = user;
-        String apiToken = apiTokenService.list(activeUser)
-                .stream()
+        String apiToken = apiTokenService.list(activeUser).stream()
                 .findAny()
                 .map(MaskedApiToken::getToken)
                 .orElseGet(() -> apiTokenService.create(activeUser));

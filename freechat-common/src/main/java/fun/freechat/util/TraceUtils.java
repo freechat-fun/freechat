@@ -1,16 +1,15 @@
 package fun.freechat.util;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
-
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 @SuppressWarnings("unused")
 public class TraceUtils {
@@ -180,7 +179,8 @@ public class TraceUtils {
             String methodInfo = PLACEHOLDER;
             if (method != null) {
                 if (method instanceof Method methodObj) {
-                    String className = shortenClassName(methodObj.getDeclaringClass().getCanonicalName());
+                    String className =
+                            shortenClassName(methodObj.getDeclaringClass().getCanonicalName());
                     String methodName = methodObj.getName();
                     methodInfo = className + "::" + methodName;
                 } else if (method instanceof String) {
@@ -188,13 +188,12 @@ public class TraceUtils {
                 }
             }
 
-            String statusInfo = Optional.ofNullable(status).map(TraceStatus::info).orElse(PLACEHOLDER);
+            String statusInfo =
+                    Optional.ofNullable(status).map(TraceStatus::info).orElse(PLACEHOLDER);
 
             String argsInfo = PLACEHOLDER;
             if (args != null && args.length > 0) {
-                argsInfo = Arrays.stream(args)
-                        .map(PojoUtils::object2JsonString)
-                        .collect(Collectors.joining(COMMA));
+                argsInfo = Arrays.stream(args).map(PojoUtils::object2JsonString).collect(Collectors.joining(COMMA));
             }
             String responseInfo = Optional.ofNullable(response)
                     .map(PojoUtils::object2JsonString)
@@ -206,15 +205,23 @@ public class TraceUtils {
                     .map(this::wrap)
                     .orElse(PLACEHOLDER);
 
-            return wrap(traceId) + SEPARATOR +
-                    wrap(username) + SEPARATOR +
-                    methodInfo + SEPARATOR +
-                    statusInfo + SEPARATOR +
-                    elapseTime + SEPARATOR +
-                    argsInfo + SEPARATOR +
-                    responseInfo + SEPARATOR +
-                    throwableMessage + SEPARATOR +
-                    wrap(extInfo);
+            return wrap(traceId)
+                    + SEPARATOR
+                    + wrap(username)
+                    + SEPARATOR
+                    + methodInfo
+                    + SEPARATOR
+                    + statusInfo
+                    + SEPARATOR
+                    + elapseTime
+                    + SEPARATOR
+                    + argsInfo
+                    + SEPARATOR
+                    + responseInfo
+                    + SEPARATOR
+                    + throwableMessage
+                    + SEPARATOR
+                    + wrap(extInfo);
         }
     }
 

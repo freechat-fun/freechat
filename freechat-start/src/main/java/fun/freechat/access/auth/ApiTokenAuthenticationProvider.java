@@ -1,10 +1,16 @@
 package fun.freechat.access.auth;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 import fun.freechat.access.user.SysUserDetails;
 import fun.freechat.model.User;
 import fun.freechat.service.account.SysApiTokenService;
 import fun.freechat.service.account.SysAuthorityService;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,41 +27,39 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.thymeleaf.util.ArrayUtils;
 
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
 @Component
 @SuppressWarnings("unused")
 public class ApiTokenAuthenticationProvider implements AuthenticationProvider, AuthenticationConverter {
     @Value("${auth.token.parameterName:#{null}}")
     private String parameterName;
+
     @Value("${auth.token.headerName:#{null}}")
     private String headerName;
+
     @Value("${auth.token.prefix:#{null}}")
     private String prefix;
+
     @Autowired
     private SysApiTokenService apiTokenService;
+
     @Autowired
     private SysAuthorityService authorityService;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     private SecurityContextHolderStrategy securityContextHolderStrategy =
             SecurityContextHolder.getContextHolderStrategy();
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        SysUserDetails sysUser = (SysUserDetails)authentication.getPrincipal();
-        Set<String> tokens = (Set<String>)authentication.getCredentials();
+        SysUserDetails sysUser = (SysUserDetails) authentication.getPrincipal();
+        Set<String> tokens = (Set<String>) authentication.getCredentials();
         if (sysUser == null) {
             throw new BadCredentialsException("Invalid tokens: " + String.join(",", tokens));
         }
 
-        ApiTokenAuthenticationToken authenticated = new ApiTokenAuthenticationToken(
-                sysUser, tokens, true);
+        ApiTokenAuthenticationToken authenticated = new ApiTokenAuthenticationToken(sysUser, tokens, true);
         authenticated.setDetails(authentication.getDetails());
         return authenticated;
     }
@@ -78,7 +82,8 @@ public class ApiTokenAuthenticationProvider implements AuthenticationProvider, A
 
         SysUserDetails sysUser = null;
         String currentUserId = null;
-        Authentication origAuthentication = securityContextHolderStrategy.getContext().getAuthentication();
+        Authentication origAuthentication =
+                securityContextHolderStrategy.getContext().getAuthentication();
         if (origAuthentication != null && origAuthentication.getPrincipal() instanceof User currentUser) {
             currentUserId = currentUser.getUserId();
         }
@@ -113,8 +118,7 @@ public class ApiTokenAuthenticationProvider implements AuthenticationProvider, A
             return null;
         }
         String[] tokens = request.getParameterValues(parameterName);
-        return ArrayUtils.isEmpty(tokens) ? null
-                : Arrays.stream(tokens).collect(Collectors.toSet());
+        return ArrayUtils.isEmpty(tokens) ? null : Arrays.stream(tokens).collect(Collectors.toSet());
     }
 
     private Set<String> resolveTokensFromHeader(HttpServletRequest request) {
@@ -124,7 +128,8 @@ public class ApiTokenAuthenticationProvider implements AuthenticationProvider, A
         } else {
             tokenValue = request.getHeader(headerName);
         }
-        return StringUtils.isBlank(tokenValue) ? null
+        return StringUtils.isBlank(tokenValue)
+                ? null
                 : Arrays.stream(tokenValue.trim().split(",")).collect(Collectors.toSet());
     }
 

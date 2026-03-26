@@ -1,5 +1,8 @@
 package fun.freechat.service.prompt.impl;
 
+import static dev.langchain4j.data.message.ContentType.TEXT;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import dev.langchain4j.data.message.*;
@@ -18,6 +21,7 @@ import fun.freechat.service.util.InfoUtils;
 import fun.freechat.service.util.PromptUtils;
 import fun.freechat.service.util.SortSpecificationWrapper;
 import fun.freechat.util.IdUtils;
+import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -36,11 +40,6 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-
-import static dev.langchain4j.data.message.ContentType.TEXT;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
-
 @Service
 @Slf4j
 @SuppressWarnings({"unused", "rawtypes"})
@@ -50,20 +49,26 @@ public class PromptServiceImpl implements PromptService {
 
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
+
     @Autowired
     private PromptInfoMapper promptInfoMapper;
+
     @Autowired
     private TagMapper tagMapper;
+
     @Autowired
     private AiModelMapper aiModelMapper;
+
     @Autowired
     private OrgService orgService;
+
     @Autowired
     private InteractiveStatsMapper interactiveStatsMapper;
 
     private QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder wrapQueryExpression(
             QueryExpressionDSL<SelectModel> c, String currentUserId) {
-        return c.where(Info.visibility,
+        return c.where(
+                Info.visibility,
                 isIn(Visibility.PUBLIC.text(), Visibility.PUBLIC_ORG.text()),
                 or(Info.userId, isEqualTo(currentUserId)));
     }
@@ -125,16 +130,16 @@ public class PromptServiceImpl implements PromptService {
         if (info == null) {
             return null;
         }
-        List<String> tags = tagMapper.select(c ->
-                        c.where(TagDynamicSqlSupport.referType, isEqualTo(InfoType.PROMPT.text()))
-                                .and(TagDynamicSqlSupport.referId, isEqualTo(info.getPromptUid())))
+        List<String> tags = tagMapper
+                .select(c -> c.where(TagDynamicSqlSupport.referType, isEqualTo(InfoType.PROMPT.text()))
+                        .and(TagDynamicSqlSupport.referId, isEqualTo(info.getPromptUid())))
                 .stream()
                 .map(Tag::getContent)
                 .distinct()
                 .toList();
-        List<String> aiModels = aiModelMapper.select(c ->
-                        c.where(AiModelDynamicSqlSupport.referType, isEqualTo(InfoType.PROMPT.text()))
-                                .and(AiModelDynamicSqlSupport.referId, isEqualTo(info.getPromptUid())))
+        List<String> aiModels = aiModelMapper
+                .select(c -> c.where(AiModelDynamicSqlSupport.referType, isEqualTo(InfoType.PROMPT.text()))
+                        .and(AiModelDynamicSqlSupport.referId, isEqualTo(info.getPromptUid())))
                 .stream()
                 .map(AiModel::getModelId)
                 .distinct()
@@ -158,9 +163,7 @@ public class PromptServiceImpl implements PromptService {
     private void doCreate(Triple<PromptInfo, List<String>, List<String>> infoTriple) {
         PromptInfo info = infoTriple.getLeft();
         Date now = new Date();
-        int rows = promptInfoMapper.insertSelective(info
-                .withGmtCreate(now)
-                .withGmtModified(now));
+        int rows = promptInfoMapper.insertSelective(info.withGmtCreate(now).withGmtModified(now));
         if (rows <= 0) {
             throw new RuntimeException("Insert prompt " + info.getName() + " failed!");
         }
@@ -207,16 +210,14 @@ public class PromptServiceImpl implements PromptService {
         var table = fields.from(Info.table, "p");
         List<String> tags = InfoUtils.trimListElements(query.getWhere().getTags());
         if (CollectionUtils.isNotEmpty(tags)) {
-            table.leftJoin(TagDynamicSqlSupport.tag, "t")
-                    .on(Info.promptUid, equalTo(TagDynamicSqlSupport.referId));
-
+            table.leftJoin(TagDynamicSqlSupport.tag, "t").on(Info.promptUid, equalTo(TagDynamicSqlSupport.referId));
         }
         List<String> modelIds = InfoUtils.trimListElements(query.getWhere().getAiModels());
         if (CollectionUtils.isNotEmpty(modelIds)) {
             table.leftJoin(AiModelDynamicSqlSupport.aiModel, "m")
                     .on(Info.promptUid, equalTo(AiModelDynamicSqlSupport.referId));
         }
-        List<String> orderByStats =  new LinkedList<>(InfoUtils.trimListElements(query.getOrderBy()));
+        List<String> orderByStats = new LinkedList<>(InfoUtils.trimListElements(query.getOrderBy()));
         orderByStats.retainAll(StatsType.fieldNames());
         if (!orderByStats.isEmpty()) {
             table.leftJoin(InteractiveStatsDynamicSqlSupport.interactiveStats, "i")
@@ -230,12 +231,13 @@ public class PromptServiceImpl implements PromptService {
         boolean hasDraft;
         if (StringUtils.isBlank(visibilityStr)) {
             if (StringUtils.isBlank(userIdStr) || userIdStr.equals(user.getUserId())) {
-                conditions.and(Info.visibility, isNotEqualTo(Visibility.HIDDEN.text()))
+                conditions
+                        .and(Info.visibility, isNotEqualTo(Visibility.HIDDEN.text()))
                         .and(Info.userId, isEqualTo(user.getUserId()));
                 hasDraft = true;
             } else {
-                conditions.and(Info.visibility,
-                                isIn(Visibility.PUBLIC.text(), Visibility.PUBLIC_ORG.text()))
+                conditions
+                        .and(Info.visibility, isIn(Visibility.PUBLIC.text(), Visibility.PUBLIC_ORG.text()))
                         .and(Info.userId, isEqualTo(userIdStr));
                 hasDraft = false;
             }
@@ -253,14 +255,15 @@ public class PromptServiceImpl implements PromptService {
             }
         }
         // name
-        conditions.and(Info.name,
-                isLike(query.getWhere().getName()).filter(StringUtils::isNotBlank).map(s -> s + "%"));
+        conditions.and(
+                Info.name,
+                isLike(query.getWhere().getName())
+                        .filter(StringUtils::isNotBlank)
+                        .map(s -> s + "%"));
         // type
-        conditions.and(Info.type,
-                isEqualTo(query.getWhere().getType()).filter(StringUtils::isNotBlank));
+        conditions.and(Info.type, isEqualTo(query.getWhere().getType()).filter(StringUtils::isNotBlank));
         // lang
-        conditions.and(Info.lang,
-                isEqualTo(query.getWhere().getLang()).filter(StringUtils::isNotBlank));
+        conditions.and(Info.lang, isEqualTo(query.getWhere().getLang()).filter(StringUtils::isNotBlank));
         // version
         if (!hasDraft) {
             conditions.and(Info.version, isGreaterThan(0));
@@ -269,7 +272,9 @@ public class PromptServiceImpl implements PromptService {
         String commonText = query.getWhere().getText();
         if (StringUtils.isNotBlank(commonText)) {
             var commonTextCondition = isLike(commonText).map(s -> "%" + commonText + "%");
-            conditions.and(Info.name, commonTextCondition,
+            conditions.and(
+                    Info.name,
+                    commonTextCondition,
                     or(Info.description, commonTextCondition),
                     or(Info.template, commonTextCondition),
                     or(Info.example, commonTextCondition));
@@ -294,20 +299,15 @@ public class PromptServiceImpl implements PromptService {
             if (orderByInfo.length < 2 || !"asc".equalsIgnoreCase(orderByInfo[1])) {
                 orderByField = orderByField.descending();
             }
-            orderByFields.add(SortSpecificationWrapper.of(
-                    orderByStats.contains(orderBy) ? "i" : "p", orderByField));
+            orderByFields.add(SortSpecificationWrapper.of(orderByStats.contains(orderBy) ? "i" : "p", orderByField));
         }
         if (CollectionUtils.isNotEmpty(orderByFields)) {
             conditions.orderBy(orderByFields);
         }
 
         // limits
-        Optional.ofNullable(query.getLimit())
-                .filter(limit -> limit > 0)
-                .ifPresent(conditions::limit);
-        Optional.ofNullable(query.getOffset())
-                .filter(offset -> offset > 0)
-                .ifPresent(conditions::offset);
+        Optional.ofNullable(query.getLimit()).filter(limit -> limit > 0).ifPresent(conditions::limit);
+        Optional.ofNullable(query.getOffset()).filter(offset -> offset > 0).ifPresent(conditions::offset);
 
         return Pair.of(conditions.build().render(RenderingStrategies.MYBATIS3), hasDraft);
     }
@@ -315,8 +315,7 @@ public class PromptServiceImpl implements PromptService {
     private List<Triple<PromptInfo, List<String>, List<String>>> doSearch(
             Query query, User user, QueryExpressionDSL.FromGatherer<SelectModel> fields) {
         var statement = getSelectStatement(query, user, fields);
-        return promptInfoMapper.selectMany(statement.getLeft())
-                .stream()
+        return promptInfoMapper.selectMany(statement.getLeft()).stream()
                 .filter(info -> filterVisibility(info, user))
                 .peek(info -> handleDraft(info, statement.getRight()))
                 .map(this::toInfoTriple)
@@ -328,26 +327,26 @@ public class PromptServiceImpl implements PromptService {
     @Override
     public List<Triple<PromptInfo, List<String>, List<String>>> search(Query query, User user) {
         /*
-select distinct p.user_id, p.prompt_id, p.visibility... \
-  from prompt_info p \
-  left join tag t on p.prompt_id = t.refer_id \
-  left join ai_model m on p.prompt_id = m.refer_id \
-  where t.refer_type = 'prompt' and m.refer_type= 'prompt' \
-  and ((p.visibility = 'public' and p.user_id = '{userId}') or p.user_id = '{me}') \
-  and t.content in '{tags}' \
-  and m.model_id in '{modelIds}' \
-  and p.name like '{name}%' \
-  and p.lang = '{lang}' \
-  and p.version > 0 \
-  and (p.name like '%{text}%' or \
-    p.description like '%{text}%' or \
-    p.template like '%{text}%' or \
-    p.example like '%{text}%' \
-  ) \
-  order by p.{orderBy[0]}, p.{orderBy[1]}... \
-  limit {limit} offset {offset} \
-;
-         */
+        select distinct p.user_id, p.prompt_id, p.visibility... \
+          from prompt_info p \
+          left join tag t on p.prompt_id = t.refer_id \
+          left join ai_model m on p.prompt_id = m.refer_id \
+          where t.refer_type = 'prompt' and m.refer_type= 'prompt' \
+          and ((p.visibility = 'public' and p.user_id = '{userId}') or p.user_id = '{me}') \
+          and t.content in '{tags}' \
+          and m.model_id in '{modelIds}' \
+          and p.name like '{name}%' \
+          and p.lang = '{lang}' \
+          and p.version > 0 \
+          and (p.name like '%{text}%' or \
+            p.description like '%{text}%' or \
+            p.template like '%{text}%' or \
+            p.example like '%{text}%' \
+          ) \
+          order by p.{orderBy[0]}, p.{orderBy[1]}... \
+          limit {limit} offset {offset} \
+        ;
+                 */
 
         // fields
         List<BasicColumn> columns = new LinkedList<>(Info.summaryColumns());
@@ -443,8 +442,9 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
                 }
             }
             if (CollectionUtils.isNotEmpty(infoTriple.getRight())) {
-                aiModelMapper.delete(c -> c.where(AiModelDynamicSqlSupport.referId, isEqualTo(promptInfo.getPromptUid()))
-                        .and(AiModelDynamicSqlSupport.referType, isEqualTo(InfoType.PROMPT.text())));
+                aiModelMapper.delete(
+                        c -> c.where(AiModelDynamicSqlSupport.referId, isEqualTo(promptInfo.getPromptUid()))
+                                .and(AiModelDynamicSqlSupport.referType, isEqualTo(InfoType.PROMPT.text())));
                 Set<String> aiModelSet = new HashSet<>(infoTriple.getRight());
                 for (String aiModelId : aiModelSet) {
                     rows = aiModelMapper.insert(new AiModel()
@@ -475,17 +475,15 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
         if (promptId == null) {
             return false;
         }
-        PromptInfo promptInfo = promptInfoMapper.selectOne(c ->
-                c.where(Info.userId, isEqualTo(user.getUserId()))
-                        .and(Info.promptId, isEqualTo(promptId)))
+        PromptInfo promptInfo = promptInfoMapper
+                .selectOne(
+                        c -> c.where(Info.userId, isEqualTo(user.getUserId())).and(Info.promptId, isEqualTo(promptId)))
                 .orElse(null);
-        if (promptInfo == null ||
-                Visibility.HIDDEN.text().equals(promptInfo.getVisibility())) {
+        if (promptInfo == null || Visibility.HIDDEN.text().equals(promptInfo.getVisibility())) {
             return false;
         }
         Date now = new Date();
-        promptInfo.withGmtModified(new Date())
-                .withVisibility(Visibility.HIDDEN.text());
+        promptInfo.withGmtModified(new Date()).withVisibility(Visibility.HIDDEN.text());
         int rows = promptInfoMapper.updateByPrimaryKeySelective(promptInfo);
         return rows > 0;
     }
@@ -496,8 +494,8 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
         if (promptId == null) {
             return false;
         }
-        int rows = promptInfoMapper.delete(c -> c.where(Info.promptId, isEqualTo(promptId))
-                    .and(Info.userId, isEqualTo(user.getUserId())));
+        int rows = promptInfoMapper.delete(
+                c -> c.where(Info.promptId, isEqualTo(promptId)).and(Info.userId, isEqualTo(user.getUserId())));
         return rows > 0;
     }
 
@@ -512,7 +510,8 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
                 }
             }
             session.commit();
-            CacheUtils.longPeriodCacheEvict(deletedIds.stream().map(id -> CACHE_KEY_PREFIX + id).toList());
+            CacheUtils.longPeriodCacheEvict(
+                    deletedIds.stream().map(id -> CACHE_KEY_PREFIX + id).toList());
         } catch (Exception e) {
             log.error("Failed to delete prompts", e);
             deletedIds.clear();
@@ -532,8 +531,7 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
                 .and(Info.name, isEqualTo(name))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        List<Long> ids = promptInfoMapper.selectMany(statement)
-                .stream()
+        List<Long> ids = promptInfoMapper.selectMany(statement).stream()
                 .map(PromptInfo::getPromptId)
                 .toList();
 
@@ -547,8 +545,7 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
                 .where(Info.userId, isEqualTo(user.getUserId()))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        List<Long> ids = promptInfoMapper.selectMany(statement)
-                .stream()
+        List<Long> ids = promptInfoMapper.selectMany(statement).stream()
                 .map(PromptInfo::getPromptId)
                 .toList();
 
@@ -557,14 +554,14 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
 
     @Override
     public Triple<PromptInfo, List<String>, List<String>> summary(Long promptId, User user) {
-        var fields = select(Info.summaryColumns())
-                .from(Info.table);
+        var fields = select(Info.summaryColumns()).from(Info.table);
 
         var statement = wrapQueryExpression(fields, user.getUserId())
                 .and(Info.promptId, isEqualTo(promptId))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        return promptInfoMapper.selectOne(statement)
+        return promptInfoMapper
+                .selectOne(statement)
                 .filter(info -> filterVisibility(info, user))
                 .map(this::toInfoTriple)
                 .orElse(null);
@@ -572,15 +569,13 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
 
     @Override
     public List<Triple<PromptInfo, List<String>, List<String>>> summary(Collection<Long> promptIds, User user) {
-        var fields = select(Info.summaryColumns())
-                .from(Info.table);
+        var fields = select(Info.summaryColumns()).from(Info.table);
 
         var statement = wrapQueryExpression(fields, user.getUserId())
                 .and(Info.promptId, isIn(promptIds))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        return promptInfoMapper.selectMany(statement)
-                .stream()
+        return promptInfoMapper.selectMany(statement).stream()
                 .filter(info -> filterVisibility(info, user))
                 .map(this::toInfoTriple)
                 .toList();
@@ -589,8 +584,8 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
     @Override
     @LongPeriodCache(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public Triple<PromptInfo, List<String>, List<String>> details(Long promptId, User user) {
-        return promptInfoMapper.selectOne(c -> wrapQueryExpression(c, user.getUserId())
-                        .and(Info.promptId, isEqualTo(promptId)))
+        return promptInfoMapper
+                .selectOne(c -> wrapQueryExpression(c, user.getUserId()).and(Info.promptId, isEqualTo(promptId)))
                 .filter(info -> filterVisibility(info, user))
                 .map(this::toInfoTriple)
                 .orElse(null);
@@ -598,8 +593,8 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
 
     @Override
     public List<Triple<PromptInfo, List<String>, List<String>>> details(Collection<Long> promptIds, User user) {
-        return promptInfoMapper.select(c -> wrapQueryExpression(c, user.getUserId())
-                        .and(Info.promptId, isIn(promptIds)))
+        return promptInfoMapper
+                .select(c -> wrapQueryExpression(c, user.getUserId()).and(Info.promptId, isIn(promptIds)))
                 .stream()
                 .filter(info -> filterVisibility(info, user))
                 .map(this::toInfoTriple)
@@ -616,14 +611,15 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        return promptInfoMapper.selectMany(statement)
-                .stream()
+        return promptInfoMapper.selectMany(statement).stream()
                 .map(info -> {
-                    InteractiveStats stats = interactiveStatsMapper.selectOne(c ->
-                                    c.where(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.PROMPT.text()))
-                                            .and(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(info.getPromptUid()))
-                                            .orderBy(InteractiveStatsDynamicSqlSupport.gmtModified.descending())
-                                            .limit(1))
+                    InteractiveStats stats = interactiveStatsMapper
+                            .selectOne(c -> c.where(
+                                            InteractiveStatsDynamicSqlSupport.referType,
+                                            isEqualTo(InfoType.PROMPT.text()))
+                                    .and(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(info.getPromptUid()))
+                                    .orderBy(InteractiveStatsDynamicSqlSupport.gmtModified.descending())
+                                    .limit(1))
                             .orElse(null);
                     return Triple.of(info.getPromptId(), info.getVersion(), stats);
                 })
@@ -642,7 +638,10 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        return promptInfoMapper.selectOne(statement).map(PromptInfo::getPromptId).orElse(null);
+        return promptInfoMapper
+                .selectOne(statement)
+                .map(PromptInfo::getPromptId)
+                .orElse(null);
     }
 
     @Override
@@ -657,7 +656,10 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        return promptInfoMapper.selectOne(statement).map(PromptInfo::getPromptId).orElse(null);
+        return promptInfoMapper
+                .selectOne(statement)
+                .map(PromptInfo::getPromptId)
+                .orElse(null);
     }
 
     @Override
@@ -746,7 +748,10 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        return promptInfoMapper.selectOne(statement).map(PromptInfo::getPromptUid).orElse(null);
+        return promptInfoMapper
+                .selectOne(statement)
+                .map(PromptInfo::getPromptUid)
+                .orElse(null);
     }
 
     @Override
@@ -756,8 +761,10 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
         }
 
         return switch (format) {
-            case MUSTACHE -> PromptTemplate.from(promptTemplate).apply(variables).text();
-            case F_STRING -> FStringPromptTemplate.from(promptTemplate).apply(variables).text();
+            case MUSTACHE ->
+                PromptTemplate.from(promptTemplate).apply(variables).text();
+            case F_STRING ->
+                FStringPromptTemplate.from(promptTemplate).apply(variables).text();
         };
     }
 
@@ -779,14 +786,14 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
 
     private UserMessage apply(UserMessage original, Map<String, Object> variables, PromptFormat format) {
         List<Content> contents = original.contents().stream()
-                .map(content -> content.type() == TEXT ?
-                        TextContent.from(apply(((TextContent) content).text(), variables, format)) :
-                        content)
+                .map(content -> content.type() == TEXT
+                        ? TextContent.from(apply(((TextContent) content).text(), variables, format))
+                        : content)
                 .toList();
 
-        return StringUtils.isBlank(original.name()) ?
-                UserMessage.from(contents) :
-                UserMessage.from(original.name(), contents);
+        return StringUtils.isBlank(original.name())
+                ? UserMessage.from(contents)
+                : UserMessage.from(original.name(), contents);
     }
 
     @Override
@@ -800,7 +807,8 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
     }
 
     @Override
-    public ChatPromptContent apply(ChatPromptContent promptContent, Map<String, Object> variables, PromptFormat format) {
+    public ChatPromptContent apply(
+            ChatPromptContent promptContent, Map<String, Object> variables, PromptFormat format) {
         ChatPromptContent applied = new ChatPromptContent();
         applied.setSystem(apply(promptContent.getSystem(), variables, format));
 
@@ -814,9 +822,9 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
                 String textInput = inputs.getLeft();
                 if (inputs.getRight() != null) {
                     Pair<String, String> imageInfo = PromptUtils.parseDataMimeType(inputs.getRight());
-                    ImageContent imageContent = StringUtils.isBlank(imageInfo.getRight()) ?
-                            ImageContent.from(imageInfo.getLeft()) :
-                            ImageContent.from(imageInfo.getLeft(), imageInfo.getRight());
+                    ImageContent imageContent = StringUtils.isBlank(imageInfo.getRight())
+                            ? ImageContent.from(imageInfo.getLeft())
+                            : ImageContent.from(imageInfo.getLeft(), imageInfo.getRight());
                     messageToSend = UserMessage.from(List.of(TextContent.from(textInput), imageContent));
                 } else {
                     messageToSend = UserMessage.from(textInput);
@@ -838,7 +846,8 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
 
     @Override
     public Pair<String, PromptType> apply(Long promptId, Map<String, Object> variables, Boolean draft) {
-        PromptInfo promptInfo = promptInfoMapper.selectOne(c -> c.where(Info.promptId, isEqualTo(promptId)))
+        PromptInfo promptInfo = promptInfoMapper
+                .selectOne(c -> c.where(Info.promptId, isEqualTo(promptId)))
                 .orElse(null);
         if (promptInfo == null) {
             return null;
@@ -846,14 +855,14 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
 
         if (StringUtils.isNotBlank(promptInfo.getInputs())) {
             try {
-                Map<String, Object> inputs = InfoUtils.defaultMapper().readValue(
-                        promptInfo.getInputs(), new TypeReference<>() {});
+                Map<String, Object> inputs =
+                        InfoUtils.defaultMapper().readValue(promptInfo.getInputs(), new TypeReference<>() {});
                 for (Map.Entry<String, Object> input : inputs.entrySet()) {
                     String key = input.getKey();
                     Object value = input.getValue();
-                    if (variables.containsKey(key) ||
-                            value == null ||
-                            (value instanceof String strValue && StringUtils.isBlank(strValue))) {
+                    if (variables.containsKey(key)
+                            || value == null
+                            || (value instanceof String strValue && StringUtils.isBlank(strValue))) {
                         continue;
                     }
                     variables.put(input.getKey(), value);
@@ -861,10 +870,10 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
             } catch (JsonProcessingException e) {
                 log.warn("Failed to parse inputs from prompt {}", promptId);
             }
-
         }
-        String promptTemplate = BooleanUtils.isTrue(draft) && StringUtils.isNotBlank(promptInfo.getDraft()) ?
-                PromptUtils.getDraftTemplate(promptInfo.getDraft()) : promptInfo.getTemplate();
+        String promptTemplate = BooleanUtils.isTrue(draft) && StringUtils.isNotBlank(promptInfo.getDraft())
+                ? PromptUtils.getDraftTemplate(promptInfo.getDraft())
+                : promptInfo.getTemplate();
         PromptFormat format = PromptFormat.of(promptInfo.getFormat());
         PromptType type = PromptType.of(promptInfo.getType());
         if (type == PromptType.CHAT) {
