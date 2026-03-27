@@ -278,7 +278,7 @@ class ApiClient:
             )
 
         except ApiException as e:
-            raise e
+            raise
 
         return response_data
 
