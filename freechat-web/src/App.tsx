@@ -57,8 +57,15 @@ function App() {
               '--Transition-duration': '0.4s', // set to `none` to disable transition
               '--Sidebar-width': '240px',
               '--Header-height': '40px',
-              '--Footer-height': '42px',
+              '--Footer-height-base': '42px',
+              '--Footer-safe-area': '0px',
+              '--Footer-height':
+                'calc(var(--Footer-height-base) + var(--Footer-safe-area))',
               '--Footer-width': '80vw',
+              '--App-height-xs': 'calc(100dvh - var(--Footer-height))',
+            },
+            'html[data-ios-pwa="true"]': {
+              '--Footer-safe-area': 'env(safe-area-inset-bottom, 0px)',
             },
           })}
         />

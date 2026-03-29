@@ -47,7 +47,7 @@ export default function SidebarFrame() {
           pl: { xs: 'none', sm: '120px' },
           pr: { xs: 'none', sm: '120px' },
           maxHeight: {
-            xs: 'calc(100dvh - var(--Footer-height))',
+            xs: 'var(--App-height-xs)',
             sm: '100dvh',
           },
         }}

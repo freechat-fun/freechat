@@ -81,7 +81,7 @@ export default function ChatsPane(props: ChatsPaneProps) {
       sx={{
         borderRight: '1px solid',
         borderColor: 'divider',
-        height: { xs: 'calc(100dvh - var(--Footer-height))', sm: '100dvh' },
+        height: { xs: 'var(--App-height-xs)', sm: '100dvh' },
         overflowY: 'auto',
       }}
     >

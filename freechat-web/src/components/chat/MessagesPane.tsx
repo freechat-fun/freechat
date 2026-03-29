@@ -315,7 +315,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
   return (
     <Stack
       sx={{
-        height: { xs: 'calc(100dvh - var(--Footer-height))', sm: '100dvh' },
+        height: { xs: 'var(--App-height-xs)', sm: '100dvh' },
         display: 'flex',
         flexDirection: 'column',
         backgroundColor: theme.palette.background.paper,
