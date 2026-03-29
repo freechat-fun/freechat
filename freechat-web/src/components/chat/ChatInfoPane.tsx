@@ -91,7 +91,7 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
     <Stack
       sx={{
         p: 2,
-        height: { xs: 'calc(100dvh - var(--Footer-height))', sm: '100dvh' },
+        height: { xs: 'var(--App-height-xs)', sm: '100dvh' },
         overflowY: 'auto',
         gap: 1,
       }}

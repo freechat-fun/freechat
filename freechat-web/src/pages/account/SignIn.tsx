@@ -128,7 +128,7 @@ export default function SignIn() {
             display: 'flex',
             flexDirection: 'column',
             minHeight: {
-              xs: 'calc(100dvh - var(--Footer-height))',
+              xs: 'var(--App-height-xs)',
               sm: '100dvh',
             },
             maxWidth: '100%',
