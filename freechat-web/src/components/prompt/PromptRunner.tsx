@@ -295,7 +295,7 @@ export default function PromptRunner(props: PromptRunnerProps) {
                   <FormLabel>{k}</FormLabel>
                   <TinyInput
                     name={`input-${k}`}
-                    value={v}
+                    value={v ?? ''}
                     required={k === 'input'}
                     error={k === 'input' && !v}
                     multiline

@@ -204,7 +204,7 @@ export default function MessageInput(props: MessageInputProps) {
           placeholder="Type something here…"
           aria-label="Message"
           onChange={(e) => setTextAreaValue(e.target.value)}
-          value={assistantMessage || textAreaValue}
+          value={assistantMessage || textAreaValue || ''}
           multiline
           minRows={1}
           maxRows={5}
