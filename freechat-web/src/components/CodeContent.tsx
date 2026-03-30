@@ -1,77 +1,33 @@
-import React, { useRef, useEffect, PropsWithChildren } from 'react';
-import Prism from 'prismjs';
-import 'prismjs/themes/prism-okaidia.css';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/components/prism-jsx';
-import 'prismjs/components/prism-typescript';
-import 'prismjs/components/prism-tsx';
-import 'prismjs/components/prism-css';
-import 'prismjs/components/prism-markup';
-import 'prismjs/components/prism-uri';
-import 'prismjs/components/prism-json';
-import 'prismjs/components/prism-markdown';
-import 'prismjs/components/prism-dot';
-import 'prismjs/components/prism-bash';
-import 'prismjs/components/prism-java';
-import 'prismjs/components/prism-c';
-import 'prismjs/components/prism-cpp';
-import 'prismjs/components/prism-csharp';
-import 'prismjs/components/prism-python';
+import React, { PropsWithChildren } from 'react';
+import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'; 
 
 const CodeContent: React.FC<PropsWithChildren> = ({ children }) => {
-  const codeRef = useRef<HTMLPreElement>(null);
-
   const className =
-    typeof children === 'object' &&
-    children !== null &&
-    'props' in children &&
-    typeof children.props === 'object' &&
-    children.props !== null &&
-    'className' in children.props &&
-    typeof children.props.className === 'string'
+    typeof children === 'object' && children !== null && 'props' in children &&
+    typeof children.props === 'object' && children.props !== null &&
+    'className' in children.props && typeof children.props.className === 'string'
       ? (children.props.className ?? '')
       : '';
 
+  const match = /language-(\w+)/.exec(className || '');
+  const language = match ? match[1] : 'text';
+
   const codeText =
-    typeof children === 'object' &&
-    children !== null &&
-    'props' in children &&
-    typeof children.props === 'object' &&
-    children.props !== null &&
-    'children' in children.props &&
-    typeof children.props.children === 'string'
+    typeof children === 'object' && children !== null && 'props' in children &&
+    typeof children.props === 'object' && children.props !== null &&
+    'children' in children.props && typeof children.props.children === 'string'
       ? (children.props.children ?? '')
       : '';
 
-  useEffect(() => {
-    const highlightCode = async () => {
-      if (codeRef.current) {
-        let language = 'none';
-        const languageMatch = className?.match(/language-(\w+)/);
-        if (languageMatch) {
-          language = languageMatch[1];
-          try {
-            await import(
-              `/* @vite-ignore */prismjs/components/prism-${language}.js`
-            );
-          } catch {
-            console.error('PrismJS load language failed:', language);
-            language = 'none';
-          }
-        }
-        Prism.highlightElement(codeRef.current);
-      }
-    };
-
-    highlightCode();
-  }, [className]);
-
   return (
-    <pre>
-      <code ref={codeRef} className={className || 'language-none'}>
-        {codeText}
-      </code>
-    </pre>
+    <SyntaxHighlighter
+      style={vscDarkPlus}
+      language={language}
+      PreTag="div"
+    >
+      {String(codeText).replace(/\n$/, '')}
+    </SyntaxHighlighter>
   );
 };
 
