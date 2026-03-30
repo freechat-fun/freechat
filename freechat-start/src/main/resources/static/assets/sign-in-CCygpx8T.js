@@ -1,0 +1,1 @@
+var e=`或`,t=`用户`,n=`密码`,r={"Sign up!":`注册！`,"Sign in":`登录`,"Don't have an account?":`没有账号？`,"Continue with Google":`使用 Google 账号`,"Continue with GitHub":`使用 GitHub 账号`,"Continue with Aliyun":`使用 Aliyun 账号`,or:`或`,Username:t,Password:n,"Remember me":`记住我`,"Forgot your password?":`忘记密码？`,"I'm a guest":`我是游客`};export{n as Password,t as Username,r as default,e as or};
