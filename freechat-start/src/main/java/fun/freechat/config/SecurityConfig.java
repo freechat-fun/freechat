@@ -251,9 +251,9 @@ public class SecurityConfig {
 
         if (AppMetaUtils.isTestEnv()) {
             List<String> allowedOriginList = List.of(
-                    "http://localhost",
-                    "http://localhost:3000",
                     "http://127.0.0.1",
+                    "http://127.0.0.1:3000",
+                    "http://127.0.0.1:4173",
                     "http://127.0.0.1:8080"
             );
 
