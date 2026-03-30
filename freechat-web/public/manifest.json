@@ -1,0 +1,36 @@
+{
+  "name": "FreeChat | Character AI | Chat Agent",
+  "short_name": "FreeChat",
+  "description": "FreeChat uses AI to create your soul mate. (狐狸猜用AI创建属于您的心灵伴侣。)",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#201212",
+  "theme_color": "#201212",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "/img/freechat_light.png",
+      "sizes": "720x720",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/img/snapshot_m1.jpg",
+      "sizes": "332x720",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "FreeChat on mobile"
+    },
+    {
+      "src": "/img/snapshot_w1.jpg",
+      "sizes": "1370x720",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "FreeChat on desktop"
+    }
+  ]
+}
