@@ -629,7 +629,7 @@ const CharacterBackendSettings = forwardRef<
                 </InputLabel>
                 <Select
                   label={t('Builtin Voice')}
-                  value={ttsSpeakerIdx}
+                  value={ttsSpeakerIdx ?? ''}
                   onChange={(event) => setTtsSpeakerIdx(event.target.value)}
                   disabled={!enableTts || ttsSpeakerType !== 'idx'}
                   sx={{ flex: 1, maxWidth: '12rem' }}

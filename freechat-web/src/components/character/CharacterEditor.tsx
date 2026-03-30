@@ -92,17 +92,17 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
 
   const [recordUid, setRecordUid] = useState<string>();
   const [recordName, setRecordName] = useState<string>('');
-  const [nickname, setNickname] = useState<string>();
-  const [description, setDescription] = useState<string>();
+  const [nickname, setNickname] = useState('');
+  const [description, setDescription] = useState('');
   const [avatar, setAvatar] = useState<string>();
   const [picture, setPicture] = useState<string>();
   const [gender, setGender] = useState('other');
   const [lang, setLang] = useState('English');
-  const [profile, setProfile] = useState<string>();
-  const [greeting, setGreeting] = useState<string>();
-  const [chatStyle, setChatStyle] = useState<string>();
-  const [chatExample, setChatExample] = useState<string>();
-  const [defaultScene, setDefaultScene] = useState<string>();
+  const [profile, setProfile] = useState('');
+  const [greeting, setGreeting] = useState('');
+  const [chatStyle, setChatStyle] = useState('');
+  const [chatExample, setChatExample] = useState('');
+  const [defaultScene, setDefaultScene] = useState('');
 
   const [visibility, setVisibility] = useState<string>();
   const [tags, setTags] = useState<string[]>([]);
@@ -147,17 +147,17 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
 
       setRecordUid(draftRecord.characterUid);
       setRecordName(draftRecord.name ?? '');
-      setNickname(draftRecord.nickname);
-      setDescription(draftRecord.description);
+      setNickname(draftRecord.nickname ?? '');
+      setDescription(draftRecord.description ?? '');
       setAvatar(draftRecord.avatar);
       setPicture(draftRecord.picture);
       setGender(draftRecord.gender ?? 'other');
       setLang(draftRecord.lang ?? 'English');
-      setProfile(draftRecord.profile);
-      setGreeting(draftRecord.greeting);
-      setChatStyle(draftRecord.chatStyle);
-      setChatExample(draftRecord.chatExample);
-      setDefaultScene(draftRecord.defaultScene);
+      setProfile(draftRecord.profile ?? '');
+      setGreeting(draftRecord.greeting ?? '');
+      setChatStyle(draftRecord.chatStyle ?? '');
+      setChatExample(draftRecord.chatExample ?? '');
+      setDefaultScene(draftRecord.defaultScene ?? '');
       setVisibility(draftRecord.visibility ?? 'private');
       setTags(draftRecord.tags ?? []);
       setEditEnabled(true);
@@ -755,7 +755,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
                   name="nickname"
                   value={nickname || ''}
                   onChange={(event) =>
-                    setNickname(event.target.value || undefined)
+                    setNickname(event.target.value)
                   }
                   size="small"
                 />
@@ -865,7 +865,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
               minRows={1}
               value={chatStyle || ''}
               onChange={(event) =>
-                setChatStyle(event.target.value || undefined)
+                setChatStyle(event.target.value)
               }
             />
 
@@ -875,7 +875,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
               minRows={3}
               value={chatExample || ''}
               onChange={(event) =>
-                setChatExample(event.target.value || undefined)
+                setChatExample(event.target.value)
               }
             />
 
@@ -895,7 +895,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
               minRows={1}
               value={defaultScene || ''}
               onChange={(event) =>
-                setDefaultScene(event.target.value || undefined)
+                setDefaultScene(event.target.value)
               }
             />
 
@@ -904,7 +904,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
               name="info-greeting"
               minRows={1}
               value={greeting || ''}
-              onChange={(event) => setGreeting(event.target.value || undefined)}
+              onChange={(event) => setGreeting(event.target.value)}
             />
           </StyledStack>
           <LinePlaceholder />

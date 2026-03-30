@@ -164,7 +164,7 @@ export default function CharacterBackendsPane({
                 <TableCell>
                   <Radio
                     disabled={!editMode}
-                    value={backend.backendId}
+                    value={backend.backendId ?? ''}
                     checked={backend.isDefault}
                     name="backend-default"
                     onChange={(event) =>

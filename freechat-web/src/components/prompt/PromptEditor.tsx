@@ -119,15 +119,15 @@ export default function PromptEditor({
   const [editRecordName, setEditRecordName] = useState<string | null>(null);
   const [editRecordNameError, setEditRecordNameError] = useState(false);
 
-  const [recordName, setRecordName] = useState<string>();
-  const [description, setDescription] = useState<string>();
+  const [recordName, setRecordName] = useState('');
+  const [description, setDescription] = useState('');
   const [inputs, setInputs] = useState<{ [key: string]: any }>();
-  const [stringTemplate, setStringTemplate] = useState<string>();
-  const [system, setSystem] = useState<string>();
+  const [stringTemplate, setStringTemplate] = useState('');
+  const [system, setSystem] = useState('');
   const [userName, setUserName] = useState<string>();
-  const [userMessage, setUserMessage] = useState<string>();
+  const [userMessage, setUserMessage] = useState('');
   const [messages, setMessages] = useState<ChatMessageDTO[]>([]);
-  const [example, setExample] = useState<string>();
+  const [example, setExample] = useState('');
 
   const [visibility, setVisibility] = useState<string>();
   const [format, setFormat] = useState<string>('mustache');
@@ -142,8 +142,8 @@ export default function PromptEditor({
   const [editAssistantName, setEditAssistantName] = useState<
     string | undefined
   >('assistant');
-  const [editUserContent, setEditUserContent] = useState<string>();
-  const [editAssistantContent, setEditAssistantContent] = useState<string>();
+  const [editUserContent, setEditUserContent] = useState('');
+  const [editAssistantContent, setEditAssistantContent] = useState('');
 
   const originName = useRef<string>(undefined);
   const systemRef = useRef<HTMLDivElement>(null);
@@ -268,17 +268,17 @@ export default function PromptEditor({
 
       const draftRecord = { ...origRecord, ...draft };
 
-      setRecordName(draftRecord.name);
-      setDescription(draftRecord.description);
-      setStringTemplate(draftRecord.template);
-      setSystem(draftRecord.chatTemplate?.system);
+      setRecordName(draftRecord.name ?? '');
+      setDescription(draftRecord.description ?? '');
+      setStringTemplate(draftRecord.template ?? '');
+      setSystem(draftRecord.chatTemplate?.system ?? '');
       setUserName(draftRecord.chatTemplate?.messageToSend?.name ?? 'user');
       setUserMessage(
         draftRecord.chatTemplate?.messageToSend?.contents?.[0]?.content ||
           (draftRecord.format === 'f_string' ? '{input}' : '{{{input}}}')
       );
       setMessages(draftRecord.chatTemplate?.messages ?? []);
-      setExample(draftRecord.example);
+      setExample(draftRecord.example ?? '');
 
       setVisibility(draftRecord.visibility ?? 'private');
       setFormat(draftRecord.format ?? 'mustache');
@@ -1089,7 +1089,7 @@ export default function PromptEditor({
                           <TinyInput
                             disabled={k === 'input'}
                             name={`input-value-${k}`}
-                            value={v}
+                            value={v ?? ''}
                             multiline
                             fullWidth
                             onChange={(event) =>

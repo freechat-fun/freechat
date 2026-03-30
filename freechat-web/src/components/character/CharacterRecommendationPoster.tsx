@@ -169,7 +169,7 @@ const CharacterRecommendationPoster = forwardRef<
               variant="h3"
               sx={{
                 color: 'white',
-                '-webkit-text-stroke': '1px gray',
+                WebkitTextStroke: '1px gray',
                 textShadow: `
                 -1px -1px 0 gray,
                 1px -1px 0 gray,
