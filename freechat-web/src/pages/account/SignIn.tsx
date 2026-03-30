@@ -112,7 +112,7 @@ export default function SignIn() {
             zIndex: 1,
             display: 'flex',
             width: '100%',
-            justifyContent: 'flex-end',
+            justifyContent: 'center',
             backdropFilter: 'blur(12px)',
             backgroundColor: 'rgba(255 255 255 / 0.2)',
             flexBasis: '50%',
@@ -316,7 +316,7 @@ export default function SignIn() {
             right: 0,
             top: 0,
             bottom: 0,
-            left: 'clamp(0px, (100vw - var(--Collapsed-breakpoint)) * 999, 100vw - var(--Cover-width))',
+            left: 'clamp(0px, (100dvw - var(--Collapsed-breakpoint)) * 999, 100dvw - var(--Cover-width))',
             transition:
               'background-image var(--Transition-duration), left var(--Transition-duration) !important',
             transitionDelay: 'calc(var(--Transition-duration) + 0.1s)',
