@@ -61,7 +61,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
   const [errorMessage, setErrorMessage] = useState('');
   const [debugMode, setDebugMode] = useState(defaultDebugMode);
   const [background, setBackground] = useState('');
-  const [enableBackground, setEnableBackground] = useState(localStorage.getItem(ENABLE_BACKGROUND_KEY) === '1');
+  const [enableBackground, setEnableBackground] = useState(localStorage.getItem(ENABLE_BACKGROUND_KEY + '-' + (session?.context?.chatId ?? '')) !== '0');
 
   const proactiveChatHandler = useRef<number | null>(null);
 
@@ -183,15 +183,15 @@ export default function MessagesPane(props: MessagesPaneProps) {
   ]);
 
   useEffect(() => {
-    const savedEnableBackground = localStorage.getItem(ENABLE_BACKGROUND_KEY);
+    const savedEnableBackground = localStorage.getItem(ENABLE_BACKGROUND_KEY + '-' + (session?.context?.chatId ?? ''));
     if (savedEnableBackground) {
-      setEnableBackground(savedEnableBackground === '1');
+      setEnableBackground(savedEnableBackground !== '0');
     }
-  }, []);
+  }, [session?.context?.chatId]);
 
   useEffect(() => {
-    localStorage.setItem(ENABLE_BACKGROUND_KEY, enableBackground ? '1' : '0');
-  }, [enableBackground]);
+    localStorage.setItem(ENABLE_BACKGROUND_KEY + '-' + (session?.context?.chatId ?? ''), enableBackground ? '1' : '0');
+  }, [enableBackground, session?.context?.chatId]);
 
   useEffect(() => {
     if (proactiveChatHandler.current) {
@@ -333,7 +333,8 @@ export default function MessagesPane(props: MessagesPaneProps) {
         debugMode={debugMode}
         fullscreenMode={fullscreenMode}
         disabled={!!messageToSend}
-        enableBackground={background ? enableBackground : undefined}
+        disableBackgroundSetting={background === ''}
+        enableBackground={enableBackground && background !== ''}
         setEnableBackground={setEnableBackground}
         setDebugMode={setDebugMode}
         setFullscreenMode={setFullscreenMode}
