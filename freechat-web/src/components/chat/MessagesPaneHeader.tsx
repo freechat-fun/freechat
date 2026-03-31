@@ -37,6 +37,7 @@ type MessagesPaneHeaderProps = {
   debugMode?: boolean;
   fullscreenMode?: boolean;
   disabled?: boolean;
+  disableBackgroundSetting?: boolean;
   enableBackground?: boolean;
   setEnableBackground?: (enabled: boolean) => void;
   setDebugMode?: (debugMode: boolean) => void;
@@ -50,7 +51,8 @@ export default function MessagesPaneHeader(props: MessagesPaneHeaderProps) {
     debugMode,
     disabled = false,
     fullscreenMode = false,
-    enableBackground,
+    disableBackgroundSetting = false,
+    enableBackground = true,
     setEnableBackground,
     setDebugMode,
     setFullscreenMode,
@@ -179,7 +181,7 @@ export default function MessagesPaneHeader(props: MessagesPaneHeaderProps) {
             {t('Chat Information')}
           </MenuItem>
           <MenuItem
-            disabled={enableBackground === undefined}
+            disabled={disableBackgroundSetting}
             onClick={() => {
               setEnableBackground?.(!enableBackground);
               setOpenMenu(false);
