@@ -205,23 +205,23 @@ public class PromptServiceImpl implements PromptService {
     }
 
     private Pair<SelectStatementProvider, Boolean> getSelectStatement(
-            Query query, User user, QueryExpressionDSL.FromGatherer<SelectModel> fields) {
+            Query query, User user, QueryExpressionDSL<SelectModel> fields) {
         // join
         var table = fields.from(Info.table, "p");
         List<String> tags = InfoUtils.trimListElements(query.getWhere().getTags());
         if (CollectionUtils.isNotEmpty(tags)) {
-            table.leftJoin(TagDynamicSqlSupport.tag, "t").on(Info.promptUid, equalTo(TagDynamicSqlSupport.referId));
+            table.leftJoin(TagDynamicSqlSupport.tag, "t").on(Info.promptUid, isEqualTo(TagDynamicSqlSupport.referId));
         }
         List<String> modelIds = InfoUtils.trimListElements(query.getWhere().getAiModels());
         if (CollectionUtils.isNotEmpty(modelIds)) {
             table.leftJoin(AiModelDynamicSqlSupport.aiModel, "m")
-                    .on(Info.promptUid, equalTo(AiModelDynamicSqlSupport.referId));
+                    .on(Info.promptUid, isEqualTo(AiModelDynamicSqlSupport.referId));
         }
         List<String> orderByStats = new LinkedList<>(InfoUtils.trimListElements(query.getOrderBy()));
         orderByStats.retainAll(StatsType.fieldNames());
         if (!orderByStats.isEmpty()) {
             table.leftJoin(InteractiveStatsDynamicSqlSupport.interactiveStats, "i")
-                    .on(Info.promptUid, equalTo((InteractiveStatsDynamicSqlSupport.referId)));
+                    .on(Info.promptUid, isEqualTo((InteractiveStatsDynamicSqlSupport.referId)));
         }
         // conditions
         var conditions = table.where();
@@ -313,7 +313,7 @@ public class PromptServiceImpl implements PromptService {
     }
 
     private List<Triple<PromptInfo, List<String>, List<String>>> doSearch(
-            Query query, User user, QueryExpressionDSL.FromGatherer<SelectModel> fields) {
+            Query query, User user, QueryExpressionDSL<SelectModel> fields) {
         var statement = getSelectStatement(query, user, fields);
         return promptInfoMapper.selectMany(statement.getLeft()).stream()
                 .filter(info -> filterVisibility(info, user))

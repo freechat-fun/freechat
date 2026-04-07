@@ -97,7 +97,7 @@ public class InteractiveStatsServiceImpl implements InteractiveStatsService {
             return -1;
         }
         Date now = new Date();
-        QueryExpressionDSL.FromGatherer<SelectModel> fields;
+        QueryExpressionDSL<SelectModel> fields;
         if (statsType == StatsType.SCORE) {
             fields = select(
                     InteractiveStatsDynamicSqlSupport.id,
@@ -208,17 +208,17 @@ public class InteractiveStatsServiceImpl implements InteractiveStatsService {
                         fields.join(PromptInfoDynamicSqlSupport.promptInfo, "i")
                                 .on(
                                         InteractiveStatsDynamicSqlSupport.referId,
-                                        equalTo(PromptInfoDynamicSqlSupport.promptUid));
+                                        isEqualTo(PromptInfoDynamicSqlSupport.promptUid));
                     case AGENT ->
                         fields.join(AgentInfoDynamicSqlSupport.agentInfo, "i")
                                 .on(
                                         InteractiveStatsDynamicSqlSupport.referId,
-                                        equalTo(AgentInfoDynamicSqlSupport.agentUid));
+                                        isEqualTo(AgentInfoDynamicSqlSupport.agentUid));
                     case PLUGIN ->
                         fields.join(PluginInfoDynamicSqlSupport.pluginInfo, "i")
                                 .on(
                                         InteractiveStatsDynamicSqlSupport.referId,
-                                        equalTo(PluginInfoDynamicSqlSupport.pluginUid));
+                                        isEqualTo(PluginInfoDynamicSqlSupport.pluginUid));
                     default -> throw new IllegalStateException("Unexpected value: " + infoType);
                 };
         if (table == null) {

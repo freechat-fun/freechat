@@ -83,25 +83,25 @@ public class TagServiceImpl implements TagService {
             case CHARACTER -> {
                 statement
                         .leftJoin(CharacterInfoDynamicSqlSupport.characterInfo, "i")
-                        .on(TagDynamicSqlSupport.referId, equalTo(CharacterInfoDynamicSqlSupport.characterUid));
+                        .on(TagDynamicSqlSupport.referId, isEqualTo(CharacterInfoDynamicSqlSupport.characterUid));
                 visibilityColumn = CharacterInfoDynamicSqlSupport.visibility;
             }
             case PROMPT -> {
                 statement
                         .leftJoin(PromptInfoDynamicSqlSupport.promptInfo, "i")
-                        .on(TagDynamicSqlSupport.referId, equalTo(PromptInfoDynamicSqlSupport.promptUid));
+                        .on(TagDynamicSqlSupport.referId, isEqualTo(PromptInfoDynamicSqlSupport.promptUid));
                 visibilityColumn = PromptInfoDynamicSqlSupport.visibility;
             }
             case AGENT -> {
                 statement
                         .leftJoin(AgentInfoDynamicSqlSupport.agentInfo, "i")
-                        .on(TagDynamicSqlSupport.referId, equalTo(AgentInfoDynamicSqlSupport.agentUid));
+                        .on(TagDynamicSqlSupport.referId, isEqualTo(AgentInfoDynamicSqlSupport.agentUid));
                 visibilityColumn = AgentInfoDynamicSqlSupport.visibility;
             }
             case PLUGIN -> {
                 statement
                         .leftJoin(PluginInfoDynamicSqlSupport.pluginInfo, "i")
-                        .on(TagDynamicSqlSupport.referId, equalTo(PluginInfoDynamicSqlSupport.pluginUid));
+                        .on(TagDynamicSqlSupport.referId, isEqualTo(PluginInfoDynamicSqlSupport.pluginUid));
                 visibilityColumn = PluginInfoDynamicSqlSupport.visibility;
             }
             default -> {
