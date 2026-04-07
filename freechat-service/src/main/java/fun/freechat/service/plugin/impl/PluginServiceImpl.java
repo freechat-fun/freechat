@@ -215,8 +215,7 @@ public class PluginServiceImpl implements PluginService {
         }
     }
 
-    private SelectStatementProvider getSelectStatement(
-            Query query, User user, QueryExpressionDSL<SelectModel> fields) {
+    private SelectStatementProvider getSelectStatement(Query query, User user, QueryExpressionDSL<SelectModel> fields) {
         // join
         var table = fields.from(Info.table, "p");
         List<String> tags = InfoUtils.trimListElements(query.getWhere().getTags());

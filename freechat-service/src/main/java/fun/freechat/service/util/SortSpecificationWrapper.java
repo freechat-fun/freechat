@@ -27,7 +27,6 @@ public class SortSpecificationWrapper implements SortSpecification {
 
     @Override
     public @NonNull FragmentAndParameters renderForOrderBy(@NonNull RenderingContext renderingContext) {
-        return sortSpecification.renderForOrderBy(renderingContext)
-                .mapFragment(f -> prefix + f);
+        return sortSpecification.renderForOrderBy(renderingContext).mapFragment(f -> prefix + f);
     }
 }
