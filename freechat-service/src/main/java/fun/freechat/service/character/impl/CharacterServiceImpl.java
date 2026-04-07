@@ -204,7 +204,8 @@ public class CharacterServiceImpl implements CharacterService {
         var table = fields.from(Info.table, "c");
         List<String> tags = InfoUtils.trimListElements(query.getWhere().getTags());
         if (CollectionUtils.isNotEmpty(tags)) {
-            table.leftJoin(TagDynamicSqlSupport.tag, "t").on(Info.characterUid, isEqualTo(TagDynamicSqlSupport.referId));
+            table.leftJoin(TagDynamicSqlSupport.tag, "t")
+                    .on(Info.characterUid, isEqualTo(TagDynamicSqlSupport.referId));
         }
         List<String> orderByStats = new LinkedList<>(InfoUtils.trimListElements(query.getOrderBy()));
         orderByStats.retainAll(StatsType.fieldNames());
