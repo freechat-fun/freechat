@@ -216,23 +216,23 @@ public class PluginServiceImpl implements PluginService {
     }
 
     private SelectStatementProvider getSelectStatement(
-            Query query, User user, QueryExpressionDSL.FromGatherer<SelectModel> fields) {
+            Query query, User user, QueryExpressionDSL<SelectModel> fields) {
         // join
         var table = fields.from(Info.table, "p");
         List<String> tags = InfoUtils.trimListElements(query.getWhere().getTags());
         if (CollectionUtils.isNotEmpty(tags)) {
-            table.leftJoin(TagDynamicSqlSupport.tag, "t").on(Info.pluginUid, equalTo(TagDynamicSqlSupport.referId));
+            table.leftJoin(TagDynamicSqlSupport.tag, "t").on(Info.pluginUid, isEqualTo(TagDynamicSqlSupport.referId));
         }
         List<String> modelIds = InfoUtils.trimListElements(query.getWhere().getAiModels());
         if (CollectionUtils.isNotEmpty(modelIds)) {
             table.leftJoin(AiModelDynamicSqlSupport.aiModel, "m")
-                    .on(Info.pluginUid, equalTo(AiModelDynamicSqlSupport.referId));
+                    .on(Info.pluginUid, isEqualTo(AiModelDynamicSqlSupport.referId));
         }
         List<String> orderByStats = new LinkedList<>(InfoUtils.trimListElements(query.getOrderBy()));
         orderByStats.retainAll(StatsType.fieldNames());
         if (!orderByStats.isEmpty()) {
             table.leftJoin(InteractiveStatsDynamicSqlSupport.interactiveStats, "i")
-                    .on(Info.pluginUid, equalTo((InteractiveStatsDynamicSqlSupport.referId)));
+                    .on(Info.pluginUid, isEqualTo((InteractiveStatsDynamicSqlSupport.referId)));
         }
         // conditions
         var conditions = table.where();
@@ -320,7 +320,7 @@ public class PluginServiceImpl implements PluginService {
     }
 
     private List<Triple<PluginInfo, List<String>, List<String>>> doSearch(
-            Query query, User user, QueryExpressionDSL.FromGatherer<SelectModel> fields) {
+            Query query, User user, QueryExpressionDSL<SelectModel> fields) {
         return pluginInfoMapper.selectMany(getSelectStatement(query, user, fields)).stream()
                 .filter(info -> filterVisibility(info, user))
                 .peek(this::fetchInfo)

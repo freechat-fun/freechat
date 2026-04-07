@@ -199,18 +199,18 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     private Pair<SelectStatementProvider, Boolean> getSelectStatement(
-            Query query, User user, QueryExpressionDSL.FromGatherer<SelectModel> fields) {
+            Query query, User user, QueryExpressionDSL<SelectModel> fields) {
         // join
         var table = fields.from(Info.table, "c");
         List<String> tags = InfoUtils.trimListElements(query.getWhere().getTags());
         if (CollectionUtils.isNotEmpty(tags)) {
-            table.leftJoin(TagDynamicSqlSupport.tag, "t").on(Info.characterUid, equalTo(TagDynamicSqlSupport.referId));
+            table.leftJoin(TagDynamicSqlSupport.tag, "t").on(Info.characterUid, isEqualTo(TagDynamicSqlSupport.referId));
         }
         List<String> orderByStats = new LinkedList<>(InfoUtils.trimListElements(query.getOrderBy()));
         orderByStats.retainAll(StatsType.fieldNames());
         if (!orderByStats.isEmpty()) {
             table.leftJoin(InteractiveStatsDynamicSqlSupport.interactiveStats, "i")
-                    .on(Info.characterUid, equalTo((InteractiveStatsDynamicSqlSupport.referId)));
+                    .on(Info.characterUid, isEqualTo((InteractiveStatsDynamicSqlSupport.referId)));
         }
 
         // conditions
@@ -307,7 +307,7 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     private Stream<Pair<CharacterInfo, List<String>>> doSearch(
-            Query query, User user, QueryExpressionDSL.FromGatherer<SelectModel> fields) {
+            Query query, User user, QueryExpressionDSL<SelectModel> fields) {
         var statement = getSelectStatement(query, user, fields);
         return characterInfoMapper.selectMany(statement.getLeft()).stream()
                 .filter(info -> filterVisibility(info, user))
@@ -317,12 +317,12 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     private List<Pair<CharacterInfo, List<String>>> doSearchSummaries(
-            Query query, User user, QueryExpressionDSL.FromGatherer<SelectModel> fields) {
+            Query query, User user, QueryExpressionDSL<SelectModel> fields) {
         return doSearch(query, user, fields).toList();
     }
 
     private List<Triple<CharacterInfo, List<String>, List<CharacterBackend>>> doSearchDetails(
-            Query query, User user, QueryExpressionDSL.FromGatherer<SelectModel> fields) {
+            Query query, User user, QueryExpressionDSL<SelectModel> fields) {
         return doSearch(query, user, fields).map(this::toInfoTriple).toList();
     }
 
