@@ -350,16 +350,15 @@ export default function MessagesPane(props: MessagesPaneProps) {
           flexDirection: 'column-reverse',
         }}
       >
-        <Stack spacing={2} justifyContent="flex-end">
+        <Stack spacing={2} sx={{ justifyContent: 'flex-end' }}>
           {getDisplayMessages().map((record, index) => {
             const message = record.message as ChatMessageDTO;
             const isYou = message.role === 'user';
             return (
               <Stack
                 key={`message-container-${index}`}
-                direction="row"
+                direction={isYou ? 'row-reverse' : 'row'}
                 spacing={2}
-                flexDirection={isYou ? 'row-reverse' : 'row'}
               >
                 {!isYou && avatarWithStatus}
                 <ChatBubble
@@ -380,7 +379,6 @@ export default function MessagesPane(props: MessagesPaneProps) {
               key={`message-container-${getDisplayMessages().length}`}
               direction="row"
               spacing={2}
-              flexDirection="row"
             >
               {avatarWithStatus}
               {errorMessage ? (

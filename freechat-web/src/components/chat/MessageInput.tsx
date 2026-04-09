@@ -198,7 +198,7 @@ export default function MessageInput(props: MessageInputProps) {
         flexDirection: 'row',
       }}
     >
-      <Stack flex={1} direction="row">
+      <Stack direction="row" sx={{ flex: 1 }}>
         <TinyInput
           disabled={disabled}
           placeholder="Type something here…"
@@ -231,14 +231,14 @@ export default function MessageInput(props: MessageInputProps) {
               endAdornment: (
                 <Stack
                   direction="row"
-                  justifyContent="flex-end"
-                  alignItems="center"
-                  alignSelf="flex-end"
                   sx={{
                     py: 1,
                     pr: 1,
                     gap: 1,
                     maxHeight: '48px',
+                    justifyContent: 'flex-end',
+                    alignItems: 'center',
+                    alignSelf: 'flex-end',
                   }}
                 >
                   <IconButton
