@@ -111,8 +111,7 @@ export default function ChatListItem(props: ChatListItemProps) {
                 />
                 <HighlightedTypography
                   highlight={highlight}
-                  fontWeight="bold"
-                  fontSize="1.125rem"
+                  sx={{ fontWeight: 'bold', fontSize: '1.125rem' }}
                   component="h2"
                   noWrap
                 >

@@ -114,7 +114,7 @@ export default function PromptMeta(props: {
               return (
                 <HistoryTypography
                   color="text.secondary"
-                  fontSize="small"
+                  sx={{ fontSize: 'small' }}
                   key={`history-${id}`}
                 >
                   {label}
@@ -123,7 +123,7 @@ export default function PromptMeta(props: {
             } else {
               return (
                 <RouterLink href={`/w/prompt/${id}`} key={`history-${id}`}>
-                  <HistoryTypography fontSize="small">
+                  <HistoryTypography sx={{ fontSize: 'small' }}>
                     {label}
                   </HistoryTypography>
                 </RouterLink>

@@ -81,15 +81,15 @@ export default function MessagesPaneHeader(props: MessagesPaneHeaderProps) {
   return (
     <Stack
       direction="row"
-      justifyContent="space-between"
       sx={{
         borderBottom: '1px solid',
         borderColor: 'divider',
+        justifyContent: 'space-between',
+        py: { xs: 2, md: 2 },
+        px: { xs: 1, md: 2 },
       }}
-      py={{ xs: 2, md: 2 }}
-      px={{ xs: 1, md: 2 }}
     >
-      <Stack direction="row" spacing={{ xs: 1, md: 2 }} alignItems="center">
+      <Stack direction="row" spacing={{ xs: 1, md: 2 }} sx={{ alignItems: 'center' }}>
         <IconButton
           color="inherit"
           size="small"
@@ -131,7 +131,7 @@ export default function MessagesPaneHeader(props: MessagesPaneHeaderProps) {
           )}
         </Box>
       </Stack>
-      <Stack spacing={1} direction="row" alignItems="center">
+      <Stack spacing={1} direction="row" sx={{ alignItems: 'center' }}>
         {session?.isDebugEnabled && (
           <FlexBox sx={{ gap: 0 }}>
             <Typography variant="body2">{t('Debug')}</Typography>

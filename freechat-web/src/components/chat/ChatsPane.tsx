@@ -88,17 +88,12 @@ export default function ChatsPane(props: ChatsPaneProps) {
       <Stack
         direction="row"
         spacing={1}
-        alignItems="center"
-        justifyContent="space-between"
-        px={2}
-        pt={2}
-        pb={1.5}
+        sx={{ alignItems: 'center', justifyContent: 'space-between', px: 2, pt: 2, pb: 1.5 }}
       >
         <Typography
           variant="h6"
           component="h1"
-          fontWeight="bold"
-          sx={{ mr: 'auto', display: 'flex', alignItems: 'center', gap: 1 }}
+          sx={{ mr: 'auto', display: 'flex', alignItems: 'center', gap: 1, fontWeight: 'bold' }}
         >
           {t('Messages')}
           <Chip

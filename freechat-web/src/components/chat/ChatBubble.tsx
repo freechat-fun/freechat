@@ -212,9 +212,8 @@ export default function ChatBubble(props: ChatBubbleProps) {
     >
       <Stack
         direction="row"
-        justifyContent="space-between"
         spacing={2}
-        sx={{ mb: 0.25, width: '100%' }}
+        sx={{ mb: 0.25, width: '100%', justifyContent: 'space-between' }}
       >
         <Typography
           variant="body2"
