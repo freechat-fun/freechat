@@ -2,10 +2,29 @@ package fun.freechat.service.character.impl;
 
 import static dev.langchain4j.internal.Utils.getOrDefault;
 import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.countDistinct;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan;
+import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
+import static org.mybatis.dynamic.sql.SqlBuilder.isLike;
+import static org.mybatis.dynamic.sql.SqlBuilder.isNotEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.or;
+import static org.mybatis.dynamic.sql.SqlBuilder.select;
+import static org.mybatis.dynamic.sql.SqlBuilder.selectDistinct;
 
-import fun.freechat.mapper.*;
-import fun.freechat.model.*;
+import fun.freechat.mapper.CharacterBackendDynamicSqlSupport;
+import fun.freechat.mapper.CharacterBackendMapper;
+import fun.freechat.mapper.CharacterInfoDynamicSqlSupport;
+import fun.freechat.mapper.CharacterInfoMapper;
+import fun.freechat.mapper.InteractiveStatsDynamicSqlSupport;
+import fun.freechat.mapper.InteractiveStatsMapper;
+import fun.freechat.mapper.TagDynamicSqlSupport;
+import fun.freechat.mapper.TagMapper;
+import fun.freechat.model.CharacterBackend;
+import fun.freechat.model.CharacterInfo;
+import fun.freechat.model.InteractiveStats;
+import fun.freechat.model.Tag;
+import fun.freechat.model.User;
 import fun.freechat.service.cache.LongPeriodCache;
 import fun.freechat.service.cache.LongPeriodCacheEvict;
 import fun.freechat.service.character.CharacterBackendEvent;
@@ -21,7 +40,14 @@ import fun.freechat.service.util.InfoUtils;
 import fun.freechat.service.util.SortSpecificationWrapper;
 import fun.freechat.util.IdUtils;
 import fun.freechat.util.PojoUtils;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -173,7 +199,7 @@ public class CharacterServiceImpl implements CharacterService {
 
     private void doCreate(Pair<CharacterInfo, List<String>> infoPair) {
         CharacterInfo info = infoPair.getLeft();
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         int rows = characterInfoMapper.insertSelective(info.withGmtCreate(now).withGmtModified(now));
         if (rows <= 0) {
             throw new IllegalStateException("Insert character " + info.getName() + " failed!");
@@ -397,7 +423,7 @@ public class CharacterServiceImpl implements CharacterService {
     public boolean update(Pair<CharacterInfo, List<String>> infoPair) {
         SqlSession session = sqlSessionFactory.openSession();
         try {
-            Date now = new Date();
+            LocalDateTime now = LocalDateTime.now();
             CharacterInfo characterInfo = infoPair.getLeft();
             characterInfoMapper.updateByPrimaryKeySelective(characterInfo.withGmtModified(now));
             int rows;
@@ -443,8 +469,8 @@ public class CharacterServiceImpl implements CharacterService {
         if (characterInfo == null || Visibility.HIDDEN.text().equals(characterInfo.getVisibility())) {
             return false;
         }
-        Date now = new Date();
-        characterInfo.withGmtModified(new Date()).withVisibility(Visibility.HIDDEN.text());
+        LocalDateTime now = LocalDateTime.now();
+        characterInfo.withGmtModified(LocalDateTime.now()).withVisibility(Visibility.HIDDEN.text());
         int rows = characterInfoMapper.updateByPrimaryKeySelective(characterInfo);
         return rows > 0;
     }
@@ -598,8 +624,13 @@ public class CharacterServiceImpl implements CharacterService {
     @Override
     @LongPeriodCache(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public Triple<CharacterInfo, List<String>, List<CharacterBackend>> details(Long characterId, User user) {
+        var fields = select(Info.table.allColumns()).from(Info.table);
+        var statement = wrapQueryExpression(fields, user.getUserId())
+                .and(Info.characterId, isEqualTo(characterId))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
         return characterInfoMapper
-                .selectOne(c -> wrapQueryExpression(c, user.getUserId()).and(Info.characterId, isEqualTo(characterId)))
+                .selectOne(statement)
                 .filter(info -> filterVisibility(info, user))
                 .map(this::toInfoPair)
                 .map(this::toInfoTriple)
@@ -609,9 +640,12 @@ public class CharacterServiceImpl implements CharacterService {
     @Override
     public List<Triple<CharacterInfo, List<String>, List<CharacterBackend>>> details(
             Collection<Long> characterIds, User user) {
-        return characterInfoMapper
-                .select(c -> wrapQueryExpression(c, user.getUserId()).and(Info.characterId, isIn(characterIds)))
-                .stream()
+        var fields = select(Info.table.allColumns()).from(Info.table);
+        var statement = wrapQueryExpression(fields, user.getUserId())
+                .and(Info.characterId, isIn(characterIds))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+        return characterInfoMapper.selectMany(statement).stream()
                 .filter(info -> filterVisibility(info, user))
                 .map(this::toInfoPair)
                 .map(this::toInfoTriple)
@@ -714,7 +748,7 @@ public class CharacterServiceImpl implements CharacterService {
                 info = new CharacterInfo()
                         .withCharacterId(prevVersionInfo.getLeft())
                         .withVisibility(Visibility.HIDDEN.text())
-                        .withGmtModified(new Date());
+                        .withGmtModified(LocalDateTime.now());
                 characterInfoMapper.updateByPrimaryKeySelective(info);
             }
             session.commit();
@@ -832,7 +866,7 @@ public class CharacterServiceImpl implements CharacterService {
         return characterInfoMapper.selectOne(statement).isPresent();
     }
 
-    private void ensureDefaultBackend(CharacterBackend characterBackend, Date now) {
+    private void ensureDefaultBackend(CharacterBackend characterBackend, LocalDateTime now) {
         String characterUid = characterBackend.getCharacterUid();
         if (StringUtils.isBlank(characterUid)) {
             return;
@@ -856,7 +890,7 @@ public class CharacterServiceImpl implements CharacterService {
         }
     }
 
-    private void ensureDefaultBackend(String characterUid, Date now) {
+    private void ensureDefaultBackend(String characterUid, LocalDateTime now) {
         List<CharacterBackend> defaultBackends = characterBackendMapper.select(
                 c -> c.where(CharacterBackendDynamicSqlSupport.characterUid, isEqualTo(characterUid))
                         .and(CharacterBackendDynamicSqlSupport.isDefault, isEqualTo((byte) 1)));
@@ -880,7 +914,7 @@ public class CharacterServiceImpl implements CharacterService {
 
         SqlSession session = sqlSessionFactory.openSession();
         try {
-            Date now = new Date();
+            LocalDateTime now = LocalDateTime.now();
             int rows = characterBackendMapper.insertSelective(characterBackend
                     .withGmtCreate(now)
                     .withGmtModified(now)
@@ -911,7 +945,7 @@ public class CharacterServiceImpl implements CharacterService {
     public boolean removeBackend(String characterUid, String characterBackendId) {
         int rows = characterBackendMapper.deleteByPrimaryKey(characterBackendId);
         if (rows > 0) {
-            ensureDefaultBackend(characterUid, new Date());
+            ensureDefaultBackend(characterUid, LocalDateTime.now());
             return true;
         }
         return false;
@@ -929,7 +963,7 @@ public class CharacterServiceImpl implements CharacterService {
         int rows = 0;
         SqlSession session = sqlSessionFactory.openSession();
         try {
-            Date now = new Date();
+            LocalDateTime now = LocalDateTime.now();
             rows = characterBackendMapper.updateByPrimaryKeySelective(
                     characterBackend.withGmtModified(now).withCharacterUid(null));
 
@@ -1044,8 +1078,8 @@ public class CharacterServiceImpl implements CharacterService {
                 CharacterInfoDynamicSqlSupport.characterInfo;
         public static final SqlColumn<Long> characterId = CharacterInfoDynamicSqlSupport.characterId;
         public static final SqlColumn<String> characterUid = CharacterInfoDynamicSqlSupport.characterUid;
-        public static final SqlColumn<Date> gmtCreate = CharacterInfoDynamicSqlSupport.gmtCreate;
-        public static final SqlColumn<Date> gmtModified = CharacterInfoDynamicSqlSupport.gmtModified;
+        public static final SqlColumn<LocalDateTime> gmtCreate = CharacterInfoDynamicSqlSupport.gmtCreate;
+        public static final SqlColumn<LocalDateTime> gmtModified = CharacterInfoDynamicSqlSupport.gmtModified;
         public static final SqlColumn<String> userId = CharacterInfoDynamicSqlSupport.userId;
         public static final SqlColumn<String> parentUid = CharacterInfoDynamicSqlSupport.parentUid;
         public static final SqlColumn<String> visibility = CharacterInfoDynamicSqlSupport.visibility;

@@ -1,357 +1,282 @@
 package fun.freechat.model;
 
-import jakarta.annotation.Generated;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class PromptInfo implements Serializable {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long promptId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String promptUid;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtModified;
+    private LocalDateTime gmtModified;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String userId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String parentUid;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String visibility;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String name;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String type;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String format;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String lang;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Integer version;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String description;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String template;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String example;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String inputs;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String ext;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String draft;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private static final long serialVersionUID = 1L;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getPromptId() {
         return promptId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptInfo withPromptId(Long promptId) {
         this.setPromptId(promptId);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setPromptId(Long promptId) {
         this.promptId = promptId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getPromptUid() {
         return promptUid;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptInfo withPromptUid(String promptUid) {
         this.setPromptUid(promptUid);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setPromptUid(String promptUid) {
         this.promptUid = promptUid;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtCreate() {
+    public LocalDateTime getGmtCreate() {
         return gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public PromptInfo withGmtCreate(Date gmtCreate) {
+    public PromptInfo withGmtCreate(LocalDateTime gmtCreate) {
         this.setGmtCreate(gmtCreate);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtCreate(Date gmtCreate) {
+    public void setGmtCreate(LocalDateTime gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtModified() {
+    public LocalDateTime getGmtModified() {
         return gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public PromptInfo withGmtModified(Date gmtModified) {
+    public PromptInfo withGmtModified(LocalDateTime gmtModified) {
         this.setGmtModified(gmtModified);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtModified(Date gmtModified) {
+    public void setGmtModified(LocalDateTime gmtModified) {
         this.gmtModified = gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getUserId() {
         return userId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptInfo withUserId(String userId) {
         this.setUserId(userId);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getParentUid() {
         return parentUid;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptInfo withParentUid(String parentUid) {
         this.setParentUid(parentUid);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setParentUid(String parentUid) {
         this.parentUid = parentUid;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getVisibility() {
         return visibility;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptInfo withVisibility(String visibility) {
         this.setVisibility(visibility);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setVisibility(String visibility) {
         this.visibility = visibility;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getName() {
         return name;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptInfo withName(String name) {
         this.setName(name);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setName(String name) {
         this.name = name;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getType() {
         return type;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptInfo withType(String type) {
         this.setType(type);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setType(String type) {
         this.type = type;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getFormat() {
         return format;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptInfo withFormat(String format) {
         this.setFormat(format);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setFormat(String format) {
         this.format = format;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getLang() {
         return lang;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptInfo withLang(String lang) {
         this.setLang(lang);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setLang(String lang) {
         this.lang = lang;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Integer getVersion() {
         return version;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptInfo withVersion(Integer version) {
         this.setVersion(version);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setVersion(Integer version) {
         this.version = version;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getDescription() {
         return description;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptInfo withDescription(String description) {
         this.setDescription(description);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setDescription(String description) {
         this.description = description;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getTemplate() {
         return template;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptInfo withTemplate(String template) {
         this.setTemplate(template);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setTemplate(String template) {
         this.template = template;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getExample() {
         return example;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptInfo withExample(String example) {
         this.setExample(example);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setExample(String example) {
         this.example = example;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getInputs() {
         return inputs;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptInfo withInputs(String inputs) {
         this.setInputs(inputs);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setInputs(String inputs) {
         this.inputs = inputs;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getExt() {
         return ext;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptInfo withExt(String ext) {
         this.setExt(ext);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setExt(String ext) {
         this.ext = ext;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getDraft() {
         return draft;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptInfo withDraft(String draft) {
         this.setDraft(draft);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setDraft(String draft) {
         this.draft = draft;
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public boolean equals(Object that) {
         if (this == that) {
             return true;
@@ -374,11 +299,16 @@ public class PromptInfo implements Serializable {
             && (this.getType() == null ? other.getType() == null : this.getType().equals(other.getType()))
             && (this.getFormat() == null ? other.getFormat() == null : this.getFormat().equals(other.getFormat()))
             && (this.getLang() == null ? other.getLang() == null : this.getLang().equals(other.getLang()))
-            && (this.getVersion() == null ? other.getVersion() == null : this.getVersion().equals(other.getVersion()));
+            && (this.getVersion() == null ? other.getVersion() == null : this.getVersion().equals(other.getVersion()))
+            && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
+            && (this.getTemplate() == null ? other.getTemplate() == null : this.getTemplate().equals(other.getTemplate()))
+            && (this.getExample() == null ? other.getExample() == null : this.getExample().equals(other.getExample()))
+            && (this.getInputs() == null ? other.getInputs() == null : this.getInputs().equals(other.getInputs()))
+            && (this.getExt() == null ? other.getExt() == null : this.getExt().equals(other.getExt()))
+            && (this.getDraft() == null ? other.getDraft() == null : this.getDraft().equals(other.getDraft()));
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -394,11 +324,16 @@ public class PromptInfo implements Serializable {
         result = prime * result + ((getFormat() == null) ? 0 : getFormat().hashCode());
         result = prime * result + ((getLang() == null) ? 0 : getLang().hashCode());
         result = prime * result + ((getVersion() == null) ? 0 : getVersion().hashCode());
+        result = prime * result + ((getDescription() == null) ? 0 : getDescription().hashCode());
+        result = prime * result + ((getTemplate() == null) ? 0 : getTemplate().hashCode());
+        result = prime * result + ((getExample() == null) ? 0 : getExample().hashCode());
+        result = prime * result + ((getInputs() == null) ? 0 : getInputs().hashCode());
+        result = prime * result + ((getExt() == null) ? 0 : getExt().hashCode());
+        result = prime * result + ((getDraft() == null) ? 0 : getDraft().hashCode());
         return result;
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());

@@ -1,224 +1,177 @@
 package fun.freechat.model;
 
-import jakarta.annotation.Generated;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Binding implements Serializable {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long id;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtModified;
+    private LocalDateTime gmtModified;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String userId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String platform;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String sub;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String iss;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date issuedAt;
+    private LocalDateTime issuedAt;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date expiresAt;
+    private LocalDateTime expiresAt;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String aud;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String refreshToken;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private static final long serialVersionUID = 1L;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getId() {
         return id;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Binding withId(Long id) {
         this.setId(id);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setId(Long id) {
         this.id = id;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtCreate() {
+    public LocalDateTime getGmtCreate() {
         return gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Binding withGmtCreate(Date gmtCreate) {
+    public Binding withGmtCreate(LocalDateTime gmtCreate) {
         this.setGmtCreate(gmtCreate);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtCreate(Date gmtCreate) {
+    public void setGmtCreate(LocalDateTime gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtModified() {
+    public LocalDateTime getGmtModified() {
         return gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Binding withGmtModified(Date gmtModified) {
+    public Binding withGmtModified(LocalDateTime gmtModified) {
         this.setGmtModified(gmtModified);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtModified(Date gmtModified) {
+    public void setGmtModified(LocalDateTime gmtModified) {
         this.gmtModified = gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getUserId() {
         return userId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Binding withUserId(String userId) {
         this.setUserId(userId);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getPlatform() {
         return platform;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Binding withPlatform(String platform) {
         this.setPlatform(platform);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setPlatform(String platform) {
         this.platform = platform;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getSub() {
         return sub;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Binding withSub(String sub) {
         this.setSub(sub);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setSub(String sub) {
         this.sub = sub;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getIss() {
         return iss;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Binding withIss(String iss) {
         this.setIss(iss);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setIss(String iss) {
         this.iss = iss;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getIssuedAt() {
+    public LocalDateTime getIssuedAt() {
         return issuedAt;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Binding withIssuedAt(Date issuedAt) {
+    public Binding withIssuedAt(LocalDateTime issuedAt) {
         this.setIssuedAt(issuedAt);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setIssuedAt(Date issuedAt) {
+    public void setIssuedAt(LocalDateTime issuedAt) {
         this.issuedAt = issuedAt;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getExpiresAt() {
+    public LocalDateTime getExpiresAt() {
         return expiresAt;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Binding withExpiresAt(Date expiresAt) {
+    public Binding withExpiresAt(LocalDateTime expiresAt) {
         this.setExpiresAt(expiresAt);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setExpiresAt(Date expiresAt) {
+    public void setExpiresAt(LocalDateTime expiresAt) {
         this.expiresAt = expiresAt;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getAud() {
         return aud;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Binding withAud(String aud) {
         this.setAud(aud);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setAud(String aud) {
         this.aud = aud;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getRefreshToken() {
         return refreshToken;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Binding withRefreshToken(String refreshToken) {
         this.setRefreshToken(refreshToken);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public boolean equals(Object that) {
         if (this == that) {
             return true;
@@ -238,11 +191,12 @@ public class Binding implements Serializable {
             && (this.getSub() == null ? other.getSub() == null : this.getSub().equals(other.getSub()))
             && (this.getIss() == null ? other.getIss() == null : this.getIss().equals(other.getIss()))
             && (this.getIssuedAt() == null ? other.getIssuedAt() == null : this.getIssuedAt().equals(other.getIssuedAt()))
-            && (this.getExpiresAt() == null ? other.getExpiresAt() == null : this.getExpiresAt().equals(other.getExpiresAt()));
+            && (this.getExpiresAt() == null ? other.getExpiresAt() == null : this.getExpiresAt().equals(other.getExpiresAt()))
+            && (this.getAud() == null ? other.getAud() == null : this.getAud().equals(other.getAud()))
+            && (this.getRefreshToken() == null ? other.getRefreshToken() == null : this.getRefreshToken().equals(other.getRefreshToken()));
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -255,11 +209,12 @@ public class Binding implements Serializable {
         result = prime * result + ((getIss() == null) ? 0 : getIss().hashCode());
         result = prime * result + ((getIssuedAt() == null) ? 0 : getIssuedAt().hashCode());
         result = prime * result + ((getExpiresAt() == null) ? 0 : getExpiresAt().hashCode());
+        result = prime * result + ((getAud() == null) ? 0 : getAud().hashCode());
+        result = prime * result + ((getRefreshToken() == null) ? 0 : getRefreshToken().hashCode());
         return result;
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());

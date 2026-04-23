@@ -8,8 +8,8 @@ import fun.freechat.model.Binding;
 import fun.freechat.model.User;
 import fun.freechat.service.account.SysBindService;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -35,9 +35,9 @@ public class SysBindServiceImpl implements SysBindService {
             URL iss,
             Collection<String> aud,
             String refreshToken,
-            Date issuedAt,
-            Date expiresAt) {
-        Date now = new Date();
+            LocalDateTime issuedAt,
+            LocalDateTime expiresAt) {
+        LocalDateTime now = LocalDateTime.now();
         Binding binding = new Binding()
                 .withGmtCreate(now)
                 .withGmtModified(now)
@@ -80,8 +80,8 @@ public class SysBindServiceImpl implements SysBindService {
                 .selectOne(c -> c.where(BindingDynamicSqlSupport.userId, isEqualTo(user.getUserId()))
                         .and(BindingDynamicSqlSupport.platform, isEqualTo(platform)))
                 .filter(binding -> {
-                    Date expiresAt = binding.getExpiresAt();
-                    return expiresAt == null || expiresAt.after(new Date());
+                    LocalDateTime expiresAt = binding.getExpiresAt();
+                    return expiresAt == null || expiresAt.isAfter(LocalDateTime.now());
                 })
                 .isPresent();
     }

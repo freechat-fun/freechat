@@ -8,10 +8,14 @@ import java.net.URL;
 import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -40,7 +44,7 @@ public record SysUserDetailsManager(
         implements UserDetailsManager {
 
     private User mapUser(UserDetails userDetails, User user) {
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
 
         if (user == null) {
             user = new User();
@@ -240,7 +244,7 @@ public record SysUserDetailsManager(
         return website;
     }
 
-    private Date toDate(String dateStr, String zoneInfo) {
+    private LocalDateTime toDate(String dateStr, String zoneInfo) {
         if (StringUtils.isBlank(dateStr)) {
             return null;
         }
@@ -251,23 +255,27 @@ public record SysUserDetailsManager(
 
         try {
             LocalDate date = LocalDate.parse(dateStr, DateTimeFormatter.ISO_DATE);
-            return Date.from(date.atStartOfDay(ZoneId.of(zoneInfo)).toInstant());
+            return date.atStartOfDay(ZoneId.of(zoneInfo)).toLocalDateTime();
         } catch (DateTimeException e) {
             log.warn("Wrong date format: {}", dateStr);
         }
         return null;
     }
 
-    private Date timestampToDate(Object timestamp) {
+    private LocalDateTime timestampToDate(Object timestamp) {
         if (timestamp == null) {
             return null;
         }
 
         try {
             if (timestamp instanceof String timestampStr) {
-                return Date.from(Instant.parse(timestampStr));
+                return Instant.parse(timestampStr)
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDateTime();
             } else if (timestamp instanceof Long timestampLong) {
-                return new Date(timestampLong);
+                return Instant.ofEpochMilli(timestampLong)
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDateTime();
             } else {
                 throw new IllegalArgumentException("Unknown timestamp class: " + timestamp.getClass());
             }
@@ -348,13 +356,13 @@ public record SysUserDetailsManager(
         String refreshTokenValue = Optional.ofNullable(refreshToken)
                 .map(AbstractOAuth2Token::getTokenValue)
                 .orElse(null);
-        Date issuedAt = Optional.ofNullable(refreshToken)
+        LocalDateTime issuedAt = Optional.ofNullable(refreshToken)
                 .map(AbstractOAuth2Token::getIssuedAt)
-                .map(Date::from)
-                .orElseGet(Date::new);
-        Date expiresAt = Optional.ofNullable(refreshToken)
+                .map(instant -> LocalDateTime.ofInstant(instant, ZoneId.systemDefault()))
+                .orElseGet(LocalDateTime::now);
+        LocalDateTime expiresAt = Optional.ofNullable(refreshToken)
                 .map(AbstractOAuth2Token::getExpiresAt)
-                .map(Date::from)
+                .map(instant -> LocalDateTime.ofInstant(instant, ZoneId.systemDefault()))
                 .orElse(null);
         String sub = getSub(oAuth2User, platform);
         URL iss = oAuth2User.getAttribute(IdTokenClaimNames.ISS);

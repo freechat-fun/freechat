@@ -1,6 +1,11 @@
 package fun.freechat.service.rag.impl;
 
-import static fun.freechat.service.enums.TaskStatus.*;
+import static fun.freechat.service.enums.TaskStatus.CANCELED;
+import static fun.freechat.service.enums.TaskStatus.FAILED;
+import static fun.freechat.service.enums.TaskStatus.PENDING;
+import static fun.freechat.service.enums.TaskStatus.RUNNING;
+import static fun.freechat.service.enums.TaskStatus.SUCCEEDED;
+import static fun.freechat.service.enums.TaskStatus.UNKNOWN;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.select;
 
@@ -16,7 +21,7 @@ import fun.freechat.service.rag.RagTaskRunner;
 import fun.freechat.service.rag.RagTaskService;
 import fun.freechat.service.rag.RagTaskStartedEvent;
 import fun.freechat.service.util.CacheUtils;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
@@ -45,7 +50,7 @@ public class RagTaskServiceImpl implements RagTaskService {
 
     @Override
     public boolean create(RagTask task) {
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         int rows = ragTaskMapper.insertSelective(task.withGmtCreate(now)
                 .withGmtModified(now)
                 .withGmtStart(null)
@@ -57,7 +62,7 @@ public class RagTaskServiceImpl implements RagTaskService {
 
     @Override
     public boolean update(RagTask task) {
-        int rows = ragTaskMapper.updateByPrimaryKeySelective(task.withGmtModified(new Date()));
+        int rows = ragTaskMapper.updateByPrimaryKeySelective(task.withGmtModified(LocalDateTime.now()));
         return rows > 0;
     }
 
@@ -142,7 +147,7 @@ public class RagTaskServiceImpl implements RagTaskService {
         }
 
         TaskStatus preStatus = TaskStatus.of(task.getStatus());
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         int rows = 0;
 
         switch (status) {

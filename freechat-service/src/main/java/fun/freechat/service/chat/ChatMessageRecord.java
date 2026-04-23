@@ -9,7 +9,7 @@ import dev.langchain4j.data.message.ChatMessage;
 import fun.freechat.service.ai.message.ChatMessageJacksonDeserializer;
 import fun.freechat.service.ai.message.ChatMessageJacksonSerializer;
 import fun.freechat.service.enums.TtsSpeakerType;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Data;
 
@@ -22,7 +22,7 @@ public class ChatMessageRecord {
     private ChatMessage message;
 
     private Long id;
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
     private String ext;
     private String chatId;
     private String chatOwnerId;

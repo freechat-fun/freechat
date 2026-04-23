@@ -1,51 +1,41 @@
 package fun.freechat.mapper;
 
-import jakarta.annotation.Generated;
 import java.sql.JDBCType;
-import java.util.Date;
+import java.time.LocalDateTime;
 import org.mybatis.dynamic.sql.AliasableSqlTable;
 import org.mybatis.dynamic.sql.SqlColumn;
 
 public final class InteractiveStatsScoreDetailsDynamicSqlSupport {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final InteractiveStatsScoreDetails interactiveStatsScoreDetails = new InteractiveStatsScoreDetails();
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Long> id = interactiveStatsScoreDetails.id;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Date> gmtCreate = interactiveStatsScoreDetails.gmtCreate;
+    public static final SqlColumn<LocalDateTime> gmtCreate = interactiveStatsScoreDetails.gmtCreate;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Date> gmtModified = interactiveStatsScoreDetails.gmtModified;
+    public static final SqlColumn<LocalDateTime> gmtModified = interactiveStatsScoreDetails.gmtModified;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> referType = interactiveStatsScoreDetails.referType;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> referId = interactiveStatsScoreDetails.referId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> userId = interactiveStatsScoreDetails.userId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Long> score = interactiveStatsScoreDetails.score;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final class InteractiveStatsScoreDetails extends AliasableSqlTable<InteractiveStatsScoreDetails> {
-        public final SqlColumn<Long> id = column("id", JDBCType.BIGINT);
+        public final SqlColumn<Long> id = column("id", JDBCType.BIGINT).withJavaProperty("id");
 
-        public final SqlColumn<Date> gmtCreate = column("gmt_create", JDBCType.TIMESTAMP);
+        public final SqlColumn<LocalDateTime> gmtCreate = column("gmt_create", JDBCType.TIMESTAMP).withJavaProperty("gmtCreate");
 
-        public final SqlColumn<Date> gmtModified = column("gmt_modified", JDBCType.TIMESTAMP);
+        public final SqlColumn<LocalDateTime> gmtModified = column("gmt_modified", JDBCType.TIMESTAMP).withJavaProperty("gmtModified");
 
-        public final SqlColumn<String> referType = column("refer_type", JDBCType.VARCHAR);
+        public final SqlColumn<String> referType = column("refer_type", JDBCType.VARCHAR).withJavaProperty("referType");
 
-        public final SqlColumn<String> referId = column("refer_id", JDBCType.VARCHAR);
+        public final SqlColumn<String> referId = column("refer_id", JDBCType.VARCHAR).withJavaProperty("referId");
 
-        public final SqlColumn<String> userId = column("user_id", JDBCType.VARCHAR);
+        public final SqlColumn<String> userId = column("user_id", JDBCType.VARCHAR).withJavaProperty("userId");
 
-        public final SqlColumn<Long> score = column("score", JDBCType.BIGINT);
+        public final SqlColumn<Long> score = column("score", JDBCType.BIGINT).withJavaProperty("score");
 
         public InteractiveStatsScoreDetails() {
             super("interactive_stats_score_details", InteractiveStatsScoreDetails::new);

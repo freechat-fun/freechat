@@ -1,51 +1,41 @@
 package fun.freechat.mapper;
 
-import jakarta.annotation.Generated;
 import java.sql.JDBCType;
-import java.util.Date;
+import java.time.LocalDateTime;
 import org.mybatis.dynamic.sql.AliasableSqlTable;
 import org.mybatis.dynamic.sql.SqlColumn;
 
 public final class ChatHistoryDynamicSqlSupport {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final ChatHistory chatHistory = new ChatHistory();
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Long> id = chatHistory.id;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> memoryId = chatHistory.memoryId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Date> gmtCreate = chatHistory.gmtCreate;
+    public static final SqlColumn<LocalDateTime> gmtCreate = chatHistory.gmtCreate;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Date> gmtModified = chatHistory.gmtModified;
+    public static final SqlColumn<LocalDateTime> gmtModified = chatHistory.gmtModified;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Byte> enabled = chatHistory.enabled;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> message = chatHistory.message;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> ext = chatHistory.ext;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final class ChatHistory extends AliasableSqlTable<ChatHistory> {
-        public final SqlColumn<Long> id = column("id", JDBCType.BIGINT);
+        public final SqlColumn<Long> id = column("id", JDBCType.BIGINT).withJavaProperty("id");
 
-        public final SqlColumn<String> memoryId = column("memory_id", JDBCType.VARCHAR);
+        public final SqlColumn<String> memoryId = column("memory_id", JDBCType.VARCHAR).withJavaProperty("memoryId");
 
-        public final SqlColumn<Date> gmtCreate = column("gmt_create", JDBCType.TIMESTAMP);
+        public final SqlColumn<LocalDateTime> gmtCreate = column("gmt_create", JDBCType.TIMESTAMP).withJavaProperty("gmtCreate");
 
-        public final SqlColumn<Date> gmtModified = column("gmt_modified", JDBCType.TIMESTAMP);
+        public final SqlColumn<LocalDateTime> gmtModified = column("gmt_modified", JDBCType.TIMESTAMP).withJavaProperty("gmtModified");
 
-        public final SqlColumn<Byte> enabled = column("enabled", JDBCType.TINYINT);
+        public final SqlColumn<Byte> enabled = column("enabled", JDBCType.TINYINT).withJavaProperty("enabled");
 
-        public final SqlColumn<String> message = column("message", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> message = column("message", JDBCType.LONGVARCHAR).withJavaProperty("message");
 
-        public final SqlColumn<String> ext = column("ext", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> ext = column("ext", JDBCType.LONGVARCHAR).withJavaProperty("ext");
 
         public ChatHistory() {
             super("chat_history", ChatHistory::new);

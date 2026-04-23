@@ -1,136 +1,109 @@
 package fun.freechat.mapper;
 
-import jakarta.annotation.Generated;
 import java.sql.JDBCType;
-import java.util.Date;
+import java.time.LocalDateTime;
 import org.mybatis.dynamic.sql.AliasableSqlTable;
 import org.mybatis.dynamic.sql.SqlColumn;
 
 public final class CharacterInfoDynamicSqlSupport {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final CharacterInfo characterInfo = new CharacterInfo();
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Long> characterId = characterInfo.characterId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> characterUid = characterInfo.characterUid;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Date> gmtCreate = characterInfo.gmtCreate;
+    public static final SqlColumn<LocalDateTime> gmtCreate = characterInfo.gmtCreate;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Date> gmtModified = characterInfo.gmtModified;
+    public static final SqlColumn<LocalDateTime> gmtModified = characterInfo.gmtModified;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> userId = characterInfo.userId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> parentUid = characterInfo.parentUid;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> visibility = characterInfo.visibility;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> name = characterInfo.name;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> nickname = characterInfo.nickname;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> avatar = characterInfo.avatar;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> picture = characterInfo.picture;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> video = characterInfo.video;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> gender = characterInfo.gender;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> lang = characterInfo.lang;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Integer> version = characterInfo.version;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Integer> priority = characterInfo.priority;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> description = characterInfo.description;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> profile = characterInfo.profile;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> greeting = characterInfo.greeting;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> chatStyle = characterInfo.chatStyle;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> chatExample = characterInfo.chatExample;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> defaultScene = characterInfo.defaultScene;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> ext = characterInfo.ext;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> draft = characterInfo.draft;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final class CharacterInfo extends AliasableSqlTable<CharacterInfo> {
-        public final SqlColumn<Long> characterId = column("character_id", JDBCType.BIGINT);
+        public final SqlColumn<Long> characterId = column("character_id", JDBCType.BIGINT).withJavaProperty("characterId");
 
-        public final SqlColumn<String> characterUid = column("character_uid", JDBCType.VARCHAR);
+        public final SqlColumn<String> characterUid = column("character_uid", JDBCType.VARCHAR).withJavaProperty("characterUid");
 
-        public final SqlColumn<Date> gmtCreate = column("gmt_create", JDBCType.TIMESTAMP);
+        public final SqlColumn<LocalDateTime> gmtCreate = column("gmt_create", JDBCType.TIMESTAMP).withJavaProperty("gmtCreate");
 
-        public final SqlColumn<Date> gmtModified = column("gmt_modified", JDBCType.TIMESTAMP);
+        public final SqlColumn<LocalDateTime> gmtModified = column("gmt_modified", JDBCType.TIMESTAMP).withJavaProperty("gmtModified");
 
-        public final SqlColumn<String> userId = column("user_id", JDBCType.VARCHAR);
+        public final SqlColumn<String> userId = column("user_id", JDBCType.VARCHAR).withJavaProperty("userId");
 
-        public final SqlColumn<String> parentUid = column("parent_uid", JDBCType.VARCHAR);
+        public final SqlColumn<String> parentUid = column("parent_uid", JDBCType.VARCHAR).withJavaProperty("parentUid");
 
-        public final SqlColumn<String> visibility = column("visibility", JDBCType.VARCHAR);
+        public final SqlColumn<String> visibility = column("visibility", JDBCType.VARCHAR).withJavaProperty("visibility");
 
-        public final SqlColumn<String> name = column("name", JDBCType.VARCHAR);
+        public final SqlColumn<String> name = column("name", JDBCType.VARCHAR).withJavaProperty("name");
 
-        public final SqlColumn<String> nickname = column("nickname", JDBCType.VARCHAR);
+        public final SqlColumn<String> nickname = column("nickname", JDBCType.VARCHAR).withJavaProperty("nickname");
 
-        public final SqlColumn<String> avatar = column("avatar", JDBCType.VARCHAR);
+        public final SqlColumn<String> avatar = column("avatar", JDBCType.VARCHAR).withJavaProperty("avatar");
 
-        public final SqlColumn<String> picture = column("picture", JDBCType.VARCHAR);
+        public final SqlColumn<String> picture = column("picture", JDBCType.VARCHAR).withJavaProperty("picture");
 
-        public final SqlColumn<String> video = column("video", JDBCType.VARCHAR);
+        public final SqlColumn<String> video = column("video", JDBCType.VARCHAR).withJavaProperty("video");
 
-        public final SqlColumn<String> gender = column("gender", JDBCType.VARCHAR);
+        public final SqlColumn<String> gender = column("gender", JDBCType.VARCHAR).withJavaProperty("gender");
 
-        public final SqlColumn<String> lang = column("lang", JDBCType.VARCHAR);
+        public final SqlColumn<String> lang = column("lang", JDBCType.VARCHAR).withJavaProperty("lang");
 
-        public final SqlColumn<Integer> version = column("version", JDBCType.INTEGER);
+        public final SqlColumn<Integer> version = column("version", JDBCType.INTEGER).withJavaProperty("version");
 
-        public final SqlColumn<Integer> priority = column("priority", JDBCType.INTEGER);
+        public final SqlColumn<Integer> priority = column("priority", JDBCType.INTEGER).withJavaProperty("priority");
 
-        public final SqlColumn<String> description = column("description", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> description = column("description", JDBCType.LONGVARCHAR).withJavaProperty("description");
 
-        public final SqlColumn<String> profile = column("profile", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> profile = column("profile", JDBCType.LONGVARCHAR).withJavaProperty("profile");
 
-        public final SqlColumn<String> greeting = column("greeting", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> greeting = column("greeting", JDBCType.LONGVARCHAR).withJavaProperty("greeting");
 
-        public final SqlColumn<String> chatStyle = column("chat_style", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> chatStyle = column("chat_style", JDBCType.LONGVARCHAR).withJavaProperty("chatStyle");
 
-        public final SqlColumn<String> chatExample = column("chat_example", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> chatExample = column("chat_example", JDBCType.LONGVARCHAR).withJavaProperty("chatExample");
 
-        public final SqlColumn<String> defaultScene = column("default_scene", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> defaultScene = column("default_scene", JDBCType.LONGVARCHAR).withJavaProperty("defaultScene");
 
-        public final SqlColumn<String> ext = column("ext", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> ext = column("ext", JDBCType.LONGVARCHAR).withJavaProperty("ext");
 
-        public final SqlColumn<String> draft = column("draft", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> draft = column("draft", JDBCType.LONGVARCHAR).withJavaProperty("draft");
 
         public CharacterInfo() {
             super("character_info", CharacterInfo::new);

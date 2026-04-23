@@ -1,9 +1,29 @@
 package fun.freechat.service.agent.impl;
 
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.and;
+import static org.mybatis.dynamic.sql.SqlBuilder.countDistinct;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan;
+import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
+import static org.mybatis.dynamic.sql.SqlBuilder.isLike;
+import static org.mybatis.dynamic.sql.SqlBuilder.isNotEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.or;
+import static org.mybatis.dynamic.sql.SqlBuilder.select;
+import static org.mybatis.dynamic.sql.SqlBuilder.selectDistinct;
 
-import fun.freechat.mapper.*;
-import fun.freechat.model.*;
+import fun.freechat.mapper.AgentInfoDynamicSqlSupport;
+import fun.freechat.mapper.AgentInfoMapper;
+import fun.freechat.mapper.AiModelDynamicSqlSupport;
+import fun.freechat.mapper.AiModelMapper;
+import fun.freechat.mapper.InteractiveStatsDynamicSqlSupport;
+import fun.freechat.mapper.InteractiveStatsMapper;
+import fun.freechat.mapper.TagDynamicSqlSupport;
+import fun.freechat.mapper.TagMapper;
+import fun.freechat.model.AgentInfo;
+import fun.freechat.model.AiModel;
+import fun.freechat.model.InteractiveStats;
+import fun.freechat.model.Tag;
+import fun.freechat.model.User;
 import fun.freechat.service.agent.AgentService;
 import fun.freechat.service.cache.LongPeriodCache;
 import fun.freechat.service.cache.LongPeriodCacheEvict;
@@ -16,7 +36,13 @@ import fun.freechat.service.util.CacheUtils;
 import fun.freechat.service.util.InfoUtils;
 import fun.freechat.service.util.SortSpecificationWrapper;
 import fun.freechat.util.IdUtils;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -157,7 +183,7 @@ public class AgentServiceImpl implements AgentService {
 
     private void doCreate(Triple<AgentInfo, List<String>, List<String>> infoTriple) {
         AgentInfo info = infoTriple.getLeft();
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         int rows = agentInfoMapper.insertSelective(info.withGmtCreate(now).withGmtModified(now));
         if (rows <= 0) {
             throw new RuntimeException("Insert agent " + info.getName() + " failed!");
@@ -414,7 +440,7 @@ public class AgentServiceImpl implements AgentService {
     public boolean update(Triple<AgentInfo, List<String>, List<String>> infoTriple) {
         SqlSession session = sqlSessionFactory.openSession();
         try {
-            Date now = new Date();
+            LocalDateTime now = LocalDateTime.now();
             AgentInfo agentInfo = infoTriple.getLeft();
             agentInfoMapper.updateByPrimaryKeySelective(agentInfo.withGmtModified(now));
             int rows;
@@ -476,8 +502,8 @@ public class AgentServiceImpl implements AgentService {
         if (AgentInfo == null || Visibility.HIDDEN.text().equals(AgentInfo.getVisibility())) {
             return false;
         }
-        Date now = new Date();
-        AgentInfo.withGmtModified(new Date()).withVisibility(Visibility.HIDDEN.text());
+        LocalDateTime now = LocalDateTime.now();
+        AgentInfo.withGmtModified(LocalDateTime.now()).withVisibility(Visibility.HIDDEN.text());
         int rows = agentInfoMapper.updateByPrimaryKeySelective(AgentInfo);
         return rows > 0;
     }
@@ -548,8 +574,13 @@ public class AgentServiceImpl implements AgentService {
     @Override
     @LongPeriodCache(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public Triple<AgentInfo, List<String>, List<String>> details(Long agentId, User user) {
+        var fields = select(Info.table.allColumns()).from(Info.table);
+        var statement = wrapQueryExpression(fields, user.getUserId())
+                .and(Info.agentId, isEqualTo(agentId))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
         return agentInfoMapper
-                .selectOne(c -> wrapQueryExpression(c, user.getUserId()).and(Info.agentId, isEqualTo(agentId)))
+                .selectOne(statement)
                 .filter(info -> filterVisibility(info, user))
                 .map(this::toInfoTriple)
                 .orElse(null);
@@ -557,9 +588,12 @@ public class AgentServiceImpl implements AgentService {
 
     @Override
     public List<Triple<AgentInfo, List<String>, List<String>>> details(Collection<Long> agentIds, User user) {
-        return agentInfoMapper
-                .select(c -> wrapQueryExpression(c, user.getUserId()).and(Info.agentId, isIn(agentIds)))
-                .stream()
+        var fields = select(Info.table.allColumns()).from(Info.table);
+        var statement = wrapQueryExpression(fields, user.getUserId())
+                .and(Info.agentId, isIn(agentIds))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+        return agentInfoMapper.selectMany(statement).stream()
                 .filter(info -> filterVisibility(info, user))
                 .map(this::toInfoTriple)
                 .toList();
@@ -653,7 +687,7 @@ public class AgentServiceImpl implements AgentService {
                 info = new AgentInfo()
                         .withAgentId(prevVersionInfo.getLeft())
                         .withVisibility(Visibility.HIDDEN.text())
-                        .withGmtModified(new Date());
+                        .withGmtModified(LocalDateTime.now());
                 agentInfoMapper.updateByPrimaryKeySelective(info);
             }
             session.commit();
@@ -708,8 +742,8 @@ public class AgentServiceImpl implements AgentService {
         public static final SqlColumn<Long> agentId = AgentInfoDynamicSqlSupport.agentId;
         public static final SqlColumn<String> agentUid = AgentInfoDynamicSqlSupport.agentUid;
 
-        public static final SqlColumn<Date> gmtCreate = AgentInfoDynamicSqlSupport.gmtCreate;
-        public static final SqlColumn<Date> gmtModified = AgentInfoDynamicSqlSupport.gmtModified;
+        public static final SqlColumn<LocalDateTime> gmtCreate = AgentInfoDynamicSqlSupport.gmtCreate;
+        public static final SqlColumn<LocalDateTime> gmtModified = AgentInfoDynamicSqlSupport.gmtModified;
         public static final SqlColumn<String> userId = AgentInfoDynamicSqlSupport.userId;
         public static final SqlColumn<String> parentUid = AgentInfoDynamicSqlSupport.parentUid;
         public static final SqlColumn<String> visibility = AgentInfoDynamicSqlSupport.visibility;

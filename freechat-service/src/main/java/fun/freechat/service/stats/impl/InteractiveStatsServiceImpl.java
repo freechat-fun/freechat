@@ -1,8 +1,16 @@
 package fun.freechat.service.stats.impl;
 
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.select;
+import static org.mybatis.dynamic.sql.SqlBuilder.selectDistinct;
 
-import fun.freechat.mapper.*;
+import fun.freechat.mapper.AgentInfoDynamicSqlSupport;
+import fun.freechat.mapper.InteractiveStatsDynamicSqlSupport;
+import fun.freechat.mapper.InteractiveStatsMapper;
+import fun.freechat.mapper.InteractiveStatsScoreDetailsDynamicSqlSupport;
+import fun.freechat.mapper.InteractiveStatsScoreDetailsMapper;
+import fun.freechat.mapper.PluginInfoDynamicSqlSupport;
+import fun.freechat.mapper.PromptInfoDynamicSqlSupport;
 import fun.freechat.model.InteractiveStats;
 import fun.freechat.model.InteractiveStatsScoreDetails;
 import fun.freechat.service.enums.InfoType;
@@ -10,8 +18,8 @@ import fun.freechat.service.enums.StatsType;
 import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.stats.InteractiveStatsService;
 import fun.freechat.service.util.SortSpecificationWrapper;
+import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -68,7 +76,7 @@ public class InteractiveStatsServiceImpl implements InteractiveStatsService {
         if (StringUtils.isBlank(userId)) {
             return -1;
         }
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         InteractiveStatsScoreDetails scoreDetails = getScore(userId, infoType, infoId);
         if (scoreDetails == null) {
             scoreDetails = new InteractiveStatsScoreDetails()
@@ -96,7 +104,7 @@ public class InteractiveStatsServiceImpl implements InteractiveStatsService {
         if (statsColumn == null || infoType == InfoType.UNKNOWN || StringUtils.isBlank(infoId)) {
             return -1;
         }
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         QueryExpressionDSL<SelectModel> fields;
         if (statsType == StatsType.SCORE) {
             fields = select(

@@ -1,106 +1,85 @@
 package fun.freechat.mapper;
 
-import jakarta.annotation.Generated;
 import java.sql.JDBCType;
-import java.util.Date;
+import java.time.LocalDateTime;
 import org.mybatis.dynamic.sql.AliasableSqlTable;
 import org.mybatis.dynamic.sql.SqlColumn;
 
 public final class PromptInfoDynamicSqlSupport {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final PromptInfo promptInfo = new PromptInfo();
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Long> promptId = promptInfo.promptId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> promptUid = promptInfo.promptUid;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Date> gmtCreate = promptInfo.gmtCreate;
+    public static final SqlColumn<LocalDateTime> gmtCreate = promptInfo.gmtCreate;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Date> gmtModified = promptInfo.gmtModified;
+    public static final SqlColumn<LocalDateTime> gmtModified = promptInfo.gmtModified;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> userId = promptInfo.userId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> parentUid = promptInfo.parentUid;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> visibility = promptInfo.visibility;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> name = promptInfo.name;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> type = promptInfo.type;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> format = promptInfo.format;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> lang = promptInfo.lang;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Integer> version = promptInfo.version;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> description = promptInfo.description;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> template = promptInfo.template;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> example = promptInfo.example;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> inputs = promptInfo.inputs;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> ext = promptInfo.ext;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> draft = promptInfo.draft;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final class PromptInfo extends AliasableSqlTable<PromptInfo> {
-        public final SqlColumn<Long> promptId = column("prompt_id", JDBCType.BIGINT);
+        public final SqlColumn<Long> promptId = column("prompt_id", JDBCType.BIGINT).withJavaProperty("promptId");
 
-        public final SqlColumn<String> promptUid = column("prompt_uid", JDBCType.VARCHAR);
+        public final SqlColumn<String> promptUid = column("prompt_uid", JDBCType.VARCHAR).withJavaProperty("promptUid");
 
-        public final SqlColumn<Date> gmtCreate = column("gmt_create", JDBCType.TIMESTAMP);
+        public final SqlColumn<LocalDateTime> gmtCreate = column("gmt_create", JDBCType.TIMESTAMP).withJavaProperty("gmtCreate");
 
-        public final SqlColumn<Date> gmtModified = column("gmt_modified", JDBCType.TIMESTAMP);
+        public final SqlColumn<LocalDateTime> gmtModified = column("gmt_modified", JDBCType.TIMESTAMP).withJavaProperty("gmtModified");
 
-        public final SqlColumn<String> userId = column("user_id", JDBCType.VARCHAR);
+        public final SqlColumn<String> userId = column("user_id", JDBCType.VARCHAR).withJavaProperty("userId");
 
-        public final SqlColumn<String> parentUid = column("parent_uid", JDBCType.VARCHAR);
+        public final SqlColumn<String> parentUid = column("parent_uid", JDBCType.VARCHAR).withJavaProperty("parentUid");
 
-        public final SqlColumn<String> visibility = column("visibility", JDBCType.VARCHAR);
+        public final SqlColumn<String> visibility = column("visibility", JDBCType.VARCHAR).withJavaProperty("visibility");
 
-        public final SqlColumn<String> name = column("name", JDBCType.VARCHAR);
+        public final SqlColumn<String> name = column("name", JDBCType.VARCHAR).withJavaProperty("name");
 
-        public final SqlColumn<String> type = column("type", JDBCType.VARCHAR);
+        public final SqlColumn<String> type = column("type", JDBCType.VARCHAR).withJavaProperty("type");
 
-        public final SqlColumn<String> format = column("format", JDBCType.VARCHAR);
+        public final SqlColumn<String> format = column("format", JDBCType.VARCHAR).withJavaProperty("format");
 
-        public final SqlColumn<String> lang = column("lang", JDBCType.VARCHAR);
+        public final SqlColumn<String> lang = column("lang", JDBCType.VARCHAR).withJavaProperty("lang");
 
-        public final SqlColumn<Integer> version = column("version", JDBCType.INTEGER);
+        public final SqlColumn<Integer> version = column("version", JDBCType.INTEGER).withJavaProperty("version");
 
-        public final SqlColumn<String> description = column("description", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> description = column("description", JDBCType.LONGVARCHAR).withJavaProperty("description");
 
-        public final SqlColumn<String> template = column("template", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> template = column("template", JDBCType.LONGVARCHAR).withJavaProperty("template");
 
-        public final SqlColumn<String> example = column("example", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> example = column("example", JDBCType.LONGVARCHAR).withJavaProperty("example");
 
-        public final SqlColumn<String> inputs = column("inputs", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> inputs = column("inputs", JDBCType.LONGVARCHAR).withJavaProperty("inputs");
 
-        public final SqlColumn<String> ext = column("ext", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> ext = column("ext", JDBCType.LONGVARCHAR).withJavaProperty("ext");
 
-        public final SqlColumn<String> draft = column("draft", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> draft = column("draft", JDBCType.LONGVARCHAR).withJavaProperty("draft");
 
         public PromptInfo() {
             super("prompt_info", PromptInfo::new);

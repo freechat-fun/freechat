@@ -27,7 +27,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.UUID;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -285,7 +292,7 @@ public class TestController {
 
     @GetMapping("/accounts/user")
     public String user(Model model) throws InterruptedException {
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
 
         User testUser = new User()
                 .withUsername(UUID.randomUUID().toString())

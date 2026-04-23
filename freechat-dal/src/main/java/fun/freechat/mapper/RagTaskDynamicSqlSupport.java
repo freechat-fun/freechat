@@ -1,76 +1,61 @@
 package fun.freechat.mapper;
 
-import jakarta.annotation.Generated;
 import java.sql.JDBCType;
-import java.util.Date;
+import java.time.LocalDateTime;
 import org.mybatis.dynamic.sql.AliasableSqlTable;
 import org.mybatis.dynamic.sql.SqlColumn;
 
 public final class RagTaskDynamicSqlSupport {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final RagTask ragTask = new RagTask();
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Long> id = ragTask.id;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Date> gmtCreate = ragTask.gmtCreate;
+    public static final SqlColumn<LocalDateTime> gmtCreate = ragTask.gmtCreate;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Date> gmtModified = ragTask.gmtModified;
+    public static final SqlColumn<LocalDateTime> gmtModified = ragTask.gmtModified;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Date> gmtStart = ragTask.gmtStart;
+    public static final SqlColumn<LocalDateTime> gmtStart = ragTask.gmtStart;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Date> gmtEnd = ragTask.gmtEnd;
+    public static final SqlColumn<LocalDateTime> gmtEnd = ragTask.gmtEnd;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> characterUid = ragTask.characterUid;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> sourceType = ragTask.sourceType;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Integer> maxSegmentSize = ragTask.maxSegmentSize;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Integer> maxOverlapSize = ragTask.maxOverlapSize;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> status = ragTask.status;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> source = ragTask.source;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> ext = ragTask.ext;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final class RagTask extends AliasableSqlTable<RagTask> {
-        public final SqlColumn<Long> id = column("id", JDBCType.BIGINT);
+        public final SqlColumn<Long> id = column("id", JDBCType.BIGINT).withJavaProperty("id");
 
-        public final SqlColumn<Date> gmtCreate = column("gmt_create", JDBCType.TIMESTAMP);
+        public final SqlColumn<LocalDateTime> gmtCreate = column("gmt_create", JDBCType.TIMESTAMP).withJavaProperty("gmtCreate");
 
-        public final SqlColumn<Date> gmtModified = column("gmt_modified", JDBCType.TIMESTAMP);
+        public final SqlColumn<LocalDateTime> gmtModified = column("gmt_modified", JDBCType.TIMESTAMP).withJavaProperty("gmtModified");
 
-        public final SqlColumn<Date> gmtStart = column("gmt_start", JDBCType.TIMESTAMP);
+        public final SqlColumn<LocalDateTime> gmtStart = column("gmt_start", JDBCType.TIMESTAMP).withJavaProperty("gmtStart");
 
-        public final SqlColumn<Date> gmtEnd = column("gmt_end", JDBCType.TIMESTAMP);
+        public final SqlColumn<LocalDateTime> gmtEnd = column("gmt_end", JDBCType.TIMESTAMP).withJavaProperty("gmtEnd");
 
-        public final SqlColumn<String> characterUid = column("character_uid", JDBCType.VARCHAR);
+        public final SqlColumn<String> characterUid = column("character_uid", JDBCType.VARCHAR).withJavaProperty("characterUid");
 
-        public final SqlColumn<String> sourceType = column("source_type", JDBCType.VARCHAR);
+        public final SqlColumn<String> sourceType = column("source_type", JDBCType.VARCHAR).withJavaProperty("sourceType");
 
-        public final SqlColumn<Integer> maxSegmentSize = column("max_segment_size", JDBCType.INTEGER);
+        public final SqlColumn<Integer> maxSegmentSize = column("max_segment_size", JDBCType.INTEGER).withJavaProperty("maxSegmentSize");
 
-        public final SqlColumn<Integer> maxOverlapSize = column("max_overlap_size", JDBCType.INTEGER);
+        public final SqlColumn<Integer> maxOverlapSize = column("max_overlap_size", JDBCType.INTEGER).withJavaProperty("maxOverlapSize");
 
-        public final SqlColumn<String> status = column("status", JDBCType.VARCHAR);
+        public final SqlColumn<String> status = column("status", JDBCType.VARCHAR).withJavaProperty("status");
 
-        public final SqlColumn<String> source = column("source", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> source = column("source", JDBCType.LONGVARCHAR).withJavaProperty("source");
 
-        public final SqlColumn<String> ext = column("ext", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> ext = column("ext", JDBCType.LONGVARCHAR).withJavaProperty("ext");
 
         public RagTask() {
             super("rag_task", RagTask::new);

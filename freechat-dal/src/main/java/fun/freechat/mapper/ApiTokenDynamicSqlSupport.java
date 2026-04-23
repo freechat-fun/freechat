@@ -1,61 +1,49 @@
 package fun.freechat.mapper;
 
-import jakarta.annotation.Generated;
 import java.sql.JDBCType;
-import java.util.Date;
+import java.time.LocalDateTime;
 import org.mybatis.dynamic.sql.AliasableSqlTable;
 import org.mybatis.dynamic.sql.SqlColumn;
 
 public final class ApiTokenDynamicSqlSupport {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final ApiToken apiToken = new ApiToken();
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Long> id = apiToken.id;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Date> gmtCreate = apiToken.gmtCreate;
+    public static final SqlColumn<LocalDateTime> gmtCreate = apiToken.gmtCreate;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Date> gmtModified = apiToken.gmtModified;
+    public static final SqlColumn<LocalDateTime> gmtModified = apiToken.gmtModified;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> userId = apiToken.userId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> token = apiToken.token;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> type = apiToken.type;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Date> issuedAt = apiToken.issuedAt;
+    public static final SqlColumn<LocalDateTime> issuedAt = apiToken.issuedAt;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Date> expiresAt = apiToken.expiresAt;
+    public static final SqlColumn<LocalDateTime> expiresAt = apiToken.expiresAt;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> policy = apiToken.policy;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final class ApiToken extends AliasableSqlTable<ApiToken> {
-        public final SqlColumn<Long> id = column("id", JDBCType.BIGINT);
+        public final SqlColumn<Long> id = column("id", JDBCType.BIGINT).withJavaProperty("id");
 
-        public final SqlColumn<Date> gmtCreate = column("gmt_create", JDBCType.TIMESTAMP);
+        public final SqlColumn<LocalDateTime> gmtCreate = column("gmt_create", JDBCType.TIMESTAMP).withJavaProperty("gmtCreate");
 
-        public final SqlColumn<Date> gmtModified = column("gmt_modified", JDBCType.TIMESTAMP);
+        public final SqlColumn<LocalDateTime> gmtModified = column("gmt_modified", JDBCType.TIMESTAMP).withJavaProperty("gmtModified");
 
-        public final SqlColumn<String> userId = column("user_id", JDBCType.VARCHAR);
+        public final SqlColumn<String> userId = column("user_id", JDBCType.VARCHAR).withJavaProperty("userId");
 
-        public final SqlColumn<String> token = column("token", JDBCType.VARCHAR);
+        public final SqlColumn<String> token = column("token", JDBCType.VARCHAR).withJavaProperty("token");
 
-        public final SqlColumn<String> type = column("type", JDBCType.VARCHAR);
+        public final SqlColumn<String> type = column("type", JDBCType.VARCHAR).withJavaProperty("type");
 
-        public final SqlColumn<Date> issuedAt = column("issued_at", JDBCType.TIMESTAMP);
+        public final SqlColumn<LocalDateTime> issuedAt = column("issued_at", JDBCType.TIMESTAMP).withJavaProperty("issuedAt");
 
-        public final SqlColumn<Date> expiresAt = column("expires_at", JDBCType.TIMESTAMP);
+        public final SqlColumn<LocalDateTime> expiresAt = column("expires_at", JDBCType.TIMESTAMP).withJavaProperty("expiresAt");
 
-        public final SqlColumn<String> policy = column("policy", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> policy = column("policy", JDBCType.LONGVARCHAR).withJavaProperty("policy");
 
         public ApiToken() {
             super("api_token", ApiToken::new);

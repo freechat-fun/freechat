@@ -4,7 +4,6 @@ import static fun.freechat.mapper.CharacterInfoDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
 import fun.freechat.model.CharacterInfo;
-import jakarta.annotation.Generated;
 import java.util.List;
 import java.util.Optional;
 import org.apache.ibatis.annotations.InsertProvider;
@@ -16,14 +15,13 @@ import org.apache.ibatis.annotations.SelectKey;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
+import org.mybatis.dynamic.sql.dsl.CountDSLCompleter;
+import org.mybatis.dynamic.sql.dsl.DeleteDSLCompleter;
+import org.mybatis.dynamic.sql.dsl.SelectDSLCompleter;
+import org.mybatis.dynamic.sql.dsl.UpdateDSL;
+import org.mybatis.dynamic.sql.dsl.UpdateDSLCompleter;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
-import org.mybatis.dynamic.sql.select.CountDSLCompleter;
-import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.update.UpdateDSL;
-import org.mybatis.dynamic.sql.update.UpdateDSLCompleter;
-import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper;
@@ -32,15 +30,12 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
 public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapper, CommonUpdateMapper {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     BasicColumn[] selectList = BasicColumn.columnList(characterId, characterUid, gmtCreate, gmtModified, userId, parentUid, visibility, name, nickname, avatar, picture, video, gender, lang, version, priority, description, profile, greeting, chatStyle, chatExample, defaultScene, ext, draft);
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     @SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="row.characterId", before=false, resultType=Long.class)
     int insert(InsertStatementProvider<CharacterInfo> insertStatement);
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="CharacterInfoResult", value = {
         @Result(column="character_id", property="characterId", jdbcType=JdbcType.BIGINT, id=true),
@@ -70,116 +65,105 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
     })
     List<CharacterInfo> selectMany(SelectStatementProvider selectStatement);
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("CharacterInfoResult")
     Optional<CharacterInfo> selectOne(SelectStatementProvider selectStatement);
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default long count(CountDSLCompleter completer) {
         return MyBatis3Utils.countFrom(this::count, characterInfo, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int delete(DeleteDSLCompleter completer) {
         return MyBatis3Utils.deleteFrom(this::delete, characterInfo, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int deleteByPrimaryKey(Long characterId_) {
         return delete(c -> 
             c.where(characterId, isEqualTo(characterId_))
         );
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insert(CharacterInfo row) {
         return MyBatis3Utils.insert(this::insert, row, characterInfo, c ->
-            c.map(characterUid).toProperty("characterUid")
-            .map(gmtCreate).toProperty("gmtCreate")
-            .map(gmtModified).toProperty("gmtModified")
-            .map(userId).toProperty("userId")
-            .map(parentUid).toProperty("parentUid")
-            .map(visibility).toProperty("visibility")
-            .map(name).toProperty("name")
-            .map(nickname).toProperty("nickname")
-            .map(avatar).toProperty("avatar")
-            .map(picture).toProperty("picture")
-            .map(video).toProperty("video")
-            .map(gender).toProperty("gender")
-            .map(lang).toProperty("lang")
-            .map(version).toProperty("version")
-            .map(priority).toProperty("priority")
-            .map(description).toProperty("description")
-            .map(profile).toProperty("profile")
-            .map(greeting).toProperty("greeting")
-            .map(chatStyle).toProperty("chatStyle")
-            .map(chatExample).toProperty("chatExample")
-            .map(defaultScene).toProperty("defaultScene")
-            .map(ext).toProperty("ext")
-            .map(draft).toProperty("draft")
+            c.withMappedColumn(characterUid)
+            .withMappedColumn(gmtCreate)
+            .withMappedColumn(gmtModified)
+            .withMappedColumn(userId)
+            .withMappedColumn(parentUid)
+            .withMappedColumn(visibility)
+            .withMappedColumn(name)
+            .withMappedColumn(nickname)
+            .withMappedColumn(avatar)
+            .withMappedColumn(picture)
+            .withMappedColumn(video)
+            .withMappedColumn(gender)
+            .withMappedColumn(lang)
+            .withMappedColumn(version)
+            .withMappedColumn(priority)
+            .withMappedColumn(description)
+            .withMappedColumn(profile)
+            .withMappedColumn(greeting)
+            .withMappedColumn(chatStyle)
+            .withMappedColumn(chatExample)
+            .withMappedColumn(defaultScene)
+            .withMappedColumn(ext)
+            .withMappedColumn(draft)
         );
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insertSelective(CharacterInfo row) {
         return MyBatis3Utils.insert(this::insert, row, characterInfo, c ->
-            c.map(characterUid).toPropertyWhenPresent("characterUid", row::getCharacterUid)
-            .map(gmtCreate).toPropertyWhenPresent("gmtCreate", row::getGmtCreate)
-            .map(gmtModified).toPropertyWhenPresent("gmtModified", row::getGmtModified)
-            .map(userId).toPropertyWhenPresent("userId", row::getUserId)
-            .map(parentUid).toPropertyWhenPresent("parentUid", row::getParentUid)
-            .map(visibility).toPropertyWhenPresent("visibility", row::getVisibility)
-            .map(name).toPropertyWhenPresent("name", row::getName)
-            .map(nickname).toPropertyWhenPresent("nickname", row::getNickname)
-            .map(avatar).toPropertyWhenPresent("avatar", row::getAvatar)
-            .map(picture).toPropertyWhenPresent("picture", row::getPicture)
-            .map(video).toPropertyWhenPresent("video", row::getVideo)
-            .map(gender).toPropertyWhenPresent("gender", row::getGender)
-            .map(lang).toPropertyWhenPresent("lang", row::getLang)
-            .map(version).toPropertyWhenPresent("version", row::getVersion)
-            .map(priority).toPropertyWhenPresent("priority", row::getPriority)
-            .map(description).toPropertyWhenPresent("description", row::getDescription)
-            .map(profile).toPropertyWhenPresent("profile", row::getProfile)
-            .map(greeting).toPropertyWhenPresent("greeting", row::getGreeting)
-            .map(chatStyle).toPropertyWhenPresent("chatStyle", row::getChatStyle)
-            .map(chatExample).toPropertyWhenPresent("chatExample", row::getChatExample)
-            .map(defaultScene).toPropertyWhenPresent("defaultScene", row::getDefaultScene)
-            .map(ext).toPropertyWhenPresent("ext", row::getExt)
-            .map(draft).toPropertyWhenPresent("draft", row::getDraft)
+            c.withMappedColumnWhenPresent(characterUid, row::getCharacterUid)
+            .withMappedColumnWhenPresent(gmtCreate, row::getGmtCreate)
+            .withMappedColumnWhenPresent(gmtModified, row::getGmtModified)
+            .withMappedColumnWhenPresent(userId, row::getUserId)
+            .withMappedColumnWhenPresent(parentUid, row::getParentUid)
+            .withMappedColumnWhenPresent(visibility, row::getVisibility)
+            .withMappedColumnWhenPresent(name, row::getName)
+            .withMappedColumnWhenPresent(nickname, row::getNickname)
+            .withMappedColumnWhenPresent(avatar, row::getAvatar)
+            .withMappedColumnWhenPresent(picture, row::getPicture)
+            .withMappedColumnWhenPresent(video, row::getVideo)
+            .withMappedColumnWhenPresent(gender, row::getGender)
+            .withMappedColumnWhenPresent(lang, row::getLang)
+            .withMappedColumnWhenPresent(version, row::getVersion)
+            .withMappedColumnWhenPresent(priority, row::getPriority)
+            .withMappedColumnWhenPresent(description, row::getDescription)
+            .withMappedColumnWhenPresent(profile, row::getProfile)
+            .withMappedColumnWhenPresent(greeting, row::getGreeting)
+            .withMappedColumnWhenPresent(chatStyle, row::getChatStyle)
+            .withMappedColumnWhenPresent(chatExample, row::getChatExample)
+            .withMappedColumnWhenPresent(defaultScene, row::getDefaultScene)
+            .withMappedColumnWhenPresent(ext, row::getExt)
+            .withMappedColumnWhenPresent(draft, row::getDraft)
         );
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default Optional<CharacterInfo> selectOne(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectOne(this::selectOne, selectList, characterInfo, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default List<CharacterInfo> select(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectList(this::selectMany, selectList, characterInfo, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default List<CharacterInfo> selectDistinct(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectDistinct(this::selectMany, selectList, characterInfo, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default Optional<CharacterInfo> selectByPrimaryKey(Long characterId_) {
         return selectOne(c ->
             c.where(characterId, isEqualTo(characterId_))
         );
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int update(UpdateDSLCompleter completer) {
         return MyBatis3Utils.update(this::update, characterInfo, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    static UpdateDSL<UpdateModel> updateAllColumns(CharacterInfo row, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(characterUid).equalTo(row::getCharacterUid)
+    static UpdateDSL updateAllColumns(CharacterInfo row, UpdateDSL dsl) {
+        return dsl.set(characterId).equalTo(row::getCharacterId)
+                .set(characterUid).equalTo(row::getCharacterUid)
                 .set(gmtCreate).equalTo(row::getGmtCreate)
                 .set(gmtModified).equalTo(row::getGmtModified)
                 .set(userId).equalTo(row::getUserId)
@@ -204,9 +188,9 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
                 .set(draft).equalTo(row::getDraft);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    static UpdateDSL<UpdateModel> updateSelectiveColumns(CharacterInfo row, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(characterUid).equalToWhenPresent(row::getCharacterUid)
+    static UpdateDSL updateSelectiveColumns(CharacterInfo row, UpdateDSL dsl) {
+        return dsl.set(characterId).equalToWhenPresent(row::getCharacterId)
+                .set(characterUid).equalToWhenPresent(row::getCharacterUid)
                 .set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
                 .set(gmtModified).equalToWhenPresent(row::getGmtModified)
                 .set(userId).equalToWhenPresent(row::getUserId)
@@ -231,7 +215,6 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
                 .set(draft).equalToWhenPresent(row::getDraft);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int updateByPrimaryKey(CharacterInfo row) {
         return update(c ->
             c.set(characterUid).equalTo(row::getCharacterUid)
@@ -261,7 +244,6 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
         );
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int updateByPrimaryKeySelective(CharacterInfo row) {
         return update(c ->
             c.set(characterUid).equalToWhenPresent(row::getCharacterUid)

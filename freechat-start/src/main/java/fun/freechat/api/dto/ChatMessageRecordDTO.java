@@ -4,7 +4,7 @@ import fun.freechat.api.util.AccountUtils;
 import fun.freechat.api.util.ChatUtils;
 import fun.freechat.service.chat.ChatMessageRecord;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +22,7 @@ public class ChatMessageRecordDTO {
     private ChatMessageDTO message;
 
     @Schema(description = "Creation time")
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
 
     @Schema(description = "Additional information")
     private String ext;

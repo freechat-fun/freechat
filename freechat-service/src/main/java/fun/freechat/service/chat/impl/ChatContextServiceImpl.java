@@ -15,7 +15,7 @@ import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.ChatContextService;
 import fun.freechat.service.common.EncryptionService;
 import fun.freechat.util.IdUtils;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +54,7 @@ public class ChatContextServiceImpl implements ChatContextService {
             return success ? context : null;
         }
 
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         String id = IdUtils.newId();
         String origApiKeyValue = context.getApiKeyValue();
         int rows = chatContextMapper.insertSelective(context.withApiKeyValue(encryptionService.encrypt(origApiKeyValue))
@@ -74,7 +74,7 @@ public class ChatContextServiceImpl implements ChatContextService {
         String origApiKeyValue = context.getApiKeyValue();
         int rows = chatContextMapper.updateByPrimaryKeySelective(
                 context.withApiKeyValue(encryptionService.encrypt(origApiKeyValue))
-                        .withGmtModified(new Date()));
+                        .withGmtModified(LocalDateTime.now()));
         context.setApiKeyValue(origApiKeyValue);
         return rows > 0;
     }

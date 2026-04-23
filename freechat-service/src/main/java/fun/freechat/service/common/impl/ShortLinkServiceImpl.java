@@ -1,6 +1,9 @@
 package fun.freechat.service.common.impl;
 
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan;
+import static org.mybatis.dynamic.sql.SqlBuilder.isNull;
+import static org.mybatis.dynamic.sql.SqlBuilder.or;
 
 import fun.freechat.mapper.ShortLinkDynamicSqlSupport;
 import fun.freechat.mapper.ShortLinkMapper;
@@ -8,8 +11,8 @@ import fun.freechat.model.ShortLink;
 import fun.freechat.service.cache.LongPeriodCache;
 import fun.freechat.service.common.ShortLinkService;
 import fun.freechat.util.IdUtils;
+import java.time.LocalDateTime;
 import java.time.temporal.TemporalAmount;
-import java.util.Date;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +27,7 @@ public class ShortLinkServiceImpl implements ShortLinkService {
 
     @Override
     public String shorten(String path, TemporalAmount duration) {
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         Optional<ShortLink> row =
                 shortLinkMapper.selectOne(c -> c.where(ShortLinkDynamicSqlSupport.path, isEqualTo(path)));
         if (row.isPresent()) {
@@ -32,9 +35,8 @@ public class ShortLinkServiceImpl implements ShortLinkService {
             if (duration == null && shortLink.getExpiresAt() == null) {
                 return shortLink.getToken();
             } else if (shortLink.getExpiresAt() == null
-                    || shortLink.getExpiresAt().after(now)) {
-                shortLink.setExpiresAt(
-                        duration != null ? Date.from(now.toInstant().plus(duration)) : null);
+                    || shortLink.getExpiresAt().isAfter(now)) {
+                shortLink.setExpiresAt(duration != null ? now.plus(duration) : null);
                 shortLink.setGmtModified(now);
                 shortLinkMapper.updateByPrimaryKey(shortLink);
                 return shortLink.getToken();
@@ -42,7 +44,7 @@ public class ShortLinkServiceImpl implements ShortLinkService {
         }
 
         ShortLink newShortLink = new ShortLink()
-                .withExpiresAt(duration != null ? Date.from(now.toInstant().plus(duration)) : null)
+                .withExpiresAt(duration != null ? now.plus(duration) : null)
                 .withGmtCreate(now)
                 .withGmtModified(now)
                 .withPath(path)
@@ -65,7 +67,7 @@ public class ShortLinkServiceImpl implements ShortLinkService {
                         .and(
                                 ShortLinkDynamicSqlSupport.expiresAt,
                                 isNull(),
-                                or(ShortLinkDynamicSqlSupport.expiresAt, isGreaterThan(new Date()))))
+                                or(ShortLinkDynamicSqlSupport.expiresAt, isGreaterThan(LocalDateTime.now()))))
                 .map(ShortLink::getPath)
                 .orElse(null);
     }

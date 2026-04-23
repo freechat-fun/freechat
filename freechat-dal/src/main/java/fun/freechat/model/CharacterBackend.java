@@ -1,414 +1,402 @@
 package fun.freechat.model;
 
-import jakarta.annotation.Generated;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class CharacterBackend implements Serializable {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String backendId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtModified;
+    private LocalDateTime gmtModified;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String characterUid;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Byte isDefault;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String chatPromptTaskId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String greetingPromptTaskId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String moderationModelId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String moderationApiKeyName;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String imageModelId;
+
+    private String imageApiKeyName;
+
     private Byte forwardToUser;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Integer messageWindowSize;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Integer longTermMemoryWindowSize;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Integer proactiveChatWaitingTime;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long initQuota;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String quotaType;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Byte enableAlbumTool;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Byte enableTts;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String ttsSpeakerIdx;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String ttsSpeakerWav;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String ttsSpeakerType;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String moderationApiKeyValue;
+
     private String moderationParams;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String imageApiKeyValue;
+
+    private String imageParams;
+
     private static final long serialVersionUID = 1L;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getBackendId() {
         return backendId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterBackend withBackendId(String backendId) {
         this.setBackendId(backendId);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setBackendId(String backendId) {
         this.backendId = backendId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtCreate() {
+    public LocalDateTime getGmtCreate() {
         return gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public CharacterBackend withGmtCreate(Date gmtCreate) {
+    public CharacterBackend withGmtCreate(LocalDateTime gmtCreate) {
         this.setGmtCreate(gmtCreate);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtCreate(Date gmtCreate) {
+    public void setGmtCreate(LocalDateTime gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtModified() {
+    public LocalDateTime getGmtModified() {
         return gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public CharacterBackend withGmtModified(Date gmtModified) {
+    public CharacterBackend withGmtModified(LocalDateTime gmtModified) {
         this.setGmtModified(gmtModified);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtModified(Date gmtModified) {
+    public void setGmtModified(LocalDateTime gmtModified) {
         this.gmtModified = gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getCharacterUid() {
         return characterUid;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterBackend withCharacterUid(String characterUid) {
         this.setCharacterUid(characterUid);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setCharacterUid(String characterUid) {
         this.characterUid = characterUid;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Byte getIsDefault() {
         return isDefault;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterBackend withIsDefault(Byte isDefault) {
         this.setIsDefault(isDefault);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setIsDefault(Byte isDefault) {
         this.isDefault = isDefault;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getChatPromptTaskId() {
         return chatPromptTaskId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterBackend withChatPromptTaskId(String chatPromptTaskId) {
         this.setChatPromptTaskId(chatPromptTaskId);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setChatPromptTaskId(String chatPromptTaskId) {
         this.chatPromptTaskId = chatPromptTaskId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getGreetingPromptTaskId() {
         return greetingPromptTaskId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterBackend withGreetingPromptTaskId(String greetingPromptTaskId) {
         this.setGreetingPromptTaskId(greetingPromptTaskId);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setGreetingPromptTaskId(String greetingPromptTaskId) {
         this.greetingPromptTaskId = greetingPromptTaskId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getModerationModelId() {
         return moderationModelId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterBackend withModerationModelId(String moderationModelId) {
         this.setModerationModelId(moderationModelId);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setModerationModelId(String moderationModelId) {
         this.moderationModelId = moderationModelId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getModerationApiKeyName() {
         return moderationApiKeyName;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterBackend withModerationApiKeyName(String moderationApiKeyName) {
         this.setModerationApiKeyName(moderationApiKeyName);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setModerationApiKeyName(String moderationApiKeyName) {
         this.moderationApiKeyName = moderationApiKeyName;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getImageModelId() {
+        return imageModelId;
+    }
+
+    public CharacterBackend withImageModelId(String imageModelId) {
+        this.setImageModelId(imageModelId);
+        return this;
+    }
+
+    public void setImageModelId(String imageModelId) {
+        this.imageModelId = imageModelId;
+    }
+
+    public String getImageApiKeyName() {
+        return imageApiKeyName;
+    }
+
+    public CharacterBackend withImageApiKeyName(String imageApiKeyName) {
+        this.setImageApiKeyName(imageApiKeyName);
+        return this;
+    }
+
+    public void setImageApiKeyName(String imageApiKeyName) {
+        this.imageApiKeyName = imageApiKeyName;
+    }
+
     public Byte getForwardToUser() {
         return forwardToUser;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterBackend withForwardToUser(Byte forwardToUser) {
         this.setForwardToUser(forwardToUser);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setForwardToUser(Byte forwardToUser) {
         this.forwardToUser = forwardToUser;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Integer getMessageWindowSize() {
         return messageWindowSize;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterBackend withMessageWindowSize(Integer messageWindowSize) {
         this.setMessageWindowSize(messageWindowSize);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setMessageWindowSize(Integer messageWindowSize) {
         this.messageWindowSize = messageWindowSize;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Integer getLongTermMemoryWindowSize() {
         return longTermMemoryWindowSize;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterBackend withLongTermMemoryWindowSize(Integer longTermMemoryWindowSize) {
         this.setLongTermMemoryWindowSize(longTermMemoryWindowSize);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setLongTermMemoryWindowSize(Integer longTermMemoryWindowSize) {
         this.longTermMemoryWindowSize = longTermMemoryWindowSize;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Integer getProactiveChatWaitingTime() {
         return proactiveChatWaitingTime;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterBackend withProactiveChatWaitingTime(Integer proactiveChatWaitingTime) {
         this.setProactiveChatWaitingTime(proactiveChatWaitingTime);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setProactiveChatWaitingTime(Integer proactiveChatWaitingTime) {
         this.proactiveChatWaitingTime = proactiveChatWaitingTime;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getInitQuota() {
         return initQuota;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterBackend withInitQuota(Long initQuota) {
         this.setInitQuota(initQuota);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setInitQuota(Long initQuota) {
         this.initQuota = initQuota;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getQuotaType() {
         return quotaType;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterBackend withQuotaType(String quotaType) {
         this.setQuotaType(quotaType);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setQuotaType(String quotaType) {
         this.quotaType = quotaType;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Byte getEnableAlbumTool() {
         return enableAlbumTool;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterBackend withEnableAlbumTool(Byte enableAlbumTool) {
         this.setEnableAlbumTool(enableAlbumTool);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setEnableAlbumTool(Byte enableAlbumTool) {
         this.enableAlbumTool = enableAlbumTool;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Byte getEnableTts() {
         return enableTts;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterBackend withEnableTts(Byte enableTts) {
         this.setEnableTts(enableTts);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setEnableTts(Byte enableTts) {
         this.enableTts = enableTts;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getTtsSpeakerIdx() {
         return ttsSpeakerIdx;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterBackend withTtsSpeakerIdx(String ttsSpeakerIdx) {
         this.setTtsSpeakerIdx(ttsSpeakerIdx);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setTtsSpeakerIdx(String ttsSpeakerIdx) {
         this.ttsSpeakerIdx = ttsSpeakerIdx;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getTtsSpeakerWav() {
         return ttsSpeakerWav;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterBackend withTtsSpeakerWav(String ttsSpeakerWav) {
         this.setTtsSpeakerWav(ttsSpeakerWav);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setTtsSpeakerWav(String ttsSpeakerWav) {
         this.ttsSpeakerWav = ttsSpeakerWav;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getTtsSpeakerType() {
         return ttsSpeakerType;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterBackend withTtsSpeakerType(String ttsSpeakerType) {
         this.setTtsSpeakerType(ttsSpeakerType);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setTtsSpeakerType(String ttsSpeakerType) {
         this.ttsSpeakerType = ttsSpeakerType;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getModerationApiKeyValue() {
+        return moderationApiKeyValue;
+    }
+
+    public CharacterBackend withModerationApiKeyValue(String moderationApiKeyValue) {
+        this.setModerationApiKeyValue(moderationApiKeyValue);
+        return this;
+    }
+
+    public void setModerationApiKeyValue(String moderationApiKeyValue) {
+        this.moderationApiKeyValue = moderationApiKeyValue;
+    }
+
     public String getModerationParams() {
         return moderationParams;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterBackend withModerationParams(String moderationParams) {
         this.setModerationParams(moderationParams);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setModerationParams(String moderationParams) {
         this.moderationParams = moderationParams;
     }
 
+    public String getImageApiKeyValue() {
+        return imageApiKeyValue;
+    }
+
+    public CharacterBackend withImageApiKeyValue(String imageApiKeyValue) {
+        this.setImageApiKeyValue(imageApiKeyValue);
+        return this;
+    }
+
+    public void setImageApiKeyValue(String imageApiKeyValue) {
+        this.imageApiKeyValue = imageApiKeyValue;
+    }
+
+    public String getImageParams() {
+        return imageParams;
+    }
+
+    public CharacterBackend withImageParams(String imageParams) {
+        this.setImageParams(imageParams);
+        return this;
+    }
+
+    public void setImageParams(String imageParams) {
+        this.imageParams = imageParams;
+    }
+
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public boolean equals(Object that) {
         if (this == that) {
             return true;
@@ -429,6 +417,8 @@ public class CharacterBackend implements Serializable {
             && (this.getGreetingPromptTaskId() == null ? other.getGreetingPromptTaskId() == null : this.getGreetingPromptTaskId().equals(other.getGreetingPromptTaskId()))
             && (this.getModerationModelId() == null ? other.getModerationModelId() == null : this.getModerationModelId().equals(other.getModerationModelId()))
             && (this.getModerationApiKeyName() == null ? other.getModerationApiKeyName() == null : this.getModerationApiKeyName().equals(other.getModerationApiKeyName()))
+            && (this.getImageModelId() == null ? other.getImageModelId() == null : this.getImageModelId().equals(other.getImageModelId()))
+            && (this.getImageApiKeyName() == null ? other.getImageApiKeyName() == null : this.getImageApiKeyName().equals(other.getImageApiKeyName()))
             && (this.getForwardToUser() == null ? other.getForwardToUser() == null : this.getForwardToUser().equals(other.getForwardToUser()))
             && (this.getMessageWindowSize() == null ? other.getMessageWindowSize() == null : this.getMessageWindowSize().equals(other.getMessageWindowSize()))
             && (this.getLongTermMemoryWindowSize() == null ? other.getLongTermMemoryWindowSize() == null : this.getLongTermMemoryWindowSize().equals(other.getLongTermMemoryWindowSize()))
@@ -440,11 +430,13 @@ public class CharacterBackend implements Serializable {
             && (this.getTtsSpeakerIdx() == null ? other.getTtsSpeakerIdx() == null : this.getTtsSpeakerIdx().equals(other.getTtsSpeakerIdx()))
             && (this.getTtsSpeakerWav() == null ? other.getTtsSpeakerWav() == null : this.getTtsSpeakerWav().equals(other.getTtsSpeakerWav()))
             && (this.getTtsSpeakerType() == null ? other.getTtsSpeakerType() == null : this.getTtsSpeakerType().equals(other.getTtsSpeakerType()))
-            && (this.getModerationParams() == null ? other.getModerationParams() == null : this.getModerationParams().equals(other.getModerationParams()));
+            && (this.getModerationApiKeyValue() == null ? other.getModerationApiKeyValue() == null : this.getModerationApiKeyValue().equals(other.getModerationApiKeyValue()))
+            && (this.getModerationParams() == null ? other.getModerationParams() == null : this.getModerationParams().equals(other.getModerationParams()))
+            && (this.getImageApiKeyValue() == null ? other.getImageApiKeyValue() == null : this.getImageApiKeyValue().equals(other.getImageApiKeyValue()))
+            && (this.getImageParams() == null ? other.getImageParams() == null : this.getImageParams().equals(other.getImageParams()));
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -457,6 +449,8 @@ public class CharacterBackend implements Serializable {
         result = prime * result + ((getGreetingPromptTaskId() == null) ? 0 : getGreetingPromptTaskId().hashCode());
         result = prime * result + ((getModerationModelId() == null) ? 0 : getModerationModelId().hashCode());
         result = prime * result + ((getModerationApiKeyName() == null) ? 0 : getModerationApiKeyName().hashCode());
+        result = prime * result + ((getImageModelId() == null) ? 0 : getImageModelId().hashCode());
+        result = prime * result + ((getImageApiKeyName() == null) ? 0 : getImageApiKeyName().hashCode());
         result = prime * result + ((getForwardToUser() == null) ? 0 : getForwardToUser().hashCode());
         result = prime * result + ((getMessageWindowSize() == null) ? 0 : getMessageWindowSize().hashCode());
         result = prime * result + ((getLongTermMemoryWindowSize() == null) ? 0 : getLongTermMemoryWindowSize().hashCode());
@@ -468,12 +462,14 @@ public class CharacterBackend implements Serializable {
         result = prime * result + ((getTtsSpeakerIdx() == null) ? 0 : getTtsSpeakerIdx().hashCode());
         result = prime * result + ((getTtsSpeakerWav() == null) ? 0 : getTtsSpeakerWav().hashCode());
         result = prime * result + ((getTtsSpeakerType() == null) ? 0 : getTtsSpeakerType().hashCode());
+        result = prime * result + ((getModerationApiKeyValue() == null) ? 0 : getModerationApiKeyValue().hashCode());
         result = prime * result + ((getModerationParams() == null) ? 0 : getModerationParams().hashCode());
+        result = prime * result + ((getImageApiKeyValue() == null) ? 0 : getImageApiKeyValue().hashCode());
+        result = prime * result + ((getImageParams() == null) ? 0 : getImageParams().hashCode());
         return result;
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
@@ -488,6 +484,8 @@ public class CharacterBackend implements Serializable {
         sb.append(", greetingPromptTaskId=").append(greetingPromptTaskId);
         sb.append(", moderationModelId=").append(moderationModelId);
         sb.append(", moderationApiKeyName=").append(moderationApiKeyName);
+        sb.append(", imageModelId=").append(imageModelId);
+        sb.append(", imageApiKeyName=").append(imageApiKeyName);
         sb.append(", forwardToUser=").append(forwardToUser);
         sb.append(", messageWindowSize=").append(messageWindowSize);
         sb.append(", longTermMemoryWindowSize=").append(longTermMemoryWindowSize);
@@ -499,7 +497,10 @@ public class CharacterBackend implements Serializable {
         sb.append(", ttsSpeakerIdx=").append(ttsSpeakerIdx);
         sb.append(", ttsSpeakerWav=").append(ttsSpeakerWav);
         sb.append(", ttsSpeakerType=").append(ttsSpeakerType);
+        sb.append(", moderationApiKeyValue=").append(moderationApiKeyValue);
         sb.append(", moderationParams=").append(moderationParams);
+        sb.append(", imageApiKeyValue=").append(imageApiKeyValue);
+        sb.append(", imageParams=").append(imageParams);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

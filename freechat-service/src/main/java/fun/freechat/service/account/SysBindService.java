@@ -2,8 +2,8 @@ package fun.freechat.service.account;
 
 import fun.freechat.model.User;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 
 public interface SysBindService {
     boolean bind(
@@ -13,8 +13,8 @@ public interface SysBindService {
             URL iss,
             Collection<String> aud,
             String refreshToken,
-            Date issuedAt,
-            Date expiresAt);
+            LocalDateTime issuedAt,
+            LocalDateTime expiresAt);
 
     boolean unbind(User user, String platform);
 

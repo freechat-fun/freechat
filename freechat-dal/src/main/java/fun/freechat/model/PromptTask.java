@@ -1,300 +1,237 @@
 package fun.freechat.model;
 
-import jakarta.annotation.Generated;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class PromptTask implements Serializable {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String taskId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtModified;
+    private LocalDateTime gmtModified;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtStart;
+    private LocalDateTime gmtStart;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtEnd;
+    private LocalDateTime gmtEnd;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String promptUid;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Byte draft;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String modelId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String apiKeyName;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String cron;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String status;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String variables;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String apiKeyValue;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String params;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String ext;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private static final long serialVersionUID = 1L;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getTaskId() {
         return taskId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptTask withTaskId(String taskId) {
         this.setTaskId(taskId);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setTaskId(String taskId) {
         this.taskId = taskId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtCreate() {
+    public LocalDateTime getGmtCreate() {
         return gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public PromptTask withGmtCreate(Date gmtCreate) {
+    public PromptTask withGmtCreate(LocalDateTime gmtCreate) {
         this.setGmtCreate(gmtCreate);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtCreate(Date gmtCreate) {
+    public void setGmtCreate(LocalDateTime gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtModified() {
+    public LocalDateTime getGmtModified() {
         return gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public PromptTask withGmtModified(Date gmtModified) {
+    public PromptTask withGmtModified(LocalDateTime gmtModified) {
         this.setGmtModified(gmtModified);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtModified(Date gmtModified) {
+    public void setGmtModified(LocalDateTime gmtModified) {
         this.gmtModified = gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtStart() {
+    public LocalDateTime getGmtStart() {
         return gmtStart;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public PromptTask withGmtStart(Date gmtStart) {
+    public PromptTask withGmtStart(LocalDateTime gmtStart) {
         this.setGmtStart(gmtStart);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtStart(Date gmtStart) {
+    public void setGmtStart(LocalDateTime gmtStart) {
         this.gmtStart = gmtStart;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtEnd() {
+    public LocalDateTime getGmtEnd() {
         return gmtEnd;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public PromptTask withGmtEnd(Date gmtEnd) {
+    public PromptTask withGmtEnd(LocalDateTime gmtEnd) {
         this.setGmtEnd(gmtEnd);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtEnd(Date gmtEnd) {
+    public void setGmtEnd(LocalDateTime gmtEnd) {
         this.gmtEnd = gmtEnd;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getPromptUid() {
         return promptUid;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptTask withPromptUid(String promptUid) {
         this.setPromptUid(promptUid);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setPromptUid(String promptUid) {
         this.promptUid = promptUid;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Byte getDraft() {
         return draft;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptTask withDraft(Byte draft) {
         this.setDraft(draft);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setDraft(Byte draft) {
         this.draft = draft;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getModelId() {
         return modelId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptTask withModelId(String modelId) {
         this.setModelId(modelId);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setModelId(String modelId) {
         this.modelId = modelId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getApiKeyName() {
         return apiKeyName;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptTask withApiKeyName(String apiKeyName) {
         this.setApiKeyName(apiKeyName);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setApiKeyName(String apiKeyName) {
         this.apiKeyName = apiKeyName;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getCron() {
         return cron;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptTask withCron(String cron) {
         this.setCron(cron);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setCron(String cron) {
         this.cron = cron;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getStatus() {
         return status;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptTask withStatus(String status) {
         this.setStatus(status);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setStatus(String status) {
         this.status = status;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getVariables() {
         return variables;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptTask withVariables(String variables) {
         this.setVariables(variables);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setVariables(String variables) {
         this.variables = variables;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getApiKeyValue() {
         return apiKeyValue;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptTask withApiKeyValue(String apiKeyValue) {
         this.setApiKeyValue(apiKeyValue);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setApiKeyValue(String apiKeyValue) {
         this.apiKeyValue = apiKeyValue;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getParams() {
         return params;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptTask withParams(String params) {
         this.setParams(params);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setParams(String params) {
         this.params = params;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getExt() {
         return ext;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PromptTask withExt(String ext) {
         this.setExt(ext);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setExt(String ext) {
         this.ext = ext;
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public boolean equals(Object that) {
         if (this == that) {
             return true;
@@ -316,11 +253,14 @@ public class PromptTask implements Serializable {
             && (this.getModelId() == null ? other.getModelId() == null : this.getModelId().equals(other.getModelId()))
             && (this.getApiKeyName() == null ? other.getApiKeyName() == null : this.getApiKeyName().equals(other.getApiKeyName()))
             && (this.getCron() == null ? other.getCron() == null : this.getCron().equals(other.getCron()))
-            && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()));
+            && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
+            && (this.getVariables() == null ? other.getVariables() == null : this.getVariables().equals(other.getVariables()))
+            && (this.getApiKeyValue() == null ? other.getApiKeyValue() == null : this.getApiKeyValue().equals(other.getApiKeyValue()))
+            && (this.getParams() == null ? other.getParams() == null : this.getParams().equals(other.getParams()))
+            && (this.getExt() == null ? other.getExt() == null : this.getExt().equals(other.getExt()));
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -335,11 +275,14 @@ public class PromptTask implements Serializable {
         result = prime * result + ((getApiKeyName() == null) ? 0 : getApiKeyName().hashCode());
         result = prime * result + ((getCron() == null) ? 0 : getCron().hashCode());
         result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
+        result = prime * result + ((getVariables() == null) ? 0 : getVariables().hashCode());
+        result = prime * result + ((getApiKeyValue() == null) ? 0 : getApiKeyValue().hashCode());
+        result = prime * result + ((getParams() == null) ? 0 : getParams().hashCode());
+        result = prime * result + ((getExt() == null) ? 0 : getExt().hashCode());
         return result;
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());

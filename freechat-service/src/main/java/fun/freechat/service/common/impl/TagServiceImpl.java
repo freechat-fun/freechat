@@ -1,16 +1,27 @@
 package fun.freechat.service.common.impl;
 
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.count;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.isLike;
+import static org.mybatis.dynamic.sql.SqlBuilder.isNotNull;
+import static org.mybatis.dynamic.sql.SqlBuilder.select;
+import static org.mybatis.dynamic.sql.SqlBuilder.sortColumn;
 
-import fun.freechat.mapper.*;
+import fun.freechat.mapper.AgentInfoDynamicSqlSupport;
+import fun.freechat.mapper.CharacterInfoDynamicSqlSupport;
+import fun.freechat.mapper.HotTagMapper;
+import fun.freechat.mapper.PluginInfoDynamicSqlSupport;
+import fun.freechat.mapper.PromptInfoDynamicSqlSupport;
+import fun.freechat.mapper.TagDynamicSqlSupport;
+import fun.freechat.mapper.TagMapper;
 import fun.freechat.model.HotTag;
 import fun.freechat.model.Tag;
 import fun.freechat.model.User;
 import fun.freechat.service.common.TagService;
 import fun.freechat.service.enums.InfoType;
 import fun.freechat.service.enums.Visibility;
+import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
@@ -38,7 +49,7 @@ public class TagServiceImpl implements TagService {
         if (existedTag != null) {
             return true;
         }
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         Tag newTag = new Tag()
                 .withGmtCreate(now)
                 .withGmtModified(now)

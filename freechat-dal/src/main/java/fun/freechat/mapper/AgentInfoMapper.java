@@ -4,7 +4,6 @@ import static fun.freechat.mapper.AgentInfoDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
 import fun.freechat.model.AgentInfo;
-import jakarta.annotation.Generated;
 import java.util.List;
 import java.util.Optional;
 import org.apache.ibatis.annotations.InsertProvider;
@@ -16,14 +15,13 @@ import org.apache.ibatis.annotations.SelectKey;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
+import org.mybatis.dynamic.sql.dsl.CountDSLCompleter;
+import org.mybatis.dynamic.sql.dsl.DeleteDSLCompleter;
+import org.mybatis.dynamic.sql.dsl.SelectDSLCompleter;
+import org.mybatis.dynamic.sql.dsl.UpdateDSL;
+import org.mybatis.dynamic.sql.dsl.UpdateDSLCompleter;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
-import org.mybatis.dynamic.sql.select.CountDSLCompleter;
-import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.update.UpdateDSL;
-import org.mybatis.dynamic.sql.update.UpdateDSLCompleter;
-import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper;
@@ -32,15 +30,12 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
 public interface AgentInfoMapper extends CommonCountMapper, CommonDeleteMapper, CommonUpdateMapper {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     BasicColumn[] selectList = BasicColumn.columnList(agentId, agentUid, gmtCreate, gmtModified, userId, parentUid, visibility, name, format, version, description, config, example, parameters, ext, draft);
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     @SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="row.agentId", before=false, resultType=Long.class)
     int insert(InsertStatementProvider<AgentInfo> insertStatement);
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="AgentInfoResult", value = {
         @Result(column="agent_id", property="agentId", jdbcType=JdbcType.BIGINT, id=true),
@@ -62,100 +57,89 @@ public interface AgentInfoMapper extends CommonCountMapper, CommonDeleteMapper, 
     })
     List<AgentInfo> selectMany(SelectStatementProvider selectStatement);
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("AgentInfoResult")
     Optional<AgentInfo> selectOne(SelectStatementProvider selectStatement);
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default long count(CountDSLCompleter completer) {
         return MyBatis3Utils.countFrom(this::count, agentInfo, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int delete(DeleteDSLCompleter completer) {
         return MyBatis3Utils.deleteFrom(this::delete, agentInfo, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int deleteByPrimaryKey(Long agentId_) {
         return delete(c -> 
             c.where(agentId, isEqualTo(agentId_))
         );
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insert(AgentInfo row) {
         return MyBatis3Utils.insert(this::insert, row, agentInfo, c ->
-            c.map(agentUid).toProperty("agentUid")
-            .map(gmtCreate).toProperty("gmtCreate")
-            .map(gmtModified).toProperty("gmtModified")
-            .map(userId).toProperty("userId")
-            .map(parentUid).toProperty("parentUid")
-            .map(visibility).toProperty("visibility")
-            .map(name).toProperty("name")
-            .map(format).toProperty("format")
-            .map(version).toProperty("version")
-            .map(description).toProperty("description")
-            .map(config).toProperty("config")
-            .map(example).toProperty("example")
-            .map(parameters).toProperty("parameters")
-            .map(ext).toProperty("ext")
-            .map(draft).toProperty("draft")
+            c.withMappedColumn(agentUid)
+            .withMappedColumn(gmtCreate)
+            .withMappedColumn(gmtModified)
+            .withMappedColumn(userId)
+            .withMappedColumn(parentUid)
+            .withMappedColumn(visibility)
+            .withMappedColumn(name)
+            .withMappedColumn(format)
+            .withMappedColumn(version)
+            .withMappedColumn(description)
+            .withMappedColumn(config)
+            .withMappedColumn(example)
+            .withMappedColumn(parameters)
+            .withMappedColumn(ext)
+            .withMappedColumn(draft)
         );
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insertSelective(AgentInfo row) {
         return MyBatis3Utils.insert(this::insert, row, agentInfo, c ->
-            c.map(agentUid).toPropertyWhenPresent("agentUid", row::getAgentUid)
-            .map(gmtCreate).toPropertyWhenPresent("gmtCreate", row::getGmtCreate)
-            .map(gmtModified).toPropertyWhenPresent("gmtModified", row::getGmtModified)
-            .map(userId).toPropertyWhenPresent("userId", row::getUserId)
-            .map(parentUid).toPropertyWhenPresent("parentUid", row::getParentUid)
-            .map(visibility).toPropertyWhenPresent("visibility", row::getVisibility)
-            .map(name).toPropertyWhenPresent("name", row::getName)
-            .map(format).toPropertyWhenPresent("format", row::getFormat)
-            .map(version).toPropertyWhenPresent("version", row::getVersion)
-            .map(description).toPropertyWhenPresent("description", row::getDescription)
-            .map(config).toPropertyWhenPresent("config", row::getConfig)
-            .map(example).toPropertyWhenPresent("example", row::getExample)
-            .map(parameters).toPropertyWhenPresent("parameters", row::getParameters)
-            .map(ext).toPropertyWhenPresent("ext", row::getExt)
-            .map(draft).toPropertyWhenPresent("draft", row::getDraft)
+            c.withMappedColumnWhenPresent(agentUid, row::getAgentUid)
+            .withMappedColumnWhenPresent(gmtCreate, row::getGmtCreate)
+            .withMappedColumnWhenPresent(gmtModified, row::getGmtModified)
+            .withMappedColumnWhenPresent(userId, row::getUserId)
+            .withMappedColumnWhenPresent(parentUid, row::getParentUid)
+            .withMappedColumnWhenPresent(visibility, row::getVisibility)
+            .withMappedColumnWhenPresent(name, row::getName)
+            .withMappedColumnWhenPresent(format, row::getFormat)
+            .withMappedColumnWhenPresent(version, row::getVersion)
+            .withMappedColumnWhenPresent(description, row::getDescription)
+            .withMappedColumnWhenPresent(config, row::getConfig)
+            .withMappedColumnWhenPresent(example, row::getExample)
+            .withMappedColumnWhenPresent(parameters, row::getParameters)
+            .withMappedColumnWhenPresent(ext, row::getExt)
+            .withMappedColumnWhenPresent(draft, row::getDraft)
         );
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default Optional<AgentInfo> selectOne(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectOne(this::selectOne, selectList, agentInfo, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default List<AgentInfo> select(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectList(this::selectMany, selectList, agentInfo, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default List<AgentInfo> selectDistinct(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectDistinct(this::selectMany, selectList, agentInfo, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default Optional<AgentInfo> selectByPrimaryKey(Long agentId_) {
         return selectOne(c ->
             c.where(agentId, isEqualTo(agentId_))
         );
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int update(UpdateDSLCompleter completer) {
         return MyBatis3Utils.update(this::update, agentInfo, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    static UpdateDSL<UpdateModel> updateAllColumns(AgentInfo row, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(agentUid).equalTo(row::getAgentUid)
+    static UpdateDSL updateAllColumns(AgentInfo row, UpdateDSL dsl) {
+        return dsl.set(agentId).equalTo(row::getAgentId)
+                .set(agentUid).equalTo(row::getAgentUid)
                 .set(gmtCreate).equalTo(row::getGmtCreate)
                 .set(gmtModified).equalTo(row::getGmtModified)
                 .set(userId).equalTo(row::getUserId)
@@ -172,9 +156,9 @@ public interface AgentInfoMapper extends CommonCountMapper, CommonDeleteMapper, 
                 .set(draft).equalTo(row::getDraft);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    static UpdateDSL<UpdateModel> updateSelectiveColumns(AgentInfo row, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(agentUid).equalToWhenPresent(row::getAgentUid)
+    static UpdateDSL updateSelectiveColumns(AgentInfo row, UpdateDSL dsl) {
+        return dsl.set(agentId).equalToWhenPresent(row::getAgentId)
+                .set(agentUid).equalToWhenPresent(row::getAgentUid)
                 .set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
                 .set(gmtModified).equalToWhenPresent(row::getGmtModified)
                 .set(userId).equalToWhenPresent(row::getUserId)
@@ -191,7 +175,6 @@ public interface AgentInfoMapper extends CommonCountMapper, CommonDeleteMapper, 
                 .set(draft).equalToWhenPresent(row::getDraft);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int updateByPrimaryKey(AgentInfo row) {
         return update(c ->
             c.set(agentUid).equalTo(row::getAgentUid)
@@ -213,7 +196,6 @@ public interface AgentInfoMapper extends CommonCountMapper, CommonDeleteMapper, 
         );
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int updateByPrimaryKeySelective(AgentInfo row) {
         return update(c ->
             c.set(agentUid).equalToWhenPresent(row::getAgentUid)
