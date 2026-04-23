@@ -21,6 +21,7 @@ import fun.freechat.service.enums.TtsSpeakerType;
 import fun.freechat.service.util.InfoUtils;
 import fun.freechat.service.util.StoreUtils;
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
@@ -148,7 +149,7 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
                 ChatHistory newHistory = new ChatHistory()
                         .withId(messageRecord.getId())
                         .withExt(InfoUtils.serialize(tokenUsage))
-                        .withGmtModified(new Date());
+                        .withGmtModified(LocalDateTime.now());
                 chatHistoryMapper.updateByPrimaryKeySelective(newHistory);
                 return newHistory.getId();
             }
@@ -403,7 +404,7 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
             ext = InfoUtils.serialize(tokenUsage);
         }
         String messageText = ChatMessageSerializer.messageToJson(message);
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
 
         return new ChatHistory()
                 .withMemoryId((String) memoryId)

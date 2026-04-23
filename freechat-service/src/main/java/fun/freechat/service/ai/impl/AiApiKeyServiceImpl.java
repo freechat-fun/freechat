@@ -1,6 +1,8 @@
 package fun.freechat.service.ai.impl;
 
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.select;
+import static org.mybatis.dynamic.sql.SqlBuilder.selectDistinct;
 
 import fun.freechat.mapper.AiApiKeyDynamicSqlSupport;
 import fun.freechat.mapper.AiApiKeyMapper;
@@ -13,7 +15,7 @@ import fun.freechat.service.cache.LongPeriodCache;
 import fun.freechat.service.common.EncryptionService;
 import fun.freechat.service.enums.ModelProvider;
 import fun.freechat.util.ByteUtils;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
@@ -40,7 +42,7 @@ public class AiApiKeyServiceImpl implements AiApiKeyService {
                 || (maxCount != null && list(user, provider).size() >= maxCount)) {
             return null;
         }
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         AiApiKey aiApiKey = new AiApiKey()
                 .withGmtCreate(now)
                 .withGmtModified(now)
@@ -55,14 +57,14 @@ public class AiApiKeyServiceImpl implements AiApiKeyService {
 
     @Override
     public boolean disable(Long id) {
-        AiApiKey aiApiKey = new AiApiKey().withId(id).withEnabled((byte) 0).withGmtModified(new Date());
+        AiApiKey aiApiKey = new AiApiKey().withId(id).withEnabled((byte) 0).withGmtModified(LocalDateTime.now());
         int rows = aiApiKeyMapper.updateByPrimaryKeySelective(aiApiKey);
         return rows > 0;
     }
 
     @Override
     public boolean enable(Long id) {
-        AiApiKey aiApiKey = new AiApiKey().withId(id).withEnabled((byte) 1).withGmtModified(new Date());
+        AiApiKey aiApiKey = new AiApiKey().withId(id).withEnabled((byte) 1).withGmtModified(LocalDateTime.now());
         int rows = aiApiKeyMapper.updateByPrimaryKeySelective(aiApiKey);
         return rows > 0;
     }

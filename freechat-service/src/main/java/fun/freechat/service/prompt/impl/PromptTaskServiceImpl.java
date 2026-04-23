@@ -12,7 +12,7 @@ import fun.freechat.service.common.EncryptionService;
 import fun.freechat.service.prompt.PromptService;
 import fun.freechat.service.prompt.PromptTaskService;
 import fun.freechat.util.IdUtils;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
@@ -37,7 +37,7 @@ public class PromptTaskServiceImpl implements PromptTaskService {
             return false;
         }
 
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         int rows =
                 promptTaskMapper.insertSelective(task.withApiKeyValue(encryptionService.encrypt(task.getApiKeyValue()))
                         .withGmtCreate(now)
@@ -56,7 +56,7 @@ public class PromptTaskServiceImpl implements PromptTaskService {
     public boolean update(PromptTask task) {
         int rows = promptTaskMapper.updateByPrimaryKeySelective(
                 task.withApiKeyValue(encryptionService.encrypt(task.getApiKeyValue()))
-                        .withGmtModified(new Date()));
+                        .withGmtModified(LocalDateTime.now()));
         return rows > 0;
     }
 

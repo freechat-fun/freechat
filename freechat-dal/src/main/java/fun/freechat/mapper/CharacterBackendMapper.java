@@ -4,7 +4,6 @@ import static fun.freechat.mapper.CharacterBackendDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
 import fun.freechat.model.CharacterBackend;
-import jakarta.annotation.Generated;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -15,13 +14,12 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
-import org.mybatis.dynamic.sql.select.CountDSLCompleter;
-import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
+import org.mybatis.dynamic.sql.dsl.CountDSLCompleter;
+import org.mybatis.dynamic.sql.dsl.DeleteDSLCompleter;
+import org.mybatis.dynamic.sql.dsl.SelectDSLCompleter;
+import org.mybatis.dynamic.sql.dsl.UpdateDSL;
+import org.mybatis.dynamic.sql.dsl.UpdateDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.update.UpdateDSL;
-import org.mybatis.dynamic.sql.update.UpdateDSLCompleter;
-import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper;
@@ -31,10 +29,8 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
 public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<CharacterBackend>, CommonUpdateMapper {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(backendId, gmtCreate, gmtModified, characterUid, isDefault, chatPromptTaskId, greetingPromptTaskId, moderationModelId, moderationApiKeyName, forwardToUser, messageWindowSize, longTermMemoryWindowSize, proactiveChatWaitingTime, initQuota, quotaType, enableAlbumTool, enableTts, ttsSpeakerIdx, ttsSpeakerWav, ttsSpeakerType, moderationParams);
+    BasicColumn[] selectList = BasicColumn.columnList(backendId, gmtCreate, gmtModified, characterUid, isDefault, chatPromptTaskId, greetingPromptTaskId, moderationModelId, moderationApiKeyName, imageModelId, imageApiKeyName, forwardToUser, messageWindowSize, longTermMemoryWindowSize, proactiveChatWaitingTime, initQuota, quotaType, enableAlbumTool, enableTts, ttsSpeakerIdx, ttsSpeakerWav, ttsSpeakerType, moderationApiKeyValue, moderationParams, imageApiKeyValue, imageParams);
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="CharacterBackendResult", value = {
         @Result(column="backend_id", property="backendId", jdbcType=JdbcType.VARCHAR, id=true),
@@ -46,6 +42,8 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
         @Result(column="greeting_prompt_task_id", property="greetingPromptTaskId", jdbcType=JdbcType.VARCHAR),
         @Result(column="moderation_model_id", property="moderationModelId", jdbcType=JdbcType.VARCHAR),
         @Result(column="moderation_api_key_name", property="moderationApiKeyName", jdbcType=JdbcType.VARCHAR),
+        @Result(column="image_model_id", property="imageModelId", jdbcType=JdbcType.VARCHAR),
+        @Result(column="image_api_key_name", property="imageApiKeyName", jdbcType=JdbcType.VARCHAR),
         @Result(column="forward_to_user", property="forwardToUser", jdbcType=JdbcType.TINYINT),
         @Result(column="message_window_size", property="messageWindowSize", jdbcType=JdbcType.INTEGER),
         @Result(column="long_term_memory_window_size", property="longTermMemoryWindowSize", jdbcType=JdbcType.INTEGER),
@@ -57,142 +55,147 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
         @Result(column="tts_speaker_idx", property="ttsSpeakerIdx", jdbcType=JdbcType.VARCHAR),
         @Result(column="tts_speaker_wav", property="ttsSpeakerWav", jdbcType=JdbcType.VARCHAR),
         @Result(column="tts_speaker_type", property="ttsSpeakerType", jdbcType=JdbcType.VARCHAR),
-        @Result(column="moderation_params", property="moderationParams", jdbcType=JdbcType.LONGVARCHAR)
+        @Result(column="moderation_api_key_value", property="moderationApiKeyValue", jdbcType=JdbcType.LONGVARCHAR),
+        @Result(column="moderation_params", property="moderationParams", jdbcType=JdbcType.LONGVARCHAR),
+        @Result(column="image_api_key_value", property="imageApiKeyValue", jdbcType=JdbcType.LONGVARCHAR),
+        @Result(column="image_params", property="imageParams", jdbcType=JdbcType.LONGVARCHAR)
     })
     List<CharacterBackend> selectMany(SelectStatementProvider selectStatement);
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("CharacterBackendResult")
     Optional<CharacterBackend> selectOne(SelectStatementProvider selectStatement);
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default long count(CountDSLCompleter completer) {
         return MyBatis3Utils.countFrom(this::count, characterBackend, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int delete(DeleteDSLCompleter completer) {
         return MyBatis3Utils.deleteFrom(this::delete, characterBackend, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int deleteByPrimaryKey(String backendId_) {
         return delete(c -> 
             c.where(backendId, isEqualTo(backendId_))
         );
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insert(CharacterBackend row) {
         return MyBatis3Utils.insert(this::insert, row, characterBackend, c ->
-            c.map(backendId).toProperty("backendId")
-            .map(gmtCreate).toProperty("gmtCreate")
-            .map(gmtModified).toProperty("gmtModified")
-            .map(characterUid).toProperty("characterUid")
-            .map(isDefault).toProperty("isDefault")
-            .map(chatPromptTaskId).toProperty("chatPromptTaskId")
-            .map(greetingPromptTaskId).toProperty("greetingPromptTaskId")
-            .map(moderationModelId).toProperty("moderationModelId")
-            .map(moderationApiKeyName).toProperty("moderationApiKeyName")
-            .map(forwardToUser).toProperty("forwardToUser")
-            .map(messageWindowSize).toProperty("messageWindowSize")
-            .map(longTermMemoryWindowSize).toProperty("longTermMemoryWindowSize")
-            .map(proactiveChatWaitingTime).toProperty("proactiveChatWaitingTime")
-            .map(initQuota).toProperty("initQuota")
-            .map(quotaType).toProperty("quotaType")
-            .map(enableAlbumTool).toProperty("enableAlbumTool")
-            .map(enableTts).toProperty("enableTts")
-            .map(ttsSpeakerIdx).toProperty("ttsSpeakerIdx")
-            .map(ttsSpeakerWav).toProperty("ttsSpeakerWav")
-            .map(ttsSpeakerType).toProperty("ttsSpeakerType")
-            .map(moderationParams).toProperty("moderationParams")
+            c.withMappedColumn(backendId)
+            .withMappedColumn(gmtCreate)
+            .withMappedColumn(gmtModified)
+            .withMappedColumn(characterUid)
+            .withMappedColumn(isDefault)
+            .withMappedColumn(chatPromptTaskId)
+            .withMappedColumn(greetingPromptTaskId)
+            .withMappedColumn(moderationModelId)
+            .withMappedColumn(moderationApiKeyName)
+            .withMappedColumn(imageModelId)
+            .withMappedColumn(imageApiKeyName)
+            .withMappedColumn(forwardToUser)
+            .withMappedColumn(messageWindowSize)
+            .withMappedColumn(longTermMemoryWindowSize)
+            .withMappedColumn(proactiveChatWaitingTime)
+            .withMappedColumn(initQuota)
+            .withMappedColumn(quotaType)
+            .withMappedColumn(enableAlbumTool)
+            .withMappedColumn(enableTts)
+            .withMappedColumn(ttsSpeakerIdx)
+            .withMappedColumn(ttsSpeakerWav)
+            .withMappedColumn(ttsSpeakerType)
+            .withMappedColumn(moderationApiKeyValue)
+            .withMappedColumn(moderationParams)
+            .withMappedColumn(imageApiKeyValue)
+            .withMappedColumn(imageParams)
         );
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insertMultiple(Collection<CharacterBackend> records) {
         return MyBatis3Utils.insertMultiple(this::insertMultiple, records, characterBackend, c ->
-            c.map(backendId).toProperty("backendId")
-            .map(gmtCreate).toProperty("gmtCreate")
-            .map(gmtModified).toProperty("gmtModified")
-            .map(characterUid).toProperty("characterUid")
-            .map(isDefault).toProperty("isDefault")
-            .map(chatPromptTaskId).toProperty("chatPromptTaskId")
-            .map(greetingPromptTaskId).toProperty("greetingPromptTaskId")
-            .map(moderationModelId).toProperty("moderationModelId")
-            .map(moderationApiKeyName).toProperty("moderationApiKeyName")
-            .map(forwardToUser).toProperty("forwardToUser")
-            .map(messageWindowSize).toProperty("messageWindowSize")
-            .map(longTermMemoryWindowSize).toProperty("longTermMemoryWindowSize")
-            .map(proactiveChatWaitingTime).toProperty("proactiveChatWaitingTime")
-            .map(initQuota).toProperty("initQuota")
-            .map(quotaType).toProperty("quotaType")
-            .map(enableAlbumTool).toProperty("enableAlbumTool")
-            .map(enableTts).toProperty("enableTts")
-            .map(ttsSpeakerIdx).toProperty("ttsSpeakerIdx")
-            .map(ttsSpeakerWav).toProperty("ttsSpeakerWav")
-            .map(ttsSpeakerType).toProperty("ttsSpeakerType")
-            .map(moderationParams).toProperty("moderationParams")
+            c.withMappedColumn(backendId)
+            .withMappedColumn(gmtCreate)
+            .withMappedColumn(gmtModified)
+            .withMappedColumn(characterUid)
+            .withMappedColumn(isDefault)
+            .withMappedColumn(chatPromptTaskId)
+            .withMappedColumn(greetingPromptTaskId)
+            .withMappedColumn(moderationModelId)
+            .withMappedColumn(moderationApiKeyName)
+            .withMappedColumn(imageModelId)
+            .withMappedColumn(imageApiKeyName)
+            .withMappedColumn(forwardToUser)
+            .withMappedColumn(messageWindowSize)
+            .withMappedColumn(longTermMemoryWindowSize)
+            .withMappedColumn(proactiveChatWaitingTime)
+            .withMappedColumn(initQuota)
+            .withMappedColumn(quotaType)
+            .withMappedColumn(enableAlbumTool)
+            .withMappedColumn(enableTts)
+            .withMappedColumn(ttsSpeakerIdx)
+            .withMappedColumn(ttsSpeakerWav)
+            .withMappedColumn(ttsSpeakerType)
+            .withMappedColumn(moderationApiKeyValue)
+            .withMappedColumn(moderationParams)
+            .withMappedColumn(imageApiKeyValue)
+            .withMappedColumn(imageParams)
         );
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insertSelective(CharacterBackend row) {
         return MyBatis3Utils.insert(this::insert, row, characterBackend, c ->
-            c.map(backendId).toPropertyWhenPresent("backendId", row::getBackendId)
-            .map(gmtCreate).toPropertyWhenPresent("gmtCreate", row::getGmtCreate)
-            .map(gmtModified).toPropertyWhenPresent("gmtModified", row::getGmtModified)
-            .map(characterUid).toPropertyWhenPresent("characterUid", row::getCharacterUid)
-            .map(isDefault).toPropertyWhenPresent("isDefault", row::getIsDefault)
-            .map(chatPromptTaskId).toPropertyWhenPresent("chatPromptTaskId", row::getChatPromptTaskId)
-            .map(greetingPromptTaskId).toPropertyWhenPresent("greetingPromptTaskId", row::getGreetingPromptTaskId)
-            .map(moderationModelId).toPropertyWhenPresent("moderationModelId", row::getModerationModelId)
-            .map(moderationApiKeyName).toPropertyWhenPresent("moderationApiKeyName", row::getModerationApiKeyName)
-            .map(forwardToUser).toPropertyWhenPresent("forwardToUser", row::getForwardToUser)
-            .map(messageWindowSize).toPropertyWhenPresent("messageWindowSize", row::getMessageWindowSize)
-            .map(longTermMemoryWindowSize).toPropertyWhenPresent("longTermMemoryWindowSize", row::getLongTermMemoryWindowSize)
-            .map(proactiveChatWaitingTime).toPropertyWhenPresent("proactiveChatWaitingTime", row::getProactiveChatWaitingTime)
-            .map(initQuota).toPropertyWhenPresent("initQuota", row::getInitQuota)
-            .map(quotaType).toPropertyWhenPresent("quotaType", row::getQuotaType)
-            .map(enableAlbumTool).toPropertyWhenPresent("enableAlbumTool", row::getEnableAlbumTool)
-            .map(enableTts).toPropertyWhenPresent("enableTts", row::getEnableTts)
-            .map(ttsSpeakerIdx).toPropertyWhenPresent("ttsSpeakerIdx", row::getTtsSpeakerIdx)
-            .map(ttsSpeakerWav).toPropertyWhenPresent("ttsSpeakerWav", row::getTtsSpeakerWav)
-            .map(ttsSpeakerType).toPropertyWhenPresent("ttsSpeakerType", row::getTtsSpeakerType)
-            .map(moderationParams).toPropertyWhenPresent("moderationParams", row::getModerationParams)
+            c.withMappedColumnWhenPresent(backendId, row::getBackendId)
+            .withMappedColumnWhenPresent(gmtCreate, row::getGmtCreate)
+            .withMappedColumnWhenPresent(gmtModified, row::getGmtModified)
+            .withMappedColumnWhenPresent(characterUid, row::getCharacterUid)
+            .withMappedColumnWhenPresent(isDefault, row::getIsDefault)
+            .withMappedColumnWhenPresent(chatPromptTaskId, row::getChatPromptTaskId)
+            .withMappedColumnWhenPresent(greetingPromptTaskId, row::getGreetingPromptTaskId)
+            .withMappedColumnWhenPresent(moderationModelId, row::getModerationModelId)
+            .withMappedColumnWhenPresent(moderationApiKeyName, row::getModerationApiKeyName)
+            .withMappedColumnWhenPresent(imageModelId, row::getImageModelId)
+            .withMappedColumnWhenPresent(imageApiKeyName, row::getImageApiKeyName)
+            .withMappedColumnWhenPresent(forwardToUser, row::getForwardToUser)
+            .withMappedColumnWhenPresent(messageWindowSize, row::getMessageWindowSize)
+            .withMappedColumnWhenPresent(longTermMemoryWindowSize, row::getLongTermMemoryWindowSize)
+            .withMappedColumnWhenPresent(proactiveChatWaitingTime, row::getProactiveChatWaitingTime)
+            .withMappedColumnWhenPresent(initQuota, row::getInitQuota)
+            .withMappedColumnWhenPresent(quotaType, row::getQuotaType)
+            .withMappedColumnWhenPresent(enableAlbumTool, row::getEnableAlbumTool)
+            .withMappedColumnWhenPresent(enableTts, row::getEnableTts)
+            .withMappedColumnWhenPresent(ttsSpeakerIdx, row::getTtsSpeakerIdx)
+            .withMappedColumnWhenPresent(ttsSpeakerWav, row::getTtsSpeakerWav)
+            .withMappedColumnWhenPresent(ttsSpeakerType, row::getTtsSpeakerType)
+            .withMappedColumnWhenPresent(moderationApiKeyValue, row::getModerationApiKeyValue)
+            .withMappedColumnWhenPresent(moderationParams, row::getModerationParams)
+            .withMappedColumnWhenPresent(imageApiKeyValue, row::getImageApiKeyValue)
+            .withMappedColumnWhenPresent(imageParams, row::getImageParams)
         );
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default Optional<CharacterBackend> selectOne(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectOne(this::selectOne, selectList, characterBackend, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default List<CharacterBackend> select(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectList(this::selectMany, selectList, characterBackend, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default List<CharacterBackend> selectDistinct(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectDistinct(this::selectMany, selectList, characterBackend, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default Optional<CharacterBackend> selectByPrimaryKey(String backendId_) {
         return selectOne(c ->
             c.where(backendId, isEqualTo(backendId_))
         );
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int update(UpdateDSLCompleter completer) {
         return MyBatis3Utils.update(this::update, characterBackend, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    static UpdateDSL<UpdateModel> updateAllColumns(CharacterBackend row, UpdateDSL<UpdateModel> dsl) {
+    static UpdateDSL updateAllColumns(CharacterBackend row, UpdateDSL dsl) {
         return dsl.set(backendId).equalTo(row::getBackendId)
                 .set(gmtCreate).equalTo(row::getGmtCreate)
                 .set(gmtModified).equalTo(row::getGmtModified)
@@ -202,6 +205,8 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
                 .set(greetingPromptTaskId).equalTo(row::getGreetingPromptTaskId)
                 .set(moderationModelId).equalTo(row::getModerationModelId)
                 .set(moderationApiKeyName).equalTo(row::getModerationApiKeyName)
+                .set(imageModelId).equalTo(row::getImageModelId)
+                .set(imageApiKeyName).equalTo(row::getImageApiKeyName)
                 .set(forwardToUser).equalTo(row::getForwardToUser)
                 .set(messageWindowSize).equalTo(row::getMessageWindowSize)
                 .set(longTermMemoryWindowSize).equalTo(row::getLongTermMemoryWindowSize)
@@ -213,11 +218,13 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
                 .set(ttsSpeakerIdx).equalTo(row::getTtsSpeakerIdx)
                 .set(ttsSpeakerWav).equalTo(row::getTtsSpeakerWav)
                 .set(ttsSpeakerType).equalTo(row::getTtsSpeakerType)
-                .set(moderationParams).equalTo(row::getModerationParams);
+                .set(moderationApiKeyValue).equalTo(row::getModerationApiKeyValue)
+                .set(moderationParams).equalTo(row::getModerationParams)
+                .set(imageApiKeyValue).equalTo(row::getImageApiKeyValue)
+                .set(imageParams).equalTo(row::getImageParams);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    static UpdateDSL<UpdateModel> updateSelectiveColumns(CharacterBackend row, UpdateDSL<UpdateModel> dsl) {
+    static UpdateDSL updateSelectiveColumns(CharacterBackend row, UpdateDSL dsl) {
         return dsl.set(backendId).equalToWhenPresent(row::getBackendId)
                 .set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
                 .set(gmtModified).equalToWhenPresent(row::getGmtModified)
@@ -227,6 +234,8 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
                 .set(greetingPromptTaskId).equalToWhenPresent(row::getGreetingPromptTaskId)
                 .set(moderationModelId).equalToWhenPresent(row::getModerationModelId)
                 .set(moderationApiKeyName).equalToWhenPresent(row::getModerationApiKeyName)
+                .set(imageModelId).equalToWhenPresent(row::getImageModelId)
+                .set(imageApiKeyName).equalToWhenPresent(row::getImageApiKeyName)
                 .set(forwardToUser).equalToWhenPresent(row::getForwardToUser)
                 .set(messageWindowSize).equalToWhenPresent(row::getMessageWindowSize)
                 .set(longTermMemoryWindowSize).equalToWhenPresent(row::getLongTermMemoryWindowSize)
@@ -238,10 +247,12 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
                 .set(ttsSpeakerIdx).equalToWhenPresent(row::getTtsSpeakerIdx)
                 .set(ttsSpeakerWav).equalToWhenPresent(row::getTtsSpeakerWav)
                 .set(ttsSpeakerType).equalToWhenPresent(row::getTtsSpeakerType)
-                .set(moderationParams).equalToWhenPresent(row::getModerationParams);
+                .set(moderationApiKeyValue).equalToWhenPresent(row::getModerationApiKeyValue)
+                .set(moderationParams).equalToWhenPresent(row::getModerationParams)
+                .set(imageApiKeyValue).equalToWhenPresent(row::getImageApiKeyValue)
+                .set(imageParams).equalToWhenPresent(row::getImageParams);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int updateByPrimaryKey(CharacterBackend row) {
         return update(c ->
             c.set(gmtCreate).equalTo(row::getGmtCreate)
@@ -252,6 +263,8 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .set(greetingPromptTaskId).equalTo(row::getGreetingPromptTaskId)
             .set(moderationModelId).equalTo(row::getModerationModelId)
             .set(moderationApiKeyName).equalTo(row::getModerationApiKeyName)
+            .set(imageModelId).equalTo(row::getImageModelId)
+            .set(imageApiKeyName).equalTo(row::getImageApiKeyName)
             .set(forwardToUser).equalTo(row::getForwardToUser)
             .set(messageWindowSize).equalTo(row::getMessageWindowSize)
             .set(longTermMemoryWindowSize).equalTo(row::getLongTermMemoryWindowSize)
@@ -263,12 +276,14 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .set(ttsSpeakerIdx).equalTo(row::getTtsSpeakerIdx)
             .set(ttsSpeakerWav).equalTo(row::getTtsSpeakerWav)
             .set(ttsSpeakerType).equalTo(row::getTtsSpeakerType)
+            .set(moderationApiKeyValue).equalTo(row::getModerationApiKeyValue)
             .set(moderationParams).equalTo(row::getModerationParams)
+            .set(imageApiKeyValue).equalTo(row::getImageApiKeyValue)
+            .set(imageParams).equalTo(row::getImageParams)
             .where(backendId, isEqualTo(row::getBackendId))
         );
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int updateByPrimaryKeySelective(CharacterBackend row) {
         return update(c ->
             c.set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
@@ -279,6 +294,8 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .set(greetingPromptTaskId).equalToWhenPresent(row::getGreetingPromptTaskId)
             .set(moderationModelId).equalToWhenPresent(row::getModerationModelId)
             .set(moderationApiKeyName).equalToWhenPresent(row::getModerationApiKeyName)
+            .set(imageModelId).equalToWhenPresent(row::getImageModelId)
+            .set(imageApiKeyName).equalToWhenPresent(row::getImageApiKeyName)
             .set(forwardToUser).equalToWhenPresent(row::getForwardToUser)
             .set(messageWindowSize).equalToWhenPresent(row::getMessageWindowSize)
             .set(longTermMemoryWindowSize).equalToWhenPresent(row::getLongTermMemoryWindowSize)
@@ -290,7 +307,10 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .set(ttsSpeakerIdx).equalToWhenPresent(row::getTtsSpeakerIdx)
             .set(ttsSpeakerWav).equalToWhenPresent(row::getTtsSpeakerWav)
             .set(ttsSpeakerType).equalToWhenPresent(row::getTtsSpeakerType)
+            .set(moderationApiKeyValue).equalToWhenPresent(row::getModerationApiKeyValue)
             .set(moderationParams).equalToWhenPresent(row::getModerationParams)
+            .set(imageApiKeyValue).equalToWhenPresent(row::getImageApiKeyValue)
+            .set(imageParams).equalToWhenPresent(row::getImageParams)
             .where(backendId, isEqualTo(row::getBackendId))
         );
     }

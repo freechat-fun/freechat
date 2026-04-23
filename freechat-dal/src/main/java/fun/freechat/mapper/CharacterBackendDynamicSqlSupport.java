@@ -1,121 +1,117 @@
 package fun.freechat.mapper;
 
-import jakarta.annotation.Generated;
 import java.sql.JDBCType;
-import java.util.Date;
+import java.time.LocalDateTime;
 import org.mybatis.dynamic.sql.AliasableSqlTable;
 import org.mybatis.dynamic.sql.SqlColumn;
 
 public final class CharacterBackendDynamicSqlSupport {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final CharacterBackend characterBackend = new CharacterBackend();
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> backendId = characterBackend.backendId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Date> gmtCreate = characterBackend.gmtCreate;
+    public static final SqlColumn<LocalDateTime> gmtCreate = characterBackend.gmtCreate;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Date> gmtModified = characterBackend.gmtModified;
+    public static final SqlColumn<LocalDateTime> gmtModified = characterBackend.gmtModified;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> characterUid = characterBackend.characterUid;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Byte> isDefault = characterBackend.isDefault;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> chatPromptTaskId = characterBackend.chatPromptTaskId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> greetingPromptTaskId = characterBackend.greetingPromptTaskId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> moderationModelId = characterBackend.moderationModelId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> moderationApiKeyName = characterBackend.moderationApiKeyName;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> imageModelId = characterBackend.imageModelId;
+
+    public static final SqlColumn<String> imageApiKeyName = characterBackend.imageApiKeyName;
+
     public static final SqlColumn<Byte> forwardToUser = characterBackend.forwardToUser;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Integer> messageWindowSize = characterBackend.messageWindowSize;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Integer> longTermMemoryWindowSize = characterBackend.longTermMemoryWindowSize;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Integer> proactiveChatWaitingTime = characterBackend.proactiveChatWaitingTime;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Long> initQuota = characterBackend.initQuota;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> quotaType = characterBackend.quotaType;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Byte> enableAlbumTool = characterBackend.enableAlbumTool;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Byte> enableTts = characterBackend.enableTts;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> ttsSpeakerIdx = characterBackend.ttsSpeakerIdx;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> ttsSpeakerWav = characterBackend.ttsSpeakerWav;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> ttsSpeakerType = characterBackend.ttsSpeakerType;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> moderationApiKeyValue = characterBackend.moderationApiKeyValue;
+
     public static final SqlColumn<String> moderationParams = characterBackend.moderationParams;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> imageApiKeyValue = characterBackend.imageApiKeyValue;
+
+    public static final SqlColumn<String> imageParams = characterBackend.imageParams;
+
     public static final class CharacterBackend extends AliasableSqlTable<CharacterBackend> {
-        public final SqlColumn<String> backendId = column("backend_id", JDBCType.VARCHAR);
+        public final SqlColumn<String> backendId = column("backend_id", JDBCType.VARCHAR).withJavaProperty("backendId");
 
-        public final SqlColumn<Date> gmtCreate = column("gmt_create", JDBCType.TIMESTAMP);
+        public final SqlColumn<LocalDateTime> gmtCreate = column("gmt_create", JDBCType.TIMESTAMP).withJavaProperty("gmtCreate");
 
-        public final SqlColumn<Date> gmtModified = column("gmt_modified", JDBCType.TIMESTAMP);
+        public final SqlColumn<LocalDateTime> gmtModified = column("gmt_modified", JDBCType.TIMESTAMP).withJavaProperty("gmtModified");
 
-        public final SqlColumn<String> characterUid = column("character_uid", JDBCType.VARCHAR);
+        public final SqlColumn<String> characterUid = column("character_uid", JDBCType.VARCHAR).withJavaProperty("characterUid");
 
-        public final SqlColumn<Byte> isDefault = column("is_default", JDBCType.TINYINT);
+        public final SqlColumn<Byte> isDefault = column("is_default", JDBCType.TINYINT).withJavaProperty("isDefault");
 
-        public final SqlColumn<String> chatPromptTaskId = column("chat_prompt_task_id", JDBCType.VARCHAR);
+        public final SqlColumn<String> chatPromptTaskId = column("chat_prompt_task_id", JDBCType.VARCHAR).withJavaProperty("chatPromptTaskId");
 
-        public final SqlColumn<String> greetingPromptTaskId = column("greeting_prompt_task_id", JDBCType.VARCHAR);
+        public final SqlColumn<String> greetingPromptTaskId = column("greeting_prompt_task_id", JDBCType.VARCHAR).withJavaProperty("greetingPromptTaskId");
 
-        public final SqlColumn<String> moderationModelId = column("moderation_model_id", JDBCType.VARCHAR);
+        public final SqlColumn<String> moderationModelId = column("moderation_model_id", JDBCType.VARCHAR).withJavaProperty("moderationModelId");
 
-        public final SqlColumn<String> moderationApiKeyName = column("moderation_api_key_name", JDBCType.VARCHAR);
+        public final SqlColumn<String> moderationApiKeyName = column("moderation_api_key_name", JDBCType.VARCHAR).withJavaProperty("moderationApiKeyName");
 
-        public final SqlColumn<Byte> forwardToUser = column("forward_to_user", JDBCType.TINYINT);
+        public final SqlColumn<String> imageModelId = column("image_model_id", JDBCType.VARCHAR).withJavaProperty("imageModelId");
 
-        public final SqlColumn<Integer> messageWindowSize = column("message_window_size", JDBCType.INTEGER);
+        public final SqlColumn<String> imageApiKeyName = column("image_api_key_name", JDBCType.VARCHAR).withJavaProperty("imageApiKeyName");
 
-        public final SqlColumn<Integer> longTermMemoryWindowSize = column("long_term_memory_window_size", JDBCType.INTEGER);
+        public final SqlColumn<Byte> forwardToUser = column("forward_to_user", JDBCType.TINYINT).withJavaProperty("forwardToUser");
 
-        public final SqlColumn<Integer> proactiveChatWaitingTime = column("proactive_chat_waiting_time", JDBCType.INTEGER);
+        public final SqlColumn<Integer> messageWindowSize = column("message_window_size", JDBCType.INTEGER).withJavaProperty("messageWindowSize");
 
-        public final SqlColumn<Long> initQuota = column("init_quota", JDBCType.BIGINT);
+        public final SqlColumn<Integer> longTermMemoryWindowSize = column("long_term_memory_window_size", JDBCType.INTEGER).withJavaProperty("longTermMemoryWindowSize");
 
-        public final SqlColumn<String> quotaType = column("quota_type", JDBCType.VARCHAR);
+        public final SqlColumn<Integer> proactiveChatWaitingTime = column("proactive_chat_waiting_time", JDBCType.INTEGER).withJavaProperty("proactiveChatWaitingTime");
 
-        public final SqlColumn<Byte> enableAlbumTool = column("enable_album_tool", JDBCType.TINYINT);
+        public final SqlColumn<Long> initQuota = column("init_quota", JDBCType.BIGINT).withJavaProperty("initQuota");
 
-        public final SqlColumn<Byte> enableTts = column("enable_tts", JDBCType.TINYINT);
+        public final SqlColumn<String> quotaType = column("quota_type", JDBCType.VARCHAR).withJavaProperty("quotaType");
 
-        public final SqlColumn<String> ttsSpeakerIdx = column("tts_speaker_idx", JDBCType.VARCHAR);
+        public final SqlColumn<Byte> enableAlbumTool = column("enable_album_tool", JDBCType.TINYINT).withJavaProperty("enableAlbumTool");
 
-        public final SqlColumn<String> ttsSpeakerWav = column("tts_speaker_wav", JDBCType.VARCHAR);
+        public final SqlColumn<Byte> enableTts = column("enable_tts", JDBCType.TINYINT).withJavaProperty("enableTts");
 
-        public final SqlColumn<String> ttsSpeakerType = column("tts_speaker_type", JDBCType.VARCHAR);
+        public final SqlColumn<String> ttsSpeakerIdx = column("tts_speaker_idx", JDBCType.VARCHAR).withJavaProperty("ttsSpeakerIdx");
 
-        public final SqlColumn<String> moderationParams = column("moderation_params", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> ttsSpeakerWav = column("tts_speaker_wav", JDBCType.VARCHAR).withJavaProperty("ttsSpeakerWav");
+
+        public final SqlColumn<String> ttsSpeakerType = column("tts_speaker_type", JDBCType.VARCHAR).withJavaProperty("ttsSpeakerType");
+
+        public final SqlColumn<String> moderationApiKeyValue = column("moderation_api_key_value", JDBCType.LONGVARCHAR).withJavaProperty("moderationApiKeyValue");
+
+        public final SqlColumn<String> moderationParams = column("moderation_params", JDBCType.LONGVARCHAR).withJavaProperty("moderationParams");
+
+        public final SqlColumn<String> imageApiKeyValue = column("image_api_key_value", JDBCType.LONGVARCHAR).withJavaProperty("imageApiKeyValue");
+
+        public final SqlColumn<String> imageParams = column("image_params", JDBCType.LONGVARCHAR).withJavaProperty("imageParams");
 
         public CharacterBackend() {
             super("character_backend", CharacterBackend::new);

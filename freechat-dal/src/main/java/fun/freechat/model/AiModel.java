@@ -1,129 +1,102 @@
 package fun.freechat.model;
 
-import jakarta.annotation.Generated;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class AiModel implements Serializable {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long id;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtModified;
+    private LocalDateTime gmtModified;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String modelId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String referType;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String referId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private static final long serialVersionUID = 1L;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getId() {
         return id;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public AiModel withId(Long id) {
         this.setId(id);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setId(Long id) {
         this.id = id;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtCreate() {
+    public LocalDateTime getGmtCreate() {
         return gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public AiModel withGmtCreate(Date gmtCreate) {
+    public AiModel withGmtCreate(LocalDateTime gmtCreate) {
         this.setGmtCreate(gmtCreate);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtCreate(Date gmtCreate) {
+    public void setGmtCreate(LocalDateTime gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtModified() {
+    public LocalDateTime getGmtModified() {
         return gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public AiModel withGmtModified(Date gmtModified) {
+    public AiModel withGmtModified(LocalDateTime gmtModified) {
         this.setGmtModified(gmtModified);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtModified(Date gmtModified) {
+    public void setGmtModified(LocalDateTime gmtModified) {
         this.gmtModified = gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getModelId() {
         return modelId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public AiModel withModelId(String modelId) {
         this.setModelId(modelId);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setModelId(String modelId) {
         this.modelId = modelId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getReferType() {
         return referType;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public AiModel withReferType(String referType) {
         this.setReferType(referType);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setReferType(String referType) {
         this.referType = referType;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getReferId() {
         return referId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public AiModel withReferId(String referId) {
         this.setReferId(referId);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setReferId(String referId) {
         this.referId = referId;
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public boolean equals(Object that) {
         if (this == that) {
             return true;
@@ -144,7 +117,6 @@ public class AiModel implements Serializable {
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -158,7 +130,6 @@ public class AiModel implements Serializable {
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());

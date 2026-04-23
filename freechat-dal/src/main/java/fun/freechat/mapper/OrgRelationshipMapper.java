@@ -4,7 +4,6 @@ import static fun.freechat.mapper.OrgRelationshipDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
 import fun.freechat.model.OrgRelationship;
-import jakarta.annotation.Generated;
 import java.util.List;
 import java.util.Optional;
 import org.apache.ibatis.annotations.InsertProvider;
@@ -16,14 +15,13 @@ import org.apache.ibatis.annotations.SelectKey;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
+import org.mybatis.dynamic.sql.dsl.CountDSLCompleter;
+import org.mybatis.dynamic.sql.dsl.DeleteDSLCompleter;
+import org.mybatis.dynamic.sql.dsl.SelectDSLCompleter;
+import org.mybatis.dynamic.sql.dsl.UpdateDSL;
+import org.mybatis.dynamic.sql.dsl.UpdateDSLCompleter;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
-import org.mybatis.dynamic.sql.select.CountDSLCompleter;
-import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.update.UpdateDSL;
-import org.mybatis.dynamic.sql.update.UpdateDSLCompleter;
-import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper;
@@ -32,15 +30,12 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
 public interface OrgRelationshipMapper extends CommonCountMapper, CommonDeleteMapper, CommonUpdateMapper {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     BasicColumn[] selectList = BasicColumn.columnList(id, gmtCreate, gmtModified, userId, ownerId, isVirtual, enabled);
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     @SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="row.id", before=false, resultType=Long.class)
     int insert(InsertStatementProvider<OrgRelationship> insertStatement);
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="OrgRelationshipResult", value = {
         @Result(column="id", property="id", jdbcType=JdbcType.BIGINT, id=true),
@@ -53,82 +48,71 @@ public interface OrgRelationshipMapper extends CommonCountMapper, CommonDeleteMa
     })
     List<OrgRelationship> selectMany(SelectStatementProvider selectStatement);
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("OrgRelationshipResult")
     Optional<OrgRelationship> selectOne(SelectStatementProvider selectStatement);
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default long count(CountDSLCompleter completer) {
         return MyBatis3Utils.countFrom(this::count, orgRelationship, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int delete(DeleteDSLCompleter completer) {
         return MyBatis3Utils.deleteFrom(this::delete, orgRelationship, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int deleteByPrimaryKey(Long id_) {
         return delete(c -> 
             c.where(id, isEqualTo(id_))
         );
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insert(OrgRelationship row) {
         return MyBatis3Utils.insert(this::insert, row, orgRelationship, c ->
-            c.map(gmtCreate).toProperty("gmtCreate")
-            .map(gmtModified).toProperty("gmtModified")
-            .map(userId).toProperty("userId")
-            .map(ownerId).toProperty("ownerId")
-            .map(isVirtual).toProperty("isVirtual")
-            .map(enabled).toProperty("enabled")
+            c.withMappedColumn(gmtCreate)
+            .withMappedColumn(gmtModified)
+            .withMappedColumn(userId)
+            .withMappedColumn(ownerId)
+            .withMappedColumn(isVirtual)
+            .withMappedColumn(enabled)
         );
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insertSelective(OrgRelationship row) {
         return MyBatis3Utils.insert(this::insert, row, orgRelationship, c ->
-            c.map(gmtCreate).toPropertyWhenPresent("gmtCreate", row::getGmtCreate)
-            .map(gmtModified).toPropertyWhenPresent("gmtModified", row::getGmtModified)
-            .map(userId).toPropertyWhenPresent("userId", row::getUserId)
-            .map(ownerId).toPropertyWhenPresent("ownerId", row::getOwnerId)
-            .map(isVirtual).toPropertyWhenPresent("isVirtual", row::getIsVirtual)
-            .map(enabled).toPropertyWhenPresent("enabled", row::getEnabled)
+            c.withMappedColumnWhenPresent(gmtCreate, row::getGmtCreate)
+            .withMappedColumnWhenPresent(gmtModified, row::getGmtModified)
+            .withMappedColumnWhenPresent(userId, row::getUserId)
+            .withMappedColumnWhenPresent(ownerId, row::getOwnerId)
+            .withMappedColumnWhenPresent(isVirtual, row::getIsVirtual)
+            .withMappedColumnWhenPresent(enabled, row::getEnabled)
         );
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default Optional<OrgRelationship> selectOne(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectOne(this::selectOne, selectList, orgRelationship, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default List<OrgRelationship> select(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectList(this::selectMany, selectList, orgRelationship, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default List<OrgRelationship> selectDistinct(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectDistinct(this::selectMany, selectList, orgRelationship, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default Optional<OrgRelationship> selectByPrimaryKey(Long id_) {
         return selectOne(c ->
             c.where(id, isEqualTo(id_))
         );
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int update(UpdateDSLCompleter completer) {
         return MyBatis3Utils.update(this::update, orgRelationship, completer);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    static UpdateDSL<UpdateModel> updateAllColumns(OrgRelationship row, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(gmtCreate).equalTo(row::getGmtCreate)
+    static UpdateDSL updateAllColumns(OrgRelationship row, UpdateDSL dsl) {
+        return dsl.set(id).equalTo(row::getId)
+                .set(gmtCreate).equalTo(row::getGmtCreate)
                 .set(gmtModified).equalTo(row::getGmtModified)
                 .set(userId).equalTo(row::getUserId)
                 .set(ownerId).equalTo(row::getOwnerId)
@@ -136,9 +120,9 @@ public interface OrgRelationshipMapper extends CommonCountMapper, CommonDeleteMa
                 .set(enabled).equalTo(row::getEnabled);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    static UpdateDSL<UpdateModel> updateSelectiveColumns(OrgRelationship row, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
+    static UpdateDSL updateSelectiveColumns(OrgRelationship row, UpdateDSL dsl) {
+        return dsl.set(id).equalToWhenPresent(row::getId)
+                .set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
                 .set(gmtModified).equalToWhenPresent(row::getGmtModified)
                 .set(userId).equalToWhenPresent(row::getUserId)
                 .set(ownerId).equalToWhenPresent(row::getOwnerId)
@@ -146,7 +130,6 @@ public interface OrgRelationshipMapper extends CommonCountMapper, CommonDeleteMa
                 .set(enabled).equalToWhenPresent(row::getEnabled);
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int updateByPrimaryKey(OrgRelationship row) {
         return update(c ->
             c.set(gmtCreate).equalTo(row::getGmtCreate)
@@ -159,7 +142,6 @@ public interface OrgRelationshipMapper extends CommonCountMapper, CommonDeleteMa
         );
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int updateByPrimaryKeySelective(OrgRelationship row) {
         return update(c ->
             c.set(gmtCreate).equalToWhenPresent(row::getGmtCreate)

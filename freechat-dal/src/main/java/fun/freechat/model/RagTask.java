@@ -1,243 +1,192 @@
 package fun.freechat.model;
 
-import jakarta.annotation.Generated;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class RagTask implements Serializable {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long id;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtModified;
+    private LocalDateTime gmtModified;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtStart;
+    private LocalDateTime gmtStart;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtEnd;
+    private LocalDateTime gmtEnd;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String characterUid;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String sourceType;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Integer maxSegmentSize;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Integer maxOverlapSize;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String status;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String source;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String ext;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private static final long serialVersionUID = 1L;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getId() {
         return id;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public RagTask withId(Long id) {
         this.setId(id);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setId(Long id) {
         this.id = id;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtCreate() {
+    public LocalDateTime getGmtCreate() {
         return gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public RagTask withGmtCreate(Date gmtCreate) {
+    public RagTask withGmtCreate(LocalDateTime gmtCreate) {
         this.setGmtCreate(gmtCreate);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtCreate(Date gmtCreate) {
+    public void setGmtCreate(LocalDateTime gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtModified() {
+    public LocalDateTime getGmtModified() {
         return gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public RagTask withGmtModified(Date gmtModified) {
+    public RagTask withGmtModified(LocalDateTime gmtModified) {
         this.setGmtModified(gmtModified);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtModified(Date gmtModified) {
+    public void setGmtModified(LocalDateTime gmtModified) {
         this.gmtModified = gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtStart() {
+    public LocalDateTime getGmtStart() {
         return gmtStart;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public RagTask withGmtStart(Date gmtStart) {
+    public RagTask withGmtStart(LocalDateTime gmtStart) {
         this.setGmtStart(gmtStart);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtStart(Date gmtStart) {
+    public void setGmtStart(LocalDateTime gmtStart) {
         this.gmtStart = gmtStart;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtEnd() {
+    public LocalDateTime getGmtEnd() {
         return gmtEnd;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public RagTask withGmtEnd(Date gmtEnd) {
+    public RagTask withGmtEnd(LocalDateTime gmtEnd) {
         this.setGmtEnd(gmtEnd);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtEnd(Date gmtEnd) {
+    public void setGmtEnd(LocalDateTime gmtEnd) {
         this.gmtEnd = gmtEnd;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getCharacterUid() {
         return characterUid;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public RagTask withCharacterUid(String characterUid) {
         this.setCharacterUid(characterUid);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setCharacterUid(String characterUid) {
         this.characterUid = characterUid;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getSourceType() {
         return sourceType;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public RagTask withSourceType(String sourceType) {
         this.setSourceType(sourceType);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setSourceType(String sourceType) {
         this.sourceType = sourceType;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Integer getMaxSegmentSize() {
         return maxSegmentSize;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public RagTask withMaxSegmentSize(Integer maxSegmentSize) {
         this.setMaxSegmentSize(maxSegmentSize);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setMaxSegmentSize(Integer maxSegmentSize) {
         this.maxSegmentSize = maxSegmentSize;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Integer getMaxOverlapSize() {
         return maxOverlapSize;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public RagTask withMaxOverlapSize(Integer maxOverlapSize) {
         this.setMaxOverlapSize(maxOverlapSize);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setMaxOverlapSize(Integer maxOverlapSize) {
         this.maxOverlapSize = maxOverlapSize;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getStatus() {
         return status;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public RagTask withStatus(String status) {
         this.setStatus(status);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setStatus(String status) {
         this.status = status;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getSource() {
         return source;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public RagTask withSource(String source) {
         this.setSource(source);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setSource(String source) {
         this.source = source;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getExt() {
         return ext;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public RagTask withExt(String ext) {
         this.setExt(ext);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setExt(String ext) {
         this.ext = ext;
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public boolean equals(Object that) {
         if (this == that) {
             return true;
@@ -258,11 +207,12 @@ public class RagTask implements Serializable {
             && (this.getSourceType() == null ? other.getSourceType() == null : this.getSourceType().equals(other.getSourceType()))
             && (this.getMaxSegmentSize() == null ? other.getMaxSegmentSize() == null : this.getMaxSegmentSize().equals(other.getMaxSegmentSize()))
             && (this.getMaxOverlapSize() == null ? other.getMaxOverlapSize() == null : this.getMaxOverlapSize().equals(other.getMaxOverlapSize()))
-            && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()));
+            && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
+            && (this.getSource() == null ? other.getSource() == null : this.getSource().equals(other.getSource()))
+            && (this.getExt() == null ? other.getExt() == null : this.getExt().equals(other.getExt()));
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -276,11 +226,12 @@ public class RagTask implements Serializable {
         result = prime * result + ((getMaxSegmentSize() == null) ? 0 : getMaxSegmentSize().hashCode());
         result = prime * result + ((getMaxOverlapSize() == null) ? 0 : getMaxOverlapSize().hashCode());
         result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
+        result = prime * result + ((getSource() == null) ? 0 : getSource().hashCode());
+        result = prime * result + ((getExt() == null) ? 0 : getExt().hashCode());
         return result;
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());

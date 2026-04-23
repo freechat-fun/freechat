@@ -8,7 +8,14 @@ import fun.freechat.mapper.OrgRelationshipMapper;
 import fun.freechat.model.OrgRelationship;
 import fun.freechat.service.organization.OrgService;
 import fun.freechat.util.graph.Graph;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -47,7 +54,7 @@ public class OrgServiceImpl implements OrgService {
         List<String> successfulOwners = new LinkedList<>();
         SqlSession session = sqlSessionFactory.openSession();
         try {
-            Date now = new Date();
+            LocalDateTime now = LocalDateTime.now();
             Graph<String> solidSubordinates = getSubordinates(userId, false);
             int rows;
             for (String ownerId : new HashSet<>(owners)) {
@@ -100,7 +107,7 @@ public class OrgServiceImpl implements OrgService {
         List<String> successfulSubordinates = new LinkedList<>();
         SqlSession session = sqlSessionFactory.openSession();
         try {
-            Date now = new Date();
+            LocalDateTime now = LocalDateTime.now();
             Graph<String> solidOwners = getOwners(userId, false);
             int rows;
             for (String subordinateId : new HashSet<>(subordinates)) {

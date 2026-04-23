@@ -1,18 +1,47 @@
 package fun.freechat.service.prompt.impl;
 
 import static dev.langchain4j.data.message.ContentType.TEXT;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.countDistinct;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan;
+import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
+import static org.mybatis.dynamic.sql.SqlBuilder.isLike;
+import static org.mybatis.dynamic.sql.SqlBuilder.isNotEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.or;
+import static org.mybatis.dynamic.sql.SqlBuilder.select;
+import static org.mybatis.dynamic.sql.SqlBuilder.selectDistinct;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import dev.langchain4j.data.message.*;
+import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.ChatMessage;
+import dev.langchain4j.data.message.Content;
+import dev.langchain4j.data.message.ImageContent;
+import dev.langchain4j.data.message.SystemMessage;
+import dev.langchain4j.data.message.TextContent;
+import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.input.PromptTemplate;
 import fun.freechat.langchain4j.model.input.FStringPromptTemplate;
-import fun.freechat.mapper.*;
-import fun.freechat.model.*;
+import fun.freechat.mapper.AiModelDynamicSqlSupport;
+import fun.freechat.mapper.AiModelMapper;
+import fun.freechat.mapper.InteractiveStatsDynamicSqlSupport;
+import fun.freechat.mapper.InteractiveStatsMapper;
+import fun.freechat.mapper.PromptInfoDynamicSqlSupport;
+import fun.freechat.mapper.PromptInfoMapper;
+import fun.freechat.mapper.TagDynamicSqlSupport;
+import fun.freechat.mapper.TagMapper;
+import fun.freechat.model.AiModel;
+import fun.freechat.model.InteractiveStats;
+import fun.freechat.model.PromptInfo;
+import fun.freechat.model.Tag;
+import fun.freechat.model.User;
 import fun.freechat.service.cache.LongPeriodCache;
 import fun.freechat.service.cache.LongPeriodCacheEvict;
-import fun.freechat.service.enums.*;
+import fun.freechat.service.enums.InfoType;
+import fun.freechat.service.enums.PromptFormat;
+import fun.freechat.service.enums.PromptType;
+import fun.freechat.service.enums.StatsType;
+import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.organization.OrgService;
 import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.prompt.PromptService;
@@ -21,7 +50,14 @@ import fun.freechat.service.util.InfoUtils;
 import fun.freechat.service.util.PromptUtils;
 import fun.freechat.service.util.SortSpecificationWrapper;
 import fun.freechat.util.IdUtils;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -162,7 +198,7 @@ public class PromptServiceImpl implements PromptService {
 
     private void doCreate(Triple<PromptInfo, List<String>, List<String>> infoTriple) {
         PromptInfo info = infoTriple.getLeft();
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         int rows = promptInfoMapper.insertSelective(info.withGmtCreate(now).withGmtModified(now));
         if (rows <= 0) {
             throw new RuntimeException("Insert prompt " + info.getName() + " failed!");
@@ -419,7 +455,7 @@ public class PromptServiceImpl implements PromptService {
     public boolean update(Triple<PromptInfo, List<String>, List<String>> infoTriple) {
         SqlSession session = sqlSessionFactory.openSession();
         try {
-            Date now = new Date();
+            LocalDateTime now = LocalDateTime.now();
             PromptInfo promptInfo = infoTriple.getLeft();
             promptInfoMapper.updateByPrimaryKeySelective(promptInfo.withGmtModified(now));
             int rows;
@@ -482,8 +518,8 @@ public class PromptServiceImpl implements PromptService {
         if (promptInfo == null || Visibility.HIDDEN.text().equals(promptInfo.getVisibility())) {
             return false;
         }
-        Date now = new Date();
-        promptInfo.withGmtModified(new Date()).withVisibility(Visibility.HIDDEN.text());
+        LocalDateTime now = LocalDateTime.now();
+        promptInfo.withGmtModified(LocalDateTime.now()).withVisibility(Visibility.HIDDEN.text());
         int rows = promptInfoMapper.updateByPrimaryKeySelective(promptInfo);
         return rows > 0;
     }
@@ -584,8 +620,13 @@ public class PromptServiceImpl implements PromptService {
     @Override
     @LongPeriodCache(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public Triple<PromptInfo, List<String>, List<String>> details(Long promptId, User user) {
+        var fields = select(Info.table.allColumns()).from(Info.table);
+        var statement = wrapQueryExpression(fields, user.getUserId())
+                .and(Info.promptId, isEqualTo(promptId))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
         return promptInfoMapper
-                .selectOne(c -> wrapQueryExpression(c, user.getUserId()).and(Info.promptId, isEqualTo(promptId)))
+                .selectOne(statement)
                 .filter(info -> filterVisibility(info, user))
                 .map(this::toInfoTriple)
                 .orElse(null);
@@ -593,9 +634,12 @@ public class PromptServiceImpl implements PromptService {
 
     @Override
     public List<Triple<PromptInfo, List<String>, List<String>>> details(Collection<Long> promptIds, User user) {
-        return promptInfoMapper
-                .select(c -> wrapQueryExpression(c, user.getUserId()).and(Info.promptId, isIn(promptIds)))
-                .stream()
+        var fields = select(Info.table.allColumns()).from(Info.table);
+        var statement = wrapQueryExpression(fields, user.getUserId())
+                .and(Info.promptId, isIn(promptIds))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+        return promptInfoMapper.selectMany(statement).stream()
                 .filter(info -> filterVisibility(info, user))
                 .map(this::toInfoTriple)
                 .toList();
@@ -698,7 +742,7 @@ public class PromptServiceImpl implements PromptService {
                 info = new PromptInfo()
                         .withPromptId(prevVersionInfo.getLeft())
                         .withVisibility(Visibility.HIDDEN.text())
-                        .withGmtModified(new Date());
+                        .withGmtModified(LocalDateTime.now());
                 promptInfoMapper.updateByPrimaryKeySelective(info);
             }
 
@@ -919,8 +963,8 @@ public class PromptServiceImpl implements PromptService {
         public static final PromptInfoDynamicSqlSupport.PromptInfo table = PromptInfoDynamicSqlSupport.promptInfo;
         public static final SqlColumn<Long> promptId = PromptInfoDynamicSqlSupport.promptId;
         public static final SqlColumn<String> promptUid = PromptInfoDynamicSqlSupport.promptUid;
-        public static final SqlColumn<Date> gmtCreate = PromptInfoDynamicSqlSupport.gmtCreate;
-        public static final SqlColumn<Date> gmtModified = PromptInfoDynamicSqlSupport.gmtModified;
+        public static final SqlColumn<LocalDateTime> gmtCreate = PromptInfoDynamicSqlSupport.gmtCreate;
+        public static final SqlColumn<LocalDateTime> gmtModified = PromptInfoDynamicSqlSupport.gmtModified;
         public static final SqlColumn<String> userId = PromptInfoDynamicSqlSupport.userId;
         public static final SqlColumn<String> parentUid = PromptInfoDynamicSqlSupport.parentUid;
         public static final SqlColumn<String> visibility = PromptInfoDynamicSqlSupport.visibility;

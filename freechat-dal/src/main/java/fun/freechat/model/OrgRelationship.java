@@ -1,148 +1,117 @@
 package fun.freechat.model;
 
-import jakarta.annotation.Generated;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class OrgRelationship implements Serializable {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long id;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtModified;
+    private LocalDateTime gmtModified;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String userId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String ownerId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Byte isVirtual;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Byte enabled;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private static final long serialVersionUID = 1L;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getId() {
         return id;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public OrgRelationship withId(Long id) {
         this.setId(id);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setId(Long id) {
         this.id = id;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtCreate() {
+    public LocalDateTime getGmtCreate() {
         return gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public OrgRelationship withGmtCreate(Date gmtCreate) {
+    public OrgRelationship withGmtCreate(LocalDateTime gmtCreate) {
         this.setGmtCreate(gmtCreate);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtCreate(Date gmtCreate) {
+    public void setGmtCreate(LocalDateTime gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtModified() {
+    public LocalDateTime getGmtModified() {
         return gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public OrgRelationship withGmtModified(Date gmtModified) {
+    public OrgRelationship withGmtModified(LocalDateTime gmtModified) {
         this.setGmtModified(gmtModified);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtModified(Date gmtModified) {
+    public void setGmtModified(LocalDateTime gmtModified) {
         this.gmtModified = gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getUserId() {
         return userId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public OrgRelationship withUserId(String userId) {
         this.setUserId(userId);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getOwnerId() {
         return ownerId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public OrgRelationship withOwnerId(String ownerId) {
         this.setOwnerId(ownerId);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Byte getIsVirtual() {
         return isVirtual;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public OrgRelationship withIsVirtual(Byte isVirtual) {
         this.setIsVirtual(isVirtual);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setIsVirtual(Byte isVirtual) {
         this.isVirtual = isVirtual;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Byte getEnabled() {
         return enabled;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public OrgRelationship withEnabled(Byte enabled) {
         this.setEnabled(enabled);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setEnabled(Byte enabled) {
         this.enabled = enabled;
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public boolean equals(Object that) {
         if (this == that) {
             return true;
@@ -164,7 +133,6 @@ public class OrgRelationship implements Serializable {
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -179,7 +147,6 @@ public class OrgRelationship implements Serializable {
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());

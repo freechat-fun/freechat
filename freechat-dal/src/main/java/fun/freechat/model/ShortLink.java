@@ -1,129 +1,102 @@
 package fun.freechat.model;
 
-import jakarta.annotation.Generated;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class ShortLink implements Serializable {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long id;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtModified;
+    private LocalDateTime gmtModified;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String token;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String path;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date expiresAt;
+    private LocalDateTime expiresAt;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private static final long serialVersionUID = 1L;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getId() {
         return id;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public ShortLink withId(Long id) {
         this.setId(id);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setId(Long id) {
         this.id = id;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtCreate() {
+    public LocalDateTime getGmtCreate() {
         return gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public ShortLink withGmtCreate(Date gmtCreate) {
+    public ShortLink withGmtCreate(LocalDateTime gmtCreate) {
         this.setGmtCreate(gmtCreate);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtCreate(Date gmtCreate) {
+    public void setGmtCreate(LocalDateTime gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtModified() {
+    public LocalDateTime getGmtModified() {
         return gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public ShortLink withGmtModified(Date gmtModified) {
+    public ShortLink withGmtModified(LocalDateTime gmtModified) {
         this.setGmtModified(gmtModified);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtModified(Date gmtModified) {
+    public void setGmtModified(LocalDateTime gmtModified) {
         this.gmtModified = gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getToken() {
         return token;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public ShortLink withToken(String token) {
         this.setToken(token);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setToken(String token) {
         this.token = token;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getPath() {
         return path;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public ShortLink withPath(String path) {
         this.setPath(path);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setPath(String path) {
         this.path = path;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getExpiresAt() {
+    public LocalDateTime getExpiresAt() {
         return expiresAt;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public ShortLink withExpiresAt(Date expiresAt) {
+    public ShortLink withExpiresAt(LocalDateTime expiresAt) {
         this.setExpiresAt(expiresAt);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setExpiresAt(Date expiresAt) {
+    public void setExpiresAt(LocalDateTime expiresAt) {
         this.expiresAt = expiresAt;
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public boolean equals(Object that) {
         if (this == that) {
             return true;
@@ -144,7 +117,6 @@ public class ShortLink implements Serializable {
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -158,7 +130,6 @@ public class ShortLink implements Serializable {
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());

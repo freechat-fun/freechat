@@ -10,7 +10,7 @@ import fun.freechat.service.cache.MiddlePeriodCache;
 import fun.freechat.service.cache.MiddlePeriodCacheEvict;
 import fun.freechat.service.common.EncryptionService;
 import fun.freechat.util.IdUtils;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public boolean create(User user) {
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         String plainPassword = user.getPassword();
         String encryptedPassword = encryptionService.encrypt(plainPassword);
         int rows = userMapper.insertSelective(user.withGmtCreate(now)
@@ -65,7 +65,7 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     @MiddlePeriodCacheEvict(keyBy = CACHE_KEY_FROM_USER)
     public boolean update(User user) {
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         String password = user.getPassword();
         int rows =
                 userMapper.updateByPrimaryKeySelective(user.withGmtModified(now).withPassword(null));
@@ -93,7 +93,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public boolean changePassword(User user, String newPassword) {
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         String encryptedPassword = encryptionService.encrypt(newPassword);
         int rows =
                 userMapper.updateByPrimaryKeySelective(user.withGmtModified(now).withPassword(encryptedPassword));

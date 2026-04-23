@@ -2,7 +2,7 @@ package fun.freechat.api.dto;
 
 import fun.freechat.model.ChatContext;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +15,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class ChatUpdateDTO extends ChatCreateDTO {
     @Schema(description = "Read time")
-    private Date gmtRead;
+    private LocalDateTime gmtRead;
 
     public ChatContext toChatContext(String chatId) {
         return new ChatContext()

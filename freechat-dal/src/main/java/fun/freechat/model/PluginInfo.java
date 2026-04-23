@@ -1,262 +1,207 @@
 package fun.freechat.model;
 
-import jakarta.annotation.Generated;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class PluginInfo implements Serializable {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long pluginId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String pluginUid;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtModified;
+    private LocalDateTime gmtModified;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String userId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String visibility;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String name;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String manifestFormat;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String apiFormat;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String provider;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String manifestInfo;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String apiInfo;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String ext;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private static final long serialVersionUID = 1L;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getPluginId() {
         return pluginId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PluginInfo withPluginId(Long pluginId) {
         this.setPluginId(pluginId);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setPluginId(Long pluginId) {
         this.pluginId = pluginId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getPluginUid() {
         return pluginUid;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PluginInfo withPluginUid(String pluginUid) {
         this.setPluginUid(pluginUid);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setPluginUid(String pluginUid) {
         this.pluginUid = pluginUid;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtCreate() {
+    public LocalDateTime getGmtCreate() {
         return gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public PluginInfo withGmtCreate(Date gmtCreate) {
+    public PluginInfo withGmtCreate(LocalDateTime gmtCreate) {
         this.setGmtCreate(gmtCreate);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtCreate(Date gmtCreate) {
+    public void setGmtCreate(LocalDateTime gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtModified() {
+    public LocalDateTime getGmtModified() {
         return gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public PluginInfo withGmtModified(Date gmtModified) {
+    public PluginInfo withGmtModified(LocalDateTime gmtModified) {
         this.setGmtModified(gmtModified);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtModified(Date gmtModified) {
+    public void setGmtModified(LocalDateTime gmtModified) {
         this.gmtModified = gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getUserId() {
         return userId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PluginInfo withUserId(String userId) {
         this.setUserId(userId);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getVisibility() {
         return visibility;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PluginInfo withVisibility(String visibility) {
         this.setVisibility(visibility);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setVisibility(String visibility) {
         this.visibility = visibility;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getName() {
         return name;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PluginInfo withName(String name) {
         this.setName(name);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setName(String name) {
         this.name = name;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getManifestFormat() {
         return manifestFormat;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PluginInfo withManifestFormat(String manifestFormat) {
         this.setManifestFormat(manifestFormat);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setManifestFormat(String manifestFormat) {
         this.manifestFormat = manifestFormat;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getApiFormat() {
         return apiFormat;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PluginInfo withApiFormat(String apiFormat) {
         this.setApiFormat(apiFormat);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setApiFormat(String apiFormat) {
         this.apiFormat = apiFormat;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getProvider() {
         return provider;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PluginInfo withProvider(String provider) {
         this.setProvider(provider);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setProvider(String provider) {
         this.provider = provider;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getManifestInfo() {
         return manifestInfo;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PluginInfo withManifestInfo(String manifestInfo) {
         this.setManifestInfo(manifestInfo);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setManifestInfo(String manifestInfo) {
         this.manifestInfo = manifestInfo;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getApiInfo() {
         return apiInfo;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PluginInfo withApiInfo(String apiInfo) {
         this.setApiInfo(apiInfo);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setApiInfo(String apiInfo) {
         this.apiInfo = apiInfo;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getExt() {
         return ext;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public PluginInfo withExt(String ext) {
         this.setExt(ext);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setExt(String ext) {
         this.ext = ext;
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public boolean equals(Object that) {
         if (this == that) {
             return true;
@@ -276,11 +221,14 @@ public class PluginInfo implements Serializable {
             && (this.getVisibility() == null ? other.getVisibility() == null : this.getVisibility().equals(other.getVisibility()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
             && (this.getManifestFormat() == null ? other.getManifestFormat() == null : this.getManifestFormat().equals(other.getManifestFormat()))
-            && (this.getApiFormat() == null ? other.getApiFormat() == null : this.getApiFormat().equals(other.getApiFormat()));
+            && (this.getApiFormat() == null ? other.getApiFormat() == null : this.getApiFormat().equals(other.getApiFormat()))
+            && (this.getProvider() == null ? other.getProvider() == null : this.getProvider().equals(other.getProvider()))
+            && (this.getManifestInfo() == null ? other.getManifestInfo() == null : this.getManifestInfo().equals(other.getManifestInfo()))
+            && (this.getApiInfo() == null ? other.getApiInfo() == null : this.getApiInfo().equals(other.getApiInfo()))
+            && (this.getExt() == null ? other.getExt() == null : this.getExt().equals(other.getExt()));
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -293,11 +241,14 @@ public class PluginInfo implements Serializable {
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getManifestFormat() == null) ? 0 : getManifestFormat().hashCode());
         result = prime * result + ((getApiFormat() == null) ? 0 : getApiFormat().hashCode());
+        result = prime * result + ((getProvider() == null) ? 0 : getProvider().hashCode());
+        result = prime * result + ((getManifestInfo() == null) ? 0 : getManifestInfo().hashCode());
+        result = prime * result + ((getApiInfo() == null) ? 0 : getApiInfo().hashCode());
+        result = prime * result + ((getExt() == null) ? 0 : getExt().hashCode());
         return result;
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());

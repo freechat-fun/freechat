@@ -1,205 +1,162 @@
 package fun.freechat.model;
 
-import jakarta.annotation.Generated;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class InteractiveStats implements Serializable {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long id;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtModified;
+    private LocalDateTime gmtModified;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String referType;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String referId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long viewCount;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long referCount;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long recommendCount;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long scoreCount;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long score;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private static final long serialVersionUID = 1L;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getId() {
         return id;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public InteractiveStats withId(Long id) {
         this.setId(id);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setId(Long id) {
         this.id = id;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtCreate() {
+    public LocalDateTime getGmtCreate() {
         return gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public InteractiveStats withGmtCreate(Date gmtCreate) {
+    public InteractiveStats withGmtCreate(LocalDateTime gmtCreate) {
         this.setGmtCreate(gmtCreate);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtCreate(Date gmtCreate) {
+    public void setGmtCreate(LocalDateTime gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtModified() {
+    public LocalDateTime getGmtModified() {
         return gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public InteractiveStats withGmtModified(Date gmtModified) {
+    public InteractiveStats withGmtModified(LocalDateTime gmtModified) {
         this.setGmtModified(gmtModified);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtModified(Date gmtModified) {
+    public void setGmtModified(LocalDateTime gmtModified) {
         this.gmtModified = gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getReferType() {
         return referType;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public InteractiveStats withReferType(String referType) {
         this.setReferType(referType);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setReferType(String referType) {
         this.referType = referType;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getReferId() {
         return referId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public InteractiveStats withReferId(String referId) {
         this.setReferId(referId);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setReferId(String referId) {
         this.referId = referId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getViewCount() {
         return viewCount;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public InteractiveStats withViewCount(Long viewCount) {
         this.setViewCount(viewCount);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setViewCount(Long viewCount) {
         this.viewCount = viewCount;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getReferCount() {
         return referCount;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public InteractiveStats withReferCount(Long referCount) {
         this.setReferCount(referCount);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setReferCount(Long referCount) {
         this.referCount = referCount;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getRecommendCount() {
         return recommendCount;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public InteractiveStats withRecommendCount(Long recommendCount) {
         this.setRecommendCount(recommendCount);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setRecommendCount(Long recommendCount) {
         this.recommendCount = recommendCount;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getScoreCount() {
         return scoreCount;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public InteractiveStats withScoreCount(Long scoreCount) {
         this.setScoreCount(scoreCount);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setScoreCount(Long scoreCount) {
         this.scoreCount = scoreCount;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getScore() {
         return score;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public InteractiveStats withScore(Long score) {
         this.setScore(score);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setScore(Long score) {
         this.score = score;
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public boolean equals(Object that) {
         if (this == that) {
             return true;
@@ -224,7 +181,6 @@ public class InteractiveStats implements Serializable {
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -242,7 +198,6 @@ public class InteractiveStats implements Serializable {
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());

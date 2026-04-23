@@ -9,7 +9,7 @@ import fun.freechat.model.AiApiKey;
 import fun.freechat.service.common.EncryptionService;
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 
@@ -67,8 +67,8 @@ public class CloseableAiApiKey implements Closeable {
         if (StringUtils.isBlank(token) || id == null || !used) {
             return;
         }
-        AiApiKey aiApiKey = new AiApiKey().withId(id).withGmtUsed(new Date());
-        aiApiKeyMapper.updateByPrimaryKeySelective(aiApiKey.withGmtUsed(new Date()));
+        AiApiKey aiApiKey = new AiApiKey().withId(id).withGmtUsed(LocalDateTime.now());
+        aiApiKeyMapper.updateByPrimaryKeySelective(aiApiKey.withGmtUsed(LocalDateTime.now()));
     }
 
     public String token() {

@@ -5,7 +5,11 @@ import static fun.freechat.util.ByteUtils.isNotTrue;
 
 import fun.freechat.model.User;
 import fun.freechat.service.account.SysAuthorityService;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,7 +29,7 @@ public class SysUserDetails extends User implements UserDetails {
     @Override
     public boolean isAccountNonExpired() {
         return Optional.ofNullable(getExpiresAt())
-                .map(expiresAt -> expiresAt.after(new Date()))
+                .map(expiresAt -> expiresAt.isAfter(LocalDateTime.now()))
                 .orElse(Boolean.TRUE);
     }
 
@@ -37,7 +41,7 @@ public class SysUserDetails extends User implements UserDetails {
     @Override
     public boolean isCredentialsNonExpired() {
         return Optional.ofNullable(getPasswordExpiresAt())
-                .map(expiresAt -> expiresAt.after(new Date()))
+                .map(expiresAt -> expiresAt.isAfter(LocalDateTime.now()))
                 .orElse(Boolean.TRUE);
     }
 

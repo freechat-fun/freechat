@@ -1,148 +1,117 @@
 package fun.freechat.model;
 
-import jakarta.annotation.Generated;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class ChatHistory implements Serializable {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long id;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String memoryId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtModified;
+    private LocalDateTime gmtModified;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Byte enabled;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String message;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String ext;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private static final long serialVersionUID = 1L;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getId() {
         return id;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public ChatHistory withId(Long id) {
         this.setId(id);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setId(Long id) {
         this.id = id;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getMemoryId() {
         return memoryId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public ChatHistory withMemoryId(String memoryId) {
         this.setMemoryId(memoryId);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setMemoryId(String memoryId) {
         this.memoryId = memoryId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtCreate() {
+    public LocalDateTime getGmtCreate() {
         return gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public ChatHistory withGmtCreate(Date gmtCreate) {
+    public ChatHistory withGmtCreate(LocalDateTime gmtCreate) {
         this.setGmtCreate(gmtCreate);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtCreate(Date gmtCreate) {
+    public void setGmtCreate(LocalDateTime gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtModified() {
+    public LocalDateTime getGmtModified() {
         return gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public ChatHistory withGmtModified(Date gmtModified) {
+    public ChatHistory withGmtModified(LocalDateTime gmtModified) {
         this.setGmtModified(gmtModified);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtModified(Date gmtModified) {
+    public void setGmtModified(LocalDateTime gmtModified) {
         this.gmtModified = gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Byte getEnabled() {
         return enabled;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public ChatHistory withEnabled(Byte enabled) {
         this.setEnabled(enabled);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setEnabled(Byte enabled) {
         this.enabled = enabled;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getMessage() {
         return message;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public ChatHistory withMessage(String message) {
         this.setMessage(message);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setMessage(String message) {
         this.message = message;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getExt() {
         return ext;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public ChatHistory withExt(String ext) {
         this.setExt(ext);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setExt(String ext) {
         this.ext = ext;
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public boolean equals(Object that) {
         if (this == that) {
             return true;
@@ -158,11 +127,12 @@ public class ChatHistory implements Serializable {
             && (this.getMemoryId() == null ? other.getMemoryId() == null : this.getMemoryId().equals(other.getMemoryId()))
             && (this.getGmtCreate() == null ? other.getGmtCreate() == null : this.getGmtCreate().equals(other.getGmtCreate()))
             && (this.getGmtModified() == null ? other.getGmtModified() == null : this.getGmtModified().equals(other.getGmtModified()))
-            && (this.getEnabled() == null ? other.getEnabled() == null : this.getEnabled().equals(other.getEnabled()));
+            && (this.getEnabled() == null ? other.getEnabled() == null : this.getEnabled().equals(other.getEnabled()))
+            && (this.getMessage() == null ? other.getMessage() == null : this.getMessage().equals(other.getMessage()))
+            && (this.getExt() == null ? other.getExt() == null : this.getExt().equals(other.getExt()));
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -171,11 +141,12 @@ public class ChatHistory implements Serializable {
         result = prime * result + ((getGmtCreate() == null) ? 0 : getGmtCreate().hashCode());
         result = prime * result + ((getGmtModified() == null) ? 0 : getGmtModified().hashCode());
         result = prime * result + ((getEnabled() == null) ? 0 : getEnabled().hashCode());
+        result = prime * result + ((getMessage() == null) ? 0 : getMessage().hashCode());
+        result = prime * result + ((getExt() == null) ? 0 : getExt().hashCode());
         return result;
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());

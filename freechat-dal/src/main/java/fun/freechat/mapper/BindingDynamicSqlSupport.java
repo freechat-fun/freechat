@@ -1,71 +1,57 @@
 package fun.freechat.mapper;
 
-import jakarta.annotation.Generated;
 import java.sql.JDBCType;
-import java.util.Date;
+import java.time.LocalDateTime;
 import org.mybatis.dynamic.sql.AliasableSqlTable;
 import org.mybatis.dynamic.sql.SqlColumn;
 
 public final class BindingDynamicSqlSupport {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final Binding binding = new Binding();
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Long> id = binding.id;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Date> gmtCreate = binding.gmtCreate;
+    public static final SqlColumn<LocalDateTime> gmtCreate = binding.gmtCreate;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Date> gmtModified = binding.gmtModified;
+    public static final SqlColumn<LocalDateTime> gmtModified = binding.gmtModified;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> userId = binding.userId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> platform = binding.platform;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> sub = binding.sub;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> iss = binding.iss;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Date> issuedAt = binding.issuedAt;
+    public static final SqlColumn<LocalDateTime> issuedAt = binding.issuedAt;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<Date> expiresAt = binding.expiresAt;
+    public static final SqlColumn<LocalDateTime> expiresAt = binding.expiresAt;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> aud = binding.aud;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> refreshToken = binding.refreshToken;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final class Binding extends AliasableSqlTable<Binding> {
-        public final SqlColumn<Long> id = column("id", JDBCType.BIGINT);
+        public final SqlColumn<Long> id = column("id", JDBCType.BIGINT).withJavaProperty("id");
 
-        public final SqlColumn<Date> gmtCreate = column("gmt_create", JDBCType.TIMESTAMP);
+        public final SqlColumn<LocalDateTime> gmtCreate = column("gmt_create", JDBCType.TIMESTAMP).withJavaProperty("gmtCreate");
 
-        public final SqlColumn<Date> gmtModified = column("gmt_modified", JDBCType.TIMESTAMP);
+        public final SqlColumn<LocalDateTime> gmtModified = column("gmt_modified", JDBCType.TIMESTAMP).withJavaProperty("gmtModified");
 
-        public final SqlColumn<String> userId = column("user_id", JDBCType.VARCHAR);
+        public final SqlColumn<String> userId = column("user_id", JDBCType.VARCHAR).withJavaProperty("userId");
 
-        public final SqlColumn<String> platform = column("platform", JDBCType.VARCHAR);
+        public final SqlColumn<String> platform = column("platform", JDBCType.VARCHAR).withJavaProperty("platform");
 
-        public final SqlColumn<String> sub = column("sub", JDBCType.VARCHAR);
+        public final SqlColumn<String> sub = column("sub", JDBCType.VARCHAR).withJavaProperty("sub");
 
-        public final SqlColumn<String> iss = column("iss", JDBCType.VARCHAR);
+        public final SqlColumn<String> iss = column("iss", JDBCType.VARCHAR).withJavaProperty("iss");
 
-        public final SqlColumn<Date> issuedAt = column("issued_at", JDBCType.TIMESTAMP);
+        public final SqlColumn<LocalDateTime> issuedAt = column("issued_at", JDBCType.TIMESTAMP).withJavaProperty("issuedAt");
 
-        public final SqlColumn<Date> expiresAt = column("expires_at", JDBCType.TIMESTAMP);
+        public final SqlColumn<LocalDateTime> expiresAt = column("expires_at", JDBCType.TIMESTAMP).withJavaProperty("expiresAt");
 
-        public final SqlColumn<String> aud = column("aud", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> aud = column("aud", JDBCType.LONGVARCHAR).withJavaProperty("aud");
 
-        public final SqlColumn<String> refreshToken = column("refresh_token", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> refreshToken = column("refresh_token", JDBCType.LONGVARCHAR).withJavaProperty("refreshToken");
 
         public Binding() {
             super("binding", Binding::new);

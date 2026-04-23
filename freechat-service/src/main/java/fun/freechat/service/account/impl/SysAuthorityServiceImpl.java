@@ -8,7 +8,7 @@ import fun.freechat.model.Authority;
 import fun.freechat.model.User;
 import fun.freechat.service.account.SysAuthorityService;
 import fun.freechat.util.AuthorityUtils;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class SysAuthorityServiceImpl implements SysAuthorityService {
     @Override
     @Transactional
     public boolean update(String userId, Set<String> authorities) {
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         authorityMapper.delete(c -> c.where(AuthorityDynamicSqlSupport.userId, isEqualTo(userId)));
         for (String authority : authorities) {
             if (AuthorityUtils.USER.equalsIgnoreCase(authority)) {

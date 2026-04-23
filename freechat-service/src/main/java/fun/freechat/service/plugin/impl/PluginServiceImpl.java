@@ -1,15 +1,35 @@
 package fun.freechat.service.plugin.impl;
 
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.and;
+import static org.mybatis.dynamic.sql.SqlBuilder.countDistinct;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
+import static org.mybatis.dynamic.sql.SqlBuilder.isLike;
+import static org.mybatis.dynamic.sql.SqlBuilder.isNotEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.or;
+import static org.mybatis.dynamic.sql.SqlBuilder.select;
+import static org.mybatis.dynamic.sql.SqlBuilder.selectDistinct;
 
-import fun.freechat.mapper.*;
+import fun.freechat.mapper.AiModelDynamicSqlSupport;
+import fun.freechat.mapper.AiModelMapper;
+import fun.freechat.mapper.InteractiveStatsDynamicSqlSupport;
+import fun.freechat.mapper.InteractiveStatsMapper;
+import fun.freechat.mapper.InteractiveStatsScoreDetailsMapper;
+import fun.freechat.mapper.PluginInfoDynamicSqlSupport;
+import fun.freechat.mapper.PluginInfoMapper;
+import fun.freechat.mapper.TagDynamicSqlSupport;
+import fun.freechat.mapper.TagMapper;
 import fun.freechat.model.AiModel;
 import fun.freechat.model.PluginInfo;
 import fun.freechat.model.Tag;
 import fun.freechat.model.User;
 import fun.freechat.service.cache.LongPeriodCache;
 import fun.freechat.service.cache.LongPeriodCacheEvict;
-import fun.freechat.service.enums.*;
+import fun.freechat.service.enums.ApiFormat;
+import fun.freechat.service.enums.InfoType;
+import fun.freechat.service.enums.ModelProvider;
+import fun.freechat.service.enums.StatsType;
+import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.organization.OrgService;
 import fun.freechat.service.plugin.PluginFetchService;
 import fun.freechat.service.plugin.PluginService;
@@ -18,7 +38,13 @@ import fun.freechat.service.util.InfoUtils;
 import fun.freechat.service.util.SortSpecificationWrapper;
 import fun.freechat.util.HttpUtils;
 import fun.freechat.util.IdUtils;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -173,7 +199,7 @@ public class PluginServiceImpl implements PluginService {
 
     private void doCreate(Triple<PluginInfo, List<String>, List<String>> infoTriple) {
         PluginInfo info = infoTriple.getLeft();
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         int rows = pluginInfoMapper.insertSelective(info.withGmtCreate(now).withGmtModified(now));
         if (rows <= 0) {
             throw new RuntimeException("Insert plugin " + info.getName() + " failed!");
@@ -422,7 +448,7 @@ public class PluginServiceImpl implements PluginService {
     public boolean update(Triple<PluginInfo, List<String>, List<String>> infoTriple) {
         SqlSession session = sqlSessionFactory.openSession();
         try {
-            Date now = new Date();
+            LocalDateTime now = LocalDateTime.now();
             PluginInfo pluginInfo = infoTriple.getLeft();
             pluginInfoMapper.updateByPrimaryKeySelective(pluginInfo.withGmtModified(now));
             int rows;
@@ -485,8 +511,8 @@ public class PluginServiceImpl implements PluginService {
         if (pluginInfo == null || Visibility.HIDDEN.text().equals(pluginInfo.getVisibility())) {
             return false;
         }
-        Date now = new Date();
-        pluginInfo.withGmtModified(new Date()).withVisibility(Visibility.HIDDEN.text());
+        LocalDateTime now = LocalDateTime.now();
+        pluginInfo.withGmtModified(LocalDateTime.now()).withVisibility(Visibility.HIDDEN.text());
         int rows = pluginInfoMapper.updateByPrimaryKeySelective(pluginInfo);
         return rows > 0;
     }
@@ -559,8 +585,13 @@ public class PluginServiceImpl implements PluginService {
     @Override
     @LongPeriodCache(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public Triple<PluginInfo, List<String>, List<String>> details(Long pluginId, User user) {
+        var fields = select(Info.table.allColumns()).from(Info.table);
+        var statement = wrapQueryExpression(fields, user.getUserId())
+                .and(Info.pluginId, isEqualTo(pluginId))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
         return pluginInfoMapper
-                .selectOne(c -> wrapQueryExpression(c, user.getUserId()).and(Info.pluginId, isEqualTo(pluginId)))
+                .selectOne(statement)
                 .filter(info -> filterVisibility(info, user))
                 .map(this::fetchInfo)
                 .map(this::toInfoTriple)
@@ -569,9 +600,12 @@ public class PluginServiceImpl implements PluginService {
 
     @Override
     public List<Triple<PluginInfo, List<String>, List<String>>> details(Collection<Long> pluginIds, User user) {
-        return pluginInfoMapper
-                .select(c -> wrapQueryExpression(c, user.getUserId()).and(Info.pluginId, isIn(pluginIds)))
-                .stream()
+        var fields = select(Info.table.allColumns()).from(Info.table);
+        var statement = wrapQueryExpression(fields, user.getUserId())
+                .and(Info.pluginId, isIn(pluginIds))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+        return pluginInfoMapper.selectMany(statement).stream()
                 .filter(info -> filterVisibility(info, user))
                 .peek(this::fetchInfo)
                 .map(this::toInfoTriple)
@@ -638,8 +672,8 @@ public class PluginServiceImpl implements PluginService {
         public static final PluginInfoDynamicSqlSupport.PluginInfo table = PluginInfoDynamicSqlSupport.pluginInfo;
         public static final SqlColumn<Long> pluginId = PluginInfoDynamicSqlSupport.pluginId;
         public static final SqlColumn<String> pluginUid = PluginInfoDynamicSqlSupport.pluginUid;
-        public static final SqlColumn<Date> gmtCreate = PluginInfoDynamicSqlSupport.gmtCreate;
-        public static final SqlColumn<Date> gmtModified = PluginInfoDynamicSqlSupport.gmtModified;
+        public static final SqlColumn<LocalDateTime> gmtCreate = PluginInfoDynamicSqlSupport.gmtCreate;
+        public static final SqlColumn<LocalDateTime> gmtModified = PluginInfoDynamicSqlSupport.gmtModified;
         public static final SqlColumn<String> userId = PluginInfoDynamicSqlSupport.userId;
         public static final SqlColumn<String> visibility = PluginInfoDynamicSqlSupport.visibility;
         public static final SqlColumn<String> name = PluginInfoDynamicSqlSupport.name;

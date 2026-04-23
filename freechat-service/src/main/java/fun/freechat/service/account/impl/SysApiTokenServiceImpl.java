@@ -10,8 +10,8 @@ import fun.freechat.service.account.MaskedApiToken;
 import fun.freechat.service.account.SysApiTokenService;
 import fun.freechat.service.enums.ApiTokenType;
 import fun.freechat.util.IdUtils;
+import java.time.LocalDateTime;
 import java.time.temporal.TemporalAmount;
-import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,14 +37,14 @@ public class SysApiTokenServiceImpl implements SysApiTokenService {
         if (maxCount != null && list(user).size() >= maxCount) {
             return null;
         }
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         String token = prefix == null ? "" : prefix;
         token += IdUtils.newId();
         int rows = apiTokenMapper.insertSelective(new ApiToken()
                 .withGmtCreate(now)
                 .withGmtModified(now)
                 .withIssuedAt(now)
-                .withExpiresAt(duration != null ? Date.from(now.toInstant().plus(duration)) : null)
+                .withExpiresAt(duration != null ? now.plus(duration) : null)
                 .withPolicy(policy)
                 .withType(type.getType())
                 .withUserId(user.getUserId())
@@ -125,10 +125,10 @@ public class SysApiTokenServiceImpl implements SysApiTokenService {
     }
 
     private boolean isEnabled(ApiToken apiToken) {
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         return apiToken != null
-                && apiToken.getIssuedAt().before(now)
-                && (apiToken.getExpiresAt() == null || apiToken.getExpiresAt().after(now));
+                && apiToken.getIssuedAt().isBefore(now)
+                && (apiToken.getExpiresAt() == null || apiToken.getExpiresAt().isAfter(now));
     }
 
     @Override

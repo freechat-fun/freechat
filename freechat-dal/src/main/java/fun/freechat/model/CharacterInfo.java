@@ -1,471 +1,372 @@
 package fun.freechat.model;
 
-import jakarta.annotation.Generated;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class CharacterInfo implements Serializable {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long characterId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String characterUid;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtModified;
+    private LocalDateTime gmtModified;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String userId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String parentUid;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String visibility;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String name;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String nickname;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String avatar;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String picture;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String video;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String gender;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String lang;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Integer version;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Integer priority;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String description;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String profile;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String greeting;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String chatStyle;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String chatExample;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String defaultScene;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String ext;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String draft;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private static final long serialVersionUID = 1L;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getCharacterId() {
         return characterId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterInfo withCharacterId(Long characterId) {
         this.setCharacterId(characterId);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setCharacterId(Long characterId) {
         this.characterId = characterId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getCharacterUid() {
         return characterUid;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterInfo withCharacterUid(String characterUid) {
         this.setCharacterUid(characterUid);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setCharacterUid(String characterUid) {
         this.characterUid = characterUid;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtCreate() {
+    public LocalDateTime getGmtCreate() {
         return gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public CharacterInfo withGmtCreate(Date gmtCreate) {
+    public CharacterInfo withGmtCreate(LocalDateTime gmtCreate) {
         this.setGmtCreate(gmtCreate);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtCreate(Date gmtCreate) {
+    public void setGmtCreate(LocalDateTime gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtModified() {
+    public LocalDateTime getGmtModified() {
         return gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public CharacterInfo withGmtModified(Date gmtModified) {
+    public CharacterInfo withGmtModified(LocalDateTime gmtModified) {
         this.setGmtModified(gmtModified);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtModified(Date gmtModified) {
+    public void setGmtModified(LocalDateTime gmtModified) {
         this.gmtModified = gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getUserId() {
         return userId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterInfo withUserId(String userId) {
         this.setUserId(userId);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getParentUid() {
         return parentUid;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterInfo withParentUid(String parentUid) {
         this.setParentUid(parentUid);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setParentUid(String parentUid) {
         this.parentUid = parentUid;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getVisibility() {
         return visibility;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterInfo withVisibility(String visibility) {
         this.setVisibility(visibility);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setVisibility(String visibility) {
         this.visibility = visibility;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getName() {
         return name;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterInfo withName(String name) {
         this.setName(name);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setName(String name) {
         this.name = name;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getNickname() {
         return nickname;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterInfo withNickname(String nickname) {
         this.setNickname(nickname);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getAvatar() {
         return avatar;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterInfo withAvatar(String avatar) {
         this.setAvatar(avatar);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getPicture() {
         return picture;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterInfo withPicture(String picture) {
         this.setPicture(picture);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setPicture(String picture) {
         this.picture = picture;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getVideo() {
         return video;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterInfo withVideo(String video) {
         this.setVideo(video);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setVideo(String video) {
         this.video = video;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getGender() {
         return gender;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterInfo withGender(String gender) {
         this.setGender(gender);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setGender(String gender) {
         this.gender = gender;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getLang() {
         return lang;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterInfo withLang(String lang) {
         this.setLang(lang);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setLang(String lang) {
         this.lang = lang;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Integer getVersion() {
         return version;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterInfo withVersion(Integer version) {
         this.setVersion(version);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setVersion(Integer version) {
         this.version = version;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Integer getPriority() {
         return priority;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterInfo withPriority(Integer priority) {
         this.setPriority(priority);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setPriority(Integer priority) {
         this.priority = priority;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getDescription() {
         return description;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterInfo withDescription(String description) {
         this.setDescription(description);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setDescription(String description) {
         this.description = description;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getProfile() {
         return profile;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterInfo withProfile(String profile) {
         this.setProfile(profile);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setProfile(String profile) {
         this.profile = profile;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getGreeting() {
         return greeting;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterInfo withGreeting(String greeting) {
         this.setGreeting(greeting);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setGreeting(String greeting) {
         this.greeting = greeting;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getChatStyle() {
         return chatStyle;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterInfo withChatStyle(String chatStyle) {
         this.setChatStyle(chatStyle);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setChatStyle(String chatStyle) {
         this.chatStyle = chatStyle;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getChatExample() {
         return chatExample;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterInfo withChatExample(String chatExample) {
         this.setChatExample(chatExample);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setChatExample(String chatExample) {
         this.chatExample = chatExample;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getDefaultScene() {
         return defaultScene;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterInfo withDefaultScene(String defaultScene) {
         this.setDefaultScene(defaultScene);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setDefaultScene(String defaultScene) {
         this.defaultScene = defaultScene;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getExt() {
         return ext;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterInfo withExt(String ext) {
         this.setExt(ext);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setExt(String ext) {
         this.ext = ext;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getDraft() {
         return draft;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public CharacterInfo withDraft(String draft) {
         this.setDraft(draft);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setDraft(String draft) {
         this.draft = draft;
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public boolean equals(Object that) {
         if (this == that) {
             return true;
@@ -492,11 +393,18 @@ public class CharacterInfo implements Serializable {
             && (this.getGender() == null ? other.getGender() == null : this.getGender().equals(other.getGender()))
             && (this.getLang() == null ? other.getLang() == null : this.getLang().equals(other.getLang()))
             && (this.getVersion() == null ? other.getVersion() == null : this.getVersion().equals(other.getVersion()))
-            && (this.getPriority() == null ? other.getPriority() == null : this.getPriority().equals(other.getPriority()));
+            && (this.getPriority() == null ? other.getPriority() == null : this.getPriority().equals(other.getPriority()))
+            && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
+            && (this.getProfile() == null ? other.getProfile() == null : this.getProfile().equals(other.getProfile()))
+            && (this.getGreeting() == null ? other.getGreeting() == null : this.getGreeting().equals(other.getGreeting()))
+            && (this.getChatStyle() == null ? other.getChatStyle() == null : this.getChatStyle().equals(other.getChatStyle()))
+            && (this.getChatExample() == null ? other.getChatExample() == null : this.getChatExample().equals(other.getChatExample()))
+            && (this.getDefaultScene() == null ? other.getDefaultScene() == null : this.getDefaultScene().equals(other.getDefaultScene()))
+            && (this.getExt() == null ? other.getExt() == null : this.getExt().equals(other.getExt()))
+            && (this.getDraft() == null ? other.getDraft() == null : this.getDraft().equals(other.getDraft()));
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -516,11 +424,18 @@ public class CharacterInfo implements Serializable {
         result = prime * result + ((getLang() == null) ? 0 : getLang().hashCode());
         result = prime * result + ((getVersion() == null) ? 0 : getVersion().hashCode());
         result = prime * result + ((getPriority() == null) ? 0 : getPriority().hashCode());
+        result = prime * result + ((getDescription() == null) ? 0 : getDescription().hashCode());
+        result = prime * result + ((getProfile() == null) ? 0 : getProfile().hashCode());
+        result = prime * result + ((getGreeting() == null) ? 0 : getGreeting().hashCode());
+        result = prime * result + ((getChatStyle() == null) ? 0 : getChatStyle().hashCode());
+        result = prime * result + ((getChatExample() == null) ? 0 : getChatExample().hashCode());
+        result = prime * result + ((getDefaultScene() == null) ? 0 : getDefaultScene().hashCode());
+        result = prime * result + ((getExt() == null) ? 0 : getExt().hashCode());
+        result = prime * result + ((getDraft() == null) ? 0 : getDraft().hashCode());
         return result;
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());

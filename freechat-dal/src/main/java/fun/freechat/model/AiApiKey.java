@@ -1,186 +1,147 @@
 package fun.freechat.model;
 
-import jakarta.annotation.Generated;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class AiApiKey implements Serializable {
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long id;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtModified;
+    private LocalDateTime gmtModified;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtUsed;
+    private LocalDateTime gmtUsed;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String name;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String provider;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Byte enabled;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String userId;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String token;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private static final long serialVersionUID = 1L;
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getId() {
         return id;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public AiApiKey withId(Long id) {
         this.setId(id);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setId(Long id) {
         this.id = id;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtCreate() {
+    public LocalDateTime getGmtCreate() {
         return gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public AiApiKey withGmtCreate(Date gmtCreate) {
+    public AiApiKey withGmtCreate(LocalDateTime gmtCreate) {
         this.setGmtCreate(gmtCreate);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtCreate(Date gmtCreate) {
+    public void setGmtCreate(LocalDateTime gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtModified() {
+    public LocalDateTime getGmtModified() {
         return gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public AiApiKey withGmtModified(Date gmtModified) {
+    public AiApiKey withGmtModified(LocalDateTime gmtModified) {
         this.setGmtModified(gmtModified);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtModified(Date gmtModified) {
+    public void setGmtModified(LocalDateTime gmtModified) {
         this.gmtModified = gmtModified;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtUsed() {
+    public LocalDateTime getGmtUsed() {
         return gmtUsed;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public AiApiKey withGmtUsed(Date gmtUsed) {
+    public AiApiKey withGmtUsed(LocalDateTime gmtUsed) {
         this.setGmtUsed(gmtUsed);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtUsed(Date gmtUsed) {
+    public void setGmtUsed(LocalDateTime gmtUsed) {
         this.gmtUsed = gmtUsed;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getName() {
         return name;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public AiApiKey withName(String name) {
         this.setName(name);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setName(String name) {
         this.name = name;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getProvider() {
         return provider;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public AiApiKey withProvider(String provider) {
         this.setProvider(provider);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setProvider(String provider) {
         this.provider = provider;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Byte getEnabled() {
         return enabled;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public AiApiKey withEnabled(Byte enabled) {
         this.setEnabled(enabled);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setEnabled(Byte enabled) {
         this.enabled = enabled;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getUserId() {
         return userId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public AiApiKey withUserId(String userId) {
         this.setUserId(userId);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getToken() {
         return token;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public AiApiKey withToken(String token) {
         this.setToken(token);
         return this;
     }
 
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setToken(String token) {
         this.token = token;
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public boolean equals(Object that) {
         if (this == that) {
             return true;
@@ -204,7 +165,6 @@ public class AiApiKey implements Serializable {
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -221,7 +181,6 @@ public class AiApiKey implements Serializable {
     }
 
     @Override
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
