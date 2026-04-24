@@ -9,6 +9,7 @@ public enum ModelType {
     TEXT2IMAGE,
     EMBEDDING,
     MODERATION,
+    MULTIMODAL,
     UNKNOWN;
 
     public static ModelType of(String text) {
