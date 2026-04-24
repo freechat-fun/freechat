@@ -1,20 +1,42 @@
 package fun.freechat.service.ai;
 
-import dev.langchain4j.community.model.dashscope.*;
-import dev.langchain4j.model.azure.*;
+import static dev.langchain4j.internal.Utils.getOrDefault;
+
+import dev.langchain4j.community.model.dashscope.QwenChatModel;
+import dev.langchain4j.community.model.dashscope.QwenChatRequestParameters;
+import dev.langchain4j.community.model.dashscope.QwenEmbeddingModel;
+import dev.langchain4j.community.model.dashscope.QwenLanguageModel;
+import dev.langchain4j.community.model.dashscope.QwenStreamingChatModel;
+import dev.langchain4j.community.model.dashscope.QwenStreamingLanguageModel;
+import dev.langchain4j.model.azure.AzureOpenAiChatModel;
+import dev.langchain4j.model.azure.AzureOpenAiEmbeddingModel;
+import dev.langchain4j.model.azure.AzureOpenAiLanguageModel;
+import dev.langchain4j.model.azure.AzureOpenAiStreamingChatModel;
+import dev.langchain4j.model.azure.AzureOpenAiStreamingLanguageModel;
 import dev.langchain4j.model.chat.request.ChatRequestParameters;
 import dev.langchain4j.model.chat.request.DefaultChatRequestParameters;
 import dev.langchain4j.model.chat.request.ResponseFormat;
-import dev.langchain4j.model.ollama.*;
-import dev.langchain4j.model.openai.*;
+import dev.langchain4j.model.ollama.OllamaChatModel;
+import dev.langchain4j.model.ollama.OllamaChatRequestParameters;
+import dev.langchain4j.model.ollama.OllamaEmbeddingModel;
+import dev.langchain4j.model.ollama.OllamaLanguageModel;
+import dev.langchain4j.model.ollama.OllamaStreamingChatModel;
+import dev.langchain4j.model.ollama.OllamaStreamingLanguageModel;
+import dev.langchain4j.model.openai.OpenAiChatModel;
+import dev.langchain4j.model.openai.OpenAiChatRequestParameters;
+import dev.langchain4j.model.openai.OpenAiEmbeddingModel;
+import dev.langchain4j.model.openai.OpenAiLanguageModel;
+import dev.langchain4j.model.openai.OpenAiModerationModel;
+import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
+import dev.langchain4j.model.openai.OpenAiStreamingLanguageModel;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
-public class LanguageModelFactory {
+public class AiModelFactory {
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(60L);
 
-    private LanguageModelFactory() {}
+    private AiModelFactory() {}
 
     public static OpenAiLanguageModel createOpenAiLanguageModel(
             String apiKey, String modelName, Map<String, Object> parameters) {
@@ -341,6 +363,7 @@ public class LanguageModelFactory {
                 .maxOutputTokens(getInteger(parameters, "maxTokens"))
                 .stopSequences((List<String>) parameters.get("stops"))
                 .enableThinking(getBoolean(parameters, "enableThinking"))
+                .enableSanitizeMessages(false)
                 .build();
 
         return QwenChatModel.builder()
@@ -363,12 +386,32 @@ public class LanguageModelFactory {
                 .maxOutputTokens(getInteger(parameters, "maxTokens"))
                 .stopSequences((List<String>) parameters.get("stops"))
                 .enableThinking(getBoolean(parameters, "enableThinking"))
+                .enableSanitizeMessages(false)
                 .build();
 
         return QwenStreamingChatModel.builder()
                 .apiKey(apiKey)
                 .baseUrl(getString(parameters, "baseUrl"))
                 .repetitionPenalty(getFloat(parameters, "repetitionPenalty"))
+                .defaultRequestParameters(modelParameters)
+                .build();
+    }
+
+    public static QwenChatModel createQwenImageModel(String apiKey, String modelName, Map<String, Object> parameters) {
+        QwenChatRequestParameters modelParameters = QwenChatRequestParameters.builder()
+                .modelName(modelName)
+                .isMultimodalModel(true)
+                .seed(getInteger(parameters, "seed"))
+                .enableSanitizeMessages(false)
+                .n(getOrDefault(getInteger(parameters, "n"), 1))
+                .size(getOrDefault(getString(parameters, "size"), "720*1280"))
+                .promptExtend(getOrDefault(getBoolean(parameters, "promptExtend"), true))
+                .negativePrompt(getString(parameters, "negativePrompt"))
+                .build();
+
+        return QwenChatModel.builder()
+                .apiKey(apiKey)
+                .baseUrl(getString(parameters, "baseUrl"))
                 .defaultRequestParameters(modelParameters)
                 .build();
     }
