@@ -40,8 +40,23 @@ public class CharacterBackendDetailsDTO extends TraceableDTO {
     @Schema(description = "Api key name for moderation model")
     private String moderationApiKeyName;
 
+    @Schema(description = "Api key value for moderation model")
+    private String moderationApiKeyValue;
+
     @Schema(description = "Parameters for moderation model")
     private String moderationParams;
+
+    @Schema(description = "Image model for the character")
+    private String imageModelId;
+
+    @Schema(description = "Api key name for image model")
+    private String imageApiKeyName;
+
+    @Schema(description = "Api key value for image model")
+    private String imageApiKeyValue;
+
+    @Schema(description = "Parameters for image model")
+    private String imageParams;
 
     @Schema(description = "Max messages in the character's memory")
     private Integer messageWindowSize;

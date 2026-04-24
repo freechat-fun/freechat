@@ -35,4 +35,8 @@ const defaultBaseURLs = {
   ollama: 'https://localhost:11434',
 };
 
-export { providers, defaultModels, defaultBaseURLs };
+const defaultImageModels = {
+  dash_scope: '[dash_scope]qwen-image-2.0-pro|multimodal',
+};
+
+export { providers, defaultModels, defaultBaseURLs, defaultImageModels };

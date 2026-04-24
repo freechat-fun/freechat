@@ -28,13 +28,7 @@ const apiInstance = new PromptTaskApi(configuration);
 const request: PromptTaskApiCreatePromptTaskRequest = {
     // The prompt task to be added
   promptTaskDTO: {
-    promptRef: {
-      promptId: 1,
-      variables: {
-        "key": null,
-      },
-      draft: true,
-    },
+    promptRef: null,
     modelId: "modelId_example",
     apiKeyName: "apiKeyName_example",
     apiKeyValue: "apiKeyValue_example",
@@ -205,13 +199,7 @@ const request: PromptTaskApiUpdatePromptTaskRequest = {
   promptTaskId: "promptTaskId_example",
     // The prompt task info to be updated
   promptTaskDTO: {
-    promptRef: {
-      promptId: 1,
-      variables: {
-        "key": null,
-      },
-      draft: true,
-    },
+    promptRef: null,
     modelId: "modelId_example",
     apiKeyName: "apiKeyName_example",
     apiKeyValue: "apiKeyValue_example",

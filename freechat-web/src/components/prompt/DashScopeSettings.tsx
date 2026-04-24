@@ -15,8 +15,8 @@ import {
 } from '@mui/material';
 import { AddCircleRounded, TransitEnterexitRounded } from '@mui/icons-material';
 import {
-  defaultBaseURLs,
-  defaultModels,
+    defaultBaseURLs, defaultImageModels,
+    defaultModels,
 } from '../../configs/model-providers-config';
 import { InputAdornment } from '@mui/material';
 import {
@@ -58,6 +58,12 @@ export default function DashScopeSettings(props: {
     extractModelProvider(defaultParameters?.modelId) === 'dash_scope'
       ? (defaultParameters?.modelId ?? defaultModels.dash_scope)
       : defaultModels.dash_scope
+  );
+
+  const [imageModel, setImageModel] = useState<string>(
+    extractModelProvider(defaultParameters?.imageModelId) === 'dash_scope'
+      ? (defaultParameters?.imageModelId ?? defaultImageModels.dash_scope)
+      : defaultImageModels.dash_scope
   );
 
   const [enableThinking, setEnableThinking] = useState<boolean>(
@@ -121,6 +127,11 @@ export default function DashScopeSettings(props: {
         ? (defaultParameters?.modelId ?? defaultModels.dash_scope)
         : defaultModels.dash_scope
     );
+    setImageModel(
+      extractModelProvider(defaultParameters?.imageModelId) === 'dash_scope'
+        ? (defaultParameters?.imageModelId ?? defaultImageModels.dash_scope)
+        : defaultImageModels.dash_scope
+    );
 
     setEnableThinking(defaultParameters?.enableThinking ?? false);
 
@@ -178,8 +189,12 @@ export default function DashScopeSettings(props: {
       parameters['modelId'] = model;
     }
 
+    if (imageModel) {
+      parameters['imageModelId'] = imageModel;
+    }
+
     parameters['enableThinking'] = enableThinking;
-    
+
     parameters['enableSearch'] = enableSearch;
 
     if (enableTopP) {
@@ -262,6 +277,32 @@ export default function DashScopeSettings(props: {
               onChange={(event) =>
                 setModel(
                   toModelInfo('dash_scope', event.target.value, 'text2chat')
+                )
+              }
+            />
+          </DynamicFlexBox>
+        </OptionCard>
+        <Divider sx={{ mt: 'auto', mx: 2 }} />
+
+        <OptionCard>
+          <DynamicFlexBox>
+            <Typography>image model</Typography>
+            <TinyInput
+              type="text"
+              value={extractModelName(imageModel)}
+              slotProps={{
+                input: {
+                  size: 'small',
+                },
+              }}
+              sx={{
+                ml: 2,
+                maxWidth: undefined,
+                flex: 1,
+              }}
+              onChange={(event) =>
+                setImageModel(
+                  toModelInfo('dash_scope', event.target.value, 'multimodal')
                 )
               }
             />

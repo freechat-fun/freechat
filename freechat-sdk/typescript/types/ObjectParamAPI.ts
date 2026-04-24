@@ -1,5 +1,6 @@
 import { ResponseContext, RequestContext, HttpFile, HttpInfo } from '../http/http.js';
-import { Configuration} from '../configuration.js'
+import { Configuration, ConfigurationOptions } from '../configuration.js'
+import type { Middleware } from '../middleware.js';
 
 import { AgentCreateDTO } from '../models/AgentCreateDTO.js';
 import { AgentDetailsDTO } from '../models/AgentDetailsDTO.js';
@@ -80,6 +81,7 @@ export interface AIServiceApiAddAiApiKeyRequest {
 export interface AIServiceApiDeleteAiApiKeyRequest {
     /**
      * Credential identifier
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof AIServiceApideleteAiApiKey
@@ -90,6 +92,7 @@ export interface AIServiceApiDeleteAiApiKeyRequest {
 export interface AIServiceApiDisableAiApiKeyRequest {
     /**
      * Credential identifier
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof AIServiceApidisableAiApiKey
@@ -100,6 +103,7 @@ export interface AIServiceApiDisableAiApiKeyRequest {
 export interface AIServiceApiEnableAiApiKeyRequest {
     /**
      * Credential identifier
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof AIServiceApienableAiApiKey
@@ -110,6 +114,7 @@ export interface AIServiceApiEnableAiApiKeyRequest {
 export interface AIServiceApiGetAiApiKeyRequest {
     /**
      * Credential identifier
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof AIServiceApigetAiApiKey
@@ -139,7 +144,7 @@ export class ObjectAIServiceApi {
      * Add Model Provider Credential
      * @param param the request object
      */
-    public addAiApiKeyWithHttpInfo(param: AIServiceApiAddAiApiKeyRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public addAiApiKeyWithHttpInfo(param: AIServiceApiAddAiApiKeyRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.addAiApiKeyWithHttpInfo(param.aiApiKeyCreateDTO,  options).toPromise();
     }
 
@@ -148,7 +153,7 @@ export class ObjectAIServiceApi {
      * Add Model Provider Credential
      * @param param the request object
      */
-    public addAiApiKey(param: AIServiceApiAddAiApiKeyRequest, options?: Configuration): Promise<number> {
+    public addAiApiKey(param: AIServiceApiAddAiApiKeyRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.addAiApiKey(param.aiApiKeyCreateDTO,  options).toPromise();
     }
 
@@ -157,7 +162,7 @@ export class ObjectAIServiceApi {
      * Delete Credential of Model Provider
      * @param param the request object
      */
-    public deleteAiApiKeyWithHttpInfo(param: AIServiceApiDeleteAiApiKeyRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public deleteAiApiKeyWithHttpInfo(param: AIServiceApiDeleteAiApiKeyRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.deleteAiApiKeyWithHttpInfo(param.id,  options).toPromise();
     }
 
@@ -166,7 +171,7 @@ export class ObjectAIServiceApi {
      * Delete Credential of Model Provider
      * @param param the request object
      */
-    public deleteAiApiKey(param: AIServiceApiDeleteAiApiKeyRequest, options?: Configuration): Promise<boolean> {
+    public deleteAiApiKey(param: AIServiceApiDeleteAiApiKeyRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.deleteAiApiKey(param.id,  options).toPromise();
     }
 
@@ -175,7 +180,7 @@ export class ObjectAIServiceApi {
      * Disable Model Provider Credential
      * @param param the request object
      */
-    public disableAiApiKeyWithHttpInfo(param: AIServiceApiDisableAiApiKeyRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public disableAiApiKeyWithHttpInfo(param: AIServiceApiDisableAiApiKeyRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.disableAiApiKeyWithHttpInfo(param.id,  options).toPromise();
     }
 
@@ -184,7 +189,7 @@ export class ObjectAIServiceApi {
      * Disable Model Provider Credential
      * @param param the request object
      */
-    public disableAiApiKey(param: AIServiceApiDisableAiApiKeyRequest, options?: Configuration): Promise<boolean> {
+    public disableAiApiKey(param: AIServiceApiDisableAiApiKeyRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.disableAiApiKey(param.id,  options).toPromise();
     }
 
@@ -193,7 +198,7 @@ export class ObjectAIServiceApi {
      * Enable Model Provider Credential
      * @param param the request object
      */
-    public enableAiApiKeyWithHttpInfo(param: AIServiceApiEnableAiApiKeyRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public enableAiApiKeyWithHttpInfo(param: AIServiceApiEnableAiApiKeyRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.enableAiApiKeyWithHttpInfo(param.id,  options).toPromise();
     }
 
@@ -202,7 +207,7 @@ export class ObjectAIServiceApi {
      * Enable Model Provider Credential
      * @param param the request object
      */
-    public enableAiApiKey(param: AIServiceApiEnableAiApiKeyRequest, options?: Configuration): Promise<boolean> {
+    public enableAiApiKey(param: AIServiceApiEnableAiApiKeyRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.enableAiApiKey(param.id,  options).toPromise();
     }
 
@@ -211,7 +216,7 @@ export class ObjectAIServiceApi {
      * Get credential of Model Provider
      * @param param the request object
      */
-    public getAiApiKeyWithHttpInfo(param: AIServiceApiGetAiApiKeyRequest, options?: Configuration): Promise<HttpInfo<AiApiKeyInfoDTO>> {
+    public getAiApiKeyWithHttpInfo(param: AIServiceApiGetAiApiKeyRequest, options?: ConfigurationOptions): Promise<HttpInfo<AiApiKeyInfoDTO>> {
         return this.api.getAiApiKeyWithHttpInfo(param.id,  options).toPromise();
     }
 
@@ -220,7 +225,7 @@ export class ObjectAIServiceApi {
      * Get credential of Model Provider
      * @param param the request object
      */
-    public getAiApiKey(param: AIServiceApiGetAiApiKeyRequest, options?: Configuration): Promise<AiApiKeyInfoDTO> {
+    public getAiApiKey(param: AIServiceApiGetAiApiKeyRequest, options?: ConfigurationOptions): Promise<AiApiKeyInfoDTO> {
         return this.api.getAiApiKey(param.id,  options).toPromise();
     }
 
@@ -229,7 +234,7 @@ export class ObjectAIServiceApi {
      * List Credentials of Model Provider
      * @param param the request object
      */
-    public listAiApiKeysWithHttpInfo(param: AIServiceApiListAiApiKeysRequest, options?: Configuration): Promise<HttpInfo<Array<AiApiKeyInfoDTO>>> {
+    public listAiApiKeysWithHttpInfo(param: AIServiceApiListAiApiKeysRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<AiApiKeyInfoDTO>>> {
         return this.api.listAiApiKeysWithHttpInfo(param.provider,  options).toPromise();
     }
 
@@ -238,7 +243,7 @@ export class ObjectAIServiceApi {
      * List Credentials of Model Provider
      * @param param the request object
      */
-    public listAiApiKeys(param: AIServiceApiListAiApiKeysRequest, options?: Configuration): Promise<Array<AiApiKeyInfoDTO>> {
+    public listAiApiKeys(param: AIServiceApiListAiApiKeysRequest, options?: ConfigurationOptions): Promise<Array<AiApiKeyInfoDTO>> {
         return this.api.listAiApiKeys(param.provider,  options).toPromise();
     }
 
@@ -273,6 +278,7 @@ export interface AccountApiDeleteTokenRequest {
 export interface AccountApiDeleteTokenByIdRequest {
     /**
      * Token id
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof AccountApideleteTokenById
@@ -293,6 +299,7 @@ export interface AccountApiDisableTokenRequest {
 export interface AccountApiDisableTokenByIdRequest {
     /**
      * Token id
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof AccountApidisableTokenById
@@ -303,6 +310,7 @@ export interface AccountApiDisableTokenByIdRequest {
 export interface AccountApiGetTokenByIdRequest {
     /**
      * Token id
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof AccountApigetTokenById
@@ -360,7 +368,7 @@ export class ObjectAccountApi {
      * Create API Token
      * @param param the request object
      */
-    public createTokenWithHttpInfo(param: AccountApiCreateTokenRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public createTokenWithHttpInfo(param: AccountApiCreateTokenRequest, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.createTokenWithHttpInfo(param.duration,  options).toPromise();
     }
 
@@ -369,7 +377,7 @@ export class ObjectAccountApi {
      * Create API Token
      * @param param the request object
      */
-    public createToken(param: AccountApiCreateTokenRequest, options?: Configuration): Promise<string> {
+    public createToken(param: AccountApiCreateTokenRequest, options?: ConfigurationOptions): Promise<string> {
         return this.api.createToken(param.duration,  options).toPromise();
     }
 
@@ -378,7 +386,7 @@ export class ObjectAccountApi {
      * Create API Token
      * @param param the request object
      */
-    public createToken1WithHttpInfo(param: AccountApiCreateToken1Request = {}, options?: Configuration): Promise<HttpInfo<string>> {
+    public createToken1WithHttpInfo(param: AccountApiCreateToken1Request = {}, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.createToken1WithHttpInfo( options).toPromise();
     }
 
@@ -387,7 +395,7 @@ export class ObjectAccountApi {
      * Create API Token
      * @param param the request object
      */
-    public createToken1(param: AccountApiCreateToken1Request = {}, options?: Configuration): Promise<string> {
+    public createToken1(param: AccountApiCreateToken1Request = {}, options?: ConfigurationOptions): Promise<string> {
         return this.api.createToken1( options).toPromise();
     }
 
@@ -396,7 +404,7 @@ export class ObjectAccountApi {
      * Delete API Token
      * @param param the request object
      */
-    public deleteTokenWithHttpInfo(param: AccountApiDeleteTokenRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public deleteTokenWithHttpInfo(param: AccountApiDeleteTokenRequest, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.deleteTokenWithHttpInfo(param.token,  options).toPromise();
     }
 
@@ -405,7 +413,7 @@ export class ObjectAccountApi {
      * Delete API Token
      * @param param the request object
      */
-    public deleteToken(param: AccountApiDeleteTokenRequest, options?: Configuration): Promise<string> {
+    public deleteToken(param: AccountApiDeleteTokenRequest, options?: ConfigurationOptions): Promise<string> {
         return this.api.deleteToken(param.token,  options).toPromise();
     }
 
@@ -414,7 +422,7 @@ export class ObjectAccountApi {
      * Delete API Token by Id
      * @param param the request object
      */
-    public deleteTokenByIdWithHttpInfo(param: AccountApiDeleteTokenByIdRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public deleteTokenByIdWithHttpInfo(param: AccountApiDeleteTokenByIdRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.deleteTokenByIdWithHttpInfo(param.id,  options).toPromise();
     }
 
@@ -423,7 +431,7 @@ export class ObjectAccountApi {
      * Delete API Token by Id
      * @param param the request object
      */
-    public deleteTokenById(param: AccountApiDeleteTokenByIdRequest, options?: Configuration): Promise<boolean> {
+    public deleteTokenById(param: AccountApiDeleteTokenByIdRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.deleteTokenById(param.id,  options).toPromise();
     }
 
@@ -432,7 +440,7 @@ export class ObjectAccountApi {
      * Disable API Token
      * @param param the request object
      */
-    public disableTokenWithHttpInfo(param: AccountApiDisableTokenRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public disableTokenWithHttpInfo(param: AccountApiDisableTokenRequest, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.disableTokenWithHttpInfo(param.token,  options).toPromise();
     }
 
@@ -441,7 +449,7 @@ export class ObjectAccountApi {
      * Disable API Token
      * @param param the request object
      */
-    public disableToken(param: AccountApiDisableTokenRequest, options?: Configuration): Promise<string> {
+    public disableToken(param: AccountApiDisableTokenRequest, options?: ConfigurationOptions): Promise<string> {
         return this.api.disableToken(param.token,  options).toPromise();
     }
 
@@ -450,7 +458,7 @@ export class ObjectAccountApi {
      * Disable API Token by Id
      * @param param the request object
      */
-    public disableTokenByIdWithHttpInfo(param: AccountApiDisableTokenByIdRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public disableTokenByIdWithHttpInfo(param: AccountApiDisableTokenByIdRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.disableTokenByIdWithHttpInfo(param.id,  options).toPromise();
     }
 
@@ -459,7 +467,7 @@ export class ObjectAccountApi {
      * Disable API Token by Id
      * @param param the request object
      */
-    public disableTokenById(param: AccountApiDisableTokenByIdRequest, options?: Configuration): Promise<boolean> {
+    public disableTokenById(param: AccountApiDisableTokenByIdRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.disableTokenById(param.id,  options).toPromise();
     }
 
@@ -468,7 +476,7 @@ export class ObjectAccountApi {
      * Get API Token by Id
      * @param param the request object
      */
-    public getTokenByIdWithHttpInfo(param: AccountApiGetTokenByIdRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public getTokenByIdWithHttpInfo(param: AccountApiGetTokenByIdRequest, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.getTokenByIdWithHttpInfo(param.id,  options).toPromise();
     }
 
@@ -477,7 +485,7 @@ export class ObjectAccountApi {
      * Get API Token by Id
      * @param param the request object
      */
-    public getTokenById(param: AccountApiGetTokenByIdRequest, options?: Configuration): Promise<string> {
+    public getTokenById(param: AccountApiGetTokenByIdRequest, options?: ConfigurationOptions): Promise<string> {
         return this.api.getTokenById(param.id,  options).toPromise();
     }
 
@@ -486,7 +494,7 @@ export class ObjectAccountApi {
      * Get User Basic Information
      * @param param the request object
      */
-    public getUserBasicWithHttpInfo(param: AccountApiGetUserBasicRequest, options?: Configuration): Promise<HttpInfo<UserBasicInfoDTO>> {
+    public getUserBasicWithHttpInfo(param: AccountApiGetUserBasicRequest, options?: ConfigurationOptions): Promise<HttpInfo<UserBasicInfoDTO>> {
         return this.api.getUserBasicWithHttpInfo(param.username,  options).toPromise();
     }
 
@@ -495,7 +503,7 @@ export class ObjectAccountApi {
      * Get User Basic Information
      * @param param the request object
      */
-    public getUserBasic(param: AccountApiGetUserBasicRequest, options?: Configuration): Promise<UserBasicInfoDTO> {
+    public getUserBasic(param: AccountApiGetUserBasicRequest, options?: ConfigurationOptions): Promise<UserBasicInfoDTO> {
         return this.api.getUserBasic(param.username,  options).toPromise();
     }
 
@@ -504,7 +512,7 @@ export class ObjectAccountApi {
      * Get User Basic Information
      * @param param the request object
      */
-    public getUserBasic1WithHttpInfo(param: AccountApiGetUserBasic1Request = {}, options?: Configuration): Promise<HttpInfo<UserBasicInfoDTO>> {
+    public getUserBasic1WithHttpInfo(param: AccountApiGetUserBasic1Request = {}, options?: ConfigurationOptions): Promise<HttpInfo<UserBasicInfoDTO>> {
         return this.api.getUserBasic1WithHttpInfo( options).toPromise();
     }
 
@@ -513,7 +521,7 @@ export class ObjectAccountApi {
      * Get User Basic Information
      * @param param the request object
      */
-    public getUserBasic1(param: AccountApiGetUserBasic1Request = {}, options?: Configuration): Promise<UserBasicInfoDTO> {
+    public getUserBasic1(param: AccountApiGetUserBasic1Request = {}, options?: ConfigurationOptions): Promise<UserBasicInfoDTO> {
         return this.api.getUserBasic1( options).toPromise();
     }
 
@@ -522,7 +530,7 @@ export class ObjectAccountApi {
      * Get User Details
      * @param param the request object
      */
-    public getUserDetailsWithHttpInfo(param: AccountApiGetUserDetailsRequest = {}, options?: Configuration): Promise<HttpInfo<UserDetailsDTO>> {
+    public getUserDetailsWithHttpInfo(param: AccountApiGetUserDetailsRequest = {}, options?: ConfigurationOptions): Promise<HttpInfo<UserDetailsDTO>> {
         return this.api.getUserDetailsWithHttpInfo( options).toPromise();
     }
 
@@ -531,7 +539,7 @@ export class ObjectAccountApi {
      * Get User Details
      * @param param the request object
      */
-    public getUserDetails(param: AccountApiGetUserDetailsRequest = {}, options?: Configuration): Promise<UserDetailsDTO> {
+    public getUserDetails(param: AccountApiGetUserDetailsRequest = {}, options?: ConfigurationOptions): Promise<UserDetailsDTO> {
         return this.api.getUserDetails( options).toPromise();
     }
 
@@ -540,7 +548,7 @@ export class ObjectAccountApi {
      * List API Tokens
      * @param param the request object
      */
-    public listTokensWithHttpInfo(param: AccountApiListTokensRequest = {}, options?: Configuration): Promise<HttpInfo<Array<ApiTokenInfoDTO>>> {
+    public listTokensWithHttpInfo(param: AccountApiListTokensRequest = {}, options?: ConfigurationOptions): Promise<HttpInfo<Array<ApiTokenInfoDTO>>> {
         return this.api.listTokensWithHttpInfo( options).toPromise();
     }
 
@@ -549,7 +557,7 @@ export class ObjectAccountApi {
      * List API Tokens
      * @param param the request object
      */
-    public listTokens(param: AccountApiListTokensRequest = {}, options?: Configuration): Promise<Array<ApiTokenInfoDTO>> {
+    public listTokens(param: AccountApiListTokensRequest = {}, options?: ConfigurationOptions): Promise<Array<ApiTokenInfoDTO>> {
         return this.api.listTokens( options).toPromise();
     }
 
@@ -558,7 +566,7 @@ export class ObjectAccountApi {
      * Update User Details
      * @param param the request object
      */
-    public updateUserInfoWithHttpInfo(param: AccountApiUpdateUserInfoRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public updateUserInfoWithHttpInfo(param: AccountApiUpdateUserInfoRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.updateUserInfoWithHttpInfo(param.userDetailsDTO,  options).toPromise();
     }
 
@@ -567,7 +575,7 @@ export class ObjectAccountApi {
      * Update User Details
      * @param param the request object
      */
-    public updateUserInfo(param: AccountApiUpdateUserInfoRequest, options?: Configuration): Promise<boolean> {
+    public updateUserInfo(param: AccountApiUpdateUserInfoRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.updateUserInfo(param.userDetailsDTO,  options).toPromise();
     }
 
@@ -576,7 +584,7 @@ export class ObjectAccountApi {
      * Upload User Picture
      * @param param the request object
      */
-    public uploadUserPictureWithHttpInfo(param: AccountApiUploadUserPictureRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public uploadUserPictureWithHttpInfo(param: AccountApiUploadUserPictureRequest, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.uploadUserPictureWithHttpInfo(param.file,  options).toPromise();
     }
 
@@ -585,7 +593,7 @@ export class ObjectAccountApi {
      * Upload User Picture
      * @param param the request object
      */
-    public uploadUserPicture(param: AccountApiUploadUserPictureRequest, options?: Configuration): Promise<string> {
+    public uploadUserPicture(param: AccountApiUploadUserPictureRequest, options?: ConfigurationOptions): Promise<string> {
         return this.api.uploadUserPicture(param.file,  options).toPromise();
     }
 
@@ -758,7 +766,7 @@ export class ObjectAccountManagerForAdminApi {
      * Create API Token for User.
      * @param param the request object
      */
-    public createTokenForUserWithHttpInfo(param: AccountManagerForAdminApiCreateTokenForUserRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public createTokenForUserWithHttpInfo(param: AccountManagerForAdminApiCreateTokenForUserRequest, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.createTokenForUserWithHttpInfo(param.username, param.duration,  options).toPromise();
     }
 
@@ -767,7 +775,7 @@ export class ObjectAccountManagerForAdminApi {
      * Create API Token for User.
      * @param param the request object
      */
-    public createTokenForUser(param: AccountManagerForAdminApiCreateTokenForUserRequest, options?: Configuration): Promise<string> {
+    public createTokenForUser(param: AccountManagerForAdminApiCreateTokenForUserRequest, options?: ConfigurationOptions): Promise<string> {
         return this.api.createTokenForUser(param.username, param.duration,  options).toPromise();
     }
 
@@ -776,7 +784,7 @@ export class ObjectAccountManagerForAdminApi {
      * Create User
      * @param param the request object
      */
-    public createUserWithHttpInfo(param: AccountManagerForAdminApiCreateUserRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public createUserWithHttpInfo(param: AccountManagerForAdminApiCreateUserRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.createUserWithHttpInfo(param.userFullDetailsDTO,  options).toPromise();
     }
 
@@ -785,7 +793,7 @@ export class ObjectAccountManagerForAdminApi {
      * Create User
      * @param param the request object
      */
-    public createUser(param: AccountManagerForAdminApiCreateUserRequest, options?: Configuration): Promise<boolean> {
+    public createUser(param: AccountManagerForAdminApiCreateUserRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.createUser(param.userFullDetailsDTO,  options).toPromise();
     }
 
@@ -794,7 +802,7 @@ export class ObjectAccountManagerForAdminApi {
      * Delete API Token
      * @param param the request object
      */
-    public deleteTokenForUserWithHttpInfo(param: AccountManagerForAdminApiDeleteTokenForUserRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public deleteTokenForUserWithHttpInfo(param: AccountManagerForAdminApiDeleteTokenForUserRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.deleteTokenForUserWithHttpInfo(param.token,  options).toPromise();
     }
 
@@ -803,7 +811,7 @@ export class ObjectAccountManagerForAdminApi {
      * Delete API Token
      * @param param the request object
      */
-    public deleteTokenForUser(param: AccountManagerForAdminApiDeleteTokenForUserRequest, options?: Configuration): Promise<boolean> {
+    public deleteTokenForUser(param: AccountManagerForAdminApiDeleteTokenForUserRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.deleteTokenForUser(param.token,  options).toPromise();
     }
 
@@ -812,7 +820,7 @@ export class ObjectAccountManagerForAdminApi {
      * Delete User
      * @param param the request object
      */
-    public deleteUserWithHttpInfo(param: AccountManagerForAdminApiDeleteUserRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public deleteUserWithHttpInfo(param: AccountManagerForAdminApiDeleteUserRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.deleteUserWithHttpInfo(param.username,  options).toPromise();
     }
 
@@ -821,7 +829,7 @@ export class ObjectAccountManagerForAdminApi {
      * Delete User
      * @param param the request object
      */
-    public deleteUser(param: AccountManagerForAdminApiDeleteUserRequest, options?: Configuration): Promise<boolean> {
+    public deleteUser(param: AccountManagerForAdminApiDeleteUserRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.deleteUser(param.username,  options).toPromise();
     }
 
@@ -830,7 +838,7 @@ export class ObjectAccountManagerForAdminApi {
      * Disable API Token
      * @param param the request object
      */
-    public disableTokenForUserWithHttpInfo(param: AccountManagerForAdminApiDisableTokenForUserRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public disableTokenForUserWithHttpInfo(param: AccountManagerForAdminApiDisableTokenForUserRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.disableTokenForUserWithHttpInfo(param.token,  options).toPromise();
     }
 
@@ -839,7 +847,7 @@ export class ObjectAccountManagerForAdminApi {
      * Disable API Token
      * @param param the request object
      */
-    public disableTokenForUser(param: AccountManagerForAdminApiDisableTokenForUserRequest, options?: Configuration): Promise<boolean> {
+    public disableTokenForUser(param: AccountManagerForAdminApiDisableTokenForUserRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.disableTokenForUser(param.token,  options).toPromise();
     }
 
@@ -848,7 +856,7 @@ export class ObjectAccountManagerForAdminApi {
      * Get User Details
      * @param param the request object
      */
-    public getDetailsOfUserWithHttpInfo(param: AccountManagerForAdminApiGetDetailsOfUserRequest, options?: Configuration): Promise<HttpInfo<UserDetailsDTO>> {
+    public getDetailsOfUserWithHttpInfo(param: AccountManagerForAdminApiGetDetailsOfUserRequest, options?: ConfigurationOptions): Promise<HttpInfo<UserDetailsDTO>> {
         return this.api.getDetailsOfUserWithHttpInfo(param.username,  options).toPromise();
     }
 
@@ -857,7 +865,7 @@ export class ObjectAccountManagerForAdminApi {
      * Get User Details
      * @param param the request object
      */
-    public getDetailsOfUser(param: AccountManagerForAdminApiGetDetailsOfUserRequest, options?: Configuration): Promise<UserDetailsDTO> {
+    public getDetailsOfUser(param: AccountManagerForAdminApiGetDetailsOfUserRequest, options?: ConfigurationOptions): Promise<UserDetailsDTO> {
         return this.api.getDetailsOfUser(param.username,  options).toPromise();
     }
 
@@ -866,7 +874,7 @@ export class ObjectAccountManagerForAdminApi {
      * Get User by API Token
      * @param param the request object
      */
-    public getUserByTokenWithHttpInfo(param: AccountManagerForAdminApiGetUserByTokenRequest, options?: Configuration): Promise<HttpInfo<UserDetailsDTO>> {
+    public getUserByTokenWithHttpInfo(param: AccountManagerForAdminApiGetUserByTokenRequest, options?: ConfigurationOptions): Promise<HttpInfo<UserDetailsDTO>> {
         return this.api.getUserByTokenWithHttpInfo(param.token,  options).toPromise();
     }
 
@@ -875,7 +883,7 @@ export class ObjectAccountManagerForAdminApi {
      * Get User by API Token
      * @param param the request object
      */
-    public getUserByToken(param: AccountManagerForAdminApiGetUserByTokenRequest, options?: Configuration): Promise<UserDetailsDTO> {
+    public getUserByToken(param: AccountManagerForAdminApiGetUserByTokenRequest, options?: ConfigurationOptions): Promise<UserDetailsDTO> {
         return this.api.getUserByToken(param.token,  options).toPromise();
     }
 
@@ -884,7 +892,7 @@ export class ObjectAccountManagerForAdminApi {
      * List User Permissions
      * @param param the request object
      */
-    public listAuthoritiesOfUserWithHttpInfo(param: AccountManagerForAdminApiListAuthoritiesOfUserRequest, options?: Configuration): Promise<HttpInfo<Set<string>>> {
+    public listAuthoritiesOfUserWithHttpInfo(param: AccountManagerForAdminApiListAuthoritiesOfUserRequest, options?: ConfigurationOptions): Promise<HttpInfo<Set<string>>> {
         return this.api.listAuthoritiesOfUserWithHttpInfo(param.username,  options).toPromise();
     }
 
@@ -893,7 +901,7 @@ export class ObjectAccountManagerForAdminApi {
      * List User Permissions
      * @param param the request object
      */
-    public listAuthoritiesOfUser(param: AccountManagerForAdminApiListAuthoritiesOfUserRequest, options?: Configuration): Promise<Set<string>> {
+    public listAuthoritiesOfUser(param: AccountManagerForAdminApiListAuthoritiesOfUserRequest, options?: ConfigurationOptions): Promise<Set<string>> {
         return this.api.listAuthoritiesOfUser(param.username,  options).toPromise();
     }
 
@@ -902,7 +910,7 @@ export class ObjectAccountManagerForAdminApi {
      * Get API Token of User
      * @param param the request object
      */
-    public listTokensOfUserWithHttpInfo(param: AccountManagerForAdminApiListTokensOfUserRequest, options?: Configuration): Promise<HttpInfo<Array<ApiTokenInfoDTO>>> {
+    public listTokensOfUserWithHttpInfo(param: AccountManagerForAdminApiListTokensOfUserRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<ApiTokenInfoDTO>>> {
         return this.api.listTokensOfUserWithHttpInfo(param.username,  options).toPromise();
     }
 
@@ -911,7 +919,7 @@ export class ObjectAccountManagerForAdminApi {
      * Get API Token of User
      * @param param the request object
      */
-    public listTokensOfUser(param: AccountManagerForAdminApiListTokensOfUserRequest, options?: Configuration): Promise<Array<ApiTokenInfoDTO>> {
+    public listTokensOfUser(param: AccountManagerForAdminApiListTokensOfUserRequest, options?: ConfigurationOptions): Promise<Array<ApiTokenInfoDTO>> {
         return this.api.listTokensOfUser(param.username,  options).toPromise();
     }
 
@@ -920,7 +928,7 @@ export class ObjectAccountManagerForAdminApi {
      * List User Information
      * @param param the request object
      */
-    public listUsersWithHttpInfo(param: AccountManagerForAdminApiListUsersRequest, options?: Configuration): Promise<HttpInfo<Array<UserBasicInfoDTO>>> {
+    public listUsersWithHttpInfo(param: AccountManagerForAdminApiListUsersRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<UserBasicInfoDTO>>> {
         return this.api.listUsersWithHttpInfo(param.pageSize, param.pageNum,  options).toPromise();
     }
 
@@ -929,7 +937,7 @@ export class ObjectAccountManagerForAdminApi {
      * List User Information
      * @param param the request object
      */
-    public listUsers(param: AccountManagerForAdminApiListUsersRequest, options?: Configuration): Promise<Array<UserBasicInfoDTO>> {
+    public listUsers(param: AccountManagerForAdminApiListUsersRequest, options?: ConfigurationOptions): Promise<Array<UserBasicInfoDTO>> {
         return this.api.listUsers(param.pageSize, param.pageNum,  options).toPromise();
     }
 
@@ -938,7 +946,7 @@ export class ObjectAccountManagerForAdminApi {
      * List User Information
      * @param param the request object
      */
-    public listUsers1WithHttpInfo(param: AccountManagerForAdminApiListUsers1Request = {}, options?: Configuration): Promise<HttpInfo<Array<UserBasicInfoDTO>>> {
+    public listUsers1WithHttpInfo(param: AccountManagerForAdminApiListUsers1Request = {}, options?: ConfigurationOptions): Promise<HttpInfo<Array<UserBasicInfoDTO>>> {
         return this.api.listUsers1WithHttpInfo( options).toPromise();
     }
 
@@ -947,7 +955,7 @@ export class ObjectAccountManagerForAdminApi {
      * List User Information
      * @param param the request object
      */
-    public listUsers1(param: AccountManagerForAdminApiListUsers1Request = {}, options?: Configuration): Promise<Array<UserBasicInfoDTO>> {
+    public listUsers1(param: AccountManagerForAdminApiListUsers1Request = {}, options?: ConfigurationOptions): Promise<Array<UserBasicInfoDTO>> {
         return this.api.listUsers1( options).toPromise();
     }
 
@@ -956,7 +964,7 @@ export class ObjectAccountManagerForAdminApi {
      * List User Information
      * @param param the request object
      */
-    public listUsers2WithHttpInfo(param: AccountManagerForAdminApiListUsers2Request, options?: Configuration): Promise<HttpInfo<Array<UserBasicInfoDTO>>> {
+    public listUsers2WithHttpInfo(param: AccountManagerForAdminApiListUsers2Request, options?: ConfigurationOptions): Promise<HttpInfo<Array<UserBasicInfoDTO>>> {
         return this.api.listUsers2WithHttpInfo(param.pageSize,  options).toPromise();
     }
 
@@ -965,7 +973,7 @@ export class ObjectAccountManagerForAdminApi {
      * List User Information
      * @param param the request object
      */
-    public listUsers2(param: AccountManagerForAdminApiListUsers2Request, options?: Configuration): Promise<Array<UserBasicInfoDTO>> {
+    public listUsers2(param: AccountManagerForAdminApiListUsers2Request, options?: ConfigurationOptions): Promise<Array<UserBasicInfoDTO>> {
         return this.api.listUsers2(param.pageSize,  options).toPromise();
     }
 
@@ -974,7 +982,7 @@ export class ObjectAccountManagerForAdminApi {
      * Update User Permissions
      * @param param the request object
      */
-    public updateAuthoritiesOfUserWithHttpInfo(param: AccountManagerForAdminApiUpdateAuthoritiesOfUserRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public updateAuthoritiesOfUserWithHttpInfo(param: AccountManagerForAdminApiUpdateAuthoritiesOfUserRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.updateAuthoritiesOfUserWithHttpInfo(param.username, param.requestBody,  options).toPromise();
     }
 
@@ -983,7 +991,7 @@ export class ObjectAccountManagerForAdminApi {
      * Update User Permissions
      * @param param the request object
      */
-    public updateAuthoritiesOfUser(param: AccountManagerForAdminApiUpdateAuthoritiesOfUserRequest, options?: Configuration): Promise<boolean> {
+    public updateAuthoritiesOfUser(param: AccountManagerForAdminApiUpdateAuthoritiesOfUserRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.updateAuthoritiesOfUser(param.username, param.requestBody,  options).toPromise();
     }
 
@@ -992,7 +1000,7 @@ export class ObjectAccountManagerForAdminApi {
      * Update User
      * @param param the request object
      */
-    public updateUserWithHttpInfo(param: AccountManagerForAdminApiUpdateUserRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public updateUserWithHttpInfo(param: AccountManagerForAdminApiUpdateUserRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.updateUserWithHttpInfo(param.userFullDetailsDTO,  options).toPromise();
     }
 
@@ -1001,7 +1009,7 @@ export class ObjectAccountManagerForAdminApi {
      * Update User
      * @param param the request object
      */
-    public updateUser(param: AccountManagerForAdminApiUpdateUserRequest, options?: Configuration): Promise<boolean> {
+    public updateUser(param: AccountManagerForAdminApiUpdateUserRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.updateUser(param.userFullDetailsDTO,  options).toPromise();
     }
 
@@ -1031,6 +1039,7 @@ export interface AgentApiBatchSearchAgentSummaryRequest {
 export interface AgentApiCloneAgentRequest {
     /**
      * The referenced agentId
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof AgentApicloneAgent
@@ -1077,6 +1086,7 @@ export interface AgentApiCreateAgentsRequest {
 export interface AgentApiDeleteAgentRequest {
     /**
      * AgentId to be deleted
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof AgentApideleteAgent
@@ -1096,6 +1106,7 @@ export interface AgentApiDeleteAgentsRequest {
 export interface AgentApiGetAgentDetailsRequest {
     /**
      * AgentId to be obtained
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof AgentApigetAgentDetails
@@ -1106,6 +1117,7 @@ export interface AgentApiGetAgentDetailsRequest {
 export interface AgentApiGetAgentSummaryRequest {
     /**
      * agentId to be obtained
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof AgentApigetAgentSummary
@@ -1126,6 +1138,7 @@ export interface AgentApiListAgentVersionsByNameRequest {
 export interface AgentApiPublishAgentRequest {
     /**
      * The agentId to be published
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof AgentApipublishAgent
@@ -1161,6 +1174,7 @@ export interface AgentApiSearchAgentSummaryRequest {
 export interface AgentApiUpdateAgentRequest {
     /**
      * AgentId to be updated
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof AgentApiupdateAgent
@@ -1186,7 +1200,7 @@ export class ObjectAgentApi {
      * Batch Search Agent Details
      * @param param the request object
      */
-    public batchSearchAgentDetailsWithHttpInfo(param: AgentApiBatchSearchAgentDetailsRequest, options?: Configuration): Promise<HttpInfo<Array<Array<AgentDetailsDTO>>>> {
+    public batchSearchAgentDetailsWithHttpInfo(param: AgentApiBatchSearchAgentDetailsRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<Array<AgentDetailsDTO>>>> {
         return this.api.batchSearchAgentDetailsWithHttpInfo(param.agentQueryDTO,  options).toPromise();
     }
 
@@ -1195,7 +1209,7 @@ export class ObjectAgentApi {
      * Batch Search Agent Details
      * @param param the request object
      */
-    public batchSearchAgentDetails(param: AgentApiBatchSearchAgentDetailsRequest, options?: Configuration): Promise<Array<Array<AgentDetailsDTO>>> {
+    public batchSearchAgentDetails(param: AgentApiBatchSearchAgentDetailsRequest, options?: ConfigurationOptions): Promise<Array<Array<AgentDetailsDTO>>> {
         return this.api.batchSearchAgentDetails(param.agentQueryDTO,  options).toPromise();
     }
 
@@ -1204,7 +1218,7 @@ export class ObjectAgentApi {
      * Batch Search Agent Summaries
      * @param param the request object
      */
-    public batchSearchAgentSummaryWithHttpInfo(param: AgentApiBatchSearchAgentSummaryRequest, options?: Configuration): Promise<HttpInfo<Array<Array<AgentSummaryDTO>>>> {
+    public batchSearchAgentSummaryWithHttpInfo(param: AgentApiBatchSearchAgentSummaryRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<Array<AgentSummaryDTO>>>> {
         return this.api.batchSearchAgentSummaryWithHttpInfo(param.agentQueryDTO,  options).toPromise();
     }
 
@@ -1213,7 +1227,7 @@ export class ObjectAgentApi {
      * Batch Search Agent Summaries
      * @param param the request object
      */
-    public batchSearchAgentSummary(param: AgentApiBatchSearchAgentSummaryRequest, options?: Configuration): Promise<Array<Array<AgentSummaryDTO>>> {
+    public batchSearchAgentSummary(param: AgentApiBatchSearchAgentSummaryRequest, options?: ConfigurationOptions): Promise<Array<Array<AgentSummaryDTO>>> {
         return this.api.batchSearchAgentSummary(param.agentQueryDTO,  options).toPromise();
     }
 
@@ -1222,7 +1236,7 @@ export class ObjectAgentApi {
      * Clone Agent
      * @param param the request object
      */
-    public cloneAgentWithHttpInfo(param: AgentApiCloneAgentRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public cloneAgentWithHttpInfo(param: AgentApiCloneAgentRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.cloneAgentWithHttpInfo(param.agentId,  options).toPromise();
     }
 
@@ -1231,7 +1245,7 @@ export class ObjectAgentApi {
      * Clone Agent
      * @param param the request object
      */
-    public cloneAgent(param: AgentApiCloneAgentRequest, options?: Configuration): Promise<number> {
+    public cloneAgent(param: AgentApiCloneAgentRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.cloneAgent(param.agentId,  options).toPromise();
     }
 
@@ -1240,7 +1254,7 @@ export class ObjectAgentApi {
      * Batch Clone Agents
      * @param param the request object
      */
-    public cloneAgentsWithHttpInfo(param: AgentApiCloneAgentsRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
+    public cloneAgentsWithHttpInfo(param: AgentApiCloneAgentsRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<number>>> {
         return this.api.cloneAgentsWithHttpInfo(param.requestBody,  options).toPromise();
     }
 
@@ -1249,7 +1263,7 @@ export class ObjectAgentApi {
      * Batch Clone Agents
      * @param param the request object
      */
-    public cloneAgents(param: AgentApiCloneAgentsRequest, options?: Configuration): Promise<Array<number>> {
+    public cloneAgents(param: AgentApiCloneAgentsRequest, options?: ConfigurationOptions): Promise<Array<number>> {
         return this.api.cloneAgents(param.requestBody,  options).toPromise();
     }
 
@@ -1258,7 +1272,7 @@ export class ObjectAgentApi {
      * Calculate Number of Agents
      * @param param the request object
      */
-    public countAgentsWithHttpInfo(param: AgentApiCountAgentsRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public countAgentsWithHttpInfo(param: AgentApiCountAgentsRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.countAgentsWithHttpInfo(param.agentQueryDTO,  options).toPromise();
     }
 
@@ -1267,7 +1281,7 @@ export class ObjectAgentApi {
      * Calculate Number of Agents
      * @param param the request object
      */
-    public countAgents(param: AgentApiCountAgentsRequest, options?: Configuration): Promise<number> {
+    public countAgents(param: AgentApiCountAgentsRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.countAgents(param.agentQueryDTO,  options).toPromise();
     }
 
@@ -1276,7 +1290,7 @@ export class ObjectAgentApi {
      * Create Agent
      * @param param the request object
      */
-    public createAgentWithHttpInfo(param: AgentApiCreateAgentRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public createAgentWithHttpInfo(param: AgentApiCreateAgentRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.createAgentWithHttpInfo(param.agentCreateDTO,  options).toPromise();
     }
 
@@ -1285,7 +1299,7 @@ export class ObjectAgentApi {
      * Create Agent
      * @param param the request object
      */
-    public createAgent(param: AgentApiCreateAgentRequest, options?: Configuration): Promise<number> {
+    public createAgent(param: AgentApiCreateAgentRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.createAgent(param.agentCreateDTO,  options).toPromise();
     }
 
@@ -1294,7 +1308,7 @@ export class ObjectAgentApi {
      * Batch Create Agents
      * @param param the request object
      */
-    public createAgentsWithHttpInfo(param: AgentApiCreateAgentsRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
+    public createAgentsWithHttpInfo(param: AgentApiCreateAgentsRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<number>>> {
         return this.api.createAgentsWithHttpInfo(param.agentCreateDTO,  options).toPromise();
     }
 
@@ -1303,7 +1317,7 @@ export class ObjectAgentApi {
      * Batch Create Agents
      * @param param the request object
      */
-    public createAgents(param: AgentApiCreateAgentsRequest, options?: Configuration): Promise<Array<number>> {
+    public createAgents(param: AgentApiCreateAgentsRequest, options?: ConfigurationOptions): Promise<Array<number>> {
         return this.api.createAgents(param.agentCreateDTO,  options).toPromise();
     }
 
@@ -1312,7 +1326,7 @@ export class ObjectAgentApi {
      * Delete Agent
      * @param param the request object
      */
-    public deleteAgentWithHttpInfo(param: AgentApiDeleteAgentRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public deleteAgentWithHttpInfo(param: AgentApiDeleteAgentRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.deleteAgentWithHttpInfo(param.agentId,  options).toPromise();
     }
 
@@ -1321,7 +1335,7 @@ export class ObjectAgentApi {
      * Delete Agent
      * @param param the request object
      */
-    public deleteAgent(param: AgentApiDeleteAgentRequest, options?: Configuration): Promise<boolean> {
+    public deleteAgent(param: AgentApiDeleteAgentRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.deleteAgent(param.agentId,  options).toPromise();
     }
 
@@ -1330,7 +1344,7 @@ export class ObjectAgentApi {
      * Batch Delete Agents
      * @param param the request object
      */
-    public deleteAgentsWithHttpInfo(param: AgentApiDeleteAgentsRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
+    public deleteAgentsWithHttpInfo(param: AgentApiDeleteAgentsRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<number>>> {
         return this.api.deleteAgentsWithHttpInfo(param.requestBody,  options).toPromise();
     }
 
@@ -1339,7 +1353,7 @@ export class ObjectAgentApi {
      * Batch Delete Agents
      * @param param the request object
      */
-    public deleteAgents(param: AgentApiDeleteAgentsRequest, options?: Configuration): Promise<Array<number>> {
+    public deleteAgents(param: AgentApiDeleteAgentsRequest, options?: ConfigurationOptions): Promise<Array<number>> {
         return this.api.deleteAgents(param.requestBody,  options).toPromise();
     }
 
@@ -1348,7 +1362,7 @@ export class ObjectAgentApi {
      * Get Agent Details
      * @param param the request object
      */
-    public getAgentDetailsWithHttpInfo(param: AgentApiGetAgentDetailsRequest, options?: Configuration): Promise<HttpInfo<AgentDetailsDTO>> {
+    public getAgentDetailsWithHttpInfo(param: AgentApiGetAgentDetailsRequest, options?: ConfigurationOptions): Promise<HttpInfo<AgentDetailsDTO>> {
         return this.api.getAgentDetailsWithHttpInfo(param.agentId,  options).toPromise();
     }
 
@@ -1357,7 +1371,7 @@ export class ObjectAgentApi {
      * Get Agent Details
      * @param param the request object
      */
-    public getAgentDetails(param: AgentApiGetAgentDetailsRequest, options?: Configuration): Promise<AgentDetailsDTO> {
+    public getAgentDetails(param: AgentApiGetAgentDetailsRequest, options?: ConfigurationOptions): Promise<AgentDetailsDTO> {
         return this.api.getAgentDetails(param.agentId,  options).toPromise();
     }
 
@@ -1366,7 +1380,7 @@ export class ObjectAgentApi {
      * Get Agent Summary
      * @param param the request object
      */
-    public getAgentSummaryWithHttpInfo(param: AgentApiGetAgentSummaryRequest, options?: Configuration): Promise<HttpInfo<AgentSummaryDTO>> {
+    public getAgentSummaryWithHttpInfo(param: AgentApiGetAgentSummaryRequest, options?: ConfigurationOptions): Promise<HttpInfo<AgentSummaryDTO>> {
         return this.api.getAgentSummaryWithHttpInfo(param.agentId,  options).toPromise();
     }
 
@@ -1375,7 +1389,7 @@ export class ObjectAgentApi {
      * Get Agent Summary
      * @param param the request object
      */
-    public getAgentSummary(param: AgentApiGetAgentSummaryRequest, options?: Configuration): Promise<AgentSummaryDTO> {
+    public getAgentSummary(param: AgentApiGetAgentSummaryRequest, options?: ConfigurationOptions): Promise<AgentSummaryDTO> {
         return this.api.getAgentSummary(param.agentId,  options).toPromise();
     }
 
@@ -1384,7 +1398,7 @@ export class ObjectAgentApi {
      * List Versions by Agent Name
      * @param param the request object
      */
-    public listAgentVersionsByNameWithHttpInfo(param: AgentApiListAgentVersionsByNameRequest, options?: Configuration): Promise<HttpInfo<Array<AgentItemForNameDTO>>> {
+    public listAgentVersionsByNameWithHttpInfo(param: AgentApiListAgentVersionsByNameRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<AgentItemForNameDTO>>> {
         return this.api.listAgentVersionsByNameWithHttpInfo(param.name,  options).toPromise();
     }
 
@@ -1393,7 +1407,7 @@ export class ObjectAgentApi {
      * List Versions by Agent Name
      * @param param the request object
      */
-    public listAgentVersionsByName(param: AgentApiListAgentVersionsByNameRequest, options?: Configuration): Promise<Array<AgentItemForNameDTO>> {
+    public listAgentVersionsByName(param: AgentApiListAgentVersionsByNameRequest, options?: ConfigurationOptions): Promise<Array<AgentItemForNameDTO>> {
         return this.api.listAgentVersionsByName(param.name,  options).toPromise();
     }
 
@@ -1402,7 +1416,7 @@ export class ObjectAgentApi {
      * Publish Agent
      * @param param the request object
      */
-    public publishAgentWithHttpInfo(param: AgentApiPublishAgentRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public publishAgentWithHttpInfo(param: AgentApiPublishAgentRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.publishAgentWithHttpInfo(param.agentId, param.visibility,  options).toPromise();
     }
 
@@ -1411,7 +1425,7 @@ export class ObjectAgentApi {
      * Publish Agent
      * @param param the request object
      */
-    public publishAgent(param: AgentApiPublishAgentRequest, options?: Configuration): Promise<number> {
+    public publishAgent(param: AgentApiPublishAgentRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.publishAgent(param.agentId, param.visibility,  options).toPromise();
     }
 
@@ -1420,7 +1434,7 @@ export class ObjectAgentApi {
      * Search Agent Details
      * @param param the request object
      */
-    public searchAgentDetailsWithHttpInfo(param: AgentApiSearchAgentDetailsRequest, options?: Configuration): Promise<HttpInfo<Array<AgentDetailsDTO>>> {
+    public searchAgentDetailsWithHttpInfo(param: AgentApiSearchAgentDetailsRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<AgentDetailsDTO>>> {
         return this.api.searchAgentDetailsWithHttpInfo(param.agentQueryDTO,  options).toPromise();
     }
 
@@ -1429,7 +1443,7 @@ export class ObjectAgentApi {
      * Search Agent Details
      * @param param the request object
      */
-    public searchAgentDetails(param: AgentApiSearchAgentDetailsRequest, options?: Configuration): Promise<Array<AgentDetailsDTO>> {
+    public searchAgentDetails(param: AgentApiSearchAgentDetailsRequest, options?: ConfigurationOptions): Promise<Array<AgentDetailsDTO>> {
         return this.api.searchAgentDetails(param.agentQueryDTO,  options).toPromise();
     }
 
@@ -1438,7 +1452,7 @@ export class ObjectAgentApi {
      * Search Agent Summary
      * @param param the request object
      */
-    public searchAgentSummaryWithHttpInfo(param: AgentApiSearchAgentSummaryRequest, options?: Configuration): Promise<HttpInfo<Array<AgentSummaryDTO>>> {
+    public searchAgentSummaryWithHttpInfo(param: AgentApiSearchAgentSummaryRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<AgentSummaryDTO>>> {
         return this.api.searchAgentSummaryWithHttpInfo(param.agentQueryDTO,  options).toPromise();
     }
 
@@ -1447,7 +1461,7 @@ export class ObjectAgentApi {
      * Search Agent Summary
      * @param param the request object
      */
-    public searchAgentSummary(param: AgentApiSearchAgentSummaryRequest, options?: Configuration): Promise<Array<AgentSummaryDTO>> {
+    public searchAgentSummary(param: AgentApiSearchAgentSummaryRequest, options?: ConfigurationOptions): Promise<Array<AgentSummaryDTO>> {
         return this.api.searchAgentSummary(param.agentQueryDTO,  options).toPromise();
     }
 
@@ -1456,7 +1470,7 @@ export class ObjectAgentApi {
      * Update Agent
      * @param param the request object
      */
-    public updateAgentWithHttpInfo(param: AgentApiUpdateAgentRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public updateAgentWithHttpInfo(param: AgentApiUpdateAgentRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.updateAgentWithHttpInfo(param.agentId, param.agentUpdateDTO,  options).toPromise();
     }
 
@@ -1465,7 +1479,7 @@ export class ObjectAgentApi {
      * Update Agent
      * @param param the request object
      */
-    public updateAgent(param: AgentApiUpdateAgentRequest, options?: Configuration): Promise<boolean> {
+    public updateAgent(param: AgentApiUpdateAgentRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.updateAgent(param.agentId, param.agentUpdateDTO,  options).toPromise();
     }
 
@@ -1489,7 +1503,7 @@ export class ObjectAppConfigForAdminApi {
      * Get Default Config
      * @param param the request object
      */
-    public getDefaultConfigWithHttpInfo(param: AppConfigForAdminApiGetDefaultConfigRequest = {}, options?: Configuration): Promise<HttpInfo<string>> {
+    public getDefaultConfigWithHttpInfo(param: AppConfigForAdminApiGetDefaultConfigRequest = {}, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.getDefaultConfigWithHttpInfo( options).toPromise();
     }
 
@@ -1498,7 +1512,7 @@ export class ObjectAppConfigForAdminApi {
      * Get Default Config
      * @param param the request object
      */
-    public getDefaultConfig(param: AppConfigForAdminApiGetDefaultConfigRequest = {}, options?: Configuration): Promise<string> {
+    public getDefaultConfig(param: AppConfigForAdminApiGetDefaultConfigRequest = {}, options?: ConfigurationOptions): Promise<string> {
         return this.api.getDefaultConfig( options).toPromise();
     }
 
@@ -1522,7 +1536,7 @@ export class ObjectAppMetaForAdminApi {
      * Get Application Information
      * @param param the request object
      */
-    public getAppMetaWithHttpInfo(param: AppMetaForAdminApiGetAppMetaRequest = {}, options?: Configuration): Promise<HttpInfo<AppMetaDTO>> {
+    public getAppMetaWithHttpInfo(param: AppMetaForAdminApiGetAppMetaRequest = {}, options?: ConfigurationOptions): Promise<HttpInfo<AppMetaDTO>> {
         return this.api.getAppMetaWithHttpInfo( options).toPromise();
     }
 
@@ -1531,7 +1545,7 @@ export class ObjectAppMetaForAdminApi {
      * Get Application Information
      * @param param the request object
      */
-    public getAppMeta(param: AppMetaForAdminApiGetAppMetaRequest = {}, options?: Configuration): Promise<AppMetaDTO> {
+    public getAppMeta(param: AppMetaForAdminApiGetAppMetaRequest = {}, options?: ConfigurationOptions): Promise<AppMetaDTO> {
         return this.api.getAppMeta( options).toPromise();
     }
 
@@ -1577,6 +1591,7 @@ export interface CharacterApiBatchSearchCharacterSummaryRequest {
 export interface CharacterApiCloneCharacterRequest {
     /**
      * The referenced characterId
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof CharacterApicloneCharacter
@@ -1614,6 +1629,7 @@ export interface CharacterApiCreateCharacterRequest {
 export interface CharacterApiDeleteCharacterRequest {
     /**
      * The characterId to be deleted
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof CharacterApideleteCharacter
@@ -1701,6 +1717,7 @@ export interface CharacterApiExistsCharacterNameRequest {
 export interface CharacterApiExportCharacterRequest {
     /**
      * Character identifier
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof CharacterApiexportCharacter
@@ -1711,6 +1728,7 @@ export interface CharacterApiExportCharacterRequest {
 export interface CharacterApiGetCharacterDetailsRequest {
     /**
      * CharacterId to be obtained
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof CharacterApigetCharacterDetails
@@ -1731,6 +1749,7 @@ export interface CharacterApiGetCharacterLatestIdByNameRequest {
 export interface CharacterApiGetCharacterSummaryRequest {
     /**
      * CharacterId to be obtained
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof CharacterApigetCharacterSummary
@@ -1841,6 +1860,7 @@ export interface CharacterApiNewCharacterNameRequest {
 export interface CharacterApiPublishCharacterRequest {
     /**
      * The characterId to be published
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof CharacterApipublishCharacter
@@ -1858,6 +1878,7 @@ export interface CharacterApiPublishCharacterRequest {
 export interface CharacterApiPublishCharacter1Request {
     /**
      * The characterId to be published
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof CharacterApipublishCharacter1
@@ -1915,6 +1936,7 @@ export interface CharacterApiSetDefaultCharacterBackendRequest {
 export interface CharacterApiUpdateCharacterRequest {
     /**
      * The characterId to be updated
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof CharacterApiupdateCharacter
@@ -2041,7 +2063,7 @@ export class ObjectCharacterApi {
      * Add Character Backend
      * @param param the request object
      */
-    public addCharacterBackendWithHttpInfo(param: CharacterApiAddCharacterBackendRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public addCharacterBackendWithHttpInfo(param: CharacterApiAddCharacterBackendRequest, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.addCharacterBackendWithHttpInfo(param.characterUid, param.characterBackendDTO,  options).toPromise();
     }
 
@@ -2050,7 +2072,7 @@ export class ObjectCharacterApi {
      * Add Character Backend
      * @param param the request object
      */
-    public addCharacterBackend(param: CharacterApiAddCharacterBackendRequest, options?: Configuration): Promise<string> {
+    public addCharacterBackend(param: CharacterApiAddCharacterBackendRequest, options?: ConfigurationOptions): Promise<string> {
         return this.api.addCharacterBackend(param.characterUid, param.characterBackendDTO,  options).toPromise();
     }
 
@@ -2059,7 +2081,7 @@ export class ObjectCharacterApi {
      * Batch Search Character Details
      * @param param the request object
      */
-    public batchSearchCharacterDetailsWithHttpInfo(param: CharacterApiBatchSearchCharacterDetailsRequest, options?: Configuration): Promise<HttpInfo<Array<Array<CharacterDetailsDTO>>>> {
+    public batchSearchCharacterDetailsWithHttpInfo(param: CharacterApiBatchSearchCharacterDetailsRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<Array<CharacterDetailsDTO>>>> {
         return this.api.batchSearchCharacterDetailsWithHttpInfo(param.characterQueryDTO,  options).toPromise();
     }
 
@@ -2068,7 +2090,7 @@ export class ObjectCharacterApi {
      * Batch Search Character Details
      * @param param the request object
      */
-    public batchSearchCharacterDetails(param: CharacterApiBatchSearchCharacterDetailsRequest, options?: Configuration): Promise<Array<Array<CharacterDetailsDTO>>> {
+    public batchSearchCharacterDetails(param: CharacterApiBatchSearchCharacterDetailsRequest, options?: ConfigurationOptions): Promise<Array<Array<CharacterDetailsDTO>>> {
         return this.api.batchSearchCharacterDetails(param.characterQueryDTO,  options).toPromise();
     }
 
@@ -2077,7 +2099,7 @@ export class ObjectCharacterApi {
      * Batch Search Character Summaries
      * @param param the request object
      */
-    public batchSearchCharacterSummaryWithHttpInfo(param: CharacterApiBatchSearchCharacterSummaryRequest, options?: Configuration): Promise<HttpInfo<Array<Array<CharacterSummaryDTO>>>> {
+    public batchSearchCharacterSummaryWithHttpInfo(param: CharacterApiBatchSearchCharacterSummaryRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<Array<CharacterSummaryDTO>>>> {
         return this.api.batchSearchCharacterSummaryWithHttpInfo(param.characterQueryDTO,  options).toPromise();
     }
 
@@ -2086,7 +2108,7 @@ export class ObjectCharacterApi {
      * Batch Search Character Summaries
      * @param param the request object
      */
-    public batchSearchCharacterSummary(param: CharacterApiBatchSearchCharacterSummaryRequest, options?: Configuration): Promise<Array<Array<CharacterSummaryDTO>>> {
+    public batchSearchCharacterSummary(param: CharacterApiBatchSearchCharacterSummaryRequest, options?: ConfigurationOptions): Promise<Array<Array<CharacterSummaryDTO>>> {
         return this.api.batchSearchCharacterSummary(param.characterQueryDTO,  options).toPromise();
     }
 
@@ -2095,7 +2117,7 @@ export class ObjectCharacterApi {
      * Clone Character
      * @param param the request object
      */
-    public cloneCharacterWithHttpInfo(param: CharacterApiCloneCharacterRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public cloneCharacterWithHttpInfo(param: CharacterApiCloneCharacterRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.cloneCharacterWithHttpInfo(param.characterId,  options).toPromise();
     }
 
@@ -2104,7 +2126,7 @@ export class ObjectCharacterApi {
      * Clone Character
      * @param param the request object
      */
-    public cloneCharacter(param: CharacterApiCloneCharacterRequest, options?: Configuration): Promise<number> {
+    public cloneCharacter(param: CharacterApiCloneCharacterRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.cloneCharacter(param.characterId,  options).toPromise();
     }
 
@@ -2113,7 +2135,7 @@ export class ObjectCharacterApi {
      * Calculate Number of Characters
      * @param param the request object
      */
-    public countCharactersWithHttpInfo(param: CharacterApiCountCharactersRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public countCharactersWithHttpInfo(param: CharacterApiCountCharactersRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.countCharactersWithHttpInfo(param.characterQueryDTO,  options).toPromise();
     }
 
@@ -2122,7 +2144,7 @@ export class ObjectCharacterApi {
      * Calculate Number of Characters
      * @param param the request object
      */
-    public countCharacters(param: CharacterApiCountCharactersRequest, options?: Configuration): Promise<number> {
+    public countCharacters(param: CharacterApiCountCharactersRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.countCharacters(param.characterQueryDTO,  options).toPromise();
     }
 
@@ -2131,7 +2153,7 @@ export class ObjectCharacterApi {
      * Calculate Number of Public Characters
      * @param param the request object
      */
-    public countPublicCharactersWithHttpInfo(param: CharacterApiCountPublicCharactersRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public countPublicCharactersWithHttpInfo(param: CharacterApiCountPublicCharactersRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.countPublicCharactersWithHttpInfo(param.characterQueryDTO,  options).toPromise();
     }
 
@@ -2140,7 +2162,7 @@ export class ObjectCharacterApi {
      * Calculate Number of Public Characters
      * @param param the request object
      */
-    public countPublicCharacters(param: CharacterApiCountPublicCharactersRequest, options?: Configuration): Promise<number> {
+    public countPublicCharacters(param: CharacterApiCountPublicCharactersRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.countPublicCharacters(param.characterQueryDTO,  options).toPromise();
     }
 
@@ -2149,7 +2171,7 @@ export class ObjectCharacterApi {
      * Create Character
      * @param param the request object
      */
-    public createCharacterWithHttpInfo(param: CharacterApiCreateCharacterRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public createCharacterWithHttpInfo(param: CharacterApiCreateCharacterRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.createCharacterWithHttpInfo(param.characterCreateDTO,  options).toPromise();
     }
 
@@ -2158,7 +2180,7 @@ export class ObjectCharacterApi {
      * Create Character
      * @param param the request object
      */
-    public createCharacter(param: CharacterApiCreateCharacterRequest, options?: Configuration): Promise<number> {
+    public createCharacter(param: CharacterApiCreateCharacterRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.createCharacter(param.characterCreateDTO,  options).toPromise();
     }
 
@@ -2167,7 +2189,7 @@ export class ObjectCharacterApi {
      * Delete Character
      * @param param the request object
      */
-    public deleteCharacterWithHttpInfo(param: CharacterApiDeleteCharacterRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public deleteCharacterWithHttpInfo(param: CharacterApiDeleteCharacterRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.deleteCharacterWithHttpInfo(param.characterId,  options).toPromise();
     }
 
@@ -2176,7 +2198,7 @@ export class ObjectCharacterApi {
      * Delete Character
      * @param param the request object
      */
-    public deleteCharacter(param: CharacterApiDeleteCharacterRequest, options?: Configuration): Promise<boolean> {
+    public deleteCharacter(param: CharacterApiDeleteCharacterRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.deleteCharacter(param.characterId,  options).toPromise();
     }
 
@@ -2185,7 +2207,7 @@ export class ObjectCharacterApi {
      * Delete Character by Name
      * @param param the request object
      */
-    public deleteCharacterByNameWithHttpInfo(param: CharacterApiDeleteCharacterByNameRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
+    public deleteCharacterByNameWithHttpInfo(param: CharacterApiDeleteCharacterByNameRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<number>>> {
         return this.api.deleteCharacterByNameWithHttpInfo(param.name,  options).toPromise();
     }
 
@@ -2194,7 +2216,7 @@ export class ObjectCharacterApi {
      * Delete Character by Name
      * @param param the request object
      */
-    public deleteCharacterByName(param: CharacterApiDeleteCharacterByNameRequest, options?: Configuration): Promise<Array<number>> {
+    public deleteCharacterByName(param: CharacterApiDeleteCharacterByNameRequest, options?: ConfigurationOptions): Promise<Array<number>> {
         return this.api.deleteCharacterByName(param.name,  options).toPromise();
     }
 
@@ -2203,7 +2225,7 @@ export class ObjectCharacterApi {
      * Delete Character by Uid
      * @param param the request object
      */
-    public deleteCharacterByUidWithHttpInfo(param: CharacterApiDeleteCharacterByUidRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
+    public deleteCharacterByUidWithHttpInfo(param: CharacterApiDeleteCharacterByUidRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<number>>> {
         return this.api.deleteCharacterByUidWithHttpInfo(param.characterUid,  options).toPromise();
     }
 
@@ -2212,7 +2234,7 @@ export class ObjectCharacterApi {
      * Delete Character by Uid
      * @param param the request object
      */
-    public deleteCharacterByUid(param: CharacterApiDeleteCharacterByUidRequest, options?: Configuration): Promise<Array<number>> {
+    public deleteCharacterByUid(param: CharacterApiDeleteCharacterByUidRequest, options?: ConfigurationOptions): Promise<Array<number>> {
         return this.api.deleteCharacterByUid(param.characterUid,  options).toPromise();
     }
 
@@ -2221,7 +2243,7 @@ export class ObjectCharacterApi {
      * Delete Character Document
      * @param param the request object
      */
-    public deleteCharacterDocumentWithHttpInfo(param: CharacterApiDeleteCharacterDocumentRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public deleteCharacterDocumentWithHttpInfo(param: CharacterApiDeleteCharacterDocumentRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.deleteCharacterDocumentWithHttpInfo(param.key,  options).toPromise();
     }
 
@@ -2230,7 +2252,7 @@ export class ObjectCharacterApi {
      * Delete Character Document
      * @param param the request object
      */
-    public deleteCharacterDocument(param: CharacterApiDeleteCharacterDocumentRequest, options?: Configuration): Promise<boolean> {
+    public deleteCharacterDocument(param: CharacterApiDeleteCharacterDocumentRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.deleteCharacterDocument(param.key,  options).toPromise();
     }
 
@@ -2239,7 +2261,7 @@ export class ObjectCharacterApi {
      * Delete Character Picture
      * @param param the request object
      */
-    public deleteCharacterPictureWithHttpInfo(param: CharacterApiDeleteCharacterPictureRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public deleteCharacterPictureWithHttpInfo(param: CharacterApiDeleteCharacterPictureRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.deleteCharacterPictureWithHttpInfo(param.key,  options).toPromise();
     }
 
@@ -2248,7 +2270,7 @@ export class ObjectCharacterApi {
      * Delete Character Picture
      * @param param the request object
      */
-    public deleteCharacterPicture(param: CharacterApiDeleteCharacterPictureRequest, options?: Configuration): Promise<boolean> {
+    public deleteCharacterPicture(param: CharacterApiDeleteCharacterPictureRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.deleteCharacterPicture(param.key,  options).toPromise();
     }
 
@@ -2257,7 +2279,7 @@ export class ObjectCharacterApi {
      * Delete Character Video
      * @param param the request object
      */
-    public deleteCharacterVideoWithHttpInfo(param: CharacterApiDeleteCharacterVideoRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public deleteCharacterVideoWithHttpInfo(param: CharacterApiDeleteCharacterVideoRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.deleteCharacterVideoWithHttpInfo(param.key,  options).toPromise();
     }
 
@@ -2266,7 +2288,7 @@ export class ObjectCharacterApi {
      * Delete Character Video
      * @param param the request object
      */
-    public deleteCharacterVideo(param: CharacterApiDeleteCharacterVideoRequest, options?: Configuration): Promise<boolean> {
+    public deleteCharacterVideo(param: CharacterApiDeleteCharacterVideoRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.deleteCharacterVideo(param.key,  options).toPromise();
     }
 
@@ -2275,7 +2297,7 @@ export class ObjectCharacterApi {
      * Delete Character Voice
      * @param param the request object
      */
-    public deleteCharacterVoiceWithHttpInfo(param: CharacterApiDeleteCharacterVoiceRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public deleteCharacterVoiceWithHttpInfo(param: CharacterApiDeleteCharacterVoiceRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.deleteCharacterVoiceWithHttpInfo(param.characterBackendId, param.key,  options).toPromise();
     }
 
@@ -2284,7 +2306,7 @@ export class ObjectCharacterApi {
      * Delete Character Voice
      * @param param the request object
      */
-    public deleteCharacterVoice(param: CharacterApiDeleteCharacterVoiceRequest, options?: Configuration): Promise<boolean> {
+    public deleteCharacterVoice(param: CharacterApiDeleteCharacterVoiceRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.deleteCharacterVoice(param.characterBackendId, param.key,  options).toPromise();
     }
 
@@ -2293,7 +2315,7 @@ export class ObjectCharacterApi {
      * Check If Character Name Exists
      * @param param the request object
      */
-    public existsCharacterNameWithHttpInfo(param: CharacterApiExistsCharacterNameRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public existsCharacterNameWithHttpInfo(param: CharacterApiExistsCharacterNameRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.existsCharacterNameWithHttpInfo(param.name,  options).toPromise();
     }
 
@@ -2302,7 +2324,7 @@ export class ObjectCharacterApi {
      * Check If Character Name Exists
      * @param param the request object
      */
-    public existsCharacterName(param: CharacterApiExistsCharacterNameRequest, options?: Configuration): Promise<boolean> {
+    public existsCharacterName(param: CharacterApiExistsCharacterNameRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.existsCharacterName(param.name,  options).toPromise();
     }
 
@@ -2311,7 +2333,7 @@ export class ObjectCharacterApi {
      * Export Character Configuration
      * @param param the request object
      */
-    public exportCharacterWithHttpInfo(param: CharacterApiExportCharacterRequest, options?: Configuration): Promise<HttpInfo<void>> {
+    public exportCharacterWithHttpInfo(param: CharacterApiExportCharacterRequest, options?: ConfigurationOptions): Promise<HttpInfo<void>> {
         return this.api.exportCharacterWithHttpInfo(param.characterId,  options).toPromise();
     }
 
@@ -2320,7 +2342,7 @@ export class ObjectCharacterApi {
      * Export Character Configuration
      * @param param the request object
      */
-    public exportCharacter(param: CharacterApiExportCharacterRequest, options?: Configuration): Promise<void> {
+    public exportCharacter(param: CharacterApiExportCharacterRequest, options?: ConfigurationOptions): Promise<void> {
         return this.api.exportCharacter(param.characterId,  options).toPromise();
     }
 
@@ -2329,7 +2351,7 @@ export class ObjectCharacterApi {
      * Get Character Details
      * @param param the request object
      */
-    public getCharacterDetailsWithHttpInfo(param: CharacterApiGetCharacterDetailsRequest, options?: Configuration): Promise<HttpInfo<CharacterDetailsDTO>> {
+    public getCharacterDetailsWithHttpInfo(param: CharacterApiGetCharacterDetailsRequest, options?: ConfigurationOptions): Promise<HttpInfo<CharacterDetailsDTO>> {
         return this.api.getCharacterDetailsWithHttpInfo(param.characterId,  options).toPromise();
     }
 
@@ -2338,7 +2360,7 @@ export class ObjectCharacterApi {
      * Get Character Details
      * @param param the request object
      */
-    public getCharacterDetails(param: CharacterApiGetCharacterDetailsRequest, options?: Configuration): Promise<CharacterDetailsDTO> {
+    public getCharacterDetails(param: CharacterApiGetCharacterDetailsRequest, options?: ConfigurationOptions): Promise<CharacterDetailsDTO> {
         return this.api.getCharacterDetails(param.characterId,  options).toPromise();
     }
 
@@ -2347,7 +2369,7 @@ export class ObjectCharacterApi {
      * Get Latest Character Id by Name
      * @param param the request object
      */
-    public getCharacterLatestIdByNameWithHttpInfo(param: CharacterApiGetCharacterLatestIdByNameRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public getCharacterLatestIdByNameWithHttpInfo(param: CharacterApiGetCharacterLatestIdByNameRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.getCharacterLatestIdByNameWithHttpInfo(param.name,  options).toPromise();
     }
 
@@ -2356,7 +2378,7 @@ export class ObjectCharacterApi {
      * Get Latest Character Id by Name
      * @param param the request object
      */
-    public getCharacterLatestIdByName(param: CharacterApiGetCharacterLatestIdByNameRequest, options?: Configuration): Promise<number> {
+    public getCharacterLatestIdByName(param: CharacterApiGetCharacterLatestIdByNameRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.getCharacterLatestIdByName(param.name,  options).toPromise();
     }
 
@@ -2365,7 +2387,7 @@ export class ObjectCharacterApi {
      * Get Character Summary
      * @param param the request object
      */
-    public getCharacterSummaryWithHttpInfo(param: CharacterApiGetCharacterSummaryRequest, options?: Configuration): Promise<HttpInfo<CharacterSummaryDTO>> {
+    public getCharacterSummaryWithHttpInfo(param: CharacterApiGetCharacterSummaryRequest, options?: ConfigurationOptions): Promise<HttpInfo<CharacterSummaryDTO>> {
         return this.api.getCharacterSummaryWithHttpInfo(param.characterId,  options).toPromise();
     }
 
@@ -2374,7 +2396,7 @@ export class ObjectCharacterApi {
      * Get Character Summary
      * @param param the request object
      */
-    public getCharacterSummary(param: CharacterApiGetCharacterSummaryRequest, options?: Configuration): Promise<CharacterSummaryDTO> {
+    public getCharacterSummary(param: CharacterApiGetCharacterSummaryRequest, options?: ConfigurationOptions): Promise<CharacterSummaryDTO> {
         return this.api.getCharacterSummary(param.characterId,  options).toPromise();
     }
 
@@ -2383,7 +2405,7 @@ export class ObjectCharacterApi {
      * Get Default Character Backend
      * @param param the request object
      */
-    public getDefaultCharacterBackendWithHttpInfo(param: CharacterApiGetDefaultCharacterBackendRequest, options?: Configuration): Promise<HttpInfo<CharacterBackendDetailsDTO>> {
+    public getDefaultCharacterBackendWithHttpInfo(param: CharacterApiGetDefaultCharacterBackendRequest, options?: ConfigurationOptions): Promise<HttpInfo<CharacterBackendDetailsDTO>> {
         return this.api.getDefaultCharacterBackendWithHttpInfo(param.characterUid,  options).toPromise();
     }
 
@@ -2392,7 +2414,7 @@ export class ObjectCharacterApi {
      * Get Default Character Backend
      * @param param the request object
      */
-    public getDefaultCharacterBackend(param: CharacterApiGetDefaultCharacterBackendRequest, options?: Configuration): Promise<CharacterBackendDetailsDTO> {
+    public getDefaultCharacterBackend(param: CharacterApiGetDefaultCharacterBackendRequest, options?: ConfigurationOptions): Promise<CharacterBackendDetailsDTO> {
         return this.api.getDefaultCharacterBackend(param.characterUid,  options).toPromise();
     }
 
@@ -2401,7 +2423,7 @@ export class ObjectCharacterApi {
      * Import Character Configuration
      * @param param the request object
      */
-    public importCharacterWithHttpInfo(param: CharacterApiImportCharacterRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public importCharacterWithHttpInfo(param: CharacterApiImportCharacterRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.importCharacterWithHttpInfo(param.file,  options).toPromise();
     }
 
@@ -2410,7 +2432,7 @@ export class ObjectCharacterApi {
      * Import Character Configuration
      * @param param the request object
      */
-    public importCharacter(param: CharacterApiImportCharacterRequest, options?: Configuration): Promise<number> {
+    public importCharacter(param: CharacterApiImportCharacterRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.importCharacter(param.file,  options).toPromise();
     }
 
@@ -2419,7 +2441,7 @@ export class ObjectCharacterApi {
      * List Character Backend ids
      * @param param the request object
      */
-    public listCharacterBackendIdsWithHttpInfo(param: CharacterApiListCharacterBackendIdsRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public listCharacterBackendIdsWithHttpInfo(param: CharacterApiListCharacterBackendIdsRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<string>>> {
         return this.api.listCharacterBackendIdsWithHttpInfo(param.characterUid,  options).toPromise();
     }
 
@@ -2428,7 +2450,7 @@ export class ObjectCharacterApi {
      * List Character Backend ids
      * @param param the request object
      */
-    public listCharacterBackendIds(param: CharacterApiListCharacterBackendIdsRequest, options?: Configuration): Promise<Array<string>> {
+    public listCharacterBackendIds(param: CharacterApiListCharacterBackendIdsRequest, options?: ConfigurationOptions): Promise<Array<string>> {
         return this.api.listCharacterBackendIds(param.characterUid,  options).toPromise();
     }
 
@@ -2437,7 +2459,7 @@ export class ObjectCharacterApi {
      * List Character Backends
      * @param param the request object
      */
-    public listCharacterBackendsWithHttpInfo(param: CharacterApiListCharacterBackendsRequest, options?: Configuration): Promise<HttpInfo<Array<CharacterBackendDetailsDTO>>> {
+    public listCharacterBackendsWithHttpInfo(param: CharacterApiListCharacterBackendsRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<CharacterBackendDetailsDTO>>> {
         return this.api.listCharacterBackendsWithHttpInfo(param.characterUid,  options).toPromise();
     }
 
@@ -2446,7 +2468,7 @@ export class ObjectCharacterApi {
      * List Character Backends
      * @param param the request object
      */
-    public listCharacterBackends(param: CharacterApiListCharacterBackendsRequest, options?: Configuration): Promise<Array<CharacterBackendDetailsDTO>> {
+    public listCharacterBackends(param: CharacterApiListCharacterBackendsRequest, options?: ConfigurationOptions): Promise<Array<CharacterBackendDetailsDTO>> {
         return this.api.listCharacterBackends(param.characterUid,  options).toPromise();
     }
 
@@ -2455,7 +2477,7 @@ export class ObjectCharacterApi {
      * List Character Documents
      * @param param the request object
      */
-    public listCharacterDocumentsWithHttpInfo(param: CharacterApiListCharacterDocumentsRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public listCharacterDocumentsWithHttpInfo(param: CharacterApiListCharacterDocumentsRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<string>>> {
         return this.api.listCharacterDocumentsWithHttpInfo(param.characterUid,  options).toPromise();
     }
 
@@ -2464,7 +2486,7 @@ export class ObjectCharacterApi {
      * List Character Documents
      * @param param the request object
      */
-    public listCharacterDocuments(param: CharacterApiListCharacterDocumentsRequest, options?: Configuration): Promise<Array<string>> {
+    public listCharacterDocuments(param: CharacterApiListCharacterDocumentsRequest, options?: ConfigurationOptions): Promise<Array<string>> {
         return this.api.listCharacterDocuments(param.characterUid,  options).toPromise();
     }
 
@@ -2473,7 +2495,7 @@ export class ObjectCharacterApi {
      * List Character Pictures
      * @param param the request object
      */
-    public listCharacterPicturesWithHttpInfo(param: CharacterApiListCharacterPicturesRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public listCharacterPicturesWithHttpInfo(param: CharacterApiListCharacterPicturesRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<string>>> {
         return this.api.listCharacterPicturesWithHttpInfo(param.characterUid,  options).toPromise();
     }
 
@@ -2482,7 +2504,7 @@ export class ObjectCharacterApi {
      * List Character Pictures
      * @param param the request object
      */
-    public listCharacterPictures(param: CharacterApiListCharacterPicturesRequest, options?: Configuration): Promise<Array<string>> {
+    public listCharacterPictures(param: CharacterApiListCharacterPicturesRequest, options?: ConfigurationOptions): Promise<Array<string>> {
         return this.api.listCharacterPictures(param.characterUid,  options).toPromise();
     }
 
@@ -2491,7 +2513,7 @@ export class ObjectCharacterApi {
      * List Versions by Character Name
      * @param param the request object
      */
-    public listCharacterVersionsByNameWithHttpInfo(param: CharacterApiListCharacterVersionsByNameRequest, options?: Configuration): Promise<HttpInfo<Array<CharacterItemForNameDTO>>> {
+    public listCharacterVersionsByNameWithHttpInfo(param: CharacterApiListCharacterVersionsByNameRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<CharacterItemForNameDTO>>> {
         return this.api.listCharacterVersionsByNameWithHttpInfo(param.name,  options).toPromise();
     }
 
@@ -2500,7 +2522,7 @@ export class ObjectCharacterApi {
      * List Versions by Character Name
      * @param param the request object
      */
-    public listCharacterVersionsByName(param: CharacterApiListCharacterVersionsByNameRequest, options?: Configuration): Promise<Array<CharacterItemForNameDTO>> {
+    public listCharacterVersionsByName(param: CharacterApiListCharacterVersionsByNameRequest, options?: ConfigurationOptions): Promise<Array<CharacterItemForNameDTO>> {
         return this.api.listCharacterVersionsByName(param.name,  options).toPromise();
     }
 
@@ -2509,7 +2531,7 @@ export class ObjectCharacterApi {
      * List Character Videos
      * @param param the request object
      */
-    public listCharacterVideosWithHttpInfo(param: CharacterApiListCharacterVideosRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public listCharacterVideosWithHttpInfo(param: CharacterApiListCharacterVideosRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<string>>> {
         return this.api.listCharacterVideosWithHttpInfo(param.characterUid,  options).toPromise();
     }
 
@@ -2518,7 +2540,7 @@ export class ObjectCharacterApi {
      * List Character Videos
      * @param param the request object
      */
-    public listCharacterVideos(param: CharacterApiListCharacterVideosRequest, options?: Configuration): Promise<Array<string>> {
+    public listCharacterVideos(param: CharacterApiListCharacterVideosRequest, options?: ConfigurationOptions): Promise<Array<string>> {
         return this.api.listCharacterVideos(param.characterUid,  options).toPromise();
     }
 
@@ -2527,7 +2549,7 @@ export class ObjectCharacterApi {
      * List Character Voices
      * @param param the request object
      */
-    public listCharacterVoicesWithHttpInfo(param: CharacterApiListCharacterVoicesRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public listCharacterVoicesWithHttpInfo(param: CharacterApiListCharacterVoicesRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<string>>> {
         return this.api.listCharacterVoicesWithHttpInfo(param.characterBackendId,  options).toPromise();
     }
 
@@ -2536,7 +2558,7 @@ export class ObjectCharacterApi {
      * List Character Voices
      * @param param the request object
      */
-    public listCharacterVoices(param: CharacterApiListCharacterVoicesRequest, options?: Configuration): Promise<Array<string>> {
+    public listCharacterVoices(param: CharacterApiListCharacterVoicesRequest, options?: ConfigurationOptions): Promise<Array<string>> {
         return this.api.listCharacterVoices(param.characterBackendId,  options).toPromise();
     }
 
@@ -2545,7 +2567,7 @@ export class ObjectCharacterApi {
      * Create New Character Name
      * @param param the request object
      */
-    public newCharacterNameWithHttpInfo(param: CharacterApiNewCharacterNameRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public newCharacterNameWithHttpInfo(param: CharacterApiNewCharacterNameRequest, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.newCharacterNameWithHttpInfo(param.desired,  options).toPromise();
     }
 
@@ -2554,7 +2576,7 @@ export class ObjectCharacterApi {
      * Create New Character Name
      * @param param the request object
      */
-    public newCharacterName(param: CharacterApiNewCharacterNameRequest, options?: Configuration): Promise<string> {
+    public newCharacterName(param: CharacterApiNewCharacterNameRequest, options?: ConfigurationOptions): Promise<string> {
         return this.api.newCharacterName(param.desired,  options).toPromise();
     }
 
@@ -2563,7 +2585,7 @@ export class ObjectCharacterApi {
      * Publish Character
      * @param param the request object
      */
-    public publishCharacterWithHttpInfo(param: CharacterApiPublishCharacterRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public publishCharacterWithHttpInfo(param: CharacterApiPublishCharacterRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.publishCharacterWithHttpInfo(param.characterId, param.visibility,  options).toPromise();
     }
 
@@ -2572,7 +2594,7 @@ export class ObjectCharacterApi {
      * Publish Character
      * @param param the request object
      */
-    public publishCharacter(param: CharacterApiPublishCharacterRequest, options?: Configuration): Promise<number> {
+    public publishCharacter(param: CharacterApiPublishCharacterRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.publishCharacter(param.characterId, param.visibility,  options).toPromise();
     }
 
@@ -2581,7 +2603,7 @@ export class ObjectCharacterApi {
      * Publish Character
      * @param param the request object
      */
-    public publishCharacter1WithHttpInfo(param: CharacterApiPublishCharacter1Request, options?: Configuration): Promise<HttpInfo<number>> {
+    public publishCharacter1WithHttpInfo(param: CharacterApiPublishCharacter1Request, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.publishCharacter1WithHttpInfo(param.characterId,  options).toPromise();
     }
 
@@ -2590,7 +2612,7 @@ export class ObjectCharacterApi {
      * Publish Character
      * @param param the request object
      */
-    public publishCharacter1(param: CharacterApiPublishCharacter1Request, options?: Configuration): Promise<number> {
+    public publishCharacter1(param: CharacterApiPublishCharacter1Request, options?: ConfigurationOptions): Promise<number> {
         return this.api.publishCharacter1(param.characterId,  options).toPromise();
     }
 
@@ -2599,7 +2621,7 @@ export class ObjectCharacterApi {
      * Remove Character Backend
      * @param param the request object
      */
-    public removeCharacterBackendWithHttpInfo(param: CharacterApiRemoveCharacterBackendRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public removeCharacterBackendWithHttpInfo(param: CharacterApiRemoveCharacterBackendRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.removeCharacterBackendWithHttpInfo(param.characterBackendId,  options).toPromise();
     }
 
@@ -2608,7 +2630,7 @@ export class ObjectCharacterApi {
      * Remove Character Backend
      * @param param the request object
      */
-    public removeCharacterBackend(param: CharacterApiRemoveCharacterBackendRequest, options?: Configuration): Promise<boolean> {
+    public removeCharacterBackend(param: CharacterApiRemoveCharacterBackendRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.removeCharacterBackend(param.characterBackendId,  options).toPromise();
     }
 
@@ -2617,7 +2639,7 @@ export class ObjectCharacterApi {
      * Search Character Details
      * @param param the request object
      */
-    public searchCharacterDetailsWithHttpInfo(param: CharacterApiSearchCharacterDetailsRequest, options?: Configuration): Promise<HttpInfo<Array<CharacterDetailsDTO>>> {
+    public searchCharacterDetailsWithHttpInfo(param: CharacterApiSearchCharacterDetailsRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<CharacterDetailsDTO>>> {
         return this.api.searchCharacterDetailsWithHttpInfo(param.characterQueryDTO,  options).toPromise();
     }
 
@@ -2626,7 +2648,7 @@ export class ObjectCharacterApi {
      * Search Character Details
      * @param param the request object
      */
-    public searchCharacterDetails(param: CharacterApiSearchCharacterDetailsRequest, options?: Configuration): Promise<Array<CharacterDetailsDTO>> {
+    public searchCharacterDetails(param: CharacterApiSearchCharacterDetailsRequest, options?: ConfigurationOptions): Promise<Array<CharacterDetailsDTO>> {
         return this.api.searchCharacterDetails(param.characterQueryDTO,  options).toPromise();
     }
 
@@ -2635,7 +2657,7 @@ export class ObjectCharacterApi {
      * Search Character Summary
      * @param param the request object
      */
-    public searchCharacterSummaryWithHttpInfo(param: CharacterApiSearchCharacterSummaryRequest, options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryDTO>>> {
+    public searchCharacterSummaryWithHttpInfo(param: CharacterApiSearchCharacterSummaryRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<CharacterSummaryDTO>>> {
         return this.api.searchCharacterSummaryWithHttpInfo(param.characterQueryDTO,  options).toPromise();
     }
 
@@ -2644,7 +2666,7 @@ export class ObjectCharacterApi {
      * Search Character Summary
      * @param param the request object
      */
-    public searchCharacterSummary(param: CharacterApiSearchCharacterSummaryRequest, options?: Configuration): Promise<Array<CharacterSummaryDTO>> {
+    public searchCharacterSummary(param: CharacterApiSearchCharacterSummaryRequest, options?: ConfigurationOptions): Promise<Array<CharacterSummaryDTO>> {
         return this.api.searchCharacterSummary(param.characterQueryDTO,  options).toPromise();
     }
 
@@ -2653,7 +2675,7 @@ export class ObjectCharacterApi {
      * Search Public Character Summary
      * @param param the request object
      */
-    public searchPublicCharacterSummaryWithHttpInfo(param: CharacterApiSearchPublicCharacterSummaryRequest, options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryDTO>>> {
+    public searchPublicCharacterSummaryWithHttpInfo(param: CharacterApiSearchPublicCharacterSummaryRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<CharacterSummaryDTO>>> {
         return this.api.searchPublicCharacterSummaryWithHttpInfo(param.characterQueryDTO,  options).toPromise();
     }
 
@@ -2662,7 +2684,7 @@ export class ObjectCharacterApi {
      * Search Public Character Summary
      * @param param the request object
      */
-    public searchPublicCharacterSummary(param: CharacterApiSearchPublicCharacterSummaryRequest, options?: Configuration): Promise<Array<CharacterSummaryDTO>> {
+    public searchPublicCharacterSummary(param: CharacterApiSearchPublicCharacterSummaryRequest, options?: ConfigurationOptions): Promise<Array<CharacterSummaryDTO>> {
         return this.api.searchPublicCharacterSummary(param.characterQueryDTO,  options).toPromise();
     }
 
@@ -2671,7 +2693,7 @@ export class ObjectCharacterApi {
      * Set Default Character Backend
      * @param param the request object
      */
-    public setDefaultCharacterBackendWithHttpInfo(param: CharacterApiSetDefaultCharacterBackendRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public setDefaultCharacterBackendWithHttpInfo(param: CharacterApiSetDefaultCharacterBackendRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.setDefaultCharacterBackendWithHttpInfo(param.characterBackendId,  options).toPromise();
     }
 
@@ -2680,7 +2702,7 @@ export class ObjectCharacterApi {
      * Set Default Character Backend
      * @param param the request object
      */
-    public setDefaultCharacterBackend(param: CharacterApiSetDefaultCharacterBackendRequest, options?: Configuration): Promise<boolean> {
+    public setDefaultCharacterBackend(param: CharacterApiSetDefaultCharacterBackendRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.setDefaultCharacterBackend(param.characterBackendId,  options).toPromise();
     }
 
@@ -2689,7 +2711,7 @@ export class ObjectCharacterApi {
      * Update Character
      * @param param the request object
      */
-    public updateCharacterWithHttpInfo(param: CharacterApiUpdateCharacterRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public updateCharacterWithHttpInfo(param: CharacterApiUpdateCharacterRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.updateCharacterWithHttpInfo(param.characterId, param.characterUpdateDTO,  options).toPromise();
     }
 
@@ -2698,7 +2720,7 @@ export class ObjectCharacterApi {
      * Update Character
      * @param param the request object
      */
-    public updateCharacter(param: CharacterApiUpdateCharacterRequest, options?: Configuration): Promise<boolean> {
+    public updateCharacter(param: CharacterApiUpdateCharacterRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.updateCharacter(param.characterId, param.characterUpdateDTO,  options).toPromise();
     }
 
@@ -2707,7 +2729,7 @@ export class ObjectCharacterApi {
      * Update Character Backend
      * @param param the request object
      */
-    public updateCharacterBackendWithHttpInfo(param: CharacterApiUpdateCharacterBackendRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public updateCharacterBackendWithHttpInfo(param: CharacterApiUpdateCharacterBackendRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.updateCharacterBackendWithHttpInfo(param.characterBackendId, param.characterBackendDTO,  options).toPromise();
     }
 
@@ -2716,7 +2738,7 @@ export class ObjectCharacterApi {
      * Update Character Backend
      * @param param the request object
      */
-    public updateCharacterBackend(param: CharacterApiUpdateCharacterBackendRequest, options?: Configuration): Promise<boolean> {
+    public updateCharacterBackend(param: CharacterApiUpdateCharacterBackendRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.updateCharacterBackend(param.characterBackendId, param.characterBackendDTO,  options).toPromise();
     }
 
@@ -2725,7 +2747,7 @@ export class ObjectCharacterApi {
      * Upload Character Avatar
      * @param param the request object
      */
-    public uploadCharacterAvatarWithHttpInfo(param: CharacterApiUploadCharacterAvatarRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public uploadCharacterAvatarWithHttpInfo(param: CharacterApiUploadCharacterAvatarRequest, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.uploadCharacterAvatarWithHttpInfo(param.characterUid, param.file,  options).toPromise();
     }
 
@@ -2734,7 +2756,7 @@ export class ObjectCharacterApi {
      * Upload Character Avatar
      * @param param the request object
      */
-    public uploadCharacterAvatar(param: CharacterApiUploadCharacterAvatarRequest, options?: Configuration): Promise<string> {
+    public uploadCharacterAvatar(param: CharacterApiUploadCharacterAvatarRequest, options?: ConfigurationOptions): Promise<string> {
         return this.api.uploadCharacterAvatar(param.characterUid, param.file,  options).toPromise();
     }
 
@@ -2743,7 +2765,7 @@ export class ObjectCharacterApi {
      * Upload Character Document
      * @param param the request object
      */
-    public uploadCharacterDocumentWithHttpInfo(param: CharacterApiUploadCharacterDocumentRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public uploadCharacterDocumentWithHttpInfo(param: CharacterApiUploadCharacterDocumentRequest, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.uploadCharacterDocumentWithHttpInfo(param.characterUid, param.file,  options).toPromise();
     }
 
@@ -2752,7 +2774,7 @@ export class ObjectCharacterApi {
      * Upload Character Document
      * @param param the request object
      */
-    public uploadCharacterDocument(param: CharacterApiUploadCharacterDocumentRequest, options?: Configuration): Promise<string> {
+    public uploadCharacterDocument(param: CharacterApiUploadCharacterDocumentRequest, options?: ConfigurationOptions): Promise<string> {
         return this.api.uploadCharacterDocument(param.characterUid, param.file,  options).toPromise();
     }
 
@@ -2761,7 +2783,7 @@ export class ObjectCharacterApi {
      * Upload Character Picture
      * @param param the request object
      */
-    public uploadCharacterPictureWithHttpInfo(param: CharacterApiUploadCharacterPictureRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public uploadCharacterPictureWithHttpInfo(param: CharacterApiUploadCharacterPictureRequest, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.uploadCharacterPictureWithHttpInfo(param.characterUid, param.file,  options).toPromise();
     }
 
@@ -2770,7 +2792,7 @@ export class ObjectCharacterApi {
      * Upload Character Picture
      * @param param the request object
      */
-    public uploadCharacterPicture(param: CharacterApiUploadCharacterPictureRequest, options?: Configuration): Promise<string> {
+    public uploadCharacterPicture(param: CharacterApiUploadCharacterPictureRequest, options?: ConfigurationOptions): Promise<string> {
         return this.api.uploadCharacterPicture(param.characterUid, param.file,  options).toPromise();
     }
 
@@ -2779,7 +2801,7 @@ export class ObjectCharacterApi {
      * Upload Character Video
      * @param param the request object
      */
-    public uploadCharacterVideoWithHttpInfo(param: CharacterApiUploadCharacterVideoRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public uploadCharacterVideoWithHttpInfo(param: CharacterApiUploadCharacterVideoRequest, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.uploadCharacterVideoWithHttpInfo(param.characterUid, param.file,  options).toPromise();
     }
 
@@ -2788,7 +2810,7 @@ export class ObjectCharacterApi {
      * Upload Character Video
      * @param param the request object
      */
-    public uploadCharacterVideo(param: CharacterApiUploadCharacterVideoRequest, options?: Configuration): Promise<string> {
+    public uploadCharacterVideo(param: CharacterApiUploadCharacterVideoRequest, options?: ConfigurationOptions): Promise<string> {
         return this.api.uploadCharacterVideo(param.characterUid, param.file,  options).toPromise();
     }
 
@@ -2797,7 +2819,7 @@ export class ObjectCharacterApi {
      * Upload Character Voice
      * @param param the request object
      */
-    public uploadCharacterVoiceWithHttpInfo(param: CharacterApiUploadCharacterVoiceRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public uploadCharacterVoiceWithHttpInfo(param: CharacterApiUploadCharacterVoiceRequest, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.uploadCharacterVoiceWithHttpInfo(param.characterBackendId, param.file,  options).toPromise();
     }
 
@@ -2806,7 +2828,7 @@ export class ObjectCharacterApi {
      * Upload Character Voice
      * @param param the request object
      */
-    public uploadCharacterVoice(param: CharacterApiUploadCharacterVoiceRequest, options?: Configuration): Promise<string> {
+    public uploadCharacterVoice(param: CharacterApiUploadCharacterVoiceRequest, options?: ConfigurationOptions): Promise<string> {
         return this.api.uploadCharacterVoice(param.characterBackendId, param.file,  options).toPromise();
     }
 
@@ -2970,6 +2992,7 @@ export interface ChatApiRollbackMessagesRequest {
     chatId: string
     /**
      * Message count to be rolled back
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof ChatApirollbackMessages
@@ -3080,7 +3103,7 @@ export class ObjectChatApi {
      * Clear Memory
      * @param param the request object
      */
-    public clearMemoryWithHttpInfo(param: ChatApiClearMemoryRequest, options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+    public clearMemoryWithHttpInfo(param: ChatApiClearMemoryRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
         return this.api.clearMemoryWithHttpInfo(param.chatId,  options).toPromise();
     }
 
@@ -3089,7 +3112,7 @@ export class ObjectChatApi {
      * Clear Memory
      * @param param the request object
      */
-    public clearMemory(param: ChatApiClearMemoryRequest, options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
+    public clearMemory(param: ChatApiClearMemoryRequest, options?: ConfigurationOptions): Promise<Array<ChatMessageRecordDTO>> {
         return this.api.clearMemory(param.chatId,  options).toPromise();
     }
 
@@ -3098,7 +3121,7 @@ export class ObjectChatApi {
      * Delete Chat Session
      * @param param the request object
      */
-    public deleteChatWithHttpInfo(param: ChatApiDeleteChatRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public deleteChatWithHttpInfo(param: ChatApiDeleteChatRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.deleteChatWithHttpInfo(param.chatId,  options).toPromise();
     }
 
@@ -3107,7 +3130,7 @@ export class ObjectChatApi {
      * Delete Chat Session
      * @param param the request object
      */
-    public deleteChat(param: ChatApiDeleteChatRequest, options?: Configuration): Promise<boolean> {
+    public deleteChat(param: ChatApiDeleteChatRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.deleteChat(param.chatId,  options).toPromise();
     }
 
@@ -3116,7 +3139,7 @@ export class ObjectChatApi {
      * Get Default Chat
      * @param param the request object
      */
-    public getDefaultChatIdWithHttpInfo(param: ChatApiGetDefaultChatIdRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public getDefaultChatIdWithHttpInfo(param: ChatApiGetDefaultChatIdRequest, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.getDefaultChatIdWithHttpInfo(param.characterUid,  options).toPromise();
     }
 
@@ -3125,7 +3148,7 @@ export class ObjectChatApi {
      * Get Default Chat
      * @param param the request object
      */
-    public getDefaultChatId(param: ChatApiGetDefaultChatIdRequest, options?: Configuration): Promise<string> {
+    public getDefaultChatId(param: ChatApiGetDefaultChatIdRequest, options?: ConfigurationOptions): Promise<string> {
         return this.api.getDefaultChatId(param.characterUid,  options).toPromise();
     }
 
@@ -3134,7 +3157,7 @@ export class ObjectChatApi {
      * Get Memory Usage
      * @param param the request object
      */
-    public getMemoryUsageWithHttpInfo(param: ChatApiGetMemoryUsageRequest, options?: Configuration): Promise<HttpInfo<MemoryUsageDTO>> {
+    public getMemoryUsageWithHttpInfo(param: ChatApiGetMemoryUsageRequest, options?: ConfigurationOptions): Promise<HttpInfo<MemoryUsageDTO>> {
         return this.api.getMemoryUsageWithHttpInfo(param.chatId,  options).toPromise();
     }
 
@@ -3143,7 +3166,7 @@ export class ObjectChatApi {
      * Get Memory Usage
      * @param param the request object
      */
-    public getMemoryUsage(param: ChatApiGetMemoryUsageRequest, options?: Configuration): Promise<MemoryUsageDTO> {
+    public getMemoryUsage(param: ChatApiGetMemoryUsageRequest, options?: ConfigurationOptions): Promise<MemoryUsageDTO> {
         return this.api.getMemoryUsage(param.chatId,  options).toPromise();
     }
 
@@ -3152,7 +3175,7 @@ export class ObjectChatApi {
      * List Chats
      * @param param the request object
      */
-    public listChatsWithHttpInfo(param: ChatApiListChatsRequest = {}, options?: Configuration): Promise<HttpInfo<Array<ChatSessionDTO>>> {
+    public listChatsWithHttpInfo(param: ChatApiListChatsRequest = {}, options?: ConfigurationOptions): Promise<HttpInfo<Array<ChatSessionDTO>>> {
         return this.api.listChatsWithHttpInfo( options).toPromise();
     }
 
@@ -3161,7 +3184,7 @@ export class ObjectChatApi {
      * List Chats
      * @param param the request object
      */
-    public listChats(param: ChatApiListChatsRequest = {}, options?: Configuration): Promise<Array<ChatSessionDTO>> {
+    public listChats(param: ChatApiListChatsRequest = {}, options?: ConfigurationOptions): Promise<Array<ChatSessionDTO>> {
         return this.api.listChats( options).toPromise();
     }
 
@@ -3170,7 +3193,7 @@ export class ObjectChatApi {
      * List Chat Debug Messages
      * @param param the request object
      */
-    public listDebugMessagesWithHttpInfo(param: ChatApiListDebugMessagesRequest, options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+    public listDebugMessagesWithHttpInfo(param: ChatApiListDebugMessagesRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
         return this.api.listDebugMessagesWithHttpInfo(param.chatId, param.limit,  options).toPromise();
     }
 
@@ -3179,7 +3202,7 @@ export class ObjectChatApi {
      * List Chat Debug Messages
      * @param param the request object
      */
-    public listDebugMessages(param: ChatApiListDebugMessagesRequest, options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
+    public listDebugMessages(param: ChatApiListDebugMessagesRequest, options?: ConfigurationOptions): Promise<Array<ChatMessageRecordDTO>> {
         return this.api.listDebugMessages(param.chatId, param.limit,  options).toPromise();
     }
 
@@ -3188,7 +3211,7 @@ export class ObjectChatApi {
      * List Chat Debug Messages
      * @param param the request object
      */
-    public listDebugMessages1WithHttpInfo(param: ChatApiListDebugMessages1Request, options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+    public listDebugMessages1WithHttpInfo(param: ChatApiListDebugMessages1Request, options?: ConfigurationOptions): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
         return this.api.listDebugMessages1WithHttpInfo(param.chatId, param.limit, param.offset,  options).toPromise();
     }
 
@@ -3197,7 +3220,7 @@ export class ObjectChatApi {
      * List Chat Debug Messages
      * @param param the request object
      */
-    public listDebugMessages1(param: ChatApiListDebugMessages1Request, options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
+    public listDebugMessages1(param: ChatApiListDebugMessages1Request, options?: ConfigurationOptions): Promise<Array<ChatMessageRecordDTO>> {
         return this.api.listDebugMessages1(param.chatId, param.limit, param.offset,  options).toPromise();
     }
 
@@ -3206,7 +3229,7 @@ export class ObjectChatApi {
      * List Chat Debug Messages
      * @param param the request object
      */
-    public listDebugMessages2WithHttpInfo(param: ChatApiListDebugMessages2Request, options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+    public listDebugMessages2WithHttpInfo(param: ChatApiListDebugMessages2Request, options?: ConfigurationOptions): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
         return this.api.listDebugMessages2WithHttpInfo(param.chatId,  options).toPromise();
     }
 
@@ -3215,7 +3238,7 @@ export class ObjectChatApi {
      * List Chat Debug Messages
      * @param param the request object
      */
-    public listDebugMessages2(param: ChatApiListDebugMessages2Request, options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
+    public listDebugMessages2(param: ChatApiListDebugMessages2Request, options?: ConfigurationOptions): Promise<Array<ChatMessageRecordDTO>> {
         return this.api.listDebugMessages2(param.chatId,  options).toPromise();
     }
 
@@ -3224,7 +3247,7 @@ export class ObjectChatApi {
      * List Chat Messages
      * @param param the request object
      */
-    public listMessagesWithHttpInfo(param: ChatApiListMessagesRequest, options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+    public listMessagesWithHttpInfo(param: ChatApiListMessagesRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
         return this.api.listMessagesWithHttpInfo(param.chatId, param.limit,  options).toPromise();
     }
 
@@ -3233,7 +3256,7 @@ export class ObjectChatApi {
      * List Chat Messages
      * @param param the request object
      */
-    public listMessages(param: ChatApiListMessagesRequest, options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
+    public listMessages(param: ChatApiListMessagesRequest, options?: ConfigurationOptions): Promise<Array<ChatMessageRecordDTO>> {
         return this.api.listMessages(param.chatId, param.limit,  options).toPromise();
     }
 
@@ -3242,7 +3265,7 @@ export class ObjectChatApi {
      * List Chat Messages
      * @param param the request object
      */
-    public listMessages1WithHttpInfo(param: ChatApiListMessages1Request, options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+    public listMessages1WithHttpInfo(param: ChatApiListMessages1Request, options?: ConfigurationOptions): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
         return this.api.listMessages1WithHttpInfo(param.chatId, param.limit, param.offset,  options).toPromise();
     }
 
@@ -3251,7 +3274,7 @@ export class ObjectChatApi {
      * List Chat Messages
      * @param param the request object
      */
-    public listMessages1(param: ChatApiListMessages1Request, options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
+    public listMessages1(param: ChatApiListMessages1Request, options?: ConfigurationOptions): Promise<Array<ChatMessageRecordDTO>> {
         return this.api.listMessages1(param.chatId, param.limit, param.offset,  options).toPromise();
     }
 
@@ -3260,7 +3283,7 @@ export class ObjectChatApi {
      * List Chat Messages
      * @param param the request object
      */
-    public listMessages2WithHttpInfo(param: ChatApiListMessages2Request, options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+    public listMessages2WithHttpInfo(param: ChatApiListMessages2Request, options?: ConfigurationOptions): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
         return this.api.listMessages2WithHttpInfo(param.chatId,  options).toPromise();
     }
 
@@ -3269,7 +3292,7 @@ export class ObjectChatApi {
      * List Chat Messages
      * @param param the request object
      */
-    public listMessages2(param: ChatApiListMessages2Request, options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
+    public listMessages2(param: ChatApiListMessages2Request, options?: ConfigurationOptions): Promise<Array<ChatMessageRecordDTO>> {
         return this.api.listMessages2(param.chatId,  options).toPromise();
     }
 
@@ -3278,7 +3301,7 @@ export class ObjectChatApi {
      * Rollback Chat Messages
      * @param param the request object
      */
-    public rollbackMessagesWithHttpInfo(param: ChatApiRollbackMessagesRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
+    public rollbackMessagesWithHttpInfo(param: ChatApiRollbackMessagesRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<number>>> {
         return this.api.rollbackMessagesWithHttpInfo(param.chatId, param.count,  options).toPromise();
     }
 
@@ -3287,7 +3310,7 @@ export class ObjectChatApi {
      * Rollback Chat Messages
      * @param param the request object
      */
-    public rollbackMessages(param: ChatApiRollbackMessagesRequest, options?: Configuration): Promise<Array<number>> {
+    public rollbackMessages(param: ChatApiRollbackMessagesRequest, options?: ConfigurationOptions): Promise<Array<number>> {
         return this.api.rollbackMessages(param.chatId, param.count,  options).toPromise();
     }
 
@@ -3296,7 +3319,7 @@ export class ObjectChatApi {
      * Send Assistant for Chat Message
      * @param param the request object
      */
-    public sendAssistantWithHttpInfo(param: ChatApiSendAssistantRequest, options?: Configuration): Promise<HttpInfo<LlmResultDTO>> {
+    public sendAssistantWithHttpInfo(param: ChatApiSendAssistantRequest, options?: ConfigurationOptions): Promise<HttpInfo<LlmResultDTO>> {
         return this.api.sendAssistantWithHttpInfo(param.chatId, param.assistantUid,  options).toPromise();
     }
 
@@ -3305,7 +3328,7 @@ export class ObjectChatApi {
      * Send Assistant for Chat Message
      * @param param the request object
      */
-    public sendAssistant(param: ChatApiSendAssistantRequest, options?: Configuration): Promise<LlmResultDTO> {
+    public sendAssistant(param: ChatApiSendAssistantRequest, options?: ConfigurationOptions): Promise<LlmResultDTO> {
         return this.api.sendAssistant(param.chatId, param.assistantUid,  options).toPromise();
     }
 
@@ -3314,7 +3337,7 @@ export class ObjectChatApi {
      * Send Chat Message
      * @param param the request object
      */
-    public sendMessageWithHttpInfo(param: ChatApiSendMessageRequest, options?: Configuration): Promise<HttpInfo<LlmResultDTO>> {
+    public sendMessageWithHttpInfo(param: ChatApiSendMessageRequest, options?: ConfigurationOptions): Promise<HttpInfo<LlmResultDTO>> {
         return this.api.sendMessageWithHttpInfo(param.chatId, param.chatMessageDTO,  options).toPromise();
     }
 
@@ -3323,7 +3346,7 @@ export class ObjectChatApi {
      * Send Chat Message
      * @param param the request object
      */
-    public sendMessage(param: ChatApiSendMessageRequest, options?: Configuration): Promise<LlmResultDTO> {
+    public sendMessage(param: ChatApiSendMessageRequest, options?: ConfigurationOptions): Promise<LlmResultDTO> {
         return this.api.sendMessage(param.chatId, param.chatMessageDTO,  options).toPromise();
     }
 
@@ -3332,7 +3355,7 @@ export class ObjectChatApi {
      * Start Chat Session
      * @param param the request object
      */
-    public startChatWithHttpInfo(param: ChatApiStartChatRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public startChatWithHttpInfo(param: ChatApiStartChatRequest, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.startChatWithHttpInfo(param.chatCreateDTO,  options).toPromise();
     }
 
@@ -3341,7 +3364,7 @@ export class ObjectChatApi {
      * Start Chat Session
      * @param param the request object
      */
-    public startChat(param: ChatApiStartChatRequest, options?: Configuration): Promise<string> {
+    public startChat(param: ChatApiStartChatRequest, options?: ConfigurationOptions): Promise<string> {
         return this.api.startChat(param.chatCreateDTO,  options).toPromise();
     }
 
@@ -3350,7 +3373,7 @@ export class ObjectChatApi {
      * Send Assistant for Chat Message by Streaming Back
      * @param param the request object
      */
-    public streamSendAssistantWithHttpInfo(param: ChatApiStreamSendAssistantRequest, options?: Configuration): Promise<HttpInfo<SseEmitter>> {
+    public streamSendAssistantWithHttpInfo(param: ChatApiStreamSendAssistantRequest, options?: ConfigurationOptions): Promise<HttpInfo<SseEmitter>> {
         return this.api.streamSendAssistantWithHttpInfo(param.chatId, param.assistantUid,  options).toPromise();
     }
 
@@ -3359,7 +3382,7 @@ export class ObjectChatApi {
      * Send Assistant for Chat Message by Streaming Back
      * @param param the request object
      */
-    public streamSendAssistant(param: ChatApiStreamSendAssistantRequest, options?: Configuration): Promise<SseEmitter> {
+    public streamSendAssistant(param: ChatApiStreamSendAssistantRequest, options?: ConfigurationOptions): Promise<SseEmitter> {
         return this.api.streamSendAssistant(param.chatId, param.assistantUid,  options).toPromise();
     }
 
@@ -3368,7 +3391,7 @@ export class ObjectChatApi {
      * Send Chat Message by Streaming Back
      * @param param the request object
      */
-    public streamSendMessageWithHttpInfo(param: ChatApiStreamSendMessageRequest, options?: Configuration): Promise<HttpInfo<SseEmitter>> {
+    public streamSendMessageWithHttpInfo(param: ChatApiStreamSendMessageRequest, options?: ConfigurationOptions): Promise<HttpInfo<SseEmitter>> {
         return this.api.streamSendMessageWithHttpInfo(param.chatId, param.chatMessageDTO,  options).toPromise();
     }
 
@@ -3377,7 +3400,7 @@ export class ObjectChatApi {
      * Send Chat Message by Streaming Back
      * @param param the request object
      */
-    public streamSendMessage(param: ChatApiStreamSendMessageRequest, options?: Configuration): Promise<SseEmitter> {
+    public streamSendMessage(param: ChatApiStreamSendMessageRequest, options?: ConfigurationOptions): Promise<SseEmitter> {
         return this.api.streamSendMessage(param.chatId, param.chatMessageDTO,  options).toPromise();
     }
 
@@ -3386,7 +3409,7 @@ export class ObjectChatApi {
      * Update Chat Session
      * @param param the request object
      */
-    public updateChatWithHttpInfo(param: ChatApiUpdateChatRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public updateChatWithHttpInfo(param: ChatApiUpdateChatRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.updateChatWithHttpInfo(param.chatId, param.chatUpdateDTO,  options).toPromise();
     }
 
@@ -3395,7 +3418,7 @@ export class ObjectChatApi {
      * Update Chat Session
      * @param param the request object
      */
-    public updateChat(param: ChatApiUpdateChatRequest, options?: Configuration): Promise<boolean> {
+    public updateChat(param: ChatApiUpdateChatRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.updateChat(param.chatId, param.chatUpdateDTO,  options).toPromise();
     }
 
@@ -3426,7 +3449,7 @@ export class ObjectEncryptionManagerForAdminApi {
      * Encrypt Text
      * @param param the request object
      */
-    public encryptTextWithHttpInfo(param: EncryptionManagerForAdminApiEncryptTextRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public encryptTextWithHttpInfo(param: EncryptionManagerForAdminApiEncryptTextRequest, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.encryptTextWithHttpInfo(param.text,  options).toPromise();
     }
 
@@ -3435,7 +3458,7 @@ export class ObjectEncryptionManagerForAdminApi {
      * Encrypt Text
      * @param param the request object
      */
-    public encryptText(param: EncryptionManagerForAdminApiEncryptTextRequest, options?: Configuration): Promise<string> {
+    public encryptText(param: EncryptionManagerForAdminApiEncryptTextRequest, options?: ConfigurationOptions): Promise<string> {
         return this.api.encryptText(param.text,  options).toPromise();
     }
 
@@ -3881,7 +3904,7 @@ export class ObjectInteractiveStatisticsApi {
      * Add Statistics
      * @param param the request object
      */
-    public addStatisticWithHttpInfo(param: InteractiveStatisticsApiAddStatisticRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public addStatisticWithHttpInfo(param: InteractiveStatisticsApiAddStatisticRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.addStatisticWithHttpInfo(param.infoType, param.infoId, param.statsType, param.delta,  options).toPromise();
     }
 
@@ -3890,7 +3913,7 @@ export class ObjectInteractiveStatisticsApi {
      * Add Statistics
      * @param param the request object
      */
-    public addStatistic(param: InteractiveStatisticsApiAddStatisticRequest, options?: Configuration): Promise<number> {
+    public addStatistic(param: InteractiveStatisticsApiAddStatisticRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.addStatistic(param.infoType, param.infoId, param.statsType, param.delta,  options).toPromise();
     }
 
@@ -3899,7 +3922,7 @@ export class ObjectInteractiveStatisticsApi {
      * Get Score for Resource
      * @param param the request object
      */
-    public getScoreWithHttpInfo(param: InteractiveStatisticsApiGetScoreRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public getScoreWithHttpInfo(param: InteractiveStatisticsApiGetScoreRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.getScoreWithHttpInfo(param.infoType, param.infoId,  options).toPromise();
     }
 
@@ -3908,7 +3931,7 @@ export class ObjectInteractiveStatisticsApi {
      * Get Score for Resource
      * @param param the request object
      */
-    public getScore(param: InteractiveStatisticsApiGetScoreRequest, options?: Configuration): Promise<number> {
+    public getScore(param: InteractiveStatisticsApiGetScoreRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.getScore(param.infoType, param.infoId,  options).toPromise();
     }
 
@@ -3917,7 +3940,7 @@ export class ObjectInteractiveStatisticsApi {
      * Get Statistics
      * @param param the request object
      */
-    public getStatisticWithHttpInfo(param: InteractiveStatisticsApiGetStatisticRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public getStatisticWithHttpInfo(param: InteractiveStatisticsApiGetStatisticRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.getStatisticWithHttpInfo(param.infoType, param.infoId, param.statsType,  options).toPromise();
     }
 
@@ -3926,7 +3949,7 @@ export class ObjectInteractiveStatisticsApi {
      * Get Statistics
      * @param param the request object
      */
-    public getStatistic(param: InteractiveStatisticsApiGetStatisticRequest, options?: Configuration): Promise<number> {
+    public getStatistic(param: InteractiveStatisticsApiGetStatisticRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.getStatistic(param.infoType, param.infoId, param.statsType,  options).toPromise();
     }
 
@@ -3935,7 +3958,7 @@ export class ObjectInteractiveStatisticsApi {
      * Get All Statistics
      * @param param the request object
      */
-    public getStatisticsWithHttpInfo(param: InteractiveStatisticsApiGetStatisticsRequest, options?: Configuration): Promise<HttpInfo<InteractiveStatsDTO>> {
+    public getStatisticsWithHttpInfo(param: InteractiveStatisticsApiGetStatisticsRequest, options?: ConfigurationOptions): Promise<HttpInfo<InteractiveStatsDTO>> {
         return this.api.getStatisticsWithHttpInfo(param.infoType, param.infoId,  options).toPromise();
     }
 
@@ -3944,7 +3967,7 @@ export class ObjectInteractiveStatisticsApi {
      * Get All Statistics
      * @param param the request object
      */
-    public getStatistics(param: InteractiveStatisticsApiGetStatisticsRequest, options?: Configuration): Promise<InteractiveStatsDTO> {
+    public getStatistics(param: InteractiveStatisticsApiGetStatisticsRequest, options?: ConfigurationOptions): Promise<InteractiveStatsDTO> {
         return this.api.getStatistics(param.infoType, param.infoId,  options).toPromise();
     }
 
@@ -3953,7 +3976,7 @@ export class ObjectInteractiveStatisticsApi {
      * Increase Statistics
      * @param param the request object
      */
-    public increaseStatisticWithHttpInfo(param: InteractiveStatisticsApiIncreaseStatisticRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public increaseStatisticWithHttpInfo(param: InteractiveStatisticsApiIncreaseStatisticRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.increaseStatisticWithHttpInfo(param.infoType, param.infoId, param.statsType,  options).toPromise();
     }
 
@@ -3962,7 +3985,7 @@ export class ObjectInteractiveStatisticsApi {
      * Increase Statistics
      * @param param the request object
      */
-    public increaseStatistic(param: InteractiveStatisticsApiIncreaseStatisticRequest, options?: Configuration): Promise<number> {
+    public increaseStatistic(param: InteractiveStatisticsApiIncreaseStatisticRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.increaseStatistic(param.infoType, param.infoId, param.statsType,  options).toPromise();
     }
 
@@ -3971,7 +3994,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Agents by Statistics
      * @param param the request object
      */
-    public listAgentsByStatisticWithHttpInfo(param: InteractiveStatisticsApiListAgentsByStatisticRequest, options?: Configuration): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
+    public listAgentsByStatisticWithHttpInfo(param: InteractiveStatisticsApiListAgentsByStatisticRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
         return this.api.listAgentsByStatisticWithHttpInfo(param.statsType, param.pageSize, param.asc,  options).toPromise();
     }
 
@@ -3980,7 +4003,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Agents by Statistics
      * @param param the request object
      */
-    public listAgentsByStatistic(param: InteractiveStatisticsApiListAgentsByStatisticRequest, options?: Configuration): Promise<Array<AgentSummaryStatsDTO>> {
+    public listAgentsByStatistic(param: InteractiveStatisticsApiListAgentsByStatisticRequest, options?: ConfigurationOptions): Promise<Array<AgentSummaryStatsDTO>> {
         return this.api.listAgentsByStatistic(param.statsType, param.pageSize, param.asc,  options).toPromise();
     }
 
@@ -3989,7 +4012,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Agents by Statistics
      * @param param the request object
      */
-    public listAgentsByStatistic1WithHttpInfo(param: InteractiveStatisticsApiListAgentsByStatistic1Request, options?: Configuration): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
+    public listAgentsByStatistic1WithHttpInfo(param: InteractiveStatisticsApiListAgentsByStatistic1Request, options?: ConfigurationOptions): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
         return this.api.listAgentsByStatistic1WithHttpInfo(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
     }
 
@@ -3998,7 +4021,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Agents by Statistics
      * @param param the request object
      */
-    public listAgentsByStatistic1(param: InteractiveStatisticsApiListAgentsByStatistic1Request, options?: Configuration): Promise<Array<AgentSummaryStatsDTO>> {
+    public listAgentsByStatistic1(param: InteractiveStatisticsApiListAgentsByStatistic1Request, options?: ConfigurationOptions): Promise<Array<AgentSummaryStatsDTO>> {
         return this.api.listAgentsByStatistic1(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
     }
 
@@ -4007,7 +4030,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Agents by Statistics
      * @param param the request object
      */
-    public listAgentsByStatistic2WithHttpInfo(param: InteractiveStatisticsApiListAgentsByStatistic2Request, options?: Configuration): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
+    public listAgentsByStatistic2WithHttpInfo(param: InteractiveStatisticsApiListAgentsByStatistic2Request, options?: ConfigurationOptions): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
         return this.api.listAgentsByStatistic2WithHttpInfo(param.statsType, param.asc,  options).toPromise();
     }
 
@@ -4016,7 +4039,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Agents by Statistics
      * @param param the request object
      */
-    public listAgentsByStatistic2(param: InteractiveStatisticsApiListAgentsByStatistic2Request, options?: Configuration): Promise<Array<AgentSummaryStatsDTO>> {
+    public listAgentsByStatistic2(param: InteractiveStatisticsApiListAgentsByStatistic2Request, options?: ConfigurationOptions): Promise<Array<AgentSummaryStatsDTO>> {
         return this.api.listAgentsByStatistic2(param.statsType, param.asc,  options).toPromise();
     }
 
@@ -4025,7 +4048,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Characters by Statistics
      * @param param the request object
      */
-    public listCharactersByStatisticWithHttpInfo(param: InteractiveStatisticsApiListCharactersByStatisticRequest, options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
+    public listCharactersByStatisticWithHttpInfo(param: InteractiveStatisticsApiListCharactersByStatisticRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
         return this.api.listCharactersByStatisticWithHttpInfo(param.statsType, param.asc,  options).toPromise();
     }
 
@@ -4034,7 +4057,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Characters by Statistics
      * @param param the request object
      */
-    public listCharactersByStatistic(param: InteractiveStatisticsApiListCharactersByStatisticRequest, options?: Configuration): Promise<Array<CharacterSummaryStatsDTO>> {
+    public listCharactersByStatistic(param: InteractiveStatisticsApiListCharactersByStatisticRequest, options?: ConfigurationOptions): Promise<Array<CharacterSummaryStatsDTO>> {
         return this.api.listCharactersByStatistic(param.statsType, param.asc,  options).toPromise();
     }
 
@@ -4043,7 +4066,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Characters by Statistics
      * @param param the request object
      */
-    public listCharactersByStatistic1WithHttpInfo(param: InteractiveStatisticsApiListCharactersByStatistic1Request, options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
+    public listCharactersByStatistic1WithHttpInfo(param: InteractiveStatisticsApiListCharactersByStatistic1Request, options?: ConfigurationOptions): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
         return this.api.listCharactersByStatistic1WithHttpInfo(param.statsType, param.pageSize, param.asc,  options).toPromise();
     }
 
@@ -4052,7 +4075,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Characters by Statistics
      * @param param the request object
      */
-    public listCharactersByStatistic1(param: InteractiveStatisticsApiListCharactersByStatistic1Request, options?: Configuration): Promise<Array<CharacterSummaryStatsDTO>> {
+    public listCharactersByStatistic1(param: InteractiveStatisticsApiListCharactersByStatistic1Request, options?: ConfigurationOptions): Promise<Array<CharacterSummaryStatsDTO>> {
         return this.api.listCharactersByStatistic1(param.statsType, param.pageSize, param.asc,  options).toPromise();
     }
 
@@ -4061,7 +4084,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Characters by Statistics
      * @param param the request object
      */
-    public listCharactersByStatistic2WithHttpInfo(param: InteractiveStatisticsApiListCharactersByStatistic2Request, options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
+    public listCharactersByStatistic2WithHttpInfo(param: InteractiveStatisticsApiListCharactersByStatistic2Request, options?: ConfigurationOptions): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
         return this.api.listCharactersByStatistic2WithHttpInfo(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
     }
 
@@ -4070,7 +4093,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Characters by Statistics
      * @param param the request object
      */
-    public listCharactersByStatistic2(param: InteractiveStatisticsApiListCharactersByStatistic2Request, options?: Configuration): Promise<Array<CharacterSummaryStatsDTO>> {
+    public listCharactersByStatistic2(param: InteractiveStatisticsApiListCharactersByStatistic2Request, options?: ConfigurationOptions): Promise<Array<CharacterSummaryStatsDTO>> {
         return this.api.listCharactersByStatistic2(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
     }
 
@@ -4079,7 +4102,7 @@ export class ObjectInteractiveStatisticsApi {
      * Hot Tags
      * @param param the request object
      */
-    public listHotTagsWithHttpInfo(param: InteractiveStatisticsApiListHotTagsRequest, options?: Configuration): Promise<HttpInfo<Array<HotTagDTO>>> {
+    public listHotTagsWithHttpInfo(param: InteractiveStatisticsApiListHotTagsRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<HotTagDTO>>> {
         return this.api.listHotTagsWithHttpInfo(param.infoType, param.pageSize, param.text,  options).toPromise();
     }
 
@@ -4088,7 +4111,7 @@ export class ObjectInteractiveStatisticsApi {
      * Hot Tags
      * @param param the request object
      */
-    public listHotTags(param: InteractiveStatisticsApiListHotTagsRequest, options?: Configuration): Promise<Array<HotTagDTO>> {
+    public listHotTags(param: InteractiveStatisticsApiListHotTagsRequest, options?: ConfigurationOptions): Promise<Array<HotTagDTO>> {
         return this.api.listHotTags(param.infoType, param.pageSize, param.text,  options).toPromise();
     }
 
@@ -4097,7 +4120,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Plugins by Statistics
      * @param param the request object
      */
-    public listPluginsByStatisticWithHttpInfo(param: InteractiveStatisticsApiListPluginsByStatisticRequest, options?: Configuration): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
+    public listPluginsByStatisticWithHttpInfo(param: InteractiveStatisticsApiListPluginsByStatisticRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
         return this.api.listPluginsByStatisticWithHttpInfo(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
     }
 
@@ -4106,7 +4129,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Plugins by Statistics
      * @param param the request object
      */
-    public listPluginsByStatistic(param: InteractiveStatisticsApiListPluginsByStatisticRequest, options?: Configuration): Promise<Array<PluginSummaryStatsDTO>> {
+    public listPluginsByStatistic(param: InteractiveStatisticsApiListPluginsByStatisticRequest, options?: ConfigurationOptions): Promise<Array<PluginSummaryStatsDTO>> {
         return this.api.listPluginsByStatistic(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
     }
 
@@ -4115,7 +4138,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Plugins by Statistics
      * @param param the request object
      */
-    public listPluginsByStatistic1WithHttpInfo(param: InteractiveStatisticsApiListPluginsByStatistic1Request, options?: Configuration): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
+    public listPluginsByStatistic1WithHttpInfo(param: InteractiveStatisticsApiListPluginsByStatistic1Request, options?: ConfigurationOptions): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
         return this.api.listPluginsByStatistic1WithHttpInfo(param.statsType, param.asc,  options).toPromise();
     }
 
@@ -4124,7 +4147,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Plugins by Statistics
      * @param param the request object
      */
-    public listPluginsByStatistic1(param: InteractiveStatisticsApiListPluginsByStatistic1Request, options?: Configuration): Promise<Array<PluginSummaryStatsDTO>> {
+    public listPluginsByStatistic1(param: InteractiveStatisticsApiListPluginsByStatistic1Request, options?: ConfigurationOptions): Promise<Array<PluginSummaryStatsDTO>> {
         return this.api.listPluginsByStatistic1(param.statsType, param.asc,  options).toPromise();
     }
 
@@ -4133,7 +4156,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Plugins by Statistics
      * @param param the request object
      */
-    public listPluginsByStatistic2WithHttpInfo(param: InteractiveStatisticsApiListPluginsByStatistic2Request, options?: Configuration): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
+    public listPluginsByStatistic2WithHttpInfo(param: InteractiveStatisticsApiListPluginsByStatistic2Request, options?: ConfigurationOptions): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
         return this.api.listPluginsByStatistic2WithHttpInfo(param.statsType, param.pageSize, param.asc,  options).toPromise();
     }
 
@@ -4142,7 +4165,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Plugins by Statistics
      * @param param the request object
      */
-    public listPluginsByStatistic2(param: InteractiveStatisticsApiListPluginsByStatistic2Request, options?: Configuration): Promise<Array<PluginSummaryStatsDTO>> {
+    public listPluginsByStatistic2(param: InteractiveStatisticsApiListPluginsByStatistic2Request, options?: ConfigurationOptions): Promise<Array<PluginSummaryStatsDTO>> {
         return this.api.listPluginsByStatistic2(param.statsType, param.pageSize, param.asc,  options).toPromise();
     }
 
@@ -4151,7 +4174,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Prompts by Statistics
      * @param param the request object
      */
-    public listPromptsByStatisticWithHttpInfo(param: InteractiveStatisticsApiListPromptsByStatisticRequest, options?: Configuration): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
+    public listPromptsByStatisticWithHttpInfo(param: InteractiveStatisticsApiListPromptsByStatisticRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
         return this.api.listPromptsByStatisticWithHttpInfo(param.statsType, param.asc,  options).toPromise();
     }
 
@@ -4160,7 +4183,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Prompts by Statistics
      * @param param the request object
      */
-    public listPromptsByStatistic(param: InteractiveStatisticsApiListPromptsByStatisticRequest, options?: Configuration): Promise<Array<PromptSummaryStatsDTO>> {
+    public listPromptsByStatistic(param: InteractiveStatisticsApiListPromptsByStatisticRequest, options?: ConfigurationOptions): Promise<Array<PromptSummaryStatsDTO>> {
         return this.api.listPromptsByStatistic(param.statsType, param.asc,  options).toPromise();
     }
 
@@ -4169,7 +4192,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Prompts by Statistics
      * @param param the request object
      */
-    public listPromptsByStatistic1WithHttpInfo(param: InteractiveStatisticsApiListPromptsByStatistic1Request, options?: Configuration): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
+    public listPromptsByStatistic1WithHttpInfo(param: InteractiveStatisticsApiListPromptsByStatistic1Request, options?: ConfigurationOptions): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
         return this.api.listPromptsByStatistic1WithHttpInfo(param.statsType, param.pageSize, param.asc,  options).toPromise();
     }
 
@@ -4178,7 +4201,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Prompts by Statistics
      * @param param the request object
      */
-    public listPromptsByStatistic1(param: InteractiveStatisticsApiListPromptsByStatistic1Request, options?: Configuration): Promise<Array<PromptSummaryStatsDTO>> {
+    public listPromptsByStatistic1(param: InteractiveStatisticsApiListPromptsByStatistic1Request, options?: ConfigurationOptions): Promise<Array<PromptSummaryStatsDTO>> {
         return this.api.listPromptsByStatistic1(param.statsType, param.pageSize, param.asc,  options).toPromise();
     }
 
@@ -4187,7 +4210,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Prompts by Statistics
      * @param param the request object
      */
-    public listPromptsByStatistic2WithHttpInfo(param: InteractiveStatisticsApiListPromptsByStatistic2Request, options?: Configuration): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
+    public listPromptsByStatistic2WithHttpInfo(param: InteractiveStatisticsApiListPromptsByStatistic2Request, options?: ConfigurationOptions): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
         return this.api.listPromptsByStatistic2WithHttpInfo(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
     }
 
@@ -4196,7 +4219,7 @@ export class ObjectInteractiveStatisticsApi {
      * List Prompts by Statistics
      * @param param the request object
      */
-    public listPromptsByStatistic2(param: InteractiveStatisticsApiListPromptsByStatistic2Request, options?: Configuration): Promise<Array<PromptSummaryStatsDTO>> {
+    public listPromptsByStatistic2(param: InteractiveStatisticsApiListPromptsByStatistic2Request, options?: ConfigurationOptions): Promise<Array<PromptSummaryStatsDTO>> {
         return this.api.listPromptsByStatistic2(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
     }
 
@@ -4359,7 +4382,7 @@ export class ObjectOrganizationApi {
      * Get My Superior Relationship
      * @param param the request object
      */
-    public getOwnersWithHttpInfo(param: OrganizationApiGetOwnersRequest = {}, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public getOwnersWithHttpInfo(param: OrganizationApiGetOwnersRequest = {}, options?: ConfigurationOptions): Promise<HttpInfo<Array<string>>> {
         return this.api.getOwnersWithHttpInfo(param.all,  options).toPromise();
     }
 
@@ -4368,7 +4391,7 @@ export class ObjectOrganizationApi {
      * Get My Superior Relationship
      * @param param the request object
      */
-    public getOwners(param: OrganizationApiGetOwnersRequest = {}, options?: Configuration): Promise<Array<string>> {
+    public getOwners(param: OrganizationApiGetOwnersRequest = {}, options?: ConfigurationOptions): Promise<Array<string>> {
         return this.api.getOwners(param.all,  options).toPromise();
     }
 
@@ -4377,7 +4400,7 @@ export class ObjectOrganizationApi {
      * Get DOT of Superior Relationship
      * @param param the request object
      */
-    public getOwnersDotWithHttpInfo(param: OrganizationApiGetOwnersDotRequest = {}, options?: Configuration): Promise<HttpInfo<string>> {
+    public getOwnersDotWithHttpInfo(param: OrganizationApiGetOwnersDotRequest = {}, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.getOwnersDotWithHttpInfo(param.all,  options).toPromise();
     }
 
@@ -4386,7 +4409,7 @@ export class ObjectOrganizationApi {
      * Get DOT of Superior Relationship
      * @param param the request object
      */
-    public getOwnersDot(param: OrganizationApiGetOwnersDotRequest = {}, options?: Configuration): Promise<string> {
+    public getOwnersDot(param: OrganizationApiGetOwnersDotRequest = {}, options?: ConfigurationOptions): Promise<string> {
         return this.api.getOwnersDot(param.all,  options).toPromise();
     }
 
@@ -4395,7 +4418,7 @@ export class ObjectOrganizationApi {
      * Get Superior Relationship
      * @param param the request object
      */
-    public getSubordinateOwnersWithHttpInfo(param: OrganizationApiGetSubordinateOwnersRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public getSubordinateOwnersWithHttpInfo(param: OrganizationApiGetSubordinateOwnersRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<string>>> {
         return this.api.getSubordinateOwnersWithHttpInfo(param.username, param.all,  options).toPromise();
     }
 
@@ -4404,7 +4427,7 @@ export class ObjectOrganizationApi {
      * Get Superior Relationship
      * @param param the request object
      */
-    public getSubordinateOwners(param: OrganizationApiGetSubordinateOwnersRequest, options?: Configuration): Promise<Array<string>> {
+    public getSubordinateOwners(param: OrganizationApiGetSubordinateOwnersRequest, options?: ConfigurationOptions): Promise<Array<string>> {
         return this.api.getSubordinateOwners(param.username, param.all,  options).toPromise();
     }
 
@@ -4413,7 +4436,7 @@ export class ObjectOrganizationApi {
      * Get Subordinate Relationship
      * @param param the request object
      */
-    public getSubordinateSubordinatesWithHttpInfo(param: OrganizationApiGetSubordinateSubordinatesRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public getSubordinateSubordinatesWithHttpInfo(param: OrganizationApiGetSubordinateSubordinatesRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<string>>> {
         return this.api.getSubordinateSubordinatesWithHttpInfo(param.username, param.all,  options).toPromise();
     }
 
@@ -4422,7 +4445,7 @@ export class ObjectOrganizationApi {
      * Get Subordinate Relationship
      * @param param the request object
      */
-    public getSubordinateSubordinates(param: OrganizationApiGetSubordinateSubordinatesRequest, options?: Configuration): Promise<Array<string>> {
+    public getSubordinateSubordinates(param: OrganizationApiGetSubordinateSubordinatesRequest, options?: ConfigurationOptions): Promise<Array<string>> {
         return this.api.getSubordinateSubordinates(param.username, param.all,  options).toPromise();
     }
 
@@ -4431,7 +4454,7 @@ export class ObjectOrganizationApi {
      * Get My Subordinate Relationship
      * @param param the request object
      */
-    public getSubordinatesWithHttpInfo(param: OrganizationApiGetSubordinatesRequest = {}, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public getSubordinatesWithHttpInfo(param: OrganizationApiGetSubordinatesRequest = {}, options?: ConfigurationOptions): Promise<HttpInfo<Array<string>>> {
         return this.api.getSubordinatesWithHttpInfo(param.all,  options).toPromise();
     }
 
@@ -4440,7 +4463,7 @@ export class ObjectOrganizationApi {
      * Get My Subordinate Relationship
      * @param param the request object
      */
-    public getSubordinates(param: OrganizationApiGetSubordinatesRequest = {}, options?: Configuration): Promise<Array<string>> {
+    public getSubordinates(param: OrganizationApiGetSubordinatesRequest = {}, options?: ConfigurationOptions): Promise<Array<string>> {
         return this.api.getSubordinates(param.all,  options).toPromise();
     }
 
@@ -4449,7 +4472,7 @@ export class ObjectOrganizationApi {
      * Get DOT of Subordinate Relationship
      * @param param the request object
      */
-    public getSubordinatesDotWithHttpInfo(param: OrganizationApiGetSubordinatesDotRequest = {}, options?: Configuration): Promise<HttpInfo<string>> {
+    public getSubordinatesDotWithHttpInfo(param: OrganizationApiGetSubordinatesDotRequest = {}, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.getSubordinatesDotWithHttpInfo(param.all,  options).toPromise();
     }
 
@@ -4458,7 +4481,7 @@ export class ObjectOrganizationApi {
      * Get DOT of Subordinate Relationship
      * @param param the request object
      */
-    public getSubordinatesDot(param: OrganizationApiGetSubordinatesDotRequest = {}, options?: Configuration): Promise<string> {
+    public getSubordinatesDot(param: OrganizationApiGetSubordinatesDotRequest = {}, options?: ConfigurationOptions): Promise<string> {
         return this.api.getSubordinatesDot(param.all,  options).toPromise();
     }
 
@@ -4467,7 +4490,7 @@ export class ObjectOrganizationApi {
      * List Subordinate Permissions
      * @param param the request object
      */
-    public listSubordinateAuthoritiesWithHttpInfo(param: OrganizationApiListSubordinateAuthoritiesRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public listSubordinateAuthoritiesWithHttpInfo(param: OrganizationApiListSubordinateAuthoritiesRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<string>>> {
         return this.api.listSubordinateAuthoritiesWithHttpInfo(param.username,  options).toPromise();
     }
 
@@ -4476,7 +4499,7 @@ export class ObjectOrganizationApi {
      * List Subordinate Permissions
      * @param param the request object
      */
-    public listSubordinateAuthorities(param: OrganizationApiListSubordinateAuthoritiesRequest, options?: Configuration): Promise<Array<string>> {
+    public listSubordinateAuthorities(param: OrganizationApiListSubordinateAuthoritiesRequest, options?: ConfigurationOptions): Promise<Array<string>> {
         return this.api.listSubordinateAuthorities(param.username,  options).toPromise();
     }
 
@@ -4485,7 +4508,7 @@ export class ObjectOrganizationApi {
      * Clear Subordinate Relationship
      * @param param the request object
      */
-    public removeSubordinateSubordinatesTreeWithHttpInfo(param: OrganizationApiRemoveSubordinateSubordinatesTreeRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public removeSubordinateSubordinatesTreeWithHttpInfo(param: OrganizationApiRemoveSubordinateSubordinatesTreeRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.removeSubordinateSubordinatesTreeWithHttpInfo(param.username,  options).toPromise();
     }
 
@@ -4494,7 +4517,7 @@ export class ObjectOrganizationApi {
      * Clear Subordinate Relationship
      * @param param the request object
      */
-    public removeSubordinateSubordinatesTree(param: OrganizationApiRemoveSubordinateSubordinatesTreeRequest, options?: Configuration): Promise<boolean> {
+    public removeSubordinateSubordinatesTree(param: OrganizationApiRemoveSubordinateSubordinatesTreeRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.removeSubordinateSubordinatesTree(param.username,  options).toPromise();
     }
 
@@ -4503,7 +4526,7 @@ export class ObjectOrganizationApi {
      * Update Subordinate Permissions
      * @param param the request object
      */
-    public updateSubordinateAuthoritiesWithHttpInfo(param: OrganizationApiUpdateSubordinateAuthoritiesRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public updateSubordinateAuthoritiesWithHttpInfo(param: OrganizationApiUpdateSubordinateAuthoritiesRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.updateSubordinateAuthoritiesWithHttpInfo(param.username, param.requestBody,  options).toPromise();
     }
 
@@ -4512,7 +4535,7 @@ export class ObjectOrganizationApi {
      * Update Subordinate Permissions
      * @param param the request object
      */
-    public updateSubordinateAuthorities(param: OrganizationApiUpdateSubordinateAuthoritiesRequest, options?: Configuration): Promise<boolean> {
+    public updateSubordinateAuthorities(param: OrganizationApiUpdateSubordinateAuthoritiesRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.updateSubordinateAuthorities(param.username, param.requestBody,  options).toPromise();
     }
 
@@ -4521,7 +4544,7 @@ export class ObjectOrganizationApi {
      * Update Superior Relationship
      * @param param the request object
      */
-    public updateSubordinateOwnersWithHttpInfo(param: OrganizationApiUpdateSubordinateOwnersRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public updateSubordinateOwnersWithHttpInfo(param: OrganizationApiUpdateSubordinateOwnersRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.updateSubordinateOwnersWithHttpInfo(param.username, param.requestBody,  options).toPromise();
     }
 
@@ -4530,7 +4553,7 @@ export class ObjectOrganizationApi {
      * Update Superior Relationship
      * @param param the request object
      */
-    public updateSubordinateOwners(param: OrganizationApiUpdateSubordinateOwnersRequest, options?: Configuration): Promise<boolean> {
+    public updateSubordinateOwners(param: OrganizationApiUpdateSubordinateOwnersRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.updateSubordinateOwners(param.username, param.requestBody,  options).toPromise();
     }
 
@@ -4539,7 +4562,7 @@ export class ObjectOrganizationApi {
      * Update Subordinate Relationship
      * @param param the request object
      */
-    public updateSubordinateSubordinatesWithHttpInfo(param: OrganizationApiUpdateSubordinateSubordinatesRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public updateSubordinateSubordinatesWithHttpInfo(param: OrganizationApiUpdateSubordinateSubordinatesRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.updateSubordinateSubordinatesWithHttpInfo(param.username, param.requestBody,  options).toPromise();
     }
 
@@ -4548,7 +4571,7 @@ export class ObjectOrganizationApi {
      * Update Subordinate Relationship
      * @param param the request object
      */
-    public updateSubordinateSubordinates(param: OrganizationApiUpdateSubordinateSubordinatesRequest, options?: Configuration): Promise<boolean> {
+    public updateSubordinateSubordinates(param: OrganizationApiUpdateSubordinateSubordinatesRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.updateSubordinateSubordinates(param.username, param.requestBody,  options).toPromise();
     }
 
@@ -4605,6 +4628,7 @@ export interface PluginApiCreatePluginsRequest {
 export interface PluginApiDeletePluginRequest {
     /**
      * The pluginId to be deleted
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof PluginApideletePlugin
@@ -4624,6 +4648,7 @@ export interface PluginApiDeletePluginsRequest {
 export interface PluginApiGetPluginDetailsRequest {
     /**
      * PluginId to be obtained
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof PluginApigetPluginDetails
@@ -4634,6 +4659,7 @@ export interface PluginApiGetPluginDetailsRequest {
 export interface PluginApiGetPluginSummaryRequest {
     /**
      * PluginId to be obtained
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof PluginApigetPluginSummary
@@ -4644,6 +4670,7 @@ export interface PluginApiGetPluginSummaryRequest {
 export interface PluginApiRefreshPluginInfoRequest {
     /**
      * The pluginId to be fetched
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof PluginApirefreshPluginInfo
@@ -4672,6 +4699,7 @@ export interface PluginApiSearchPluginSummaryRequest {
 export interface PluginApiUpdatePluginRequest {
     /**
      * The pluginId to be updated
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof PluginApiupdatePlugin
@@ -4697,7 +4725,7 @@ export class ObjectPluginApi {
      * Batch Search Plugin Details
      * @param param the request object
      */
-    public batchSearchPluginDetailsWithHttpInfo(param: PluginApiBatchSearchPluginDetailsRequest, options?: Configuration): Promise<HttpInfo<Array<Array<PluginDetailsDTO>>>> {
+    public batchSearchPluginDetailsWithHttpInfo(param: PluginApiBatchSearchPluginDetailsRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<Array<PluginDetailsDTO>>>> {
         return this.api.batchSearchPluginDetailsWithHttpInfo(param.pluginQueryDTO,  options).toPromise();
     }
 
@@ -4706,7 +4734,7 @@ export class ObjectPluginApi {
      * Batch Search Plugin Details
      * @param param the request object
      */
-    public batchSearchPluginDetails(param: PluginApiBatchSearchPluginDetailsRequest, options?: Configuration): Promise<Array<Array<PluginDetailsDTO>>> {
+    public batchSearchPluginDetails(param: PluginApiBatchSearchPluginDetailsRequest, options?: ConfigurationOptions): Promise<Array<Array<PluginDetailsDTO>>> {
         return this.api.batchSearchPluginDetails(param.pluginQueryDTO,  options).toPromise();
     }
 
@@ -4715,7 +4743,7 @@ export class ObjectPluginApi {
      * Batch Search Plugin Summaries
      * @param param the request object
      */
-    public batchSearchPluginSummaryWithHttpInfo(param: PluginApiBatchSearchPluginSummaryRequest, options?: Configuration): Promise<HttpInfo<Array<Array<PluginSummaryDTO>>>> {
+    public batchSearchPluginSummaryWithHttpInfo(param: PluginApiBatchSearchPluginSummaryRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<Array<PluginSummaryDTO>>>> {
         return this.api.batchSearchPluginSummaryWithHttpInfo(param.pluginQueryDTO,  options).toPromise();
     }
 
@@ -4724,7 +4752,7 @@ export class ObjectPluginApi {
      * Batch Search Plugin Summaries
      * @param param the request object
      */
-    public batchSearchPluginSummary(param: PluginApiBatchSearchPluginSummaryRequest, options?: Configuration): Promise<Array<Array<PluginSummaryDTO>>> {
+    public batchSearchPluginSummary(param: PluginApiBatchSearchPluginSummaryRequest, options?: ConfigurationOptions): Promise<Array<Array<PluginSummaryDTO>>> {
         return this.api.batchSearchPluginSummary(param.pluginQueryDTO,  options).toPromise();
     }
 
@@ -4733,7 +4761,7 @@ export class ObjectPluginApi {
      * Calculate Number of Plugins
      * @param param the request object
      */
-    public countPluginsWithHttpInfo(param: PluginApiCountPluginsRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public countPluginsWithHttpInfo(param: PluginApiCountPluginsRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.countPluginsWithHttpInfo(param.pluginQueryDTO,  options).toPromise();
     }
 
@@ -4742,7 +4770,7 @@ export class ObjectPluginApi {
      * Calculate Number of Plugins
      * @param param the request object
      */
-    public countPlugins(param: PluginApiCountPluginsRequest, options?: Configuration): Promise<number> {
+    public countPlugins(param: PluginApiCountPluginsRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.countPlugins(param.pluginQueryDTO,  options).toPromise();
     }
 
@@ -4751,7 +4779,7 @@ export class ObjectPluginApi {
      * Create Plugin
      * @param param the request object
      */
-    public createPluginWithHttpInfo(param: PluginApiCreatePluginRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public createPluginWithHttpInfo(param: PluginApiCreatePluginRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.createPluginWithHttpInfo(param.pluginCreateDTO,  options).toPromise();
     }
 
@@ -4760,7 +4788,7 @@ export class ObjectPluginApi {
      * Create Plugin
      * @param param the request object
      */
-    public createPlugin(param: PluginApiCreatePluginRequest, options?: Configuration): Promise<number> {
+    public createPlugin(param: PluginApiCreatePluginRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.createPlugin(param.pluginCreateDTO,  options).toPromise();
     }
 
@@ -4769,7 +4797,7 @@ export class ObjectPluginApi {
      * Batch Create Plugins
      * @param param the request object
      */
-    public createPluginsWithHttpInfo(param: PluginApiCreatePluginsRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
+    public createPluginsWithHttpInfo(param: PluginApiCreatePluginsRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<number>>> {
         return this.api.createPluginsWithHttpInfo(param.pluginCreateDTO,  options).toPromise();
     }
 
@@ -4778,7 +4806,7 @@ export class ObjectPluginApi {
      * Batch Create Plugins
      * @param param the request object
      */
-    public createPlugins(param: PluginApiCreatePluginsRequest, options?: Configuration): Promise<Array<number>> {
+    public createPlugins(param: PluginApiCreatePluginsRequest, options?: ConfigurationOptions): Promise<Array<number>> {
         return this.api.createPlugins(param.pluginCreateDTO,  options).toPromise();
     }
 
@@ -4787,7 +4815,7 @@ export class ObjectPluginApi {
      * Delete Plugin
      * @param param the request object
      */
-    public deletePluginWithHttpInfo(param: PluginApiDeletePluginRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public deletePluginWithHttpInfo(param: PluginApiDeletePluginRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.deletePluginWithHttpInfo(param.pluginId,  options).toPromise();
     }
 
@@ -4796,7 +4824,7 @@ export class ObjectPluginApi {
      * Delete Plugin
      * @param param the request object
      */
-    public deletePlugin(param: PluginApiDeletePluginRequest, options?: Configuration): Promise<boolean> {
+    public deletePlugin(param: PluginApiDeletePluginRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.deletePlugin(param.pluginId,  options).toPromise();
     }
 
@@ -4805,7 +4833,7 @@ export class ObjectPluginApi {
      * Batch Delete Plugins
      * @param param the request object
      */
-    public deletePluginsWithHttpInfo(param: PluginApiDeletePluginsRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
+    public deletePluginsWithHttpInfo(param: PluginApiDeletePluginsRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<number>>> {
         return this.api.deletePluginsWithHttpInfo(param.requestBody,  options).toPromise();
     }
 
@@ -4814,7 +4842,7 @@ export class ObjectPluginApi {
      * Batch Delete Plugins
      * @param param the request object
      */
-    public deletePlugins(param: PluginApiDeletePluginsRequest, options?: Configuration): Promise<Array<number>> {
+    public deletePlugins(param: PluginApiDeletePluginsRequest, options?: ConfigurationOptions): Promise<Array<number>> {
         return this.api.deletePlugins(param.requestBody,  options).toPromise();
     }
 
@@ -4823,7 +4851,7 @@ export class ObjectPluginApi {
      * Get Plugin Details
      * @param param the request object
      */
-    public getPluginDetailsWithHttpInfo(param: PluginApiGetPluginDetailsRequest, options?: Configuration): Promise<HttpInfo<PluginDetailsDTO>> {
+    public getPluginDetailsWithHttpInfo(param: PluginApiGetPluginDetailsRequest, options?: ConfigurationOptions): Promise<HttpInfo<PluginDetailsDTO>> {
         return this.api.getPluginDetailsWithHttpInfo(param.pluginId,  options).toPromise();
     }
 
@@ -4832,7 +4860,7 @@ export class ObjectPluginApi {
      * Get Plugin Details
      * @param param the request object
      */
-    public getPluginDetails(param: PluginApiGetPluginDetailsRequest, options?: Configuration): Promise<PluginDetailsDTO> {
+    public getPluginDetails(param: PluginApiGetPluginDetailsRequest, options?: ConfigurationOptions): Promise<PluginDetailsDTO> {
         return this.api.getPluginDetails(param.pluginId,  options).toPromise();
     }
 
@@ -4841,7 +4869,7 @@ export class ObjectPluginApi {
      * Get Plugin Summary
      * @param param the request object
      */
-    public getPluginSummaryWithHttpInfo(param: PluginApiGetPluginSummaryRequest, options?: Configuration): Promise<HttpInfo<PluginSummaryDTO>> {
+    public getPluginSummaryWithHttpInfo(param: PluginApiGetPluginSummaryRequest, options?: ConfigurationOptions): Promise<HttpInfo<PluginSummaryDTO>> {
         return this.api.getPluginSummaryWithHttpInfo(param.pluginId,  options).toPromise();
     }
 
@@ -4850,7 +4878,7 @@ export class ObjectPluginApi {
      * Get Plugin Summary
      * @param param the request object
      */
-    public getPluginSummary(param: PluginApiGetPluginSummaryRequest, options?: Configuration): Promise<PluginSummaryDTO> {
+    public getPluginSummary(param: PluginApiGetPluginSummaryRequest, options?: ConfigurationOptions): Promise<PluginSummaryDTO> {
         return this.api.getPluginSummary(param.pluginId,  options).toPromise();
     }
 
@@ -4859,7 +4887,7 @@ export class ObjectPluginApi {
      * Refresh Plugin Information
      * @param param the request object
      */
-    public refreshPluginInfoWithHttpInfo(param: PluginApiRefreshPluginInfoRequest, options?: Configuration): Promise<HttpInfo<void>> {
+    public refreshPluginInfoWithHttpInfo(param: PluginApiRefreshPluginInfoRequest, options?: ConfigurationOptions): Promise<HttpInfo<void>> {
         return this.api.refreshPluginInfoWithHttpInfo(param.pluginId,  options).toPromise();
     }
 
@@ -4868,7 +4896,7 @@ export class ObjectPluginApi {
      * Refresh Plugin Information
      * @param param the request object
      */
-    public refreshPluginInfo(param: PluginApiRefreshPluginInfoRequest, options?: Configuration): Promise<void> {
+    public refreshPluginInfo(param: PluginApiRefreshPluginInfoRequest, options?: ConfigurationOptions): Promise<void> {
         return this.api.refreshPluginInfo(param.pluginId,  options).toPromise();
     }
 
@@ -4877,7 +4905,7 @@ export class ObjectPluginApi {
      * Search Plugin Details
      * @param param the request object
      */
-    public searchPluginDetailsWithHttpInfo(param: PluginApiSearchPluginDetailsRequest, options?: Configuration): Promise<HttpInfo<Array<PluginDetailsDTO>>> {
+    public searchPluginDetailsWithHttpInfo(param: PluginApiSearchPluginDetailsRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<PluginDetailsDTO>>> {
         return this.api.searchPluginDetailsWithHttpInfo(param.pluginQueryDTO,  options).toPromise();
     }
 
@@ -4886,7 +4914,7 @@ export class ObjectPluginApi {
      * Search Plugin Details
      * @param param the request object
      */
-    public searchPluginDetails(param: PluginApiSearchPluginDetailsRequest, options?: Configuration): Promise<Array<PluginDetailsDTO>> {
+    public searchPluginDetails(param: PluginApiSearchPluginDetailsRequest, options?: ConfigurationOptions): Promise<Array<PluginDetailsDTO>> {
         return this.api.searchPluginDetails(param.pluginQueryDTO,  options).toPromise();
     }
 
@@ -4895,7 +4923,7 @@ export class ObjectPluginApi {
      * Search Plugin Summary
      * @param param the request object
      */
-    public searchPluginSummaryWithHttpInfo(param: PluginApiSearchPluginSummaryRequest, options?: Configuration): Promise<HttpInfo<Array<PluginSummaryDTO>>> {
+    public searchPluginSummaryWithHttpInfo(param: PluginApiSearchPluginSummaryRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<PluginSummaryDTO>>> {
         return this.api.searchPluginSummaryWithHttpInfo(param.pluginQueryDTO,  options).toPromise();
     }
 
@@ -4904,7 +4932,7 @@ export class ObjectPluginApi {
      * Search Plugin Summary
      * @param param the request object
      */
-    public searchPluginSummary(param: PluginApiSearchPluginSummaryRequest, options?: Configuration): Promise<Array<PluginSummaryDTO>> {
+    public searchPluginSummary(param: PluginApiSearchPluginSummaryRequest, options?: ConfigurationOptions): Promise<Array<PluginSummaryDTO>> {
         return this.api.searchPluginSummary(param.pluginQueryDTO,  options).toPromise();
     }
 
@@ -4913,7 +4941,7 @@ export class ObjectPluginApi {
      * Update Plugin
      * @param param the request object
      */
-    public updatePluginWithHttpInfo(param: PluginApiUpdatePluginRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public updatePluginWithHttpInfo(param: PluginApiUpdatePluginRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.updatePluginWithHttpInfo(param.pluginId, param.pluginUpdateDTO,  options).toPromise();
     }
 
@@ -4922,7 +4950,7 @@ export class ObjectPluginApi {
      * Update Plugin
      * @param param the request object
      */
-    public updatePlugin(param: PluginApiUpdatePluginRequest, options?: Configuration): Promise<boolean> {
+    public updatePlugin(param: PluginApiUpdatePluginRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.updatePlugin(param.pluginId, param.pluginUpdateDTO,  options).toPromise();
     }
 
@@ -4970,6 +4998,7 @@ export interface PromptApiBatchSearchPromptSummaryRequest {
 export interface PromptApiClonePromptRequest {
     /**
      * The referenced promptId
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof PromptApiclonePrompt
@@ -5025,6 +5054,7 @@ export interface PromptApiCreatePromptsRequest {
 export interface PromptApiDeletePromptRequest {
     /**
      * The promptId to be deleted
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof PromptApideletePrompt
@@ -5064,6 +5094,7 @@ export interface PromptApiExistsPromptNameRequest {
 export interface PromptApiGetPromptDetailsRequest {
     /**
      * PromptId to be obtained
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof PromptApigetPromptDetails
@@ -5074,6 +5105,7 @@ export interface PromptApiGetPromptDetailsRequest {
 export interface PromptApiGetPromptSummaryRequest {
     /**
      * PromptId to be obtained
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof PromptApigetPromptSummary
@@ -5104,6 +5136,7 @@ export interface PromptApiNewPromptNameRequest {
 export interface PromptApiPublishPromptRequest {
     /**
      * The promptId to be published
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof PromptApipublishPrompt
@@ -5166,6 +5199,7 @@ export interface PromptApiStreamSendPromptRequest {
 export interface PromptApiUpdatePromptRequest {
     /**
      * The promptId to be updated
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof PromptApiupdatePrompt
@@ -5191,7 +5225,7 @@ export class ObjectPromptApi {
      * Apply Parameters to Prompt Record
      * @param param the request object
      */
-    public applyPromptRefWithHttpInfo(param: PromptApiApplyPromptRefRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public applyPromptRefWithHttpInfo(param: PromptApiApplyPromptRefRequest, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.applyPromptRefWithHttpInfo(param.promptRefDTO,  options).toPromise();
     }
 
@@ -5200,7 +5234,7 @@ export class ObjectPromptApi {
      * Apply Parameters to Prompt Record
      * @param param the request object
      */
-    public applyPromptRef(param: PromptApiApplyPromptRefRequest, options?: Configuration): Promise<string> {
+    public applyPromptRef(param: PromptApiApplyPromptRefRequest, options?: ConfigurationOptions): Promise<string> {
         return this.api.applyPromptRef(param.promptRefDTO,  options).toPromise();
     }
 
@@ -5209,7 +5243,7 @@ export class ObjectPromptApi {
      * Apply Parameters to Prompt Template
      * @param param the request object
      */
-    public applyPromptTemplateWithHttpInfo(param: PromptApiApplyPromptTemplateRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public applyPromptTemplateWithHttpInfo(param: PromptApiApplyPromptTemplateRequest, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.applyPromptTemplateWithHttpInfo(param.promptTemplateDTO,  options).toPromise();
     }
 
@@ -5218,7 +5252,7 @@ export class ObjectPromptApi {
      * Apply Parameters to Prompt Template
      * @param param the request object
      */
-    public applyPromptTemplate(param: PromptApiApplyPromptTemplateRequest, options?: Configuration): Promise<string> {
+    public applyPromptTemplate(param: PromptApiApplyPromptTemplateRequest, options?: ConfigurationOptions): Promise<string> {
         return this.api.applyPromptTemplate(param.promptTemplateDTO,  options).toPromise();
     }
 
@@ -5227,7 +5261,7 @@ export class ObjectPromptApi {
      * Batch Search Prompt Details
      * @param param the request object
      */
-    public batchSearchPromptDetailsWithHttpInfo(param: PromptApiBatchSearchPromptDetailsRequest, options?: Configuration): Promise<HttpInfo<Array<Array<PromptDetailsDTO>>>> {
+    public batchSearchPromptDetailsWithHttpInfo(param: PromptApiBatchSearchPromptDetailsRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<Array<PromptDetailsDTO>>>> {
         return this.api.batchSearchPromptDetailsWithHttpInfo(param.promptQueryDTO,  options).toPromise();
     }
 
@@ -5236,7 +5270,7 @@ export class ObjectPromptApi {
      * Batch Search Prompt Details
      * @param param the request object
      */
-    public batchSearchPromptDetails(param: PromptApiBatchSearchPromptDetailsRequest, options?: Configuration): Promise<Array<Array<PromptDetailsDTO>>> {
+    public batchSearchPromptDetails(param: PromptApiBatchSearchPromptDetailsRequest, options?: ConfigurationOptions): Promise<Array<Array<PromptDetailsDTO>>> {
         return this.api.batchSearchPromptDetails(param.promptQueryDTO,  options).toPromise();
     }
 
@@ -5245,7 +5279,7 @@ export class ObjectPromptApi {
      * Batch Search Prompt Summaries
      * @param param the request object
      */
-    public batchSearchPromptSummaryWithHttpInfo(param: PromptApiBatchSearchPromptSummaryRequest, options?: Configuration): Promise<HttpInfo<Array<Array<PromptSummaryDTO>>>> {
+    public batchSearchPromptSummaryWithHttpInfo(param: PromptApiBatchSearchPromptSummaryRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<Array<PromptSummaryDTO>>>> {
         return this.api.batchSearchPromptSummaryWithHttpInfo(param.promptQueryDTO,  options).toPromise();
     }
 
@@ -5254,7 +5288,7 @@ export class ObjectPromptApi {
      * Batch Search Prompt Summaries
      * @param param the request object
      */
-    public batchSearchPromptSummary(param: PromptApiBatchSearchPromptSummaryRequest, options?: Configuration): Promise<Array<Array<PromptSummaryDTO>>> {
+    public batchSearchPromptSummary(param: PromptApiBatchSearchPromptSummaryRequest, options?: ConfigurationOptions): Promise<Array<Array<PromptSummaryDTO>>> {
         return this.api.batchSearchPromptSummary(param.promptQueryDTO,  options).toPromise();
     }
 
@@ -5263,7 +5297,7 @@ export class ObjectPromptApi {
      * Clone Prompt
      * @param param the request object
      */
-    public clonePromptWithHttpInfo(param: PromptApiClonePromptRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public clonePromptWithHttpInfo(param: PromptApiClonePromptRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.clonePromptWithHttpInfo(param.promptId,  options).toPromise();
     }
 
@@ -5272,7 +5306,7 @@ export class ObjectPromptApi {
      * Clone Prompt
      * @param param the request object
      */
-    public clonePrompt(param: PromptApiClonePromptRequest, options?: Configuration): Promise<number> {
+    public clonePrompt(param: PromptApiClonePromptRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.clonePrompt(param.promptId,  options).toPromise();
     }
 
@@ -5281,7 +5315,7 @@ export class ObjectPromptApi {
      * Batch Clone Prompts
      * @param param the request object
      */
-    public clonePromptsWithHttpInfo(param: PromptApiClonePromptsRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
+    public clonePromptsWithHttpInfo(param: PromptApiClonePromptsRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<number>>> {
         return this.api.clonePromptsWithHttpInfo(param.requestBody,  options).toPromise();
     }
 
@@ -5290,7 +5324,7 @@ export class ObjectPromptApi {
      * Batch Clone Prompts
      * @param param the request object
      */
-    public clonePrompts(param: PromptApiClonePromptsRequest, options?: Configuration): Promise<Array<number>> {
+    public clonePrompts(param: PromptApiClonePromptsRequest, options?: ConfigurationOptions): Promise<Array<number>> {
         return this.api.clonePrompts(param.requestBody,  options).toPromise();
     }
 
@@ -5299,7 +5333,7 @@ export class ObjectPromptApi {
      * Calculate Number of Prompts
      * @param param the request object
      */
-    public countPromptsWithHttpInfo(param: PromptApiCountPromptsRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public countPromptsWithHttpInfo(param: PromptApiCountPromptsRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.countPromptsWithHttpInfo(param.promptQueryDTO,  options).toPromise();
     }
 
@@ -5308,7 +5342,7 @@ export class ObjectPromptApi {
      * Calculate Number of Prompts
      * @param param the request object
      */
-    public countPrompts(param: PromptApiCountPromptsRequest, options?: Configuration): Promise<number> {
+    public countPrompts(param: PromptApiCountPromptsRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.countPrompts(param.promptQueryDTO,  options).toPromise();
     }
 
@@ -5317,7 +5351,7 @@ export class ObjectPromptApi {
      * Calculate Number of Public Prompts
      * @param param the request object
      */
-    public countPublicPromptsWithHttpInfo(param: PromptApiCountPublicPromptsRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public countPublicPromptsWithHttpInfo(param: PromptApiCountPublicPromptsRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.countPublicPromptsWithHttpInfo(param.promptQueryDTO,  options).toPromise();
     }
 
@@ -5326,7 +5360,7 @@ export class ObjectPromptApi {
      * Calculate Number of Public Prompts
      * @param param the request object
      */
-    public countPublicPrompts(param: PromptApiCountPublicPromptsRequest, options?: Configuration): Promise<number> {
+    public countPublicPrompts(param: PromptApiCountPublicPromptsRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.countPublicPrompts(param.promptQueryDTO,  options).toPromise();
     }
 
@@ -5335,7 +5369,7 @@ export class ObjectPromptApi {
      * Create Prompt
      * @param param the request object
      */
-    public createPromptWithHttpInfo(param: PromptApiCreatePromptRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public createPromptWithHttpInfo(param: PromptApiCreatePromptRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.createPromptWithHttpInfo(param.promptCreateDTO,  options).toPromise();
     }
 
@@ -5344,7 +5378,7 @@ export class ObjectPromptApi {
      * Create Prompt
      * @param param the request object
      */
-    public createPrompt(param: PromptApiCreatePromptRequest, options?: Configuration): Promise<number> {
+    public createPrompt(param: PromptApiCreatePromptRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.createPrompt(param.promptCreateDTO,  options).toPromise();
     }
 
@@ -5353,7 +5387,7 @@ export class ObjectPromptApi {
      * Batch Create Prompts
      * @param param the request object
      */
-    public createPromptsWithHttpInfo(param: PromptApiCreatePromptsRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
+    public createPromptsWithHttpInfo(param: PromptApiCreatePromptsRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<number>>> {
         return this.api.createPromptsWithHttpInfo(param.promptCreateDTO,  options).toPromise();
     }
 
@@ -5362,7 +5396,7 @@ export class ObjectPromptApi {
      * Batch Create Prompts
      * @param param the request object
      */
-    public createPrompts(param: PromptApiCreatePromptsRequest, options?: Configuration): Promise<Array<number>> {
+    public createPrompts(param: PromptApiCreatePromptsRequest, options?: ConfigurationOptions): Promise<Array<number>> {
         return this.api.createPrompts(param.promptCreateDTO,  options).toPromise();
     }
 
@@ -5371,7 +5405,7 @@ export class ObjectPromptApi {
      * Delete Prompt
      * @param param the request object
      */
-    public deletePromptWithHttpInfo(param: PromptApiDeletePromptRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public deletePromptWithHttpInfo(param: PromptApiDeletePromptRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.deletePromptWithHttpInfo(param.promptId,  options).toPromise();
     }
 
@@ -5380,7 +5414,7 @@ export class ObjectPromptApi {
      * Delete Prompt
      * @param param the request object
      */
-    public deletePrompt(param: PromptApiDeletePromptRequest, options?: Configuration): Promise<boolean> {
+    public deletePrompt(param: PromptApiDeletePromptRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.deletePrompt(param.promptId,  options).toPromise();
     }
 
@@ -5389,7 +5423,7 @@ export class ObjectPromptApi {
      * Delete Prompt by Name
      * @param param the request object
      */
-    public deletePromptByNameWithHttpInfo(param: PromptApiDeletePromptByNameRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
+    public deletePromptByNameWithHttpInfo(param: PromptApiDeletePromptByNameRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<number>>> {
         return this.api.deletePromptByNameWithHttpInfo(param.name,  options).toPromise();
     }
 
@@ -5398,7 +5432,7 @@ export class ObjectPromptApi {
      * Delete Prompt by Name
      * @param param the request object
      */
-    public deletePromptByName(param: PromptApiDeletePromptByNameRequest, options?: Configuration): Promise<Array<number>> {
+    public deletePromptByName(param: PromptApiDeletePromptByNameRequest, options?: ConfigurationOptions): Promise<Array<number>> {
         return this.api.deletePromptByName(param.name,  options).toPromise();
     }
 
@@ -5407,7 +5441,7 @@ export class ObjectPromptApi {
      * Batch Delete Prompts
      * @param param the request object
      */
-    public deletePromptsWithHttpInfo(param: PromptApiDeletePromptsRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
+    public deletePromptsWithHttpInfo(param: PromptApiDeletePromptsRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<number>>> {
         return this.api.deletePromptsWithHttpInfo(param.requestBody,  options).toPromise();
     }
 
@@ -5416,7 +5450,7 @@ export class ObjectPromptApi {
      * Batch Delete Prompts
      * @param param the request object
      */
-    public deletePrompts(param: PromptApiDeletePromptsRequest, options?: Configuration): Promise<Array<number>> {
+    public deletePrompts(param: PromptApiDeletePromptsRequest, options?: ConfigurationOptions): Promise<Array<number>> {
         return this.api.deletePrompts(param.requestBody,  options).toPromise();
     }
 
@@ -5425,7 +5459,7 @@ export class ObjectPromptApi {
      * Check If Prompt Name Exists
      * @param param the request object
      */
-    public existsPromptNameWithHttpInfo(param: PromptApiExistsPromptNameRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public existsPromptNameWithHttpInfo(param: PromptApiExistsPromptNameRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.existsPromptNameWithHttpInfo(param.name,  options).toPromise();
     }
 
@@ -5434,7 +5468,7 @@ export class ObjectPromptApi {
      * Check If Prompt Name Exists
      * @param param the request object
      */
-    public existsPromptName(param: PromptApiExistsPromptNameRequest, options?: Configuration): Promise<boolean> {
+    public existsPromptName(param: PromptApiExistsPromptNameRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.existsPromptName(param.name,  options).toPromise();
     }
 
@@ -5443,7 +5477,7 @@ export class ObjectPromptApi {
      * Get Prompt Details
      * @param param the request object
      */
-    public getPromptDetailsWithHttpInfo(param: PromptApiGetPromptDetailsRequest, options?: Configuration): Promise<HttpInfo<PromptDetailsDTO>> {
+    public getPromptDetailsWithHttpInfo(param: PromptApiGetPromptDetailsRequest, options?: ConfigurationOptions): Promise<HttpInfo<PromptDetailsDTO>> {
         return this.api.getPromptDetailsWithHttpInfo(param.promptId,  options).toPromise();
     }
 
@@ -5452,7 +5486,7 @@ export class ObjectPromptApi {
      * Get Prompt Details
      * @param param the request object
      */
-    public getPromptDetails(param: PromptApiGetPromptDetailsRequest, options?: Configuration): Promise<PromptDetailsDTO> {
+    public getPromptDetails(param: PromptApiGetPromptDetailsRequest, options?: ConfigurationOptions): Promise<PromptDetailsDTO> {
         return this.api.getPromptDetails(param.promptId,  options).toPromise();
     }
 
@@ -5461,7 +5495,7 @@ export class ObjectPromptApi {
      * Get Prompt Summary
      * @param param the request object
      */
-    public getPromptSummaryWithHttpInfo(param: PromptApiGetPromptSummaryRequest, options?: Configuration): Promise<HttpInfo<PromptSummaryDTO>> {
+    public getPromptSummaryWithHttpInfo(param: PromptApiGetPromptSummaryRequest, options?: ConfigurationOptions): Promise<HttpInfo<PromptSummaryDTO>> {
         return this.api.getPromptSummaryWithHttpInfo(param.promptId,  options).toPromise();
     }
 
@@ -5470,7 +5504,7 @@ export class ObjectPromptApi {
      * Get Prompt Summary
      * @param param the request object
      */
-    public getPromptSummary(param: PromptApiGetPromptSummaryRequest, options?: Configuration): Promise<PromptSummaryDTO> {
+    public getPromptSummary(param: PromptApiGetPromptSummaryRequest, options?: ConfigurationOptions): Promise<PromptSummaryDTO> {
         return this.api.getPromptSummary(param.promptId,  options).toPromise();
     }
 
@@ -5479,7 +5513,7 @@ export class ObjectPromptApi {
      * List Versions by Prompt Name
      * @param param the request object
      */
-    public listPromptVersionsByNameWithHttpInfo(param: PromptApiListPromptVersionsByNameRequest, options?: Configuration): Promise<HttpInfo<Array<PromptItemForNameDTO>>> {
+    public listPromptVersionsByNameWithHttpInfo(param: PromptApiListPromptVersionsByNameRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<PromptItemForNameDTO>>> {
         return this.api.listPromptVersionsByNameWithHttpInfo(param.name,  options).toPromise();
     }
 
@@ -5488,7 +5522,7 @@ export class ObjectPromptApi {
      * List Versions by Prompt Name
      * @param param the request object
      */
-    public listPromptVersionsByName(param: PromptApiListPromptVersionsByNameRequest, options?: Configuration): Promise<Array<PromptItemForNameDTO>> {
+    public listPromptVersionsByName(param: PromptApiListPromptVersionsByNameRequest, options?: ConfigurationOptions): Promise<Array<PromptItemForNameDTO>> {
         return this.api.listPromptVersionsByName(param.name,  options).toPromise();
     }
 
@@ -5497,7 +5531,7 @@ export class ObjectPromptApi {
      * Create New Prompt Name
      * @param param the request object
      */
-    public newPromptNameWithHttpInfo(param: PromptApiNewPromptNameRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public newPromptNameWithHttpInfo(param: PromptApiNewPromptNameRequest, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.newPromptNameWithHttpInfo(param.desired,  options).toPromise();
     }
 
@@ -5506,7 +5540,7 @@ export class ObjectPromptApi {
      * Create New Prompt Name
      * @param param the request object
      */
-    public newPromptName(param: PromptApiNewPromptNameRequest, options?: Configuration): Promise<string> {
+    public newPromptName(param: PromptApiNewPromptNameRequest, options?: ConfigurationOptions): Promise<string> {
         return this.api.newPromptName(param.desired,  options).toPromise();
     }
 
@@ -5515,7 +5549,7 @@ export class ObjectPromptApi {
      * Publish Prompt
      * @param param the request object
      */
-    public publishPromptWithHttpInfo(param: PromptApiPublishPromptRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public publishPromptWithHttpInfo(param: PromptApiPublishPromptRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.publishPromptWithHttpInfo(param.promptId, param.visibility,  options).toPromise();
     }
 
@@ -5524,7 +5558,7 @@ export class ObjectPromptApi {
      * Publish Prompt
      * @param param the request object
      */
-    public publishPrompt(param: PromptApiPublishPromptRequest, options?: Configuration): Promise<number> {
+    public publishPrompt(param: PromptApiPublishPromptRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.publishPrompt(param.promptId, param.visibility,  options).toPromise();
     }
 
@@ -5533,7 +5567,7 @@ export class ObjectPromptApi {
      * Search Prompt Details
      * @param param the request object
      */
-    public searchPromptDetailsWithHttpInfo(param: PromptApiSearchPromptDetailsRequest, options?: Configuration): Promise<HttpInfo<Array<PromptDetailsDTO>>> {
+    public searchPromptDetailsWithHttpInfo(param: PromptApiSearchPromptDetailsRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<PromptDetailsDTO>>> {
         return this.api.searchPromptDetailsWithHttpInfo(param.promptQueryDTO,  options).toPromise();
     }
 
@@ -5542,7 +5576,7 @@ export class ObjectPromptApi {
      * Search Prompt Details
      * @param param the request object
      */
-    public searchPromptDetails(param: PromptApiSearchPromptDetailsRequest, options?: Configuration): Promise<Array<PromptDetailsDTO>> {
+    public searchPromptDetails(param: PromptApiSearchPromptDetailsRequest, options?: ConfigurationOptions): Promise<Array<PromptDetailsDTO>> {
         return this.api.searchPromptDetails(param.promptQueryDTO,  options).toPromise();
     }
 
@@ -5551,7 +5585,7 @@ export class ObjectPromptApi {
      * Search Prompt Summary
      * @param param the request object
      */
-    public searchPromptSummaryWithHttpInfo(param: PromptApiSearchPromptSummaryRequest, options?: Configuration): Promise<HttpInfo<Array<PromptSummaryDTO>>> {
+    public searchPromptSummaryWithHttpInfo(param: PromptApiSearchPromptSummaryRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<PromptSummaryDTO>>> {
         return this.api.searchPromptSummaryWithHttpInfo(param.promptQueryDTO,  options).toPromise();
     }
 
@@ -5560,7 +5594,7 @@ export class ObjectPromptApi {
      * Search Prompt Summary
      * @param param the request object
      */
-    public searchPromptSummary(param: PromptApiSearchPromptSummaryRequest, options?: Configuration): Promise<Array<PromptSummaryDTO>> {
+    public searchPromptSummary(param: PromptApiSearchPromptSummaryRequest, options?: ConfigurationOptions): Promise<Array<PromptSummaryDTO>> {
         return this.api.searchPromptSummary(param.promptQueryDTO,  options).toPromise();
     }
 
@@ -5569,7 +5603,7 @@ export class ObjectPromptApi {
      * Search Public Prompt Summary
      * @param param the request object
      */
-    public searchPublicPromptSummaryWithHttpInfo(param: PromptApiSearchPublicPromptSummaryRequest, options?: Configuration): Promise<HttpInfo<Array<PromptSummaryDTO>>> {
+    public searchPublicPromptSummaryWithHttpInfo(param: PromptApiSearchPublicPromptSummaryRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<PromptSummaryDTO>>> {
         return this.api.searchPublicPromptSummaryWithHttpInfo(param.promptQueryDTO,  options).toPromise();
     }
 
@@ -5578,7 +5612,7 @@ export class ObjectPromptApi {
      * Search Public Prompt Summary
      * @param param the request object
      */
-    public searchPublicPromptSummary(param: PromptApiSearchPublicPromptSummaryRequest, options?: Configuration): Promise<Array<PromptSummaryDTO>> {
+    public searchPublicPromptSummary(param: PromptApiSearchPublicPromptSummaryRequest, options?: ConfigurationOptions): Promise<Array<PromptSummaryDTO>> {
         return this.api.searchPublicPromptSummary(param.promptQueryDTO,  options).toPromise();
     }
 
@@ -5587,7 +5621,7 @@ export class ObjectPromptApi {
      * Send Prompt
      * @param param the request object
      */
-    public sendPromptWithHttpInfo(param: PromptApiSendPromptRequest, options?: Configuration): Promise<HttpInfo<LlmResultDTO>> {
+    public sendPromptWithHttpInfo(param: PromptApiSendPromptRequest, options?: ConfigurationOptions): Promise<HttpInfo<LlmResultDTO>> {
         return this.api.sendPromptWithHttpInfo(param.promptAiParamDTO,  options).toPromise();
     }
 
@@ -5596,7 +5630,7 @@ export class ObjectPromptApi {
      * Send Prompt
      * @param param the request object
      */
-    public sendPrompt(param: PromptApiSendPromptRequest, options?: Configuration): Promise<LlmResultDTO> {
+    public sendPrompt(param: PromptApiSendPromptRequest, options?: ConfigurationOptions): Promise<LlmResultDTO> {
         return this.api.sendPrompt(param.promptAiParamDTO,  options).toPromise();
     }
 
@@ -5605,7 +5639,7 @@ export class ObjectPromptApi {
      * Send Prompt by Streaming Back
      * @param param the request object
      */
-    public streamSendPromptWithHttpInfo(param: PromptApiStreamSendPromptRequest, options?: Configuration): Promise<HttpInfo<SseEmitter>> {
+    public streamSendPromptWithHttpInfo(param: PromptApiStreamSendPromptRequest, options?: ConfigurationOptions): Promise<HttpInfo<SseEmitter>> {
         return this.api.streamSendPromptWithHttpInfo(param.promptAiParamDTO,  options).toPromise();
     }
 
@@ -5614,7 +5648,7 @@ export class ObjectPromptApi {
      * Send Prompt by Streaming Back
      * @param param the request object
      */
-    public streamSendPrompt(param: PromptApiStreamSendPromptRequest, options?: Configuration): Promise<SseEmitter> {
+    public streamSendPrompt(param: PromptApiStreamSendPromptRequest, options?: ConfigurationOptions): Promise<SseEmitter> {
         return this.api.streamSendPrompt(param.promptAiParamDTO,  options).toPromise();
     }
 
@@ -5623,7 +5657,7 @@ export class ObjectPromptApi {
      * Update Prompt
      * @param param the request object
      */
-    public updatePromptWithHttpInfo(param: PromptApiUpdatePromptRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public updatePromptWithHttpInfo(param: PromptApiUpdatePromptRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.updatePromptWithHttpInfo(param.promptId, param.promptUpdateDTO,  options).toPromise();
     }
 
@@ -5632,7 +5666,7 @@ export class ObjectPromptApi {
      * Update Prompt
      * @param param the request object
      */
-    public updatePrompt(param: PromptApiUpdatePromptRequest, options?: Configuration): Promise<boolean> {
+    public updatePrompt(param: PromptApiUpdatePromptRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.updatePrompt(param.promptId, param.promptUpdateDTO,  options).toPromise();
     }
 
@@ -5698,7 +5732,7 @@ export class ObjectPromptTaskApi {
      * Create Prompt Task
      * @param param the request object
      */
-    public createPromptTaskWithHttpInfo(param: PromptTaskApiCreatePromptTaskRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public createPromptTaskWithHttpInfo(param: PromptTaskApiCreatePromptTaskRequest, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.createPromptTaskWithHttpInfo(param.promptTaskDTO,  options).toPromise();
     }
 
@@ -5707,7 +5741,7 @@ export class ObjectPromptTaskApi {
      * Create Prompt Task
      * @param param the request object
      */
-    public createPromptTask(param: PromptTaskApiCreatePromptTaskRequest, options?: Configuration): Promise<string> {
+    public createPromptTask(param: PromptTaskApiCreatePromptTaskRequest, options?: ConfigurationOptions): Promise<string> {
         return this.api.createPromptTask(param.promptTaskDTO,  options).toPromise();
     }
 
@@ -5716,7 +5750,7 @@ export class ObjectPromptTaskApi {
      * Delete Prompt Task
      * @param param the request object
      */
-    public deletePromptTaskWithHttpInfo(param: PromptTaskApiDeletePromptTaskRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public deletePromptTaskWithHttpInfo(param: PromptTaskApiDeletePromptTaskRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.deletePromptTaskWithHttpInfo(param.promptTaskId,  options).toPromise();
     }
 
@@ -5725,7 +5759,7 @@ export class ObjectPromptTaskApi {
      * Delete Prompt Task
      * @param param the request object
      */
-    public deletePromptTask(param: PromptTaskApiDeletePromptTaskRequest, options?: Configuration): Promise<boolean> {
+    public deletePromptTask(param: PromptTaskApiDeletePromptTaskRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.deletePromptTask(param.promptTaskId,  options).toPromise();
     }
 
@@ -5734,7 +5768,7 @@ export class ObjectPromptTaskApi {
      * Get Prompt Task
      * @param param the request object
      */
-    public getPromptTaskWithHttpInfo(param: PromptTaskApiGetPromptTaskRequest, options?: Configuration): Promise<HttpInfo<PromptTaskDetailsDTO>> {
+    public getPromptTaskWithHttpInfo(param: PromptTaskApiGetPromptTaskRequest, options?: ConfigurationOptions): Promise<HttpInfo<PromptTaskDetailsDTO>> {
         return this.api.getPromptTaskWithHttpInfo(param.promptTaskId,  options).toPromise();
     }
 
@@ -5743,7 +5777,7 @@ export class ObjectPromptTaskApi {
      * Get Prompt Task
      * @param param the request object
      */
-    public getPromptTask(param: PromptTaskApiGetPromptTaskRequest, options?: Configuration): Promise<PromptTaskDetailsDTO> {
+    public getPromptTask(param: PromptTaskApiGetPromptTaskRequest, options?: ConfigurationOptions): Promise<PromptTaskDetailsDTO> {
         return this.api.getPromptTask(param.promptTaskId,  options).toPromise();
     }
 
@@ -5752,7 +5786,7 @@ export class ObjectPromptTaskApi {
      * Update Prompt Task
      * @param param the request object
      */
-    public updatePromptTaskWithHttpInfo(param: PromptTaskApiUpdatePromptTaskRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public updatePromptTaskWithHttpInfo(param: PromptTaskApiUpdatePromptTaskRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.updatePromptTaskWithHttpInfo(param.promptTaskId, param.promptTaskDTO,  options).toPromise();
     }
 
@@ -5761,7 +5795,7 @@ export class ObjectPromptTaskApi {
      * Update Prompt Task
      * @param param the request object
      */
-    public updatePromptTask(param: PromptTaskApiUpdatePromptTaskRequest, options?: Configuration): Promise<boolean> {
+    public updatePromptTask(param: PromptTaskApiUpdatePromptTaskRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.updatePromptTask(param.promptTaskId, param.promptTaskDTO,  options).toPromise();
     }
 
@@ -5773,6 +5807,7 @@ import { RagApiRequestFactory, RagApiResponseProcessor} from "../apis/RagApi.js"
 export interface RagApiCancelRagTaskRequest {
     /**
      * The taskId to be canceled
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof RagApicancelRagTask
@@ -5799,6 +5834,7 @@ export interface RagApiCreateRagTaskRequest {
 export interface RagApiDeleteRagTaskRequest {
     /**
      * The taskId to be deleted
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof RagApideleteRagTask
@@ -5809,6 +5845,7 @@ export interface RagApiDeleteRagTaskRequest {
 export interface RagApiGetRagTaskRequest {
     /**
      * The taskId to be queried
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof RagApigetRagTask
@@ -5819,6 +5856,7 @@ export interface RagApiGetRagTaskRequest {
 export interface RagApiGetRagTaskStatusRequest {
     /**
      * The taskId to be queried status
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof RagApigetRagTaskStatus
@@ -5839,6 +5877,7 @@ export interface RagApiListRagTasksRequest {
 export interface RagApiStartRagTaskRequest {
     /**
      * The taskId to be started
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof RagApistartRagTask
@@ -5849,6 +5888,7 @@ export interface RagApiStartRagTaskRequest {
 export interface RagApiUpdateRagTaskRequest {
     /**
      * The taskId to be updated
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof RagApiupdateRagTask
@@ -5874,7 +5914,7 @@ export class ObjectRagApi {
      * Cancel RAG Task
      * @param param the request object
      */
-    public cancelRagTaskWithHttpInfo(param: RagApiCancelRagTaskRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public cancelRagTaskWithHttpInfo(param: RagApiCancelRagTaskRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.cancelRagTaskWithHttpInfo(param.taskId,  options).toPromise();
     }
 
@@ -5883,7 +5923,7 @@ export class ObjectRagApi {
      * Cancel RAG Task
      * @param param the request object
      */
-    public cancelRagTask(param: RagApiCancelRagTaskRequest, options?: Configuration): Promise<boolean> {
+    public cancelRagTask(param: RagApiCancelRagTaskRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.cancelRagTask(param.taskId,  options).toPromise();
     }
 
@@ -5892,7 +5932,7 @@ export class ObjectRagApi {
      * Create RAG Task
      * @param param the request object
      */
-    public createRagTaskWithHttpInfo(param: RagApiCreateRagTaskRequest, options?: Configuration): Promise<HttpInfo<number>> {
+    public createRagTaskWithHttpInfo(param: RagApiCreateRagTaskRequest, options?: ConfigurationOptions): Promise<HttpInfo<number>> {
         return this.api.createRagTaskWithHttpInfo(param.characterUid, param.ragTaskDTO,  options).toPromise();
     }
 
@@ -5901,7 +5941,7 @@ export class ObjectRagApi {
      * Create RAG Task
      * @param param the request object
      */
-    public createRagTask(param: RagApiCreateRagTaskRequest, options?: Configuration): Promise<number> {
+    public createRagTask(param: RagApiCreateRagTaskRequest, options?: ConfigurationOptions): Promise<number> {
         return this.api.createRagTask(param.characterUid, param.ragTaskDTO,  options).toPromise();
     }
 
@@ -5910,7 +5950,7 @@ export class ObjectRagApi {
      * Delete RAG Task
      * @param param the request object
      */
-    public deleteRagTaskWithHttpInfo(param: RagApiDeleteRagTaskRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public deleteRagTaskWithHttpInfo(param: RagApiDeleteRagTaskRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.deleteRagTaskWithHttpInfo(param.taskId,  options).toPromise();
     }
 
@@ -5919,7 +5959,7 @@ export class ObjectRagApi {
      * Delete RAG Task
      * @param param the request object
      */
-    public deleteRagTask(param: RagApiDeleteRagTaskRequest, options?: Configuration): Promise<boolean> {
+    public deleteRagTask(param: RagApiDeleteRagTaskRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.deleteRagTask(param.taskId,  options).toPromise();
     }
 
@@ -5928,7 +5968,7 @@ export class ObjectRagApi {
      * Get RAG Task
      * @param param the request object
      */
-    public getRagTaskWithHttpInfo(param: RagApiGetRagTaskRequest, options?: Configuration): Promise<HttpInfo<RagTaskDetailsDTO>> {
+    public getRagTaskWithHttpInfo(param: RagApiGetRagTaskRequest, options?: ConfigurationOptions): Promise<HttpInfo<RagTaskDetailsDTO>> {
         return this.api.getRagTaskWithHttpInfo(param.taskId,  options).toPromise();
     }
 
@@ -5937,7 +5977,7 @@ export class ObjectRagApi {
      * Get RAG Task
      * @param param the request object
      */
-    public getRagTask(param: RagApiGetRagTaskRequest, options?: Configuration): Promise<RagTaskDetailsDTO> {
+    public getRagTask(param: RagApiGetRagTaskRequest, options?: ConfigurationOptions): Promise<RagTaskDetailsDTO> {
         return this.api.getRagTask(param.taskId,  options).toPromise();
     }
 
@@ -5946,7 +5986,7 @@ export class ObjectRagApi {
      * Get RAG Task Status
      * @param param the request object
      */
-    public getRagTaskStatusWithHttpInfo(param: RagApiGetRagTaskStatusRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public getRagTaskStatusWithHttpInfo(param: RagApiGetRagTaskStatusRequest, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
         return this.api.getRagTaskStatusWithHttpInfo(param.taskId,  options).toPromise();
     }
 
@@ -5955,7 +5995,7 @@ export class ObjectRagApi {
      * Get RAG Task Status
      * @param param the request object
      */
-    public getRagTaskStatus(param: RagApiGetRagTaskStatusRequest, options?: Configuration): Promise<string> {
+    public getRagTaskStatus(param: RagApiGetRagTaskStatusRequest, options?: ConfigurationOptions): Promise<string> {
         return this.api.getRagTaskStatus(param.taskId,  options).toPromise();
     }
 
@@ -5964,7 +6004,7 @@ export class ObjectRagApi {
      * List RAG Tasks
      * @param param the request object
      */
-    public listRagTasksWithHttpInfo(param: RagApiListRagTasksRequest, options?: Configuration): Promise<HttpInfo<Array<RagTaskDetailsDTO>>> {
+    public listRagTasksWithHttpInfo(param: RagApiListRagTasksRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<RagTaskDetailsDTO>>> {
         return this.api.listRagTasksWithHttpInfo(param.characterUid,  options).toPromise();
     }
 
@@ -5973,7 +6013,7 @@ export class ObjectRagApi {
      * List RAG Tasks
      * @param param the request object
      */
-    public listRagTasks(param: RagApiListRagTasksRequest, options?: Configuration): Promise<Array<RagTaskDetailsDTO>> {
+    public listRagTasks(param: RagApiListRagTasksRequest, options?: ConfigurationOptions): Promise<Array<RagTaskDetailsDTO>> {
         return this.api.listRagTasks(param.characterUid,  options).toPromise();
     }
 
@@ -5982,7 +6022,7 @@ export class ObjectRagApi {
      * Start RAG Task
      * @param param the request object
      */
-    public startRagTaskWithHttpInfo(param: RagApiStartRagTaskRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public startRagTaskWithHttpInfo(param: RagApiStartRagTaskRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.startRagTaskWithHttpInfo(param.taskId,  options).toPromise();
     }
 
@@ -5991,7 +6031,7 @@ export class ObjectRagApi {
      * Start RAG Task
      * @param param the request object
      */
-    public startRagTask(param: RagApiStartRagTaskRequest, options?: Configuration): Promise<boolean> {
+    public startRagTask(param: RagApiStartRagTaskRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.startRagTask(param.taskId,  options).toPromise();
     }
 
@@ -6000,7 +6040,7 @@ export class ObjectRagApi {
      * Update RAG Task
      * @param param the request object
      */
-    public updateRagTaskWithHttpInfo(param: RagApiUpdateRagTaskRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public updateRagTaskWithHttpInfo(param: RagApiUpdateRagTaskRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.updateRagTaskWithHttpInfo(param.taskId, param.ragTaskDTO,  options).toPromise();
     }
 
@@ -6009,7 +6049,7 @@ export class ObjectRagApi {
      * Update RAG Task
      * @param param the request object
      */
-    public updateRagTask(param: RagApiUpdateRagTaskRequest, options?: Configuration): Promise<boolean> {
+    public updateRagTask(param: RagApiUpdateRagTaskRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.updateRagTask(param.taskId, param.ragTaskDTO,  options).toPromise();
     }
 
@@ -6041,6 +6081,7 @@ export interface TTSServiceApiPlaySampleRequest {
 export interface TTSServiceApiSpeakMessageRequest {
     /**
      * The message id
+     * Minimum: 0
      * Defaults to: undefined
      * @type number
      * @memberof TTSServiceApispeakMessage
@@ -6060,7 +6101,7 @@ export class ObjectTTSServiceApi {
      * List Builtin Speakers
      * @param param the request object
      */
-    public listTtsBuiltinSpeakersWithHttpInfo(param: TTSServiceApiListTtsBuiltinSpeakersRequest = {}, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public listTtsBuiltinSpeakersWithHttpInfo(param: TTSServiceApiListTtsBuiltinSpeakersRequest = {}, options?: ConfigurationOptions): Promise<HttpInfo<Array<string>>> {
         return this.api.listTtsBuiltinSpeakersWithHttpInfo( options).toPromise();
     }
 
@@ -6069,7 +6110,7 @@ export class ObjectTTSServiceApi {
      * List Builtin Speakers
      * @param param the request object
      */
-    public listTtsBuiltinSpeakers(param: TTSServiceApiListTtsBuiltinSpeakersRequest = {}, options?: Configuration): Promise<Array<string>> {
+    public listTtsBuiltinSpeakers(param: TTSServiceApiListTtsBuiltinSpeakersRequest = {}, options?: ConfigurationOptions): Promise<Array<string>> {
         return this.api.listTtsBuiltinSpeakers( options).toPromise();
     }
 
@@ -6078,7 +6119,7 @@ export class ObjectTTSServiceApi {
      * Play Sample Audio
      * @param param the request object
      */
-    public playSampleWithHttpInfo(param: TTSServiceApiPlaySampleRequest, options?: Configuration): Promise<HttpInfo<any>> {
+    public playSampleWithHttpInfo(param: TTSServiceApiPlaySampleRequest, options?: ConfigurationOptions): Promise<HttpInfo<any>> {
         return this.api.playSampleWithHttpInfo(param.speakerType, param.speaker,  options).toPromise();
     }
 
@@ -6087,7 +6128,7 @@ export class ObjectTTSServiceApi {
      * Play Sample Audio
      * @param param the request object
      */
-    public playSample(param: TTSServiceApiPlaySampleRequest, options?: Configuration): Promise<any> {
+    public playSample(param: TTSServiceApiPlaySampleRequest, options?: ConfigurationOptions): Promise<any> {
         return this.api.playSample(param.speakerType, param.speaker,  options).toPromise();
     }
 
@@ -6096,7 +6137,7 @@ export class ObjectTTSServiceApi {
      * Speak Message
      * @param param the request object
      */
-    public speakMessageWithHttpInfo(param: TTSServiceApiSpeakMessageRequest, options?: Configuration): Promise<HttpInfo<any>> {
+    public speakMessageWithHttpInfo(param: TTSServiceApiSpeakMessageRequest, options?: ConfigurationOptions): Promise<HttpInfo<any>> {
         return this.api.speakMessageWithHttpInfo(param.messageId,  options).toPromise();
     }
 
@@ -6105,7 +6146,7 @@ export class ObjectTTSServiceApi {
      * Speak Message
      * @param param the request object
      */
-    public speakMessage(param: TTSServiceApiSpeakMessageRequest, options?: Configuration): Promise<any> {
+    public speakMessage(param: TTSServiceApiSpeakMessageRequest, options?: ConfigurationOptions): Promise<any> {
         return this.api.speakMessage(param.messageId,  options).toPromise();
     }
 
@@ -6174,7 +6215,7 @@ export class ObjectTagManagerForBizAdminApi {
      * Create Tag
      * @param param the request object
      */
-    public createTagWithHttpInfo(param: TagManagerForBizAdminApiCreateTagRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public createTagWithHttpInfo(param: TagManagerForBizAdminApiCreateTagRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.createTagWithHttpInfo(param.referType, param.referId, param.tag,  options).toPromise();
     }
 
@@ -6183,7 +6224,7 @@ export class ObjectTagManagerForBizAdminApi {
      * Create Tag
      * @param param the request object
      */
-    public createTag(param: TagManagerForBizAdminApiCreateTagRequest, options?: Configuration): Promise<boolean> {
+    public createTag(param: TagManagerForBizAdminApiCreateTagRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.createTag(param.referType, param.referId, param.tag,  options).toPromise();
     }
 
@@ -6192,7 +6233,7 @@ export class ObjectTagManagerForBizAdminApi {
      * Delete Tag
      * @param param the request object
      */
-    public deleteTagWithHttpInfo(param: TagManagerForBizAdminApiDeleteTagRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+    public deleteTagWithHttpInfo(param: TagManagerForBizAdminApiDeleteTagRequest, options?: ConfigurationOptions): Promise<HttpInfo<boolean>> {
         return this.api.deleteTagWithHttpInfo(param.referType, param.referId, param.tag,  options).toPromise();
     }
 
@@ -6201,7 +6242,7 @@ export class ObjectTagManagerForBizAdminApi {
      * Delete Tag
      * @param param the request object
      */
-    public deleteTag(param: TagManagerForBizAdminApiDeleteTagRequest, options?: Configuration): Promise<boolean> {
+    public deleteTag(param: TagManagerForBizAdminApiDeleteTagRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.deleteTag(param.referType, param.referId, param.tag,  options).toPromise();
     }
 

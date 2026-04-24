@@ -74,7 +74,12 @@ const request: CharacterApiAddCharacterBackendRequest = {
     greetingPromptTaskId: "greetingPromptTaskId_example",
     moderationModelId: "moderationModelId_example",
     moderationApiKeyName: "moderationApiKeyName_example",
+    moderationApiKeyValue: "moderationApiKeyValue_example",
     moderationParams: "moderationParams_example",
+    imageModelId: "imageModelId_example",
+    imageApiKeyName: "imageApiKeyName_example",
+    imageApiKeyValue: "imageApiKeyValue_example",
+    imageParams: "imageParams_example",
     messageWindowSize: 1,
     longTermMemoryWindowSize: 1,
     proactiveChatWaitingTime: 1,
@@ -141,18 +146,7 @@ const request: CharacterApiBatchSearchCharacterDetailsRequest = {
     // Query conditions
   characterQueryDTO: [
     {
-      where: {
-        visibility: "visibility_example",
-        username: "username_example",
-        tags: [
-          "tags_example",
-        ],
-        tagsOp: "or",
-        name: "name_example",
-        lang: "lang_example",
-        text: "text_example",
-        highPriority: true,
-      },
+      where: null,
       orderBy: [
         "orderBy_example",
       ],
@@ -214,18 +208,7 @@ const request: CharacterApiBatchSearchCharacterSummaryRequest = {
     // Query conditions
   characterQueryDTO: [
     {
-      where: {
-        visibility: "visibility_example",
-        username: "username_example",
-        tags: [
-          "tags_example",
-        ],
-        tagsOp: "or",
-        name: "name_example",
-        lang: "lang_example",
-        text: "text_example",
-        highPriority: true,
-      },
+      where: null,
       orderBy: [
         "orderBy_example",
       ],
@@ -285,7 +268,7 @@ const apiInstance = new CharacterApi(configuration);
 
 const request: CharacterApiCloneCharacterRequest = {
     // The referenced characterId
-  characterId: 1,
+  characterId: 0,
 };
 
 const data = await apiInstance.cloneCharacter(request);
@@ -339,18 +322,7 @@ const apiInstance = new CharacterApi(configuration);
 const request: CharacterApiCountCharactersRequest = {
     // Query conditions
   characterQueryDTO: {
-    where: {
-      visibility: "visibility_example",
-      username: "username_example",
-      tags: [
-        "tags_example",
-      ],
-      tagsOp: "or",
-      name: "name_example",
-      lang: "lang_example",
-      text: "text_example",
-      highPriority: true,
-    },
+    where: null,
     orderBy: [
       "orderBy_example",
     ],
@@ -410,18 +382,7 @@ const apiInstance = new CharacterApi(configuration);
 const request: CharacterApiCountPublicCharactersRequest = {
     // Query conditions
   characterQueryDTO: {
-    where: {
-      visibility: "visibility_example",
-      username: "username_example",
-      tags: [
-        "tags_example",
-      ],
-      tagsOp: "or",
-      name: "name_example",
-      lang: "lang_example",
-      text: "text_example",
-      highPriority: true,
-    },
+    where: null,
     orderBy: [
       "orderBy_example",
     ],
@@ -554,7 +515,7 @@ const apiInstance = new CharacterApi(configuration);
 
 const request: CharacterApiDeleteCharacterRequest = {
     // The characterId to be deleted
-  characterId: 1,
+  characterId: 0,
 };
 
 const data = await apiInstance.deleteCharacter(request);
@@ -981,7 +942,7 @@ const apiInstance = new CharacterApi(configuration);
 
 const request: CharacterApiExportCharacterRequest = {
     // Character identifier
-  characterId: 1,
+  characterId: 0,
 };
 
 const data = await apiInstance.exportCharacter(request);
@@ -1034,7 +995,7 @@ const apiInstance = new CharacterApi(configuration);
 
 const request: CharacterApiGetCharacterDetailsRequest = {
     // CharacterId to be obtained
-  characterId: 1,
+  characterId: 0,
 };
 
 const data = await apiInstance.getCharacterDetails(request);
@@ -1140,7 +1101,7 @@ const apiInstance = new CharacterApi(configuration);
 
 const request: CharacterApiGetCharacterSummaryRequest = {
     // CharacterId to be obtained
-  characterId: 1,
+  characterId: 0,
 };
 
 const data = await apiInstance.getCharacterSummary(request);
@@ -1723,7 +1684,7 @@ const apiInstance = new CharacterApi(configuration);
 
 const request: CharacterApiPublishCharacterRequest = {
     // The characterId to be published
-  characterId: 1,
+  characterId: 0,
     // Visibility: public | private | ...
   visibility: "visibility_example",
 };
@@ -1779,7 +1740,7 @@ const apiInstance = new CharacterApi(configuration);
 
 const request: CharacterApiPublishCharacter1Request = {
     // The characterId to be published
-  characterId: 1,
+  characterId: 0,
 };
 
 const data = await apiInstance.publishCharacter1(request);
@@ -1886,18 +1847,7 @@ const apiInstance = new CharacterApi(configuration);
 const request: CharacterApiSearchCharacterDetailsRequest = {
     // Query conditions
   characterQueryDTO: {
-    where: {
-      visibility: "visibility_example",
-      username: "username_example",
-      tags: [
-        "tags_example",
-      ],
-      tagsOp: "or",
-      name: "name_example",
-      lang: "lang_example",
-      text: "text_example",
-      highPriority: true,
-    },
+    where: null,
     orderBy: [
       "orderBy_example",
     ],
@@ -1957,18 +1907,7 @@ const apiInstance = new CharacterApi(configuration);
 const request: CharacterApiSearchCharacterSummaryRequest = {
     // Query conditions
   characterQueryDTO: {
-    where: {
-      visibility: "visibility_example",
-      username: "username_example",
-      tags: [
-        "tags_example",
-      ],
-      tagsOp: "or",
-      name: "name_example",
-      lang: "lang_example",
-      text: "text_example",
-      highPriority: true,
-    },
+    where: null,
     orderBy: [
       "orderBy_example",
     ],
@@ -2028,18 +1967,7 @@ const apiInstance = new CharacterApi(configuration);
 const request: CharacterApiSearchPublicCharacterSummaryRequest = {
     // Query conditions
   characterQueryDTO: {
-    where: {
-      visibility: "visibility_example",
-      username: "username_example",
-      tags: [
-        "tags_example",
-      ],
-      tagsOp: "or",
-      name: "name_example",
-      lang: "lang_example",
-      text: "text_example",
-      highPriority: true,
-    },
+    where: null,
     orderBy: [
       "orderBy_example",
     ],
@@ -2151,7 +2079,7 @@ const apiInstance = new CharacterApi(configuration);
 
 const request: CharacterApiUpdateCharacterRequest = {
     // The characterId to be updated
-  characterId: 1,
+  characterId: 0,
     // The character information to be updated
   characterUpdateDTO: {
     parentUid: "parentUid_example",
@@ -2236,7 +2164,12 @@ const request: CharacterApiUpdateCharacterBackendRequest = {
     greetingPromptTaskId: "greetingPromptTaskId_example",
     moderationModelId: "moderationModelId_example",
     moderationApiKeyName: "moderationApiKeyName_example",
+    moderationApiKeyValue: "moderationApiKeyValue_example",
     moderationParams: "moderationParams_example",
+    imageModelId: "imageModelId_example",
+    imageApiKeyName: "imageApiKeyName_example",
+    imageApiKeyValue: "imageApiKeyValue_example",
+    imageParams: "imageParams_example",
     messageWindowSize: 1,
     longTermMemoryWindowSize: 1,
     proactiveChatWaitingTime: 1,

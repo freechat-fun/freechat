@@ -31,7 +31,7 @@ const apiInstance = new RagApi(configuration);
 
 const request: RagApiCancelRagTaskRequest = {
     // The taskId to be canceled
-  taskId: 1,
+  taskId: 0,
 };
 
 const data = await apiInstance.cancelRagTask(request);
@@ -145,7 +145,7 @@ const apiInstance = new RagApi(configuration);
 
 const request: RagApiDeleteRagTaskRequest = {
     // The taskId to be deleted
-  taskId: 1,
+  taskId: 0,
 };
 
 const data = await apiInstance.deleteRagTask(request);
@@ -198,7 +198,7 @@ const apiInstance = new RagApi(configuration);
 
 const request: RagApiGetRagTaskRequest = {
     // The taskId to be queried
-  taskId: 1,
+  taskId: 0,
 };
 
 const data = await apiInstance.getRagTask(request);
@@ -251,7 +251,7 @@ const apiInstance = new RagApi(configuration);
 
 const request: RagApiGetRagTaskStatusRequest = {
     // The taskId to be queried status
-  taskId: 1,
+  taskId: 0,
 };
 
 const data = await apiInstance.getRagTaskStatus(request);
@@ -357,7 +357,7 @@ const apiInstance = new RagApi(configuration);
 
 const request: RagApiStartRagTaskRequest = {
     // The taskId to be started
-  taskId: 1,
+  taskId: 0,
 };
 
 const data = await apiInstance.startRagTask(request);
@@ -410,7 +410,7 @@ const apiInstance = new RagApi(configuration);
 
 const request: RagApiUpdateRagTaskRequest = {
     // The taskId to be updated
-  taskId: 1,
+  taskId: 0,
     // The prompt task info to be updated
   ragTaskDTO: {
     sourceType: "url",

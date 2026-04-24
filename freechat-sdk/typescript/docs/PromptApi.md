@@ -109,51 +109,7 @@ const request: PromptApiApplyPromptTemplateRequest = {
     // String type prompt template
   promptTemplateDTO: {
     template: "template_example",
-    chatTemplate: {
-      system: "system_example",
-      messageToSend: {
-        role: "system",
-        name: "name_example",
-        contents: [
-          {
-            type: "video",
-            content: "content_example",
-          },
-        ],
-        toolCalls: [
-          {
-            id: "id_example",
-            name: "name_example",
-            arguments: "arguments_example",
-          },
-        ],
-        thinking: "thinking_example",
-        context: "context_example",
-        messageId: 1,
-      },
-      messages: [
-        {
-          role: "system",
-          name: "name_example",
-          contents: [
-            {
-              type: "video",
-              content: "content_example",
-            },
-          ],
-          toolCalls: [
-            {
-              id: "id_example",
-              name: "name_example",
-              arguments: "arguments_example",
-            },
-          ],
-          thinking: "thinking_example",
-          context: "context_example",
-          messageId: 1,
-        },
-      ],
-    },
+    chatTemplate: null,
     variables: {
       "key": null,
     },
@@ -213,22 +169,7 @@ const request: PromptApiBatchSearchPromptDetailsRequest = {
     // Query conditions
   promptQueryDTO: [
     {
-      where: {
-        visibility: "visibility_example",
-        username: "username_example",
-        tags: [
-          "tags_example",
-        ],
-        tagsOp: "or",
-        aiModels: [
-          "aiModels_example",
-        ],
-        aiModelsOp: "or",
-        name: "name_example",
-        type: "chat",
-        lang: "lang_example",
-        text: "text_example",
-      },
+      where: null,
       orderBy: [
         "orderBy_example",
       ],
@@ -290,22 +231,7 @@ const request: PromptApiBatchSearchPromptSummaryRequest = {
     // Query conditions
   promptQueryDTO: [
     {
-      where: {
-        visibility: "visibility_example",
-        username: "username_example",
-        tags: [
-          "tags_example",
-        ],
-        tagsOp: "or",
-        aiModels: [
-          "aiModels_example",
-        ],
-        aiModelsOp: "or",
-        name: "name_example",
-        type: "chat",
-        lang: "lang_example",
-        text: "text_example",
-      },
+      where: null,
       orderBy: [
         "orderBy_example",
       ],
@@ -365,7 +291,7 @@ const apiInstance = new PromptApi(configuration);
 
 const request: PromptApiClonePromptRequest = {
     // The referenced promptId
-  promptId: 1,
+  promptId: 0,
 };
 
 const data = await apiInstance.clonePrompt(request);
@@ -474,22 +400,7 @@ const apiInstance = new PromptApi(configuration);
 const request: PromptApiCountPromptsRequest = {
     // Query conditions
   promptQueryDTO: {
-    where: {
-      visibility: "visibility_example",
-      username: "username_example",
-      tags: [
-        "tags_example",
-      ],
-      tagsOp: "or",
-      aiModels: [
-        "aiModels_example",
-      ],
-      aiModelsOp: "or",
-      name: "name_example",
-      type: "chat",
-      lang: "lang_example",
-      text: "text_example",
-    },
+    where: null,
     orderBy: [
       "orderBy_example",
     ],
@@ -549,22 +460,7 @@ const apiInstance = new PromptApi(configuration);
 const request: PromptApiCountPublicPromptsRequest = {
     // Query conditions
   promptQueryDTO: {
-    where: {
-      visibility: "visibility_example",
-      username: "username_example",
-      tags: [
-        "tags_example",
-      ],
-      tagsOp: "or",
-      aiModels: [
-        "aiModels_example",
-      ],
-      aiModelsOp: "or",
-      name: "name_example",
-      type: "chat",
-      lang: "lang_example",
-      text: "text_example",
-    },
+    where: null,
     orderBy: [
       "orderBy_example",
     ],
@@ -629,51 +525,7 @@ const request: PromptApiCreatePromptRequest = {
     name: "name_example",
     description: "description_example",
     template: "template_example",
-    chatTemplate: {
-      system: "system_example",
-      messageToSend: {
-        role: "system",
-        name: "name_example",
-        contents: [
-          {
-            type: "video",
-            content: "content_example",
-          },
-        ],
-        toolCalls: [
-          {
-            id: "id_example",
-            name: "name_example",
-            arguments: "arguments_example",
-          },
-        ],
-        thinking: "thinking_example",
-        context: "context_example",
-        messageId: 1,
-      },
-      messages: [
-        {
-          role: "system",
-          name: "name_example",
-          contents: [
-            {
-              type: "video",
-              content: "content_example",
-            },
-          ],
-          toolCalls: [
-            {
-              id: "id_example",
-              name: "name_example",
-              arguments: "arguments_example",
-            },
-          ],
-          thinking: "thinking_example",
-          context: "context_example",
-          messageId: 1,
-        },
-      ],
-    },
+    chatTemplate: null,
     format: "f_string",
     lang: "lang_example",
     example: "example_example",
@@ -746,51 +598,7 @@ const request: PromptApiCreatePromptsRequest = {
       name: "name_example",
       description: "description_example",
       template: "template_example",
-      chatTemplate: {
-        system: "system_example",
-        messageToSend: {
-          role: "system",
-          name: "name_example",
-          contents: [
-            {
-              type: "video",
-              content: "content_example",
-            },
-          ],
-          toolCalls: [
-            {
-              id: "id_example",
-              name: "name_example",
-              arguments: "arguments_example",
-            },
-          ],
-          thinking: "thinking_example",
-          context: "context_example",
-          messageId: 1,
-        },
-        messages: [
-          {
-            role: "system",
-            name: "name_example",
-            contents: [
-              {
-                type: "video",
-                content: "content_example",
-              },
-            ],
-            toolCalls: [
-              {
-                id: "id_example",
-                name: "name_example",
-                arguments: "arguments_example",
-              },
-            ],
-            thinking: "thinking_example",
-            context: "context_example",
-            messageId: 1,
-          },
-        ],
-      },
+      chatTemplate: null,
       format: "f_string",
       lang: "lang_example",
       example: "example_example",
@@ -857,7 +665,7 @@ const apiInstance = new PromptApi(configuration);
 
 const request: PromptApiDeletePromptRequest = {
     // The promptId to be deleted
-  promptId: 1,
+  promptId: 0,
 };
 
 const data = await apiInstance.deletePrompt(request);
@@ -1071,7 +879,7 @@ const apiInstance = new PromptApi(configuration);
 
 const request: PromptApiGetPromptDetailsRequest = {
     // PromptId to be obtained
-  promptId: 1,
+  promptId: 0,
 };
 
 const data = await apiInstance.getPromptDetails(request);
@@ -1124,7 +932,7 @@ const apiInstance = new PromptApi(configuration);
 
 const request: PromptApiGetPromptSummaryRequest = {
     // PromptId to be obtained
-  promptId: 1,
+  promptId: 0,
 };
 
 const data = await apiInstance.getPromptSummary(request);
@@ -1283,7 +1091,7 @@ const apiInstance = new PromptApi(configuration);
 
 const request: PromptApiPublishPromptRequest = {
     // The promptId to be published
-  promptId: 1,
+  promptId: 0,
     // Visibility: public | private | ...
   visibility: "visibility_example",
 };
@@ -1340,22 +1148,7 @@ const apiInstance = new PromptApi(configuration);
 const request: PromptApiSearchPromptDetailsRequest = {
     // Query conditions
   promptQueryDTO: {
-    where: {
-      visibility: "visibility_example",
-      username: "username_example",
-      tags: [
-        "tags_example",
-      ],
-      tagsOp: "or",
-      aiModels: [
-        "aiModels_example",
-      ],
-      aiModelsOp: "or",
-      name: "name_example",
-      type: "chat",
-      lang: "lang_example",
-      text: "text_example",
-    },
+    where: null,
     orderBy: [
       "orderBy_example",
     ],
@@ -1415,22 +1208,7 @@ const apiInstance = new PromptApi(configuration);
 const request: PromptApiSearchPromptSummaryRequest = {
     // Query conditions
   promptQueryDTO: {
-    where: {
-      visibility: "visibility_example",
-      username: "username_example",
-      tags: [
-        "tags_example",
-      ],
-      tagsOp: "or",
-      aiModels: [
-        "aiModels_example",
-      ],
-      aiModelsOp: "or",
-      name: "name_example",
-      type: "chat",
-      lang: "lang_example",
-      text: "text_example",
-    },
+    where: null,
     orderBy: [
       "orderBy_example",
     ],
@@ -1490,22 +1268,7 @@ const apiInstance = new PromptApi(configuration);
 const request: PromptApiSearchPublicPromptSummaryRequest = {
     // Query conditions
   promptQueryDTO: {
-    where: {
-      visibility: "visibility_example",
-      username: "username_example",
-      tags: [
-        "tags_example",
-      ],
-      tagsOp: "or",
-      aiModels: [
-        "aiModels_example",
-      ],
-      aiModelsOp: "or",
-      name: "name_example",
-      type: "chat",
-      lang: "lang_example",
-      text: "text_example",
-    },
+    where: null,
     orderBy: [
       "orderBy_example",
     ],
@@ -1566,65 +1329,8 @@ const request: PromptApiSendPromptRequest = {
     // Call parameters
   promptAiParamDTO: {
     prompt: "prompt_example",
-    promptTemplate: {
-      template: "template_example",
-      chatTemplate: {
-        system: "system_example",
-        messageToSend: {
-          role: "system",
-          name: "name_example",
-          contents: [
-            {
-              type: "video",
-              content: "content_example",
-            },
-          ],
-          toolCalls: [
-            {
-              id: "id_example",
-              name: "name_example",
-              arguments: "arguments_example",
-            },
-          ],
-          thinking: "thinking_example",
-          context: "context_example",
-          messageId: 1,
-        },
-        messages: [
-          {
-            role: "system",
-            name: "name_example",
-            contents: [
-              {
-                type: "video",
-                content: "content_example",
-              },
-            ],
-            toolCalls: [
-              {
-                id: "id_example",
-                name: "name_example",
-                arguments: "arguments_example",
-              },
-            ],
-            thinking: "thinking_example",
-            context: "context_example",
-            messageId: 1,
-          },
-        ],
-      },
-      variables: {
-        "key": null,
-      },
-      format: "f_string",
-    },
-    promptRef: {
-      promptId: 1,
-      variables: {
-        "key": null,
-      },
-      draft: true,
-    },
+    promptTemplate: null,
+    promptRef: null,
     params: {
       "key": null,
     },
@@ -1683,65 +1389,8 @@ const request: PromptApiStreamSendPromptRequest = {
     // Call parameters
   promptAiParamDTO: {
     prompt: "prompt_example",
-    promptTemplate: {
-      template: "template_example",
-      chatTemplate: {
-        system: "system_example",
-        messageToSend: {
-          role: "system",
-          name: "name_example",
-          contents: [
-            {
-              type: "video",
-              content: "content_example",
-            },
-          ],
-          toolCalls: [
-            {
-              id: "id_example",
-              name: "name_example",
-              arguments: "arguments_example",
-            },
-          ],
-          thinking: "thinking_example",
-          context: "context_example",
-          messageId: 1,
-        },
-        messages: [
-          {
-            role: "system",
-            name: "name_example",
-            contents: [
-              {
-                type: "video",
-                content: "content_example",
-              },
-            ],
-            toolCalls: [
-              {
-                id: "id_example",
-                name: "name_example",
-                arguments: "arguments_example",
-              },
-            ],
-            thinking: "thinking_example",
-            context: "context_example",
-            messageId: 1,
-          },
-        ],
-      },
-      variables: {
-        "key": null,
-      },
-      format: "f_string",
-    },
-    promptRef: {
-      promptId: 1,
-      variables: {
-        "key": null,
-      },
-      draft: true,
-    },
+    promptTemplate: null,
+    promptRef: null,
     params: {
       "key": null,
     },
@@ -1798,7 +1447,7 @@ const apiInstance = new PromptApi(configuration);
 
 const request: PromptApiUpdatePromptRequest = {
     // The promptId to be updated
-  promptId: 1,
+  promptId: 0,
     // The prompt information to be updated
   promptUpdateDTO: {
     parentUid: "parentUid_example",
@@ -1806,51 +1455,7 @@ const request: PromptApiUpdatePromptRequest = {
     name: "name_example",
     description: "description_example",
     template: "template_example",
-    chatTemplate: {
-      system: "system_example",
-      messageToSend: {
-        role: "system",
-        name: "name_example",
-        contents: [
-          {
-            type: "video",
-            content: "content_example",
-          },
-        ],
-        toolCalls: [
-          {
-            id: "id_example",
-            name: "name_example",
-            arguments: "arguments_example",
-          },
-        ],
-        thinking: "thinking_example",
-        context: "context_example",
-        messageId: 1,
-      },
-      messages: [
-        {
-          role: "system",
-          name: "name_example",
-          contents: [
-            {
-              type: "video",
-              content: "content_example",
-            },
-          ],
-          toolCalls: [
-            {
-              id: "id_example",
-              name: "name_example",
-              arguments: "arguments_example",
-            },
-          ],
-          thinking: "thinking_example",
-          context: "context_example",
-          messageId: 1,
-        },
-      ],
-    },
+    chatTemplate: null,
     format: "f_string",
     lang: "lang_example",
     example: "example_example",

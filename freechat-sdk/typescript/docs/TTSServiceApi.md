@@ -128,7 +128,7 @@ const apiInstance = new TTSServiceApi(configuration);
 
 const request: TTSServiceApiSpeakMessageRequest = {
     // The message id
-  messageId: 1,
+  messageId: 0,
 };
 
 const data = await apiInstance.speakMessage(request);

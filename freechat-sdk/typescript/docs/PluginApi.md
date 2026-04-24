@@ -38,23 +38,7 @@ const request: PluginApiBatchSearchPluginDetailsRequest = {
     // Query conditions
   pluginQueryDTO: [
     {
-      where: {
-        visibility: "visibility_example",
-        username: "username_example",
-        manifestFormat: "manifestFormat_example",
-        apiFormat: "apiFormat_example",
-        tags: [
-          "tags_example",
-        ],
-        tagsOp: "or",
-        aiModels: [
-          "aiModels_example",
-        ],
-        aiModelsOp: "or",
-        name: "name_example",
-        provider: "provider_example",
-        text: "text_example",
-      },
+      where: null,
       orderBy: [
         "orderBy_example",
       ],
@@ -116,23 +100,7 @@ const request: PluginApiBatchSearchPluginSummaryRequest = {
     // Query conditions
   pluginQueryDTO: [
     {
-      where: {
-        visibility: "visibility_example",
-        username: "username_example",
-        manifestFormat: "manifestFormat_example",
-        apiFormat: "apiFormat_example",
-        tags: [
-          "tags_example",
-        ],
-        tagsOp: "or",
-        aiModels: [
-          "aiModels_example",
-        ],
-        aiModelsOp: "or",
-        name: "name_example",
-        provider: "provider_example",
-        text: "text_example",
-      },
+      where: null,
       orderBy: [
         "orderBy_example",
       ],
@@ -193,23 +161,7 @@ const apiInstance = new PluginApi(configuration);
 const request: PluginApiCountPluginsRequest = {
     // Query conditions
   pluginQueryDTO: {
-    where: {
-      visibility: "visibility_example",
-      username: "username_example",
-      manifestFormat: "manifestFormat_example",
-      apiFormat: "apiFormat_example",
-      tags: [
-        "tags_example",
-      ],
-      tagsOp: "or",
-      aiModels: [
-        "aiModels_example",
-      ],
-      aiModelsOp: "or",
-      name: "name_example",
-      provider: "provider_example",
-      text: "text_example",
-    },
+    where: null,
     orderBy: [
       "orderBy_example",
     ],
@@ -406,7 +358,7 @@ const apiInstance = new PluginApi(configuration);
 
 const request: PluginApiDeletePluginRequest = {
     // The pluginId to be deleted
-  pluginId: 1,
+  pluginId: 0,
 };
 
 const data = await apiInstance.deletePlugin(request);
@@ -514,7 +466,7 @@ const apiInstance = new PluginApi(configuration);
 
 const request: PluginApiGetPluginDetailsRequest = {
     // PluginId to be obtained
-  pluginId: 1,
+  pluginId: 0,
 };
 
 const data = await apiInstance.getPluginDetails(request);
@@ -567,7 +519,7 @@ const apiInstance = new PluginApi(configuration);
 
 const request: PluginApiGetPluginSummaryRequest = {
     // PluginId to be obtained
-  pluginId: 1,
+  pluginId: 0,
 };
 
 const data = await apiInstance.getPluginSummary(request);
@@ -620,7 +572,7 @@ const apiInstance = new PluginApi(configuration);
 
 const request: PluginApiRefreshPluginInfoRequest = {
     // The pluginId to be fetched
-  pluginId: 1,
+  pluginId: 0,
 };
 
 const data = await apiInstance.refreshPluginInfo(request);
@@ -674,23 +626,7 @@ const apiInstance = new PluginApi(configuration);
 const request: PluginApiSearchPluginDetailsRequest = {
     // Query conditions
   pluginQueryDTO: {
-    where: {
-      visibility: "visibility_example",
-      username: "username_example",
-      manifestFormat: "manifestFormat_example",
-      apiFormat: "apiFormat_example",
-      tags: [
-        "tags_example",
-      ],
-      tagsOp: "or",
-      aiModels: [
-        "aiModels_example",
-      ],
-      aiModelsOp: "or",
-      name: "name_example",
-      provider: "provider_example",
-      text: "text_example",
-    },
+    where: null,
     orderBy: [
       "orderBy_example",
     ],
@@ -750,23 +686,7 @@ const apiInstance = new PluginApi(configuration);
 const request: PluginApiSearchPluginSummaryRequest = {
     // Query conditions
   pluginQueryDTO: {
-    where: {
-      visibility: "visibility_example",
-      username: "username_example",
-      manifestFormat: "manifestFormat_example",
-      apiFormat: "apiFormat_example",
-      tags: [
-        "tags_example",
-      ],
-      tagsOp: "or",
-      aiModels: [
-        "aiModels_example",
-      ],
-      aiModelsOp: "or",
-      name: "name_example",
-      provider: "provider_example",
-      text: "text_example",
-    },
+    where: null,
     orderBy: [
       "orderBy_example",
     ],
@@ -825,7 +745,7 @@ const apiInstance = new PluginApi(configuration);
 
 const request: PluginApiUpdatePluginRequest = {
     // The pluginId to be updated
-  pluginId: 1,
+  pluginId: 0,
     // The plugin information to be updated
   pluginUpdateDTO: {
     visibility: "visibility_example",
