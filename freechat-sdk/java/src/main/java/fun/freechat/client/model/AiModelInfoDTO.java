@@ -184,7 +184,7 @@ public class AiModelInfoDTO {
   }
 
   /**
-   * Model type: text2text | text2chat | text2image | embedding | moderation
+   * Model type: text2text | text2chat | text2image | embedding | moderation | multimodal
    * @return type
    */
   @javax.annotation.Nullable

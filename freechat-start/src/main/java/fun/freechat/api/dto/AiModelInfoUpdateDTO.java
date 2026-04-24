@@ -19,7 +19,7 @@ public class AiModelInfoUpdateDTO {
     @Pattern(regexp = "hugging_face|open_ai|azure_open_ai|dash_scope|ollama|unknown")
     private String provider;
 
-    @Schema(description = "Model type: text2text | text2chat | text2image | embedding | moderation")
+    @Schema(description = "Model type: text2text | text2chat | text2image | embedding | moderation | multimodal")
     @Pattern(regexp = "text2text|text2chat|text2image|embedding|moderation")
     private String type;
 }
