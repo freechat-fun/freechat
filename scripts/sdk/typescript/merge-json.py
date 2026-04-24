@@ -18,6 +18,16 @@ def _save(outfile, obj):
         json.dump(obj, outfile, indent=2)
 
 
+def _index_value(index_obj):
+    value = getattr(index_obj, 'index', getattr(index_obj, 'idx', None))
+    if value is not None:
+        return value
+    indices = getattr(index_obj, 'indices', None)
+    if isinstance(indices, tuple) and len(indices) == 1:
+        return indices[0]
+    return None
+
+
 def _iterate(obj, path=''):
     if isinstance(obj, dict):
         for k, v in obj.items():
@@ -34,11 +44,13 @@ def _fields(obj):
     if isinstance(obj, jsonpath.Fields):
         for key in obj.fields:
             yield key
+    elif isinstance(obj, jsonpath.Index):
+        yield _index_value(obj)
     elif isinstance(obj, jsonpath.Child):
         yield from _fields(obj.left)
         yield from _fields(obj.right)
     else:
-        print(sys.stderr, 'Not supported yet.')
+        print('Not supported yet.', file=sys.stderr)
         exit(-3)
 
 
@@ -50,24 +62,51 @@ def _merge(obj, updates):
             if isinstance(match.path, jsonpath.Fields):
                 field = match.path.fields[0]
             elif isinstance(match.path, jsonpath.Index):
-                field = match.path.index
+                field = _index_value(match.path)
+                if field is None:
+                    print('Not supported yet.', file=sys.stderr)
+                    exit(-2)
             else:
-                print(sys.stderr, 'Not supported yet.')
+                print('Not supported yet.', file=sys.stderr)
                 exit(-2)
             parent = match.context.value
             parent[field] = value
             found = True
 
         if not found:
+            fields = list(_fields(jsonpath_expr))
             elem = obj
-            last_field = None
-            for field in _fields(jsonpath_expr):
-                if last_field:
-                    elem = elem[last_field]
-                if field not in elem:
-                    elem[field] = {}
-                last_field = field
+            for i, field in enumerate(fields[:-1]):
+                next_field = fields[i + 1]
+                child_template = [] if isinstance(next_field, int) else {}
 
+                if isinstance(field, int):
+                    if not isinstance(elem, list):
+                        print('Not supported yet.', file=sys.stderr)
+                        exit(-2)
+                    while len(elem) <= field:
+                        elem.append(child_template.copy() if isinstance(child_template, list) else {})
+                    if not isinstance(elem[field], (dict, list)):
+                        elem[field] = child_template.copy() if isinstance(child_template, list) else {}
+                    elem = elem[field]
+                else:
+                    if not isinstance(elem, dict):
+                        print('Not supported yet.', file=sys.stderr)
+                        exit(-2)
+                    if field not in elem or not isinstance(elem[field], (dict, list)):
+                        elem[field] = child_template.copy() if isinstance(child_template, list) else {}
+                    elem = elem[field]
+
+            last_field = fields[-1]
+            if isinstance(last_field, int):
+                if not isinstance(elem, list):
+                    print('Not supported yet.', file=sys.stderr)
+                    exit(-2)
+                while len(elem) <= last_field:
+                    elem.append(None)
+            elif not isinstance(elem, dict):
+                print('Not supported yet.', file=sys.stderr)
+                exit(-2)
             elem[last_field] = value
 
     return obj
@@ -88,7 +127,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if not args.input or len(args.input) != 2:
-        print(sys.stderr, 'Oops...should have 2 input files')
+        print('Oops...should have 2 input files', file=sys.stderr)
         exit(-1)
 
     main(args.input[0], args.input[1], args.output)
