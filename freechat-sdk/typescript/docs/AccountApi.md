@@ -188,7 +188,7 @@ const apiInstance = new AccountApi(configuration);
 
 const request: AccountApiDeleteTokenByIdRequest = {
     // Token id
-  id: 1,
+  id: 0,
 };
 
 const data = await apiInstance.deleteTokenById(request);
@@ -294,7 +294,7 @@ const apiInstance = new AccountApi(configuration);
 
 const request: AccountApiDisableTokenByIdRequest = {
     // Token id
-  id: 1,
+  id: 0,
 };
 
 const data = await apiInstance.disableTokenById(request);
@@ -347,7 +347,7 @@ const apiInstance = new AccountApi(configuration);
 
 const request: AccountApiGetTokenByIdRequest = {
     // Token id
-  id: 1,
+  id: 0,
 };
 
 const data = await apiInstance.getTokenById(request);

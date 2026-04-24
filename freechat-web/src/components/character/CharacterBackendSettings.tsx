@@ -326,7 +326,11 @@ const CharacterBackendSettings = forwardRef<
       editBackend.initQuota = initQuota * (quotaType === 'tokens' ? 1000 : 1);
     }
 
-    const { modelId, ...modelParameters } = parameters;
+    const { modelId, imageModelId, ...modelParameters } = parameters;
+
+    if (imageModelId) {
+      editBackend.imageModelId = imageModelId;
+    }
 
     const editPromptTask = new PromptTaskDTO();
     editPromptTask.apiKeyName = apiKeyName;

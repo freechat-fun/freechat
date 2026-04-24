@@ -41,21 +41,7 @@ const request: AgentApiBatchSearchAgentDetailsRequest = {
     // Query conditions
   agentQueryDTO: [
     {
-      where: {
-        visibility: "visibility_example",
-        username: "username_example",
-        format: "format_example",
-        tags: [
-          "tags_example",
-        ],
-        tagsOp: "or",
-        aiModels: [
-          "aiModels_example",
-        ],
-        aiModelsOp: "or",
-        name: "name_example",
-        text: "text_example",
-      },
+      where: null,
       orderBy: [
         "orderBy_example",
       ],
@@ -117,21 +103,7 @@ const request: AgentApiBatchSearchAgentSummaryRequest = {
     // Query conditions
   agentQueryDTO: [
     {
-      where: {
-        visibility: "visibility_example",
-        username: "username_example",
-        format: "format_example",
-        tags: [
-          "tags_example",
-        ],
-        tagsOp: "or",
-        aiModels: [
-          "aiModels_example",
-        ],
-        aiModelsOp: "or",
-        name: "name_example",
-        text: "text_example",
-      },
+      where: null,
       orderBy: [
         "orderBy_example",
       ],
@@ -191,7 +163,7 @@ const apiInstance = new AgentApi(configuration);
 
 const request: AgentApiCloneAgentRequest = {
     // The referenced agentId
-  agentId: 1,
+  agentId: 0,
 };
 
 const data = await apiInstance.cloneAgent(request);
@@ -300,21 +272,7 @@ const apiInstance = new AgentApi(configuration);
 const request: AgentApiCountAgentsRequest = {
     // Query conditions
   agentQueryDTO: {
-    where: {
-      visibility: "visibility_example",
-      username: "username_example",
-      format: "format_example",
-      tags: [
-        "tags_example",
-      ],
-      tagsOp: "or",
-      aiModels: [
-        "aiModels_example",
-      ],
-      aiModelsOp: "or",
-      name: "name_example",
-      text: "text_example",
-    },
+    where: null,
     orderBy: [
       "orderBy_example",
     ],
@@ -515,7 +473,7 @@ const apiInstance = new AgentApi(configuration);
 
 const request: AgentApiDeleteAgentRequest = {
     // AgentId to be deleted
-  agentId: 1,
+  agentId: 0,
 };
 
 const data = await apiInstance.deleteAgent(request);
@@ -623,7 +581,7 @@ const apiInstance = new AgentApi(configuration);
 
 const request: AgentApiGetAgentDetailsRequest = {
     // AgentId to be obtained
-  agentId: 1,
+  agentId: 0,
 };
 
 const data = await apiInstance.getAgentDetails(request);
@@ -676,7 +634,7 @@ const apiInstance = new AgentApi(configuration);
 
 const request: AgentApiGetAgentSummaryRequest = {
     // agentId to be obtained
-  agentId: 1,
+  agentId: 0,
 };
 
 const data = await apiInstance.getAgentSummary(request);
@@ -782,7 +740,7 @@ const apiInstance = new AgentApi(configuration);
 
 const request: AgentApiPublishAgentRequest = {
     // The agentId to be published
-  agentId: 1,
+  agentId: 0,
     // Visibility: public | private | ...
   visibility: "visibility_example",
 };
@@ -839,21 +797,7 @@ const apiInstance = new AgentApi(configuration);
 const request: AgentApiSearchAgentDetailsRequest = {
     // Query conditions
   agentQueryDTO: {
-    where: {
-      visibility: "visibility_example",
-      username: "username_example",
-      format: "format_example",
-      tags: [
-        "tags_example",
-      ],
-      tagsOp: "or",
-      aiModels: [
-        "aiModels_example",
-      ],
-      aiModelsOp: "or",
-      name: "name_example",
-      text: "text_example",
-    },
+    where: null,
     orderBy: [
       "orderBy_example",
     ],
@@ -913,21 +857,7 @@ const apiInstance = new AgentApi(configuration);
 const request: AgentApiSearchAgentSummaryRequest = {
     // Query conditions
   agentQueryDTO: {
-    where: {
-      visibility: "visibility_example",
-      username: "username_example",
-      format: "format_example",
-      tags: [
-        "tags_example",
-      ],
-      tagsOp: "or",
-      aiModels: [
-        "aiModels_example",
-      ],
-      aiModelsOp: "or",
-      name: "name_example",
-      text: "text_example",
-    },
+    where: null,
     orderBy: [
       "orderBy_example",
     ],
@@ -986,7 +916,7 @@ const apiInstance = new AgentApi(configuration);
 
 const request: AgentApiUpdateAgentRequest = {
     // AgentId to be updated
-  agentId: 1,
+  agentId: 0,
     // Agent information to be updated
   agentUpdateDTO: {
     parentUid: "parentUid_example",

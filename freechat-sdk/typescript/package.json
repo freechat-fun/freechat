@@ -1,6 +1,6 @@
 {
   "name": "freechat-sdk",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "description": "OpenAPI client for freechat-sdk",
   "author": "dev.freechat.fun",
   "repository": {
@@ -18,9 +18,9 @@
   "type": "module",
   "exports": {
     ".": {
+      "import": "./dist/index.esm.js",
       "require": "./dist/index.cjs.js",
-      "types": "./dist/index.d.js",
-      "import": "./dist/index.esm.js"
+      "types": "./dist/index.d.js"
     }
   },
   "files": [
@@ -36,7 +36,7 @@
     "es6-promise": "^4.2.4"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
+    "typescript": "^5.0",
     "@rollup/plugin-node-resolve": "latest",
     "@rollup/plugin-commonjs": "latest",
     "rollup-plugin-typescript2": "latest",

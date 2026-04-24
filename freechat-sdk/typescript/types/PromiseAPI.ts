@@ -1,5 +1,6 @@
 import { ResponseContext, RequestContext, HttpFile, HttpInfo } from '../http/http.js';
-import { Configuration} from '../configuration.js'
+import { Configuration, PromiseConfigurationOptions, wrapOptions } from '../configuration.js'
+import { PromiseMiddleware, Middleware, PromiseMiddlewareWrapper } from '../middleware.js';
 
 import { AgentCreateDTO } from '../models/AgentCreateDTO.js';
 import { AgentDetailsDTO } from '../models/AgentDetailsDTO.js';
@@ -83,8 +84,9 @@ export class PromiseAIServiceApi {
      * Add Model Provider Credential
      * @param aiApiKeyCreateDTO Model call credential information
      */
-    public addAiApiKeyWithHttpInfo(aiApiKeyCreateDTO: AiApiKeyCreateDTO, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.addAiApiKeyWithHttpInfo(aiApiKeyCreateDTO, _options);
+    public addAiApiKeyWithHttpInfo(aiApiKeyCreateDTO: AiApiKeyCreateDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.addAiApiKeyWithHttpInfo(aiApiKeyCreateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -93,8 +95,9 @@ export class PromiseAIServiceApi {
      * Add Model Provider Credential
      * @param aiApiKeyCreateDTO Model call credential information
      */
-    public addAiApiKey(aiApiKeyCreateDTO: AiApiKeyCreateDTO, _options?: Configuration): Promise<number> {
-        const result = this.api.addAiApiKey(aiApiKeyCreateDTO, _options);
+    public addAiApiKey(aiApiKeyCreateDTO: AiApiKeyCreateDTO, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.addAiApiKey(aiApiKeyCreateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -103,8 +106,9 @@ export class PromiseAIServiceApi {
      * Delete Credential of Model Provider
      * @param id Credential identifier
      */
-    public deleteAiApiKeyWithHttpInfo(id: number, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.deleteAiApiKeyWithHttpInfo(id, _options);
+    public deleteAiApiKeyWithHttpInfo(id: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteAiApiKeyWithHttpInfo(id, observableOptions);
         return result.toPromise();
     }
 
@@ -113,8 +117,9 @@ export class PromiseAIServiceApi {
      * Delete Credential of Model Provider
      * @param id Credential identifier
      */
-    public deleteAiApiKey(id: number, _options?: Configuration): Promise<boolean> {
-        const result = this.api.deleteAiApiKey(id, _options);
+    public deleteAiApiKey(id: number, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteAiApiKey(id, observableOptions);
         return result.toPromise();
     }
 
@@ -123,8 +128,9 @@ export class PromiseAIServiceApi {
      * Disable Model Provider Credential
      * @param id Credential identifier
      */
-    public disableAiApiKeyWithHttpInfo(id: number, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.disableAiApiKeyWithHttpInfo(id, _options);
+    public disableAiApiKeyWithHttpInfo(id: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.disableAiApiKeyWithHttpInfo(id, observableOptions);
         return result.toPromise();
     }
 
@@ -133,8 +139,9 @@ export class PromiseAIServiceApi {
      * Disable Model Provider Credential
      * @param id Credential identifier
      */
-    public disableAiApiKey(id: number, _options?: Configuration): Promise<boolean> {
-        const result = this.api.disableAiApiKey(id, _options);
+    public disableAiApiKey(id: number, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.disableAiApiKey(id, observableOptions);
         return result.toPromise();
     }
 
@@ -143,8 +150,9 @@ export class PromiseAIServiceApi {
      * Enable Model Provider Credential
      * @param id Credential identifier
      */
-    public enableAiApiKeyWithHttpInfo(id: number, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.enableAiApiKeyWithHttpInfo(id, _options);
+    public enableAiApiKeyWithHttpInfo(id: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.enableAiApiKeyWithHttpInfo(id, observableOptions);
         return result.toPromise();
     }
 
@@ -153,8 +161,9 @@ export class PromiseAIServiceApi {
      * Enable Model Provider Credential
      * @param id Credential identifier
      */
-    public enableAiApiKey(id: number, _options?: Configuration): Promise<boolean> {
-        const result = this.api.enableAiApiKey(id, _options);
+    public enableAiApiKey(id: number, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.enableAiApiKey(id, observableOptions);
         return result.toPromise();
     }
 
@@ -163,8 +172,9 @@ export class PromiseAIServiceApi {
      * Get credential of Model Provider
      * @param id Credential identifier
      */
-    public getAiApiKeyWithHttpInfo(id: number, _options?: Configuration): Promise<HttpInfo<AiApiKeyInfoDTO>> {
-        const result = this.api.getAiApiKeyWithHttpInfo(id, _options);
+    public getAiApiKeyWithHttpInfo(id: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<AiApiKeyInfoDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getAiApiKeyWithHttpInfo(id, observableOptions);
         return result.toPromise();
     }
 
@@ -173,8 +183,9 @@ export class PromiseAIServiceApi {
      * Get credential of Model Provider
      * @param id Credential identifier
      */
-    public getAiApiKey(id: number, _options?: Configuration): Promise<AiApiKeyInfoDTO> {
-        const result = this.api.getAiApiKey(id, _options);
+    public getAiApiKey(id: number, _options?: PromiseConfigurationOptions): Promise<AiApiKeyInfoDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getAiApiKey(id, observableOptions);
         return result.toPromise();
     }
 
@@ -183,8 +194,9 @@ export class PromiseAIServiceApi {
      * List Credentials of Model Provider
      * @param provider Model provider
      */
-    public listAiApiKeysWithHttpInfo(provider: string, _options?: Configuration): Promise<HttpInfo<Array<AiApiKeyInfoDTO>>> {
-        const result = this.api.listAiApiKeysWithHttpInfo(provider, _options);
+    public listAiApiKeysWithHttpInfo(provider: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<AiApiKeyInfoDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listAiApiKeysWithHttpInfo(provider, observableOptions);
         return result.toPromise();
     }
 
@@ -193,8 +205,9 @@ export class PromiseAIServiceApi {
      * List Credentials of Model Provider
      * @param provider Model provider
      */
-    public listAiApiKeys(provider: string, _options?: Configuration): Promise<Array<AiApiKeyInfoDTO>> {
-        const result = this.api.listAiApiKeys(provider, _options);
+    public listAiApiKeys(provider: string, _options?: PromiseConfigurationOptions): Promise<Array<AiApiKeyInfoDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listAiApiKeys(provider, observableOptions);
         return result.toPromise();
     }
 
@@ -222,8 +235,9 @@ export class PromiseAccountApi {
      * Create API Token
      * @param duration Token validity duration (seconds)
      */
-    public createTokenWithHttpInfo(duration: number, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.createTokenWithHttpInfo(duration, _options);
+    public createTokenWithHttpInfo(duration: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createTokenWithHttpInfo(duration, observableOptions);
         return result.toPromise();
     }
 
@@ -232,8 +246,9 @@ export class PromiseAccountApi {
      * Create API Token
      * @param duration Token validity duration (seconds)
      */
-    public createToken(duration: number, _options?: Configuration): Promise<string> {
-        const result = this.api.createToken(duration, _options);
+    public createToken(duration: number, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createToken(duration, observableOptions);
         return result.toPromise();
     }
 
@@ -241,8 +256,9 @@ export class PromiseAccountApi {
      * Create a timed API Token, valid for {duration} seconds.
      * Create API Token
      */
-    public createToken1WithHttpInfo(_options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.createToken1WithHttpInfo(_options);
+    public createToken1WithHttpInfo(_options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createToken1WithHttpInfo(observableOptions);
         return result.toPromise();
     }
 
@@ -250,8 +266,9 @@ export class PromiseAccountApi {
      * Create a timed API Token, valid for {duration} seconds.
      * Create API Token
      */
-    public createToken1(_options?: Configuration): Promise<string> {
-        const result = this.api.createToken1(_options);
+    public createToken1(_options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createToken1(observableOptions);
         return result.toPromise();
     }
 
@@ -260,8 +277,9 @@ export class PromiseAccountApi {
      * Delete API Token
      * @param token Token content
      */
-    public deleteTokenWithHttpInfo(token: string, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.deleteTokenWithHttpInfo(token, _options);
+    public deleteTokenWithHttpInfo(token: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteTokenWithHttpInfo(token, observableOptions);
         return result.toPromise();
     }
 
@@ -270,8 +288,9 @@ export class PromiseAccountApi {
      * Delete API Token
      * @param token Token content
      */
-    public deleteToken(token: string, _options?: Configuration): Promise<string> {
-        const result = this.api.deleteToken(token, _options);
+    public deleteToken(token: string, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteToken(token, observableOptions);
         return result.toPromise();
     }
 
@@ -280,8 +299,9 @@ export class PromiseAccountApi {
      * Delete API Token by Id
      * @param id Token id
      */
-    public deleteTokenByIdWithHttpInfo(id: number, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.deleteTokenByIdWithHttpInfo(id, _options);
+    public deleteTokenByIdWithHttpInfo(id: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteTokenByIdWithHttpInfo(id, observableOptions);
         return result.toPromise();
     }
 
@@ -290,8 +310,9 @@ export class PromiseAccountApi {
      * Delete API Token by Id
      * @param id Token id
      */
-    public deleteTokenById(id: number, _options?: Configuration): Promise<boolean> {
-        const result = this.api.deleteTokenById(id, _options);
+    public deleteTokenById(id: number, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteTokenById(id, observableOptions);
         return result.toPromise();
     }
 
@@ -300,8 +321,9 @@ export class PromiseAccountApi {
      * Disable API Token
      * @param token Token content
      */
-    public disableTokenWithHttpInfo(token: string, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.disableTokenWithHttpInfo(token, _options);
+    public disableTokenWithHttpInfo(token: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.disableTokenWithHttpInfo(token, observableOptions);
         return result.toPromise();
     }
 
@@ -310,8 +332,9 @@ export class PromiseAccountApi {
      * Disable API Token
      * @param token Token content
      */
-    public disableToken(token: string, _options?: Configuration): Promise<string> {
-        const result = this.api.disableToken(token, _options);
+    public disableToken(token: string, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.disableToken(token, observableOptions);
         return result.toPromise();
     }
 
@@ -320,8 +343,9 @@ export class PromiseAccountApi {
      * Disable API Token by Id
      * @param id Token id
      */
-    public disableTokenByIdWithHttpInfo(id: number, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.disableTokenByIdWithHttpInfo(id, _options);
+    public disableTokenByIdWithHttpInfo(id: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.disableTokenByIdWithHttpInfo(id, observableOptions);
         return result.toPromise();
     }
 
@@ -330,8 +354,9 @@ export class PromiseAccountApi {
      * Disable API Token by Id
      * @param id Token id
      */
-    public disableTokenById(id: number, _options?: Configuration): Promise<boolean> {
-        const result = this.api.disableTokenById(id, _options);
+    public disableTokenById(id: number, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.disableTokenById(id, observableOptions);
         return result.toPromise();
     }
 
@@ -340,8 +365,9 @@ export class PromiseAccountApi {
      * Get API Token by Id
      * @param id Token id
      */
-    public getTokenByIdWithHttpInfo(id: number, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.getTokenByIdWithHttpInfo(id, _options);
+    public getTokenByIdWithHttpInfo(id: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getTokenByIdWithHttpInfo(id, observableOptions);
         return result.toPromise();
     }
 
@@ -350,8 +376,9 @@ export class PromiseAccountApi {
      * Get API Token by Id
      * @param id Token id
      */
-    public getTokenById(id: number, _options?: Configuration): Promise<string> {
-        const result = this.api.getTokenById(id, _options);
+    public getTokenById(id: number, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getTokenById(id, observableOptions);
         return result.toPromise();
     }
 
@@ -360,8 +387,9 @@ export class PromiseAccountApi {
      * Get User Basic Information
      * @param username Username
      */
-    public getUserBasicWithHttpInfo(username: string, _options?: Configuration): Promise<HttpInfo<UserBasicInfoDTO>> {
-        const result = this.api.getUserBasicWithHttpInfo(username, _options);
+    public getUserBasicWithHttpInfo(username: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<UserBasicInfoDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getUserBasicWithHttpInfo(username, observableOptions);
         return result.toPromise();
     }
 
@@ -370,8 +398,9 @@ export class PromiseAccountApi {
      * Get User Basic Information
      * @param username Username
      */
-    public getUserBasic(username: string, _options?: Configuration): Promise<UserBasicInfoDTO> {
-        const result = this.api.getUserBasic(username, _options);
+    public getUserBasic(username: string, _options?: PromiseConfigurationOptions): Promise<UserBasicInfoDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getUserBasic(username, observableOptions);
         return result.toPromise();
     }
 
@@ -379,8 +408,9 @@ export class PromiseAccountApi {
      * Return user basic information, including: username, nickname, avatar link.
      * Get User Basic Information
      */
-    public getUserBasic1WithHttpInfo(_options?: Configuration): Promise<HttpInfo<UserBasicInfoDTO>> {
-        const result = this.api.getUserBasic1WithHttpInfo(_options);
+    public getUserBasic1WithHttpInfo(_options?: PromiseConfigurationOptions): Promise<HttpInfo<UserBasicInfoDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getUserBasic1WithHttpInfo(observableOptions);
         return result.toPromise();
     }
 
@@ -388,8 +418,9 @@ export class PromiseAccountApi {
      * Return user basic information, including: username, nickname, avatar link.
      * Get User Basic Information
      */
-    public getUserBasic1(_options?: Configuration): Promise<UserBasicInfoDTO> {
-        const result = this.api.getUserBasic1(_options);
+    public getUserBasic1(_options?: PromiseConfigurationOptions): Promise<UserBasicInfoDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getUserBasic1(observableOptions);
         return result.toPromise();
     }
 
@@ -397,8 +428,9 @@ export class PromiseAccountApi {
      * Return the detailed user information of the current account, the fields refer to the [standard claims](https://openid.net/specs/openid-connect-core-1_0.html#Claims) of OpenID Connect (OIDC).
      * Get User Details
      */
-    public getUserDetailsWithHttpInfo(_options?: Configuration): Promise<HttpInfo<UserDetailsDTO>> {
-        const result = this.api.getUserDetailsWithHttpInfo(_options);
+    public getUserDetailsWithHttpInfo(_options?: PromiseConfigurationOptions): Promise<HttpInfo<UserDetailsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getUserDetailsWithHttpInfo(observableOptions);
         return result.toPromise();
     }
 
@@ -406,8 +438,9 @@ export class PromiseAccountApi {
      * Return the detailed user information of the current account, the fields refer to the [standard claims](https://openid.net/specs/openid-connect-core-1_0.html#Claims) of OpenID Connect (OIDC).
      * Get User Details
      */
-    public getUserDetails(_options?: Configuration): Promise<UserDetailsDTO> {
-        const result = this.api.getUserDetails(_options);
+    public getUserDetails(_options?: PromiseConfigurationOptions): Promise<UserDetailsDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getUserDetails(observableOptions);
         return result.toPromise();
     }
 
@@ -415,8 +448,9 @@ export class PromiseAccountApi {
      * List currently valid tokens.
      * List API Tokens
      */
-    public listTokensWithHttpInfo(_options?: Configuration): Promise<HttpInfo<Array<ApiTokenInfoDTO>>> {
-        const result = this.api.listTokensWithHttpInfo(_options);
+    public listTokensWithHttpInfo(_options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<ApiTokenInfoDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listTokensWithHttpInfo(observableOptions);
         return result.toPromise();
     }
 
@@ -424,8 +458,9 @@ export class PromiseAccountApi {
      * List currently valid tokens.
      * List API Tokens
      */
-    public listTokens(_options?: Configuration): Promise<Array<ApiTokenInfoDTO>> {
-        const result = this.api.listTokens(_options);
+    public listTokens(_options?: PromiseConfigurationOptions): Promise<Array<ApiTokenInfoDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listTokens(observableOptions);
         return result.toPromise();
     }
 
@@ -434,8 +469,9 @@ export class PromiseAccountApi {
      * Update User Details
      * @param userDetailsDTO User information
      */
-    public updateUserInfoWithHttpInfo(userDetailsDTO: UserDetailsDTO, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.updateUserInfoWithHttpInfo(userDetailsDTO, _options);
+    public updateUserInfoWithHttpInfo(userDetailsDTO: UserDetailsDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateUserInfoWithHttpInfo(userDetailsDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -444,8 +480,9 @@ export class PromiseAccountApi {
      * Update User Details
      * @param userDetailsDTO User information
      */
-    public updateUserInfo(userDetailsDTO: UserDetailsDTO, _options?: Configuration): Promise<boolean> {
-        const result = this.api.updateUserInfo(userDetailsDTO, _options);
+    public updateUserInfo(userDetailsDTO: UserDetailsDTO, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateUserInfo(userDetailsDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -454,8 +491,9 @@ export class PromiseAccountApi {
      * Upload User Picture
      * @param file User picture
      */
-    public uploadUserPictureWithHttpInfo(file: HttpFile, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.uploadUserPictureWithHttpInfo(file, _options);
+    public uploadUserPictureWithHttpInfo(file: HttpFile, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.uploadUserPictureWithHttpInfo(file, observableOptions);
         return result.toPromise();
     }
 
@@ -464,8 +502,9 @@ export class PromiseAccountApi {
      * Upload User Picture
      * @param file User picture
      */
-    public uploadUserPicture(file: HttpFile, _options?: Configuration): Promise<string> {
-        const result = this.api.uploadUserPicture(file, _options);
+    public uploadUserPicture(file: HttpFile, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.uploadUserPicture(file, observableOptions);
         return result.toPromise();
     }
 
@@ -494,8 +533,9 @@ export class PromiseAccountManagerForAdminApi {
      * @param username Username
      * @param duration Validity period (seconds)
      */
-    public createTokenForUserWithHttpInfo(username: string, duration: number, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.createTokenForUserWithHttpInfo(username, duration, _options);
+    public createTokenForUserWithHttpInfo(username: string, duration: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createTokenForUserWithHttpInfo(username, duration, observableOptions);
         return result.toPromise();
     }
 
@@ -505,8 +545,9 @@ export class PromiseAccountManagerForAdminApi {
      * @param username Username
      * @param duration Validity period (seconds)
      */
-    public createTokenForUser(username: string, duration: number, _options?: Configuration): Promise<string> {
-        const result = this.api.createTokenForUser(username, duration, _options);
+    public createTokenForUser(username: string, duration: number, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createTokenForUser(username, duration, observableOptions);
         return result.toPromise();
     }
 
@@ -515,8 +556,9 @@ export class PromiseAccountManagerForAdminApi {
      * Create User
      * @param userFullDetailsDTO User information
      */
-    public createUserWithHttpInfo(userFullDetailsDTO: UserFullDetailsDTO, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.createUserWithHttpInfo(userFullDetailsDTO, _options);
+    public createUserWithHttpInfo(userFullDetailsDTO: UserFullDetailsDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createUserWithHttpInfo(userFullDetailsDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -525,8 +567,9 @@ export class PromiseAccountManagerForAdminApi {
      * Create User
      * @param userFullDetailsDTO User information
      */
-    public createUser(userFullDetailsDTO: UserFullDetailsDTO, _options?: Configuration): Promise<boolean> {
-        const result = this.api.createUser(userFullDetailsDTO, _options);
+    public createUser(userFullDetailsDTO: UserFullDetailsDTO, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createUser(userFullDetailsDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -535,8 +578,9 @@ export class PromiseAccountManagerForAdminApi {
      * Delete API Token
      * @param token API Token
      */
-    public deleteTokenForUserWithHttpInfo(token: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.deleteTokenForUserWithHttpInfo(token, _options);
+    public deleteTokenForUserWithHttpInfo(token: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteTokenForUserWithHttpInfo(token, observableOptions);
         return result.toPromise();
     }
 
@@ -545,8 +589,9 @@ export class PromiseAccountManagerForAdminApi {
      * Delete API Token
      * @param token API Token
      */
-    public deleteTokenForUser(token: string, _options?: Configuration): Promise<boolean> {
-        const result = this.api.deleteTokenForUser(token, _options);
+    public deleteTokenForUser(token: string, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteTokenForUser(token, observableOptions);
         return result.toPromise();
     }
 
@@ -555,8 +600,9 @@ export class PromiseAccountManagerForAdminApi {
      * Delete User
      * @param username Username
      */
-    public deleteUserWithHttpInfo(username: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.deleteUserWithHttpInfo(username, _options);
+    public deleteUserWithHttpInfo(username: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteUserWithHttpInfo(username, observableOptions);
         return result.toPromise();
     }
 
@@ -565,8 +611,9 @@ export class PromiseAccountManagerForAdminApi {
      * Delete User
      * @param username Username
      */
-    public deleteUser(username: string, _options?: Configuration): Promise<boolean> {
-        const result = this.api.deleteUser(username, _options);
+    public deleteUser(username: string, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteUser(username, observableOptions);
         return result.toPromise();
     }
 
@@ -575,8 +622,9 @@ export class PromiseAccountManagerForAdminApi {
      * Disable API Token
      * @param token API Token
      */
-    public disableTokenForUserWithHttpInfo(token: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.disableTokenForUserWithHttpInfo(token, _options);
+    public disableTokenForUserWithHttpInfo(token: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.disableTokenForUserWithHttpInfo(token, observableOptions);
         return result.toPromise();
     }
 
@@ -585,8 +633,9 @@ export class PromiseAccountManagerForAdminApi {
      * Disable API Token
      * @param token API Token
      */
-    public disableTokenForUser(token: string, _options?: Configuration): Promise<boolean> {
-        const result = this.api.disableTokenForUser(token, _options);
+    public disableTokenForUser(token: string, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.disableTokenForUser(token, observableOptions);
         return result.toPromise();
     }
 
@@ -595,8 +644,9 @@ export class PromiseAccountManagerForAdminApi {
      * Get User Details
      * @param username Username
      */
-    public getDetailsOfUserWithHttpInfo(username: string, _options?: Configuration): Promise<HttpInfo<UserDetailsDTO>> {
-        const result = this.api.getDetailsOfUserWithHttpInfo(username, _options);
+    public getDetailsOfUserWithHttpInfo(username: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<UserDetailsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getDetailsOfUserWithHttpInfo(username, observableOptions);
         return result.toPromise();
     }
 
@@ -605,8 +655,9 @@ export class PromiseAccountManagerForAdminApi {
      * Get User Details
      * @param username Username
      */
-    public getDetailsOfUser(username: string, _options?: Configuration): Promise<UserDetailsDTO> {
-        const result = this.api.getDetailsOfUser(username, _options);
+    public getDetailsOfUser(username: string, _options?: PromiseConfigurationOptions): Promise<UserDetailsDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getDetailsOfUser(username, observableOptions);
         return result.toPromise();
     }
 
@@ -615,8 +666,9 @@ export class PromiseAccountManagerForAdminApi {
      * Get User by API Token
      * @param token API Token
      */
-    public getUserByTokenWithHttpInfo(token: string, _options?: Configuration): Promise<HttpInfo<UserDetailsDTO>> {
-        const result = this.api.getUserByTokenWithHttpInfo(token, _options);
+    public getUserByTokenWithHttpInfo(token: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<UserDetailsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getUserByTokenWithHttpInfo(token, observableOptions);
         return result.toPromise();
     }
 
@@ -625,8 +677,9 @@ export class PromiseAccountManagerForAdminApi {
      * Get User by API Token
      * @param token API Token
      */
-    public getUserByToken(token: string, _options?: Configuration): Promise<UserDetailsDTO> {
-        const result = this.api.getUserByToken(token, _options);
+    public getUserByToken(token: string, _options?: PromiseConfigurationOptions): Promise<UserDetailsDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getUserByToken(token, observableOptions);
         return result.toPromise();
     }
 
@@ -635,8 +688,9 @@ export class PromiseAccountManagerForAdminApi {
      * List User Permissions
      * @param username Username
      */
-    public listAuthoritiesOfUserWithHttpInfo(username: string, _options?: Configuration): Promise<HttpInfo<Set<string>>> {
-        const result = this.api.listAuthoritiesOfUserWithHttpInfo(username, _options);
+    public listAuthoritiesOfUserWithHttpInfo(username: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Set<string>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listAuthoritiesOfUserWithHttpInfo(username, observableOptions);
         return result.toPromise();
     }
 
@@ -645,8 +699,9 @@ export class PromiseAccountManagerForAdminApi {
      * List User Permissions
      * @param username Username
      */
-    public listAuthoritiesOfUser(username: string, _options?: Configuration): Promise<Set<string>> {
-        const result = this.api.listAuthoritiesOfUser(username, _options);
+    public listAuthoritiesOfUser(username: string, _options?: PromiseConfigurationOptions): Promise<Set<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listAuthoritiesOfUser(username, observableOptions);
         return result.toPromise();
     }
 
@@ -655,8 +710,9 @@ export class PromiseAccountManagerForAdminApi {
      * Get API Token of User
      * @param username Username
      */
-    public listTokensOfUserWithHttpInfo(username: string, _options?: Configuration): Promise<HttpInfo<Array<ApiTokenInfoDTO>>> {
-        const result = this.api.listTokensOfUserWithHttpInfo(username, _options);
+    public listTokensOfUserWithHttpInfo(username: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<ApiTokenInfoDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listTokensOfUserWithHttpInfo(username, observableOptions);
         return result.toPromise();
     }
 
@@ -665,8 +721,9 @@ export class PromiseAccountManagerForAdminApi {
      * Get API Token of User
      * @param username Username
      */
-    public listTokensOfUser(username: string, _options?: Configuration): Promise<Array<ApiTokenInfoDTO>> {
-        const result = this.api.listTokensOfUser(username, _options);
+    public listTokensOfUser(username: string, _options?: PromiseConfigurationOptions): Promise<Array<ApiTokenInfoDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listTokensOfUser(username, observableOptions);
         return result.toPromise();
     }
 
@@ -676,8 +733,9 @@ export class PromiseAccountManagerForAdminApi {
      * @param pageSize Maximum quantity
      * @param pageNum Current page number
      */
-    public listUsersWithHttpInfo(pageSize: number, pageNum: number, _options?: Configuration): Promise<HttpInfo<Array<UserBasicInfoDTO>>> {
-        const result = this.api.listUsersWithHttpInfo(pageSize, pageNum, _options);
+    public listUsersWithHttpInfo(pageSize: number, pageNum: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<UserBasicInfoDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listUsersWithHttpInfo(pageSize, pageNum, observableOptions);
         return result.toPromise();
     }
 
@@ -687,8 +745,9 @@ export class PromiseAccountManagerForAdminApi {
      * @param pageSize Maximum quantity
      * @param pageNum Current page number
      */
-    public listUsers(pageSize: number, pageNum: number, _options?: Configuration): Promise<Array<UserBasicInfoDTO>> {
-        const result = this.api.listUsers(pageSize, pageNum, _options);
+    public listUsers(pageSize: number, pageNum: number, _options?: PromiseConfigurationOptions): Promise<Array<UserBasicInfoDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listUsers(pageSize, pageNum, observableOptions);
         return result.toPromise();
     }
 
@@ -696,8 +755,9 @@ export class PromiseAccountManagerForAdminApi {
      * Return user information by page, return the pageNum page, up to pageSize user information.
      * List User Information
      */
-    public listUsers1WithHttpInfo(_options?: Configuration): Promise<HttpInfo<Array<UserBasicInfoDTO>>> {
-        const result = this.api.listUsers1WithHttpInfo(_options);
+    public listUsers1WithHttpInfo(_options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<UserBasicInfoDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listUsers1WithHttpInfo(observableOptions);
         return result.toPromise();
     }
 
@@ -705,18 +765,9 @@ export class PromiseAccountManagerForAdminApi {
      * Return user information by page, return the pageNum page, up to pageSize user information.
      * List User Information
      */
-    public listUsers1(_options?: Configuration): Promise<Array<UserBasicInfoDTO>> {
-        const result = this.api.listUsers1(_options);
-        return result.toPromise();
-    }
-
-    /**
-     * Return user information by page, return the pageNum page, up to pageSize user information.
-     * List User Information
-     * @param pageSize Maximum quantity
-     */
-    public listUsers2WithHttpInfo(pageSize: number, _options?: Configuration): Promise<HttpInfo<Array<UserBasicInfoDTO>>> {
-        const result = this.api.listUsers2WithHttpInfo(pageSize, _options);
+    public listUsers1(_options?: PromiseConfigurationOptions): Promise<Array<UserBasicInfoDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listUsers1(observableOptions);
         return result.toPromise();
     }
 
@@ -725,8 +776,20 @@ export class PromiseAccountManagerForAdminApi {
      * List User Information
      * @param pageSize Maximum quantity
      */
-    public listUsers2(pageSize: number, _options?: Configuration): Promise<Array<UserBasicInfoDTO>> {
-        const result = this.api.listUsers2(pageSize, _options);
+    public listUsers2WithHttpInfo(pageSize: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<UserBasicInfoDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listUsers2WithHttpInfo(pageSize, observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * Return user information by page, return the pageNum page, up to pageSize user information.
+     * List User Information
+     * @param pageSize Maximum quantity
+     */
+    public listUsers2(pageSize: number, _options?: PromiseConfigurationOptions): Promise<Array<UserBasicInfoDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listUsers2(pageSize, observableOptions);
         return result.toPromise();
     }
 
@@ -736,8 +799,9 @@ export class PromiseAccountManagerForAdminApi {
      * @param username Username
      * @param requestBody Permission list
      */
-    public updateAuthoritiesOfUserWithHttpInfo(username: string, requestBody: Set<string>, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.updateAuthoritiesOfUserWithHttpInfo(username, requestBody, _options);
+    public updateAuthoritiesOfUserWithHttpInfo(username: string, requestBody: Set<string>, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateAuthoritiesOfUserWithHttpInfo(username, requestBody, observableOptions);
         return result.toPromise();
     }
 
@@ -747,8 +811,9 @@ export class PromiseAccountManagerForAdminApi {
      * @param username Username
      * @param requestBody Permission list
      */
-    public updateAuthoritiesOfUser(username: string, requestBody: Set<string>, _options?: Configuration): Promise<boolean> {
-        const result = this.api.updateAuthoritiesOfUser(username, requestBody, _options);
+    public updateAuthoritiesOfUser(username: string, requestBody: Set<string>, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateAuthoritiesOfUser(username, requestBody, observableOptions);
         return result.toPromise();
     }
 
@@ -757,8 +822,9 @@ export class PromiseAccountManagerForAdminApi {
      * Update User
      * @param userFullDetailsDTO User information
      */
-    public updateUserWithHttpInfo(userFullDetailsDTO: UserFullDetailsDTO, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.updateUserWithHttpInfo(userFullDetailsDTO, _options);
+    public updateUserWithHttpInfo(userFullDetailsDTO: UserFullDetailsDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateUserWithHttpInfo(userFullDetailsDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -767,8 +833,9 @@ export class PromiseAccountManagerForAdminApi {
      * Update User
      * @param userFullDetailsDTO User information
      */
-    public updateUser(userFullDetailsDTO: UserFullDetailsDTO, _options?: Configuration): Promise<boolean> {
-        const result = this.api.updateUser(userFullDetailsDTO, _options);
+    public updateUser(userFullDetailsDTO: UserFullDetailsDTO, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateUser(userFullDetailsDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -796,8 +863,9 @@ export class PromiseAgentApi {
      * Batch Search Agent Details
      * @param agentQueryDTO Query conditions
      */
-    public batchSearchAgentDetailsWithHttpInfo(agentQueryDTO: Array<AgentQueryDTO>, _options?: Configuration): Promise<HttpInfo<Array<Array<AgentDetailsDTO>>>> {
-        const result = this.api.batchSearchAgentDetailsWithHttpInfo(agentQueryDTO, _options);
+    public batchSearchAgentDetailsWithHttpInfo(agentQueryDTO: Array<AgentQueryDTO>, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<Array<AgentDetailsDTO>>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.batchSearchAgentDetailsWithHttpInfo(agentQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -806,8 +874,9 @@ export class PromiseAgentApi {
      * Batch Search Agent Details
      * @param agentQueryDTO Query conditions
      */
-    public batchSearchAgentDetails(agentQueryDTO: Array<AgentQueryDTO>, _options?: Configuration): Promise<Array<Array<AgentDetailsDTO>>> {
-        const result = this.api.batchSearchAgentDetails(agentQueryDTO, _options);
+    public batchSearchAgentDetails(agentQueryDTO: Array<AgentQueryDTO>, _options?: PromiseConfigurationOptions): Promise<Array<Array<AgentDetailsDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.batchSearchAgentDetails(agentQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -816,8 +885,9 @@ export class PromiseAgentApi {
      * Batch Search Agent Summaries
      * @param agentQueryDTO Query conditions
      */
-    public batchSearchAgentSummaryWithHttpInfo(agentQueryDTO: Array<AgentQueryDTO>, _options?: Configuration): Promise<HttpInfo<Array<Array<AgentSummaryDTO>>>> {
-        const result = this.api.batchSearchAgentSummaryWithHttpInfo(agentQueryDTO, _options);
+    public batchSearchAgentSummaryWithHttpInfo(agentQueryDTO: Array<AgentQueryDTO>, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<Array<AgentSummaryDTO>>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.batchSearchAgentSummaryWithHttpInfo(agentQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -826,8 +896,9 @@ export class PromiseAgentApi {
      * Batch Search Agent Summaries
      * @param agentQueryDTO Query conditions
      */
-    public batchSearchAgentSummary(agentQueryDTO: Array<AgentQueryDTO>, _options?: Configuration): Promise<Array<Array<AgentSummaryDTO>>> {
-        const result = this.api.batchSearchAgentSummary(agentQueryDTO, _options);
+    public batchSearchAgentSummary(agentQueryDTO: Array<AgentQueryDTO>, _options?: PromiseConfigurationOptions): Promise<Array<Array<AgentSummaryDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.batchSearchAgentSummary(agentQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -836,8 +907,9 @@ export class PromiseAgentApi {
      * Clone Agent
      * @param agentId The referenced agentId
      */
-    public cloneAgentWithHttpInfo(agentId: number, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.cloneAgentWithHttpInfo(agentId, _options);
+    public cloneAgentWithHttpInfo(agentId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.cloneAgentWithHttpInfo(agentId, observableOptions);
         return result.toPromise();
     }
 
@@ -846,8 +918,9 @@ export class PromiseAgentApi {
      * Clone Agent
      * @param agentId The referenced agentId
      */
-    public cloneAgent(agentId: number, _options?: Configuration): Promise<number> {
-        const result = this.api.cloneAgent(agentId, _options);
+    public cloneAgent(agentId: number, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.cloneAgent(agentId, observableOptions);
         return result.toPromise();
     }
 
@@ -856,8 +929,9 @@ export class PromiseAgentApi {
      * Batch Clone Agents
      * @param requestBody List of agent information to be created
      */
-    public cloneAgentsWithHttpInfo(requestBody: Array<number>, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
-        const result = this.api.cloneAgentsWithHttpInfo(requestBody, _options);
+    public cloneAgentsWithHttpInfo(requestBody: Array<number>, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<number>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.cloneAgentsWithHttpInfo(requestBody, observableOptions);
         return result.toPromise();
     }
 
@@ -866,8 +940,9 @@ export class PromiseAgentApi {
      * Batch Clone Agents
      * @param requestBody List of agent information to be created
      */
-    public cloneAgents(requestBody: Array<number>, _options?: Configuration): Promise<Array<number>> {
-        const result = this.api.cloneAgents(requestBody, _options);
+    public cloneAgents(requestBody: Array<number>, _options?: PromiseConfigurationOptions): Promise<Array<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.cloneAgents(requestBody, observableOptions);
         return result.toPromise();
     }
 
@@ -876,8 +951,9 @@ export class PromiseAgentApi {
      * Calculate Number of Agents
      * @param agentQueryDTO Query conditions
      */
-    public countAgentsWithHttpInfo(agentQueryDTO: AgentQueryDTO, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.countAgentsWithHttpInfo(agentQueryDTO, _options);
+    public countAgentsWithHttpInfo(agentQueryDTO: AgentQueryDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.countAgentsWithHttpInfo(agentQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -886,8 +962,9 @@ export class PromiseAgentApi {
      * Calculate Number of Agents
      * @param agentQueryDTO Query conditions
      */
-    public countAgents(agentQueryDTO: AgentQueryDTO, _options?: Configuration): Promise<number> {
-        const result = this.api.countAgents(agentQueryDTO, _options);
+    public countAgents(agentQueryDTO: AgentQueryDTO, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.countAgents(agentQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -896,8 +973,9 @@ export class PromiseAgentApi {
      * Create Agent
      * @param agentCreateDTO Information of the agent to be created
      */
-    public createAgentWithHttpInfo(agentCreateDTO: AgentCreateDTO, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.createAgentWithHttpInfo(agentCreateDTO, _options);
+    public createAgentWithHttpInfo(agentCreateDTO: AgentCreateDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createAgentWithHttpInfo(agentCreateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -906,8 +984,9 @@ export class PromiseAgentApi {
      * Create Agent
      * @param agentCreateDTO Information of the agent to be created
      */
-    public createAgent(agentCreateDTO: AgentCreateDTO, _options?: Configuration): Promise<number> {
-        const result = this.api.createAgent(agentCreateDTO, _options);
+    public createAgent(agentCreateDTO: AgentCreateDTO, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createAgent(agentCreateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -916,8 +995,9 @@ export class PromiseAgentApi {
      * Batch Create Agents
      * @param agentCreateDTO List of agent information to be created
      */
-    public createAgentsWithHttpInfo(agentCreateDTO: Array<AgentCreateDTO>, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
-        const result = this.api.createAgentsWithHttpInfo(agentCreateDTO, _options);
+    public createAgentsWithHttpInfo(agentCreateDTO: Array<AgentCreateDTO>, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<number>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createAgentsWithHttpInfo(agentCreateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -926,8 +1006,9 @@ export class PromiseAgentApi {
      * Batch Create Agents
      * @param agentCreateDTO List of agent information to be created
      */
-    public createAgents(agentCreateDTO: Array<AgentCreateDTO>, _options?: Configuration): Promise<Array<number>> {
-        const result = this.api.createAgents(agentCreateDTO, _options);
+    public createAgents(agentCreateDTO: Array<AgentCreateDTO>, _options?: PromiseConfigurationOptions): Promise<Array<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createAgents(agentCreateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -936,8 +1017,9 @@ export class PromiseAgentApi {
      * Delete Agent
      * @param agentId AgentId to be deleted
      */
-    public deleteAgentWithHttpInfo(agentId: number, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.deleteAgentWithHttpInfo(agentId, _options);
+    public deleteAgentWithHttpInfo(agentId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteAgentWithHttpInfo(agentId, observableOptions);
         return result.toPromise();
     }
 
@@ -946,8 +1028,9 @@ export class PromiseAgentApi {
      * Delete Agent
      * @param agentId AgentId to be deleted
      */
-    public deleteAgent(agentId: number, _options?: Configuration): Promise<boolean> {
-        const result = this.api.deleteAgent(agentId, _options);
+    public deleteAgent(agentId: number, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteAgent(agentId, observableOptions);
         return result.toPromise();
     }
 
@@ -956,8 +1039,9 @@ export class PromiseAgentApi {
      * Batch Delete Agents
      * @param requestBody List of agentId to be deleted
      */
-    public deleteAgentsWithHttpInfo(requestBody: Array<number>, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
-        const result = this.api.deleteAgentsWithHttpInfo(requestBody, _options);
+    public deleteAgentsWithHttpInfo(requestBody: Array<number>, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<number>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteAgentsWithHttpInfo(requestBody, observableOptions);
         return result.toPromise();
     }
 
@@ -966,8 +1050,9 @@ export class PromiseAgentApi {
      * Batch Delete Agents
      * @param requestBody List of agentId to be deleted
      */
-    public deleteAgents(requestBody: Array<number>, _options?: Configuration): Promise<Array<number>> {
-        const result = this.api.deleteAgents(requestBody, _options);
+    public deleteAgents(requestBody: Array<number>, _options?: PromiseConfigurationOptions): Promise<Array<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteAgents(requestBody, observableOptions);
         return result.toPromise();
     }
 
@@ -976,8 +1061,9 @@ export class PromiseAgentApi {
      * Get Agent Details
      * @param agentId AgentId to be obtained
      */
-    public getAgentDetailsWithHttpInfo(agentId: number, _options?: Configuration): Promise<HttpInfo<AgentDetailsDTO>> {
-        const result = this.api.getAgentDetailsWithHttpInfo(agentId, _options);
+    public getAgentDetailsWithHttpInfo(agentId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<AgentDetailsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getAgentDetailsWithHttpInfo(agentId, observableOptions);
         return result.toPromise();
     }
 
@@ -986,8 +1072,9 @@ export class PromiseAgentApi {
      * Get Agent Details
      * @param agentId AgentId to be obtained
      */
-    public getAgentDetails(agentId: number, _options?: Configuration): Promise<AgentDetailsDTO> {
-        const result = this.api.getAgentDetails(agentId, _options);
+    public getAgentDetails(agentId: number, _options?: PromiseConfigurationOptions): Promise<AgentDetailsDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getAgentDetails(agentId, observableOptions);
         return result.toPromise();
     }
 
@@ -996,8 +1083,9 @@ export class PromiseAgentApi {
      * Get Agent Summary
      * @param agentId agentId to be obtained
      */
-    public getAgentSummaryWithHttpInfo(agentId: number, _options?: Configuration): Promise<HttpInfo<AgentSummaryDTO>> {
-        const result = this.api.getAgentSummaryWithHttpInfo(agentId, _options);
+    public getAgentSummaryWithHttpInfo(agentId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<AgentSummaryDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getAgentSummaryWithHttpInfo(agentId, observableOptions);
         return result.toPromise();
     }
 
@@ -1006,8 +1094,9 @@ export class PromiseAgentApi {
      * Get Agent Summary
      * @param agentId agentId to be obtained
      */
-    public getAgentSummary(agentId: number, _options?: Configuration): Promise<AgentSummaryDTO> {
-        const result = this.api.getAgentSummary(agentId, _options);
+    public getAgentSummary(agentId: number, _options?: PromiseConfigurationOptions): Promise<AgentSummaryDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getAgentSummary(agentId, observableOptions);
         return result.toPromise();
     }
 
@@ -1016,8 +1105,9 @@ export class PromiseAgentApi {
      * List Versions by Agent Name
      * @param name Agent name
      */
-    public listAgentVersionsByNameWithHttpInfo(name: string, _options?: Configuration): Promise<HttpInfo<Array<AgentItemForNameDTO>>> {
-        const result = this.api.listAgentVersionsByNameWithHttpInfo(name, _options);
+    public listAgentVersionsByNameWithHttpInfo(name: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<AgentItemForNameDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listAgentVersionsByNameWithHttpInfo(name, observableOptions);
         return result.toPromise();
     }
 
@@ -1026,8 +1116,9 @@ export class PromiseAgentApi {
      * List Versions by Agent Name
      * @param name Agent name
      */
-    public listAgentVersionsByName(name: string, _options?: Configuration): Promise<Array<AgentItemForNameDTO>> {
-        const result = this.api.listAgentVersionsByName(name, _options);
+    public listAgentVersionsByName(name: string, _options?: PromiseConfigurationOptions): Promise<Array<AgentItemForNameDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listAgentVersionsByName(name, observableOptions);
         return result.toPromise();
     }
 
@@ -1037,8 +1128,9 @@ export class PromiseAgentApi {
      * @param agentId The agentId to be published
      * @param visibility Visibility: public | private | ...
      */
-    public publishAgentWithHttpInfo(agentId: number, visibility: string, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.publishAgentWithHttpInfo(agentId, visibility, _options);
+    public publishAgentWithHttpInfo(agentId: number, visibility: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.publishAgentWithHttpInfo(agentId, visibility, observableOptions);
         return result.toPromise();
     }
 
@@ -1048,8 +1140,9 @@ export class PromiseAgentApi {
      * @param agentId The agentId to be published
      * @param visibility Visibility: public | private | ...
      */
-    public publishAgent(agentId: number, visibility: string, _options?: Configuration): Promise<number> {
-        const result = this.api.publishAgent(agentId, visibility, _options);
+    public publishAgent(agentId: number, visibility: string, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.publishAgent(agentId, visibility, observableOptions);
         return result.toPromise();
     }
 
@@ -1058,8 +1151,9 @@ export class PromiseAgentApi {
      * Search Agent Details
      * @param agentQueryDTO Query conditions
      */
-    public searchAgentDetailsWithHttpInfo(agentQueryDTO: AgentQueryDTO, _options?: Configuration): Promise<HttpInfo<Array<AgentDetailsDTO>>> {
-        const result = this.api.searchAgentDetailsWithHttpInfo(agentQueryDTO, _options);
+    public searchAgentDetailsWithHttpInfo(agentQueryDTO: AgentQueryDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<AgentDetailsDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.searchAgentDetailsWithHttpInfo(agentQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1068,8 +1162,9 @@ export class PromiseAgentApi {
      * Search Agent Details
      * @param agentQueryDTO Query conditions
      */
-    public searchAgentDetails(agentQueryDTO: AgentQueryDTO, _options?: Configuration): Promise<Array<AgentDetailsDTO>> {
-        const result = this.api.searchAgentDetails(agentQueryDTO, _options);
+    public searchAgentDetails(agentQueryDTO: AgentQueryDTO, _options?: PromiseConfigurationOptions): Promise<Array<AgentDetailsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.searchAgentDetails(agentQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1078,8 +1173,9 @@ export class PromiseAgentApi {
      * Search Agent Summary
      * @param agentQueryDTO Query conditions
      */
-    public searchAgentSummaryWithHttpInfo(agentQueryDTO: AgentQueryDTO, _options?: Configuration): Promise<HttpInfo<Array<AgentSummaryDTO>>> {
-        const result = this.api.searchAgentSummaryWithHttpInfo(agentQueryDTO, _options);
+    public searchAgentSummaryWithHttpInfo(agentQueryDTO: AgentQueryDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<AgentSummaryDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.searchAgentSummaryWithHttpInfo(agentQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1088,8 +1184,9 @@ export class PromiseAgentApi {
      * Search Agent Summary
      * @param agentQueryDTO Query conditions
      */
-    public searchAgentSummary(agentQueryDTO: AgentQueryDTO, _options?: Configuration): Promise<Array<AgentSummaryDTO>> {
-        const result = this.api.searchAgentSummary(agentQueryDTO, _options);
+    public searchAgentSummary(agentQueryDTO: AgentQueryDTO, _options?: PromiseConfigurationOptions): Promise<Array<AgentSummaryDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.searchAgentSummary(agentQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1099,8 +1196,9 @@ export class PromiseAgentApi {
      * @param agentId AgentId to be updated
      * @param agentUpdateDTO Agent information to be updated
      */
-    public updateAgentWithHttpInfo(agentId: number, agentUpdateDTO: AgentUpdateDTO, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.updateAgentWithHttpInfo(agentId, agentUpdateDTO, _options);
+    public updateAgentWithHttpInfo(agentId: number, agentUpdateDTO: AgentUpdateDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateAgentWithHttpInfo(agentId, agentUpdateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1110,8 +1208,9 @@ export class PromiseAgentApi {
      * @param agentId AgentId to be updated
      * @param agentUpdateDTO Agent information to be updated
      */
-    public updateAgent(agentId: number, agentUpdateDTO: AgentUpdateDTO, _options?: Configuration): Promise<boolean> {
-        const result = this.api.updateAgent(agentId, agentUpdateDTO, _options);
+    public updateAgent(agentId: number, agentUpdateDTO: AgentUpdateDTO, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateAgent(agentId, agentUpdateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1138,8 +1237,9 @@ export class PromiseAppConfigForAdminApi {
      * Get default configuration information of the application.
      * Get Default Config
      */
-    public getDefaultConfigWithHttpInfo(_options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.getDefaultConfigWithHttpInfo(_options);
+    public getDefaultConfigWithHttpInfo(_options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getDefaultConfigWithHttpInfo(observableOptions);
         return result.toPromise();
     }
 
@@ -1147,8 +1247,9 @@ export class PromiseAppConfigForAdminApi {
      * Get default configuration information of the application.
      * Get Default Config
      */
-    public getDefaultConfig(_options?: Configuration): Promise<string> {
-        const result = this.api.getDefaultConfig(_options);
+    public getDefaultConfig(_options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getDefaultConfig(observableOptions);
         return result.toPromise();
     }
 
@@ -1175,8 +1276,9 @@ export class PromiseAppMetaForAdminApi {
      * Get application information to accurately locate the corresponding project version.
      * Get Application Information
      */
-    public getAppMetaWithHttpInfo(_options?: Configuration): Promise<HttpInfo<AppMetaDTO>> {
-        const result = this.api.getAppMetaWithHttpInfo(_options);
+    public getAppMetaWithHttpInfo(_options?: PromiseConfigurationOptions): Promise<HttpInfo<AppMetaDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getAppMetaWithHttpInfo(observableOptions);
         return result.toPromise();
     }
 
@@ -1184,8 +1286,9 @@ export class PromiseAppMetaForAdminApi {
      * Get application information to accurately locate the corresponding project version.
      * Get Application Information
      */
-    public getAppMeta(_options?: Configuration): Promise<AppMetaDTO> {
-        const result = this.api.getAppMeta(_options);
+    public getAppMeta(_options?: PromiseConfigurationOptions): Promise<AppMetaDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getAppMeta(observableOptions);
         return result.toPromise();
     }
 
@@ -1214,8 +1317,9 @@ export class PromiseCharacterApi {
      * @param characterUid The characterUid to be added a backend
      * @param characterBackendDTO The character backend to be added
      */
-    public addCharacterBackendWithHttpInfo(characterUid: string, characterBackendDTO: CharacterBackendDTO, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.addCharacterBackendWithHttpInfo(characterUid, characterBackendDTO, _options);
+    public addCharacterBackendWithHttpInfo(characterUid: string, characterBackendDTO: CharacterBackendDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.addCharacterBackendWithHttpInfo(characterUid, characterBackendDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1225,8 +1329,9 @@ export class PromiseCharacterApi {
      * @param characterUid The characterUid to be added a backend
      * @param characterBackendDTO The character backend to be added
      */
-    public addCharacterBackend(characterUid: string, characterBackendDTO: CharacterBackendDTO, _options?: Configuration): Promise<string> {
-        const result = this.api.addCharacterBackend(characterUid, characterBackendDTO, _options);
+    public addCharacterBackend(characterUid: string, characterBackendDTO: CharacterBackendDTO, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.addCharacterBackend(characterUid, characterBackendDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1235,8 +1340,9 @@ export class PromiseCharacterApi {
      * Batch Search Character Details
      * @param characterQueryDTO Query conditions
      */
-    public batchSearchCharacterDetailsWithHttpInfo(characterQueryDTO: Array<CharacterQueryDTO>, _options?: Configuration): Promise<HttpInfo<Array<Array<CharacterDetailsDTO>>>> {
-        const result = this.api.batchSearchCharacterDetailsWithHttpInfo(characterQueryDTO, _options);
+    public batchSearchCharacterDetailsWithHttpInfo(characterQueryDTO: Array<CharacterQueryDTO>, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<Array<CharacterDetailsDTO>>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.batchSearchCharacterDetailsWithHttpInfo(characterQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1245,8 +1351,9 @@ export class PromiseCharacterApi {
      * Batch Search Character Details
      * @param characterQueryDTO Query conditions
      */
-    public batchSearchCharacterDetails(characterQueryDTO: Array<CharacterQueryDTO>, _options?: Configuration): Promise<Array<Array<CharacterDetailsDTO>>> {
-        const result = this.api.batchSearchCharacterDetails(characterQueryDTO, _options);
+    public batchSearchCharacterDetails(characterQueryDTO: Array<CharacterQueryDTO>, _options?: PromiseConfigurationOptions): Promise<Array<Array<CharacterDetailsDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.batchSearchCharacterDetails(characterQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1255,8 +1362,9 @@ export class PromiseCharacterApi {
      * Batch Search Character Summaries
      * @param characterQueryDTO Query conditions
      */
-    public batchSearchCharacterSummaryWithHttpInfo(characterQueryDTO: Array<CharacterQueryDTO>, _options?: Configuration): Promise<HttpInfo<Array<Array<CharacterSummaryDTO>>>> {
-        const result = this.api.batchSearchCharacterSummaryWithHttpInfo(characterQueryDTO, _options);
+    public batchSearchCharacterSummaryWithHttpInfo(characterQueryDTO: Array<CharacterQueryDTO>, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<Array<CharacterSummaryDTO>>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.batchSearchCharacterSummaryWithHttpInfo(characterQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1265,8 +1373,9 @@ export class PromiseCharacterApi {
      * Batch Search Character Summaries
      * @param characterQueryDTO Query conditions
      */
-    public batchSearchCharacterSummary(characterQueryDTO: Array<CharacterQueryDTO>, _options?: Configuration): Promise<Array<Array<CharacterSummaryDTO>>> {
-        const result = this.api.batchSearchCharacterSummary(characterQueryDTO, _options);
+    public batchSearchCharacterSummary(characterQueryDTO: Array<CharacterQueryDTO>, _options?: PromiseConfigurationOptions): Promise<Array<Array<CharacterSummaryDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.batchSearchCharacterSummary(characterQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1275,8 +1384,9 @@ export class PromiseCharacterApi {
      * Clone Character
      * @param characterId The referenced characterId
      */
-    public cloneCharacterWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.cloneCharacterWithHttpInfo(characterId, _options);
+    public cloneCharacterWithHttpInfo(characterId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.cloneCharacterWithHttpInfo(characterId, observableOptions);
         return result.toPromise();
     }
 
@@ -1285,8 +1395,9 @@ export class PromiseCharacterApi {
      * Clone Character
      * @param characterId The referenced characterId
      */
-    public cloneCharacter(characterId: number, _options?: Configuration): Promise<number> {
-        const result = this.api.cloneCharacter(characterId, _options);
+    public cloneCharacter(characterId: number, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.cloneCharacter(characterId, observableOptions);
         return result.toPromise();
     }
 
@@ -1295,8 +1406,9 @@ export class PromiseCharacterApi {
      * Calculate Number of Characters
      * @param characterQueryDTO Query conditions
      */
-    public countCharactersWithHttpInfo(characterQueryDTO: CharacterQueryDTO, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.countCharactersWithHttpInfo(characterQueryDTO, _options);
+    public countCharactersWithHttpInfo(characterQueryDTO: CharacterQueryDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.countCharactersWithHttpInfo(characterQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1305,8 +1417,9 @@ export class PromiseCharacterApi {
      * Calculate Number of Characters
      * @param characterQueryDTO Query conditions
      */
-    public countCharacters(characterQueryDTO: CharacterQueryDTO, _options?: Configuration): Promise<number> {
-        const result = this.api.countCharacters(characterQueryDTO, _options);
+    public countCharacters(characterQueryDTO: CharacterQueryDTO, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.countCharacters(characterQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1315,8 +1428,9 @@ export class PromiseCharacterApi {
      * Calculate Number of Public Characters
      * @param characterQueryDTO Query conditions
      */
-    public countPublicCharactersWithHttpInfo(characterQueryDTO: CharacterQueryDTO, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.countPublicCharactersWithHttpInfo(characterQueryDTO, _options);
+    public countPublicCharactersWithHttpInfo(characterQueryDTO: CharacterQueryDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.countPublicCharactersWithHttpInfo(characterQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1325,8 +1439,9 @@ export class PromiseCharacterApi {
      * Calculate Number of Public Characters
      * @param characterQueryDTO Query conditions
      */
-    public countPublicCharacters(characterQueryDTO: CharacterQueryDTO, _options?: Configuration): Promise<number> {
-        const result = this.api.countPublicCharacters(characterQueryDTO, _options);
+    public countPublicCharacters(characterQueryDTO: CharacterQueryDTO, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.countPublicCharacters(characterQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1335,8 +1450,9 @@ export class PromiseCharacterApi {
      * Create Character
      * @param characterCreateDTO Information of the character to be created
      */
-    public createCharacterWithHttpInfo(characterCreateDTO: CharacterCreateDTO, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.createCharacterWithHttpInfo(characterCreateDTO, _options);
+    public createCharacterWithHttpInfo(characterCreateDTO: CharacterCreateDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createCharacterWithHttpInfo(characterCreateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1345,8 +1461,9 @@ export class PromiseCharacterApi {
      * Create Character
      * @param characterCreateDTO Information of the character to be created
      */
-    public createCharacter(characterCreateDTO: CharacterCreateDTO, _options?: Configuration): Promise<number> {
-        const result = this.api.createCharacter(characterCreateDTO, _options);
+    public createCharacter(characterCreateDTO: CharacterCreateDTO, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createCharacter(characterCreateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1355,8 +1472,9 @@ export class PromiseCharacterApi {
      * Delete Character
      * @param characterId The characterId to be deleted
      */
-    public deleteCharacterWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.deleteCharacterWithHttpInfo(characterId, _options);
+    public deleteCharacterWithHttpInfo(characterId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteCharacterWithHttpInfo(characterId, observableOptions);
         return result.toPromise();
     }
 
@@ -1365,8 +1483,9 @@ export class PromiseCharacterApi {
      * Delete Character
      * @param characterId The characterId to be deleted
      */
-    public deleteCharacter(characterId: number, _options?: Configuration): Promise<boolean> {
-        const result = this.api.deleteCharacter(characterId, _options);
+    public deleteCharacter(characterId: number, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteCharacter(characterId, observableOptions);
         return result.toPromise();
     }
 
@@ -1375,8 +1494,9 @@ export class PromiseCharacterApi {
      * Delete Character by Name
      * @param name The character name to be deleted
      */
-    public deleteCharacterByNameWithHttpInfo(name: string, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
-        const result = this.api.deleteCharacterByNameWithHttpInfo(name, _options);
+    public deleteCharacterByNameWithHttpInfo(name: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<number>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteCharacterByNameWithHttpInfo(name, observableOptions);
         return result.toPromise();
     }
 
@@ -1385,8 +1505,9 @@ export class PromiseCharacterApi {
      * Delete Character by Name
      * @param name The character name to be deleted
      */
-    public deleteCharacterByName(name: string, _options?: Configuration): Promise<Array<number>> {
-        const result = this.api.deleteCharacterByName(name, _options);
+    public deleteCharacterByName(name: string, _options?: PromiseConfigurationOptions): Promise<Array<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteCharacterByName(name, observableOptions);
         return result.toPromise();
     }
 
@@ -1395,8 +1516,9 @@ export class PromiseCharacterApi {
      * Delete Character by Uid
      * @param characterUid The character uid to be deleted
      */
-    public deleteCharacterByUidWithHttpInfo(characterUid: string, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
-        const result = this.api.deleteCharacterByUidWithHttpInfo(characterUid, _options);
+    public deleteCharacterByUidWithHttpInfo(characterUid: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<number>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteCharacterByUidWithHttpInfo(characterUid, observableOptions);
         return result.toPromise();
     }
 
@@ -1405,8 +1527,9 @@ export class PromiseCharacterApi {
      * Delete Character by Uid
      * @param characterUid The character uid to be deleted
      */
-    public deleteCharacterByUid(characterUid: string, _options?: Configuration): Promise<Array<number>> {
-        const result = this.api.deleteCharacterByUid(characterUid, _options);
+    public deleteCharacterByUid(characterUid: string, _options?: PromiseConfigurationOptions): Promise<Array<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteCharacterByUid(characterUid, observableOptions);
         return result.toPromise();
     }
 
@@ -1415,8 +1538,9 @@ export class PromiseCharacterApi {
      * Delete Character Document
      * @param key Document key
      */
-    public deleteCharacterDocumentWithHttpInfo(key: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.deleteCharacterDocumentWithHttpInfo(key, _options);
+    public deleteCharacterDocumentWithHttpInfo(key: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteCharacterDocumentWithHttpInfo(key, observableOptions);
         return result.toPromise();
     }
 
@@ -1425,8 +1549,9 @@ export class PromiseCharacterApi {
      * Delete Character Document
      * @param key Document key
      */
-    public deleteCharacterDocument(key: string, _options?: Configuration): Promise<boolean> {
-        const result = this.api.deleteCharacterDocument(key, _options);
+    public deleteCharacterDocument(key: string, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteCharacterDocument(key, observableOptions);
         return result.toPromise();
     }
 
@@ -1435,8 +1560,9 @@ export class PromiseCharacterApi {
      * Delete Character Picture
      * @param key Image key
      */
-    public deleteCharacterPictureWithHttpInfo(key: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.deleteCharacterPictureWithHttpInfo(key, _options);
+    public deleteCharacterPictureWithHttpInfo(key: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteCharacterPictureWithHttpInfo(key, observableOptions);
         return result.toPromise();
     }
 
@@ -1445,8 +1571,9 @@ export class PromiseCharacterApi {
      * Delete Character Picture
      * @param key Image key
      */
-    public deleteCharacterPicture(key: string, _options?: Configuration): Promise<boolean> {
-        const result = this.api.deleteCharacterPicture(key, _options);
+    public deleteCharacterPicture(key: string, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteCharacterPicture(key, observableOptions);
         return result.toPromise();
     }
 
@@ -1455,8 +1582,9 @@ export class PromiseCharacterApi {
      * Delete Character Video
      * @param key Video key
      */
-    public deleteCharacterVideoWithHttpInfo(key: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.deleteCharacterVideoWithHttpInfo(key, _options);
+    public deleteCharacterVideoWithHttpInfo(key: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteCharacterVideoWithHttpInfo(key, observableOptions);
         return result.toPromise();
     }
 
@@ -1465,8 +1593,9 @@ export class PromiseCharacterApi {
      * Delete Character Video
      * @param key Video key
      */
-    public deleteCharacterVideo(key: string, _options?: Configuration): Promise<boolean> {
-        const result = this.api.deleteCharacterVideo(key, _options);
+    public deleteCharacterVideo(key: string, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteCharacterVideo(key, observableOptions);
         return result.toPromise();
     }
 
@@ -1476,8 +1605,9 @@ export class PromiseCharacterApi {
      * @param characterBackendId The characterBackendId
      * @param key Voice key
      */
-    public deleteCharacterVoiceWithHttpInfo(characterBackendId: string, key: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.deleteCharacterVoiceWithHttpInfo(characterBackendId, key, _options);
+    public deleteCharacterVoiceWithHttpInfo(characterBackendId: string, key: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteCharacterVoiceWithHttpInfo(characterBackendId, key, observableOptions);
         return result.toPromise();
     }
 
@@ -1487,8 +1617,9 @@ export class PromiseCharacterApi {
      * @param characterBackendId The characterBackendId
      * @param key Voice key
      */
-    public deleteCharacterVoice(characterBackendId: string, key: string, _options?: Configuration): Promise<boolean> {
-        const result = this.api.deleteCharacterVoice(characterBackendId, key, _options);
+    public deleteCharacterVoice(characterBackendId: string, key: string, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteCharacterVoice(characterBackendId, key, observableOptions);
         return result.toPromise();
     }
 
@@ -1497,8 +1628,9 @@ export class PromiseCharacterApi {
      * Check If Character Name Exists
      * @param name Name
      */
-    public existsCharacterNameWithHttpInfo(name: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.existsCharacterNameWithHttpInfo(name, _options);
+    public existsCharacterNameWithHttpInfo(name: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.existsCharacterNameWithHttpInfo(name, observableOptions);
         return result.toPromise();
     }
 
@@ -1507,8 +1639,9 @@ export class PromiseCharacterApi {
      * Check If Character Name Exists
      * @param name Name
      */
-    public existsCharacterName(name: string, _options?: Configuration): Promise<boolean> {
-        const result = this.api.existsCharacterName(name, _options);
+    public existsCharacterName(name: string, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.existsCharacterName(name, observableOptions);
         return result.toPromise();
     }
 
@@ -1517,8 +1650,9 @@ export class PromiseCharacterApi {
      * Export Character Configuration
      * @param characterId Character identifier
      */
-    public exportCharacterWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<void>> {
-        const result = this.api.exportCharacterWithHttpInfo(characterId, _options);
+    public exportCharacterWithHttpInfo(characterId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<void>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.exportCharacterWithHttpInfo(characterId, observableOptions);
         return result.toPromise();
     }
 
@@ -1527,8 +1661,9 @@ export class PromiseCharacterApi {
      * Export Character Configuration
      * @param characterId Character identifier
      */
-    public exportCharacter(characterId: number, _options?: Configuration): Promise<void> {
-        const result = this.api.exportCharacter(characterId, _options);
+    public exportCharacter(characterId: number, _options?: PromiseConfigurationOptions): Promise<void> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.exportCharacter(characterId, observableOptions);
         return result.toPromise();
     }
 
@@ -1537,8 +1672,9 @@ export class PromiseCharacterApi {
      * Get Character Details
      * @param characterId CharacterId to be obtained
      */
-    public getCharacterDetailsWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<CharacterDetailsDTO>> {
-        const result = this.api.getCharacterDetailsWithHttpInfo(characterId, _options);
+    public getCharacterDetailsWithHttpInfo(characterId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<CharacterDetailsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getCharacterDetailsWithHttpInfo(characterId, observableOptions);
         return result.toPromise();
     }
 
@@ -1547,8 +1683,9 @@ export class PromiseCharacterApi {
      * Get Character Details
      * @param characterId CharacterId to be obtained
      */
-    public getCharacterDetails(characterId: number, _options?: Configuration): Promise<CharacterDetailsDTO> {
-        const result = this.api.getCharacterDetails(characterId, _options);
+    public getCharacterDetails(characterId: number, _options?: PromiseConfigurationOptions): Promise<CharacterDetailsDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getCharacterDetails(characterId, observableOptions);
         return result.toPromise();
     }
 
@@ -1557,8 +1694,9 @@ export class PromiseCharacterApi {
      * Get Latest Character Id by Name
      * @param name Character name
      */
-    public getCharacterLatestIdByNameWithHttpInfo(name: string, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.getCharacterLatestIdByNameWithHttpInfo(name, _options);
+    public getCharacterLatestIdByNameWithHttpInfo(name: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getCharacterLatestIdByNameWithHttpInfo(name, observableOptions);
         return result.toPromise();
     }
 
@@ -1567,8 +1705,9 @@ export class PromiseCharacterApi {
      * Get Latest Character Id by Name
      * @param name Character name
      */
-    public getCharacterLatestIdByName(name: string, _options?: Configuration): Promise<number> {
-        const result = this.api.getCharacterLatestIdByName(name, _options);
+    public getCharacterLatestIdByName(name: string, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getCharacterLatestIdByName(name, observableOptions);
         return result.toPromise();
     }
 
@@ -1577,8 +1716,9 @@ export class PromiseCharacterApi {
      * Get Character Summary
      * @param characterId CharacterId to be obtained
      */
-    public getCharacterSummaryWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<CharacterSummaryDTO>> {
-        const result = this.api.getCharacterSummaryWithHttpInfo(characterId, _options);
+    public getCharacterSummaryWithHttpInfo(characterId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<CharacterSummaryDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getCharacterSummaryWithHttpInfo(characterId, observableOptions);
         return result.toPromise();
     }
 
@@ -1587,8 +1727,9 @@ export class PromiseCharacterApi {
      * Get Character Summary
      * @param characterId CharacterId to be obtained
      */
-    public getCharacterSummary(characterId: number, _options?: Configuration): Promise<CharacterSummaryDTO> {
-        const result = this.api.getCharacterSummary(characterId, _options);
+    public getCharacterSummary(characterId: number, _options?: PromiseConfigurationOptions): Promise<CharacterSummaryDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getCharacterSummary(characterId, observableOptions);
         return result.toPromise();
     }
 
@@ -1597,8 +1738,9 @@ export class PromiseCharacterApi {
      * Get Default Character Backend
      * @param characterUid The characterUid to be queried
      */
-    public getDefaultCharacterBackendWithHttpInfo(characterUid: string, _options?: Configuration): Promise<HttpInfo<CharacterBackendDetailsDTO>> {
-        const result = this.api.getDefaultCharacterBackendWithHttpInfo(characterUid, _options);
+    public getDefaultCharacterBackendWithHttpInfo(characterUid: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<CharacterBackendDetailsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getDefaultCharacterBackendWithHttpInfo(characterUid, observableOptions);
         return result.toPromise();
     }
 
@@ -1607,8 +1749,9 @@ export class PromiseCharacterApi {
      * Get Default Character Backend
      * @param characterUid The characterUid to be queried
      */
-    public getDefaultCharacterBackend(characterUid: string, _options?: Configuration): Promise<CharacterBackendDetailsDTO> {
-        const result = this.api.getDefaultCharacterBackend(characterUid, _options);
+    public getDefaultCharacterBackend(characterUid: string, _options?: PromiseConfigurationOptions): Promise<CharacterBackendDetailsDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getDefaultCharacterBackend(characterUid, observableOptions);
         return result.toPromise();
     }
 
@@ -1617,8 +1760,9 @@ export class PromiseCharacterApi {
      * Import Character Configuration
      * @param file Character avatar
      */
-    public importCharacterWithHttpInfo(file: HttpFile, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.importCharacterWithHttpInfo(file, _options);
+    public importCharacterWithHttpInfo(file: HttpFile, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.importCharacterWithHttpInfo(file, observableOptions);
         return result.toPromise();
     }
 
@@ -1627,8 +1771,9 @@ export class PromiseCharacterApi {
      * Import Character Configuration
      * @param file Character avatar
      */
-    public importCharacter(file: HttpFile, _options?: Configuration): Promise<number> {
-        const result = this.api.importCharacter(file, _options);
+    public importCharacter(file: HttpFile, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.importCharacter(file, observableOptions);
         return result.toPromise();
     }
 
@@ -1637,8 +1782,9 @@ export class PromiseCharacterApi {
      * List Character Backend ids
      * @param characterUid The characterUid to be queried
      */
-    public listCharacterBackendIdsWithHttpInfo(characterUid: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        const result = this.api.listCharacterBackendIdsWithHttpInfo(characterUid, _options);
+    public listCharacterBackendIdsWithHttpInfo(characterUid: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<string>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listCharacterBackendIdsWithHttpInfo(characterUid, observableOptions);
         return result.toPromise();
     }
 
@@ -1647,8 +1793,9 @@ export class PromiseCharacterApi {
      * List Character Backend ids
      * @param characterUid The characterUid to be queried
      */
-    public listCharacterBackendIds(characterUid: string, _options?: Configuration): Promise<Array<string>> {
-        const result = this.api.listCharacterBackendIds(characterUid, _options);
+    public listCharacterBackendIds(characterUid: string, _options?: PromiseConfigurationOptions): Promise<Array<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listCharacterBackendIds(characterUid, observableOptions);
         return result.toPromise();
     }
 
@@ -1657,8 +1804,9 @@ export class PromiseCharacterApi {
      * List Character Backends
      * @param characterUid The characterUid to be queried
      */
-    public listCharacterBackendsWithHttpInfo(characterUid: string, _options?: Configuration): Promise<HttpInfo<Array<CharacterBackendDetailsDTO>>> {
-        const result = this.api.listCharacterBackendsWithHttpInfo(characterUid, _options);
+    public listCharacterBackendsWithHttpInfo(characterUid: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<CharacterBackendDetailsDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listCharacterBackendsWithHttpInfo(characterUid, observableOptions);
         return result.toPromise();
     }
 
@@ -1667,8 +1815,9 @@ export class PromiseCharacterApi {
      * List Character Backends
      * @param characterUid The characterUid to be queried
      */
-    public listCharacterBackends(characterUid: string, _options?: Configuration): Promise<Array<CharacterBackendDetailsDTO>> {
-        const result = this.api.listCharacterBackends(characterUid, _options);
+    public listCharacterBackends(characterUid: string, _options?: PromiseConfigurationOptions): Promise<Array<CharacterBackendDetailsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listCharacterBackends(characterUid, observableOptions);
         return result.toPromise();
     }
 
@@ -1677,8 +1826,9 @@ export class PromiseCharacterApi {
      * List Character Documents
      * @param characterUid Character unique identifier
      */
-    public listCharacterDocumentsWithHttpInfo(characterUid: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        const result = this.api.listCharacterDocumentsWithHttpInfo(characterUid, _options);
+    public listCharacterDocumentsWithHttpInfo(characterUid: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<string>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listCharacterDocumentsWithHttpInfo(characterUid, observableOptions);
         return result.toPromise();
     }
 
@@ -1687,8 +1837,9 @@ export class PromiseCharacterApi {
      * List Character Documents
      * @param characterUid Character unique identifier
      */
-    public listCharacterDocuments(characterUid: string, _options?: Configuration): Promise<Array<string>> {
-        const result = this.api.listCharacterDocuments(characterUid, _options);
+    public listCharacterDocuments(characterUid: string, _options?: PromiseConfigurationOptions): Promise<Array<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listCharacterDocuments(characterUid, observableOptions);
         return result.toPromise();
     }
 
@@ -1697,8 +1848,9 @@ export class PromiseCharacterApi {
      * List Character Pictures
      * @param characterUid Character unique identifier
      */
-    public listCharacterPicturesWithHttpInfo(characterUid: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        const result = this.api.listCharacterPicturesWithHttpInfo(characterUid, _options);
+    public listCharacterPicturesWithHttpInfo(characterUid: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<string>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listCharacterPicturesWithHttpInfo(characterUid, observableOptions);
         return result.toPromise();
     }
 
@@ -1707,8 +1859,9 @@ export class PromiseCharacterApi {
      * List Character Pictures
      * @param characterUid Character unique identifier
      */
-    public listCharacterPictures(characterUid: string, _options?: Configuration): Promise<Array<string>> {
-        const result = this.api.listCharacterPictures(characterUid, _options);
+    public listCharacterPictures(characterUid: string, _options?: PromiseConfigurationOptions): Promise<Array<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listCharacterPictures(characterUid, observableOptions);
         return result.toPromise();
     }
 
@@ -1717,8 +1870,9 @@ export class PromiseCharacterApi {
      * List Versions by Character Name
      * @param name Character name
      */
-    public listCharacterVersionsByNameWithHttpInfo(name: string, _options?: Configuration): Promise<HttpInfo<Array<CharacterItemForNameDTO>>> {
-        const result = this.api.listCharacterVersionsByNameWithHttpInfo(name, _options);
+    public listCharacterVersionsByNameWithHttpInfo(name: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<CharacterItemForNameDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listCharacterVersionsByNameWithHttpInfo(name, observableOptions);
         return result.toPromise();
     }
 
@@ -1727,8 +1881,9 @@ export class PromiseCharacterApi {
      * List Versions by Character Name
      * @param name Character name
      */
-    public listCharacterVersionsByName(name: string, _options?: Configuration): Promise<Array<CharacterItemForNameDTO>> {
-        const result = this.api.listCharacterVersionsByName(name, _options);
+    public listCharacterVersionsByName(name: string, _options?: PromiseConfigurationOptions): Promise<Array<CharacterItemForNameDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listCharacterVersionsByName(name, observableOptions);
         return result.toPromise();
     }
 
@@ -1737,8 +1892,9 @@ export class PromiseCharacterApi {
      * List Character Videos
      * @param characterUid Character unique identifier
      */
-    public listCharacterVideosWithHttpInfo(characterUid: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        const result = this.api.listCharacterVideosWithHttpInfo(characterUid, _options);
+    public listCharacterVideosWithHttpInfo(characterUid: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<string>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listCharacterVideosWithHttpInfo(characterUid, observableOptions);
         return result.toPromise();
     }
 
@@ -1747,8 +1903,9 @@ export class PromiseCharacterApi {
      * List Character Videos
      * @param characterUid Character unique identifier
      */
-    public listCharacterVideos(characterUid: string, _options?: Configuration): Promise<Array<string>> {
-        const result = this.api.listCharacterVideos(characterUid, _options);
+    public listCharacterVideos(characterUid: string, _options?: PromiseConfigurationOptions): Promise<Array<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listCharacterVideos(characterUid, observableOptions);
         return result.toPromise();
     }
 
@@ -1757,8 +1914,9 @@ export class PromiseCharacterApi {
      * List Character Voices
      * @param characterBackendId The characterBackendId
      */
-    public listCharacterVoicesWithHttpInfo(characterBackendId: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        const result = this.api.listCharacterVoicesWithHttpInfo(characterBackendId, _options);
+    public listCharacterVoicesWithHttpInfo(characterBackendId: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<string>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listCharacterVoicesWithHttpInfo(characterBackendId, observableOptions);
         return result.toPromise();
     }
 
@@ -1767,8 +1925,9 @@ export class PromiseCharacterApi {
      * List Character Voices
      * @param characterBackendId The characterBackendId
      */
-    public listCharacterVoices(characterBackendId: string, _options?: Configuration): Promise<Array<string>> {
-        const result = this.api.listCharacterVoices(characterBackendId, _options);
+    public listCharacterVoices(characterBackendId: string, _options?: PromiseConfigurationOptions): Promise<Array<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listCharacterVoices(characterBackendId, observableOptions);
         return result.toPromise();
     }
 
@@ -1777,8 +1936,9 @@ export class PromiseCharacterApi {
      * Create New Character Name
      * @param desired Desired name
      */
-    public newCharacterNameWithHttpInfo(desired: string, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.newCharacterNameWithHttpInfo(desired, _options);
+    public newCharacterNameWithHttpInfo(desired: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.newCharacterNameWithHttpInfo(desired, observableOptions);
         return result.toPromise();
     }
 
@@ -1787,8 +1947,9 @@ export class PromiseCharacterApi {
      * Create New Character Name
      * @param desired Desired name
      */
-    public newCharacterName(desired: string, _options?: Configuration): Promise<string> {
-        const result = this.api.newCharacterName(desired, _options);
+    public newCharacterName(desired: string, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.newCharacterName(desired, observableOptions);
         return result.toPromise();
     }
 
@@ -1798,8 +1959,9 @@ export class PromiseCharacterApi {
      * @param characterId The characterId to be published
      * @param visibility Visibility: public | private | ...
      */
-    public publishCharacterWithHttpInfo(characterId: number, visibility: string, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.publishCharacterWithHttpInfo(characterId, visibility, _options);
+    public publishCharacterWithHttpInfo(characterId: number, visibility: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.publishCharacterWithHttpInfo(characterId, visibility, observableOptions);
         return result.toPromise();
     }
 
@@ -1809,8 +1971,9 @@ export class PromiseCharacterApi {
      * @param characterId The characterId to be published
      * @param visibility Visibility: public | private | ...
      */
-    public publishCharacter(characterId: number, visibility: string, _options?: Configuration): Promise<number> {
-        const result = this.api.publishCharacter(characterId, visibility, _options);
+    public publishCharacter(characterId: number, visibility: string, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.publishCharacter(characterId, visibility, observableOptions);
         return result.toPromise();
     }
 
@@ -1819,8 +1982,9 @@ export class PromiseCharacterApi {
      * Publish Character
      * @param characterId The characterId to be published
      */
-    public publishCharacter1WithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.publishCharacter1WithHttpInfo(characterId, _options);
+    public publishCharacter1WithHttpInfo(characterId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.publishCharacter1WithHttpInfo(characterId, observableOptions);
         return result.toPromise();
     }
 
@@ -1829,8 +1993,9 @@ export class PromiseCharacterApi {
      * Publish Character
      * @param characterId The characterId to be published
      */
-    public publishCharacter1(characterId: number, _options?: Configuration): Promise<number> {
-        const result = this.api.publishCharacter1(characterId, _options);
+    public publishCharacter1(characterId: number, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.publishCharacter1(characterId, observableOptions);
         return result.toPromise();
     }
 
@@ -1839,8 +2004,9 @@ export class PromiseCharacterApi {
      * Remove Character Backend
      * @param characterBackendId The characterBackendId to be removed
      */
-    public removeCharacterBackendWithHttpInfo(characterBackendId: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.removeCharacterBackendWithHttpInfo(characterBackendId, _options);
+    public removeCharacterBackendWithHttpInfo(characterBackendId: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.removeCharacterBackendWithHttpInfo(characterBackendId, observableOptions);
         return result.toPromise();
     }
 
@@ -1849,8 +2015,9 @@ export class PromiseCharacterApi {
      * Remove Character Backend
      * @param characterBackendId The characterBackendId to be removed
      */
-    public removeCharacterBackend(characterBackendId: string, _options?: Configuration): Promise<boolean> {
-        const result = this.api.removeCharacterBackend(characterBackendId, _options);
+    public removeCharacterBackend(characterBackendId: string, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.removeCharacterBackend(characterBackendId, observableOptions);
         return result.toPromise();
     }
 
@@ -1859,8 +2026,9 @@ export class PromiseCharacterApi {
      * Search Character Details
      * @param characterQueryDTO Query conditions
      */
-    public searchCharacterDetailsWithHttpInfo(characterQueryDTO: CharacterQueryDTO, _options?: Configuration): Promise<HttpInfo<Array<CharacterDetailsDTO>>> {
-        const result = this.api.searchCharacterDetailsWithHttpInfo(characterQueryDTO, _options);
+    public searchCharacterDetailsWithHttpInfo(characterQueryDTO: CharacterQueryDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<CharacterDetailsDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.searchCharacterDetailsWithHttpInfo(characterQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1869,8 +2037,9 @@ export class PromiseCharacterApi {
      * Search Character Details
      * @param characterQueryDTO Query conditions
      */
-    public searchCharacterDetails(characterQueryDTO: CharacterQueryDTO, _options?: Configuration): Promise<Array<CharacterDetailsDTO>> {
-        const result = this.api.searchCharacterDetails(characterQueryDTO, _options);
+    public searchCharacterDetails(characterQueryDTO: CharacterQueryDTO, _options?: PromiseConfigurationOptions): Promise<Array<CharacterDetailsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.searchCharacterDetails(characterQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1879,8 +2048,9 @@ export class PromiseCharacterApi {
      * Search Character Summary
      * @param characterQueryDTO Query conditions
      */
-    public searchCharacterSummaryWithHttpInfo(characterQueryDTO: CharacterQueryDTO, _options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryDTO>>> {
-        const result = this.api.searchCharacterSummaryWithHttpInfo(characterQueryDTO, _options);
+    public searchCharacterSummaryWithHttpInfo(characterQueryDTO: CharacterQueryDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<CharacterSummaryDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.searchCharacterSummaryWithHttpInfo(characterQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1889,8 +2059,9 @@ export class PromiseCharacterApi {
      * Search Character Summary
      * @param characterQueryDTO Query conditions
      */
-    public searchCharacterSummary(characterQueryDTO: CharacterQueryDTO, _options?: Configuration): Promise<Array<CharacterSummaryDTO>> {
-        const result = this.api.searchCharacterSummary(characterQueryDTO, _options);
+    public searchCharacterSummary(characterQueryDTO: CharacterQueryDTO, _options?: PromiseConfigurationOptions): Promise<Array<CharacterSummaryDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.searchCharacterSummary(characterQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1899,8 +2070,9 @@ export class PromiseCharacterApi {
      * Search Public Character Summary
      * @param characterQueryDTO Query conditions
      */
-    public searchPublicCharacterSummaryWithHttpInfo(characterQueryDTO: CharacterQueryDTO, _options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryDTO>>> {
-        const result = this.api.searchPublicCharacterSummaryWithHttpInfo(characterQueryDTO, _options);
+    public searchPublicCharacterSummaryWithHttpInfo(characterQueryDTO: CharacterQueryDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<CharacterSummaryDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.searchPublicCharacterSummaryWithHttpInfo(characterQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1909,8 +2081,9 @@ export class PromiseCharacterApi {
      * Search Public Character Summary
      * @param characterQueryDTO Query conditions
      */
-    public searchPublicCharacterSummary(characterQueryDTO: CharacterQueryDTO, _options?: Configuration): Promise<Array<CharacterSummaryDTO>> {
-        const result = this.api.searchPublicCharacterSummary(characterQueryDTO, _options);
+    public searchPublicCharacterSummary(characterQueryDTO: CharacterQueryDTO, _options?: PromiseConfigurationOptions): Promise<Array<CharacterSummaryDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.searchPublicCharacterSummary(characterQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1919,8 +2092,9 @@ export class PromiseCharacterApi {
      * Set Default Character Backend
      * @param characterBackendId The characterBackendId to be set to default
      */
-    public setDefaultCharacterBackendWithHttpInfo(characterBackendId: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.setDefaultCharacterBackendWithHttpInfo(characterBackendId, _options);
+    public setDefaultCharacterBackendWithHttpInfo(characterBackendId: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.setDefaultCharacterBackendWithHttpInfo(characterBackendId, observableOptions);
         return result.toPromise();
     }
 
@@ -1929,8 +2103,9 @@ export class PromiseCharacterApi {
      * Set Default Character Backend
      * @param characterBackendId The characterBackendId to be set to default
      */
-    public setDefaultCharacterBackend(characterBackendId: string, _options?: Configuration): Promise<boolean> {
-        const result = this.api.setDefaultCharacterBackend(characterBackendId, _options);
+    public setDefaultCharacterBackend(characterBackendId: string, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.setDefaultCharacterBackend(characterBackendId, observableOptions);
         return result.toPromise();
     }
 
@@ -1940,8 +2115,9 @@ export class PromiseCharacterApi {
      * @param characterId The characterId to be updated
      * @param characterUpdateDTO The character information to be updated
      */
-    public updateCharacterWithHttpInfo(characterId: number, characterUpdateDTO: CharacterUpdateDTO, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.updateCharacterWithHttpInfo(characterId, characterUpdateDTO, _options);
+    public updateCharacterWithHttpInfo(characterId: number, characterUpdateDTO: CharacterUpdateDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateCharacterWithHttpInfo(characterId, characterUpdateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1951,8 +2127,9 @@ export class PromiseCharacterApi {
      * @param characterId The characterId to be updated
      * @param characterUpdateDTO The character information to be updated
      */
-    public updateCharacter(characterId: number, characterUpdateDTO: CharacterUpdateDTO, _options?: Configuration): Promise<boolean> {
-        const result = this.api.updateCharacter(characterId, characterUpdateDTO, _options);
+    public updateCharacter(characterId: number, characterUpdateDTO: CharacterUpdateDTO, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateCharacter(characterId, characterUpdateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1962,8 +2139,9 @@ export class PromiseCharacterApi {
      * @param characterBackendId The characterBackendId to be updated
      * @param characterBackendDTO The character backend configuration to be updated
      */
-    public updateCharacterBackendWithHttpInfo(characterBackendId: string, characterBackendDTO: CharacterBackendDTO, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.updateCharacterBackendWithHttpInfo(characterBackendId, characterBackendDTO, _options);
+    public updateCharacterBackendWithHttpInfo(characterBackendId: string, characterBackendDTO: CharacterBackendDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateCharacterBackendWithHttpInfo(characterBackendId, characterBackendDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1973,8 +2151,9 @@ export class PromiseCharacterApi {
      * @param characterBackendId The characterBackendId to be updated
      * @param characterBackendDTO The character backend configuration to be updated
      */
-    public updateCharacterBackend(characterBackendId: string, characterBackendDTO: CharacterBackendDTO, _options?: Configuration): Promise<boolean> {
-        const result = this.api.updateCharacterBackend(characterBackendId, characterBackendDTO, _options);
+    public updateCharacterBackend(characterBackendId: string, characterBackendDTO: CharacterBackendDTO, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateCharacterBackend(characterBackendId, characterBackendDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -1984,8 +2163,9 @@ export class PromiseCharacterApi {
      * @param characterUid Character unique identifier
      * @param file Character avatar
      */
-    public uploadCharacterAvatarWithHttpInfo(characterUid: string, file: HttpFile, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.uploadCharacterAvatarWithHttpInfo(characterUid, file, _options);
+    public uploadCharacterAvatarWithHttpInfo(characterUid: string, file: HttpFile, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.uploadCharacterAvatarWithHttpInfo(characterUid, file, observableOptions);
         return result.toPromise();
     }
 
@@ -1995,8 +2175,9 @@ export class PromiseCharacterApi {
      * @param characterUid Character unique identifier
      * @param file Character avatar
      */
-    public uploadCharacterAvatar(characterUid: string, file: HttpFile, _options?: Configuration): Promise<string> {
-        const result = this.api.uploadCharacterAvatar(characterUid, file, _options);
+    public uploadCharacterAvatar(characterUid: string, file: HttpFile, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.uploadCharacterAvatar(characterUid, file, observableOptions);
         return result.toPromise();
     }
 
@@ -2006,8 +2187,9 @@ export class PromiseCharacterApi {
      * @param characterUid Character unique identifier
      * @param file Character document
      */
-    public uploadCharacterDocumentWithHttpInfo(characterUid: string, file: HttpFile, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.uploadCharacterDocumentWithHttpInfo(characterUid, file, _options);
+    public uploadCharacterDocumentWithHttpInfo(characterUid: string, file: HttpFile, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.uploadCharacterDocumentWithHttpInfo(characterUid, file, observableOptions);
         return result.toPromise();
     }
 
@@ -2017,8 +2199,9 @@ export class PromiseCharacterApi {
      * @param characterUid Character unique identifier
      * @param file Character document
      */
-    public uploadCharacterDocument(characterUid: string, file: HttpFile, _options?: Configuration): Promise<string> {
-        const result = this.api.uploadCharacterDocument(characterUid, file, _options);
+    public uploadCharacterDocument(characterUid: string, file: HttpFile, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.uploadCharacterDocument(characterUid, file, observableOptions);
         return result.toPromise();
     }
 
@@ -2028,8 +2211,9 @@ export class PromiseCharacterApi {
      * @param characterUid Character unique identifier
      * @param file Character picture
      */
-    public uploadCharacterPictureWithHttpInfo(characterUid: string, file: HttpFile, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.uploadCharacterPictureWithHttpInfo(characterUid, file, _options);
+    public uploadCharacterPictureWithHttpInfo(characterUid: string, file: HttpFile, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.uploadCharacterPictureWithHttpInfo(characterUid, file, observableOptions);
         return result.toPromise();
     }
 
@@ -2039,8 +2223,9 @@ export class PromiseCharacterApi {
      * @param characterUid Character unique identifier
      * @param file Character picture
      */
-    public uploadCharacterPicture(characterUid: string, file: HttpFile, _options?: Configuration): Promise<string> {
-        const result = this.api.uploadCharacterPicture(characterUid, file, _options);
+    public uploadCharacterPicture(characterUid: string, file: HttpFile, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.uploadCharacterPicture(characterUid, file, observableOptions);
         return result.toPromise();
     }
 
@@ -2050,8 +2235,9 @@ export class PromiseCharacterApi {
      * @param characterUid Character unique identifier
      * @param file Character video
      */
-    public uploadCharacterVideoWithHttpInfo(characterUid: string, file: HttpFile, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.uploadCharacterVideoWithHttpInfo(characterUid, file, _options);
+    public uploadCharacterVideoWithHttpInfo(characterUid: string, file: HttpFile, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.uploadCharacterVideoWithHttpInfo(characterUid, file, observableOptions);
         return result.toPromise();
     }
 
@@ -2061,8 +2247,9 @@ export class PromiseCharacterApi {
      * @param characterUid Character unique identifier
      * @param file Character video
      */
-    public uploadCharacterVideo(characterUid: string, file: HttpFile, _options?: Configuration): Promise<string> {
-        const result = this.api.uploadCharacterVideo(characterUid, file, _options);
+    public uploadCharacterVideo(characterUid: string, file: HttpFile, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.uploadCharacterVideo(characterUid, file, observableOptions);
         return result.toPromise();
     }
 
@@ -2072,8 +2259,9 @@ export class PromiseCharacterApi {
      * @param characterBackendId The characterBackendId
      * @param file Character voice
      */
-    public uploadCharacterVoiceWithHttpInfo(characterBackendId: string, file: HttpFile, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.uploadCharacterVoiceWithHttpInfo(characterBackendId, file, _options);
+    public uploadCharacterVoiceWithHttpInfo(characterBackendId: string, file: HttpFile, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.uploadCharacterVoiceWithHttpInfo(characterBackendId, file, observableOptions);
         return result.toPromise();
     }
 
@@ -2083,8 +2271,9 @@ export class PromiseCharacterApi {
      * @param characterBackendId The characterBackendId
      * @param file Character voice
      */
-    public uploadCharacterVoice(characterBackendId: string, file: HttpFile, _options?: Configuration): Promise<string> {
-        const result = this.api.uploadCharacterVoice(characterBackendId, file, _options);
+    public uploadCharacterVoice(characterBackendId: string, file: HttpFile, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.uploadCharacterVoice(characterBackendId, file, observableOptions);
         return result.toPromise();
     }
 
@@ -2112,8 +2301,9 @@ export class PromiseChatApi {
      * Clear Memory
      * @param chatId Chat session identifier
      */
-    public clearMemoryWithHttpInfo(chatId: string, _options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
-        const result = this.api.clearMemoryWithHttpInfo(chatId, _options);
+    public clearMemoryWithHttpInfo(chatId: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.clearMemoryWithHttpInfo(chatId, observableOptions);
         return result.toPromise();
     }
 
@@ -2122,8 +2312,9 @@ export class PromiseChatApi {
      * Clear Memory
      * @param chatId Chat session identifier
      */
-    public clearMemory(chatId: string, _options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
-        const result = this.api.clearMemory(chatId, _options);
+    public clearMemory(chatId: string, _options?: PromiseConfigurationOptions): Promise<Array<ChatMessageRecordDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.clearMemory(chatId, observableOptions);
         return result.toPromise();
     }
 
@@ -2132,8 +2323,9 @@ export class PromiseChatApi {
      * Delete Chat Session
      * @param chatId Chat session identifier
      */
-    public deleteChatWithHttpInfo(chatId: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.deleteChatWithHttpInfo(chatId, _options);
+    public deleteChatWithHttpInfo(chatId: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteChatWithHttpInfo(chatId, observableOptions);
         return result.toPromise();
     }
 
@@ -2142,8 +2334,9 @@ export class PromiseChatApi {
      * Delete Chat Session
      * @param chatId Chat session identifier
      */
-    public deleteChat(chatId: string, _options?: Configuration): Promise<boolean> {
-        const result = this.api.deleteChat(chatId, _options);
+    public deleteChat(chatId: string, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteChat(chatId, observableOptions);
         return result.toPromise();
     }
 
@@ -2152,8 +2345,9 @@ export class PromiseChatApi {
      * Get Default Chat
      * @param characterUid Character uid
      */
-    public getDefaultChatIdWithHttpInfo(characterUid: string, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.getDefaultChatIdWithHttpInfo(characterUid, _options);
+    public getDefaultChatIdWithHttpInfo(characterUid: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getDefaultChatIdWithHttpInfo(characterUid, observableOptions);
         return result.toPromise();
     }
 
@@ -2162,8 +2356,9 @@ export class PromiseChatApi {
      * Get Default Chat
      * @param characterUid Character uid
      */
-    public getDefaultChatId(characterUid: string, _options?: Configuration): Promise<string> {
-        const result = this.api.getDefaultChatId(characterUid, _options);
+    public getDefaultChatId(characterUid: string, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getDefaultChatId(characterUid, observableOptions);
         return result.toPromise();
     }
 
@@ -2172,8 +2367,9 @@ export class PromiseChatApi {
      * Get Memory Usage
      * @param chatId Chat session identifier
      */
-    public getMemoryUsageWithHttpInfo(chatId: string, _options?: Configuration): Promise<HttpInfo<MemoryUsageDTO>> {
-        const result = this.api.getMemoryUsageWithHttpInfo(chatId, _options);
+    public getMemoryUsageWithHttpInfo(chatId: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<MemoryUsageDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getMemoryUsageWithHttpInfo(chatId, observableOptions);
         return result.toPromise();
     }
 
@@ -2182,8 +2378,9 @@ export class PromiseChatApi {
      * Get Memory Usage
      * @param chatId Chat session identifier
      */
-    public getMemoryUsage(chatId: string, _options?: Configuration): Promise<MemoryUsageDTO> {
-        const result = this.api.getMemoryUsage(chatId, _options);
+    public getMemoryUsage(chatId: string, _options?: PromiseConfigurationOptions): Promise<MemoryUsageDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getMemoryUsage(chatId, observableOptions);
         return result.toPromise();
     }
 
@@ -2191,8 +2388,9 @@ export class PromiseChatApi {
      * List chats of current user.
      * List Chats
      */
-    public listChatsWithHttpInfo(_options?: Configuration): Promise<HttpInfo<Array<ChatSessionDTO>>> {
-        const result = this.api.listChatsWithHttpInfo(_options);
+    public listChatsWithHttpInfo(_options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<ChatSessionDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listChatsWithHttpInfo(observableOptions);
         return result.toPromise();
     }
 
@@ -2200,8 +2398,9 @@ export class PromiseChatApi {
      * List chats of current user.
      * List Chats
      */
-    public listChats(_options?: Configuration): Promise<Array<ChatSessionDTO>> {
-        const result = this.api.listChats(_options);
+    public listChats(_options?: PromiseConfigurationOptions): Promise<Array<ChatSessionDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listChats(observableOptions);
         return result.toPromise();
     }
 
@@ -2211,8 +2410,9 @@ export class PromiseChatApi {
      * @param chatId Chat session identifier
      * @param limit Messages limit
      */
-    public listDebugMessagesWithHttpInfo(chatId: string, limit: number, _options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
-        const result = this.api.listDebugMessagesWithHttpInfo(chatId, limit, _options);
+    public listDebugMessagesWithHttpInfo(chatId: string, limit: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listDebugMessagesWithHttpInfo(chatId, limit, observableOptions);
         return result.toPromise();
     }
 
@@ -2222,20 +2422,9 @@ export class PromiseChatApi {
      * @param chatId Chat session identifier
      * @param limit Messages limit
      */
-    public listDebugMessages(chatId: string, limit: number, _options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
-        const result = this.api.listDebugMessages(chatId, limit, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List debug messages of a chat.
-     * List Chat Debug Messages
-     * @param chatId Chat session identifier
-     * @param limit Messages limit
-     * @param offset Messages offset (from new to old)
-     */
-    public listDebugMessages1WithHttpInfo(chatId: string, limit: number, offset: number, _options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
-        const result = this.api.listDebugMessages1WithHttpInfo(chatId, limit, offset, _options);
+    public listDebugMessages(chatId: string, limit: number, _options?: PromiseConfigurationOptions): Promise<Array<ChatMessageRecordDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listDebugMessages(chatId, limit, observableOptions);
         return result.toPromise();
     }
 
@@ -2246,8 +2435,22 @@ export class PromiseChatApi {
      * @param limit Messages limit
      * @param offset Messages offset (from new to old)
      */
-    public listDebugMessages1(chatId: string, limit: number, offset: number, _options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
-        const result = this.api.listDebugMessages1(chatId, limit, offset, _options);
+    public listDebugMessages1WithHttpInfo(chatId: string, limit: number, offset: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listDebugMessages1WithHttpInfo(chatId, limit, offset, observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * List debug messages of a chat.
+     * List Chat Debug Messages
+     * @param chatId Chat session identifier
+     * @param limit Messages limit
+     * @param offset Messages offset (from new to old)
+     */
+    public listDebugMessages1(chatId: string, limit: number, offset: number, _options?: PromiseConfigurationOptions): Promise<Array<ChatMessageRecordDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listDebugMessages1(chatId, limit, offset, observableOptions);
         return result.toPromise();
     }
 
@@ -2256,8 +2459,9 @@ export class PromiseChatApi {
      * List Chat Debug Messages
      * @param chatId Chat session identifier
      */
-    public listDebugMessages2WithHttpInfo(chatId: string, _options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
-        const result = this.api.listDebugMessages2WithHttpInfo(chatId, _options);
+    public listDebugMessages2WithHttpInfo(chatId: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listDebugMessages2WithHttpInfo(chatId, observableOptions);
         return result.toPromise();
     }
 
@@ -2266,8 +2470,9 @@ export class PromiseChatApi {
      * List Chat Debug Messages
      * @param chatId Chat session identifier
      */
-    public listDebugMessages2(chatId: string, _options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
-        const result = this.api.listDebugMessages2(chatId, _options);
+    public listDebugMessages2(chatId: string, _options?: PromiseConfigurationOptions): Promise<Array<ChatMessageRecordDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listDebugMessages2(chatId, observableOptions);
         return result.toPromise();
     }
 
@@ -2277,8 +2482,9 @@ export class PromiseChatApi {
      * @param chatId Chat session identifier
      * @param limit Messages limit
      */
-    public listMessagesWithHttpInfo(chatId: string, limit: number, _options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
-        const result = this.api.listMessagesWithHttpInfo(chatId, limit, _options);
+    public listMessagesWithHttpInfo(chatId: string, limit: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listMessagesWithHttpInfo(chatId, limit, observableOptions);
         return result.toPromise();
     }
 
@@ -2288,8 +2494,9 @@ export class PromiseChatApi {
      * @param chatId Chat session identifier
      * @param limit Messages limit
      */
-    public listMessages(chatId: string, limit: number, _options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
-        const result = this.api.listMessages(chatId, limit, _options);
+    public listMessages(chatId: string, limit: number, _options?: PromiseConfigurationOptions): Promise<Array<ChatMessageRecordDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listMessages(chatId, limit, observableOptions);
         return result.toPromise();
     }
 
@@ -2300,8 +2507,9 @@ export class PromiseChatApi {
      * @param limit Messages limit
      * @param offset Messages offset (from new to old)
      */
-    public listMessages1WithHttpInfo(chatId: string, limit: number, offset: number, _options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
-        const result = this.api.listMessages1WithHttpInfo(chatId, limit, offset, _options);
+    public listMessages1WithHttpInfo(chatId: string, limit: number, offset: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listMessages1WithHttpInfo(chatId, limit, offset, observableOptions);
         return result.toPromise();
     }
 
@@ -2312,8 +2520,9 @@ export class PromiseChatApi {
      * @param limit Messages limit
      * @param offset Messages offset (from new to old)
      */
-    public listMessages1(chatId: string, limit: number, offset: number, _options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
-        const result = this.api.listMessages1(chatId, limit, offset, _options);
+    public listMessages1(chatId: string, limit: number, offset: number, _options?: PromiseConfigurationOptions): Promise<Array<ChatMessageRecordDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listMessages1(chatId, limit, offset, observableOptions);
         return result.toPromise();
     }
 
@@ -2322,8 +2531,9 @@ export class PromiseChatApi {
      * List Chat Messages
      * @param chatId Chat session identifier
      */
-    public listMessages2WithHttpInfo(chatId: string, _options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
-        const result = this.api.listMessages2WithHttpInfo(chatId, _options);
+    public listMessages2WithHttpInfo(chatId: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listMessages2WithHttpInfo(chatId, observableOptions);
         return result.toPromise();
     }
 
@@ -2332,8 +2542,9 @@ export class PromiseChatApi {
      * List Chat Messages
      * @param chatId Chat session identifier
      */
-    public listMessages2(chatId: string, _options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
-        const result = this.api.listMessages2(chatId, _options);
+    public listMessages2(chatId: string, _options?: PromiseConfigurationOptions): Promise<Array<ChatMessageRecordDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listMessages2(chatId, observableOptions);
         return result.toPromise();
     }
 
@@ -2343,8 +2554,9 @@ export class PromiseChatApi {
      * @param chatId Chat session identifier
      * @param count Message count to be rolled back
      */
-    public rollbackMessagesWithHttpInfo(chatId: string, count: number, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
-        const result = this.api.rollbackMessagesWithHttpInfo(chatId, count, _options);
+    public rollbackMessagesWithHttpInfo(chatId: string, count: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<number>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.rollbackMessagesWithHttpInfo(chatId, count, observableOptions);
         return result.toPromise();
     }
 
@@ -2354,8 +2566,9 @@ export class PromiseChatApi {
      * @param chatId Chat session identifier
      * @param count Message count to be rolled back
      */
-    public rollbackMessages(chatId: string, count: number, _options?: Configuration): Promise<Array<number>> {
-        const result = this.api.rollbackMessages(chatId, count, _options);
+    public rollbackMessages(chatId: string, count: number, _options?: PromiseConfigurationOptions): Promise<Array<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.rollbackMessages(chatId, count, observableOptions);
         return result.toPromise();
     }
 
@@ -2365,8 +2578,9 @@ export class PromiseChatApi {
      * @param chatId Chat session identifier
      * @param assistantUid Assistant uid
      */
-    public sendAssistantWithHttpInfo(chatId: string, assistantUid: string, _options?: Configuration): Promise<HttpInfo<LlmResultDTO>> {
-        const result = this.api.sendAssistantWithHttpInfo(chatId, assistantUid, _options);
+    public sendAssistantWithHttpInfo(chatId: string, assistantUid: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<LlmResultDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.sendAssistantWithHttpInfo(chatId, assistantUid, observableOptions);
         return result.toPromise();
     }
 
@@ -2376,8 +2590,9 @@ export class PromiseChatApi {
      * @param chatId Chat session identifier
      * @param assistantUid Assistant uid
      */
-    public sendAssistant(chatId: string, assistantUid: string, _options?: Configuration): Promise<LlmResultDTO> {
-        const result = this.api.sendAssistant(chatId, assistantUid, _options);
+    public sendAssistant(chatId: string, assistantUid: string, _options?: PromiseConfigurationOptions): Promise<LlmResultDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.sendAssistant(chatId, assistantUid, observableOptions);
         return result.toPromise();
     }
 
@@ -2387,8 +2602,9 @@ export class PromiseChatApi {
      * @param chatId Chat session identifier
      * @param chatMessageDTO Chat message
      */
-    public sendMessageWithHttpInfo(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Promise<HttpInfo<LlmResultDTO>> {
-        const result = this.api.sendMessageWithHttpInfo(chatId, chatMessageDTO, _options);
+    public sendMessageWithHttpInfo(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<LlmResultDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.sendMessageWithHttpInfo(chatId, chatMessageDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -2398,8 +2614,9 @@ export class PromiseChatApi {
      * @param chatId Chat session identifier
      * @param chatMessageDTO Chat message
      */
-    public sendMessage(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Promise<LlmResultDTO> {
-        const result = this.api.sendMessage(chatId, chatMessageDTO, _options);
+    public sendMessage(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: PromiseConfigurationOptions): Promise<LlmResultDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.sendMessage(chatId, chatMessageDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -2408,8 +2625,9 @@ export class PromiseChatApi {
      * Start Chat Session
      * @param chatCreateDTO Parameters for starting a chat session
      */
-    public startChatWithHttpInfo(chatCreateDTO: ChatCreateDTO, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.startChatWithHttpInfo(chatCreateDTO, _options);
+    public startChatWithHttpInfo(chatCreateDTO: ChatCreateDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.startChatWithHttpInfo(chatCreateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -2418,8 +2636,9 @@ export class PromiseChatApi {
      * Start Chat Session
      * @param chatCreateDTO Parameters for starting a chat session
      */
-    public startChat(chatCreateDTO: ChatCreateDTO, _options?: Configuration): Promise<string> {
-        const result = this.api.startChat(chatCreateDTO, _options);
+    public startChat(chatCreateDTO: ChatCreateDTO, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.startChat(chatCreateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -2429,8 +2648,9 @@ export class PromiseChatApi {
      * @param chatId Chat session identifier
      * @param assistantUid Assistant uid
      */
-    public streamSendAssistantWithHttpInfo(chatId: string, assistantUid: string, _options?: Configuration): Promise<HttpInfo<SseEmitter>> {
-        const result = this.api.streamSendAssistantWithHttpInfo(chatId, assistantUid, _options);
+    public streamSendAssistantWithHttpInfo(chatId: string, assistantUid: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<SseEmitter>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.streamSendAssistantWithHttpInfo(chatId, assistantUid, observableOptions);
         return result.toPromise();
     }
 
@@ -2440,8 +2660,9 @@ export class PromiseChatApi {
      * @param chatId Chat session identifier
      * @param assistantUid Assistant uid
      */
-    public streamSendAssistant(chatId: string, assistantUid: string, _options?: Configuration): Promise<SseEmitter> {
-        const result = this.api.streamSendAssistant(chatId, assistantUid, _options);
+    public streamSendAssistant(chatId: string, assistantUid: string, _options?: PromiseConfigurationOptions): Promise<SseEmitter> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.streamSendAssistant(chatId, assistantUid, observableOptions);
         return result.toPromise();
     }
 
@@ -2451,8 +2672,9 @@ export class PromiseChatApi {
      * @param chatId Chat session identifier
      * @param chatMessageDTO Chat message
      */
-    public streamSendMessageWithHttpInfo(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Promise<HttpInfo<SseEmitter>> {
-        const result = this.api.streamSendMessageWithHttpInfo(chatId, chatMessageDTO, _options);
+    public streamSendMessageWithHttpInfo(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<SseEmitter>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.streamSendMessageWithHttpInfo(chatId, chatMessageDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -2462,8 +2684,9 @@ export class PromiseChatApi {
      * @param chatId Chat session identifier
      * @param chatMessageDTO Chat message
      */
-    public streamSendMessage(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Promise<SseEmitter> {
-        const result = this.api.streamSendMessage(chatId, chatMessageDTO, _options);
+    public streamSendMessage(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: PromiseConfigurationOptions): Promise<SseEmitter> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.streamSendMessage(chatId, chatMessageDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -2473,8 +2696,9 @@ export class PromiseChatApi {
      * @param chatId Chat session identifier
      * @param chatUpdateDTO The chat session information to be updated
      */
-    public updateChatWithHttpInfo(chatId: string, chatUpdateDTO: ChatUpdateDTO, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.updateChatWithHttpInfo(chatId, chatUpdateDTO, _options);
+    public updateChatWithHttpInfo(chatId: string, chatUpdateDTO: ChatUpdateDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateChatWithHttpInfo(chatId, chatUpdateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -2484,8 +2708,9 @@ export class PromiseChatApi {
      * @param chatId Chat session identifier
      * @param chatUpdateDTO The chat session information to be updated
      */
-    public updateChat(chatId: string, chatUpdateDTO: ChatUpdateDTO, _options?: Configuration): Promise<boolean> {
-        const result = this.api.updateChat(chatId, chatUpdateDTO, _options);
+    public updateChat(chatId: string, chatUpdateDTO: ChatUpdateDTO, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateChat(chatId, chatUpdateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -2513,8 +2738,9 @@ export class PromiseEncryptionManagerForAdminApi {
      * Encrypt Text
      * @param text Text to be encrypted
      */
-    public encryptTextWithHttpInfo(text: string, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.encryptTextWithHttpInfo(text, _options);
+    public encryptTextWithHttpInfo(text: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.encryptTextWithHttpInfo(text, observableOptions);
         return result.toPromise();
     }
 
@@ -2523,8 +2749,9 @@ export class PromiseEncryptionManagerForAdminApi {
      * Encrypt Text
      * @param text Text to be encrypted
      */
-    public encryptText(text: string, _options?: Configuration): Promise<string> {
-        const result = this.api.encryptText(text, _options);
+    public encryptText(text: string, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.encryptText(text, observableOptions);
         return result.toPromise();
     }
 
@@ -2555,8 +2782,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param delta Delta in statistical value
      */
-    public addStatisticWithHttpInfo(infoType: string, infoId: string, statsType: string, delta: number, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.addStatisticWithHttpInfo(infoType, infoId, statsType, delta, _options);
+    public addStatisticWithHttpInfo(infoType: string, infoId: string, statsType: string, delta: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.addStatisticWithHttpInfo(infoType, infoId, statsType, delta, observableOptions);
         return result.toPromise();
     }
 
@@ -2568,8 +2796,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param delta Delta in statistical value
      */
-    public addStatistic(infoType: string, infoId: string, statsType: string, delta: number, _options?: Configuration): Promise<number> {
-        const result = this.api.addStatistic(infoType, infoId, statsType, delta, _options);
+    public addStatistic(infoType: string, infoId: string, statsType: string, delta: number, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.addStatistic(infoType, infoId, statsType, delta, observableOptions);
         return result.toPromise();
     }
 
@@ -2579,8 +2808,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      */
-    public getScoreWithHttpInfo(infoType: string, infoId: string, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.getScoreWithHttpInfo(infoType, infoId, _options);
+    public getScoreWithHttpInfo(infoType: string, infoId: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getScoreWithHttpInfo(infoType, infoId, observableOptions);
         return result.toPromise();
     }
 
@@ -2590,8 +2820,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      */
-    public getScore(infoType: string, infoId: string, _options?: Configuration): Promise<number> {
-        const result = this.api.getScore(infoType, infoId, _options);
+    public getScore(infoType: string, infoId: string, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getScore(infoType, infoId, observableOptions);
         return result.toPromise();
     }
 
@@ -2602,8 +2833,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      */
-    public getStatisticWithHttpInfo(infoType: string, infoId: string, statsType: string, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.getStatisticWithHttpInfo(infoType, infoId, statsType, _options);
+    public getStatisticWithHttpInfo(infoType: string, infoId: string, statsType: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getStatisticWithHttpInfo(infoType, infoId, statsType, observableOptions);
         return result.toPromise();
     }
 
@@ -2614,8 +2846,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      */
-    public getStatistic(infoType: string, infoId: string, statsType: string, _options?: Configuration): Promise<number> {
-        const result = this.api.getStatistic(infoType, infoId, statsType, _options);
+    public getStatistic(infoType: string, infoId: string, statsType: string, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getStatistic(infoType, infoId, statsType, observableOptions);
         return result.toPromise();
     }
 
@@ -2625,8 +2858,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      */
-    public getStatisticsWithHttpInfo(infoType: string, infoId: string, _options?: Configuration): Promise<HttpInfo<InteractiveStatsDTO>> {
-        const result = this.api.getStatisticsWithHttpInfo(infoType, infoId, _options);
+    public getStatisticsWithHttpInfo(infoType: string, infoId: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<InteractiveStatsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getStatisticsWithHttpInfo(infoType, infoId, observableOptions);
         return result.toPromise();
     }
 
@@ -2636,8 +2870,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      */
-    public getStatistics(infoType: string, infoId: string, _options?: Configuration): Promise<InteractiveStatsDTO> {
-        const result = this.api.getStatistics(infoType, infoId, _options);
+    public getStatistics(infoType: string, infoId: string, _options?: PromiseConfigurationOptions): Promise<InteractiveStatsDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getStatistics(infoType, infoId, observableOptions);
         return result.toPromise();
     }
 
@@ -2648,8 +2883,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      */
-    public increaseStatisticWithHttpInfo(infoType: string, infoId: string, statsType: string, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.increaseStatisticWithHttpInfo(infoType, infoId, statsType, _options);
+    public increaseStatisticWithHttpInfo(infoType: string, infoId: string, statsType: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.increaseStatisticWithHttpInfo(infoType, infoId, statsType, observableOptions);
         return result.toPromise();
     }
 
@@ -2660,8 +2896,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      */
-    public increaseStatistic(infoType: string, infoId: string, statsType: string, _options?: Configuration): Promise<number> {
-        const result = this.api.increaseStatistic(infoType, infoId, statsType, _options);
+    public increaseStatistic(infoType: string, infoId: string, statsType: string, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.increaseStatistic(infoType, infoId, statsType, observableOptions);
         return result.toPromise();
     }
 
@@ -2672,8 +2909,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageSize Maximum quantity
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listAgentsByStatisticWithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
-        const result = this.api.listAgentsByStatisticWithHttpInfo(statsType, pageSize, asc, _options);
+    public listAgentsByStatisticWithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listAgentsByStatisticWithHttpInfo(statsType, pageSize, asc, observableOptions);
         return result.toPromise();
     }
 
@@ -2684,21 +2922,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageSize Maximum quantity
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listAgentsByStatistic(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<Array<AgentSummaryStatsDTO>> {
-        const result = this.api.listAgentsByStatistic(statsType, pageSize, asc, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List agents based on statistics, including interactive statistical data.
-     * List Agents by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
-     * @param pageNum Current page number
-     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public listAgentsByStatistic1WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
-        const result = this.api.listAgentsByStatistic1WithHttpInfo(statsType, pageSize, pageNum, asc, _options);
+    public listAgentsByStatistic(statsType: string, pageSize: number, asc?: string, _options?: PromiseConfigurationOptions): Promise<Array<AgentSummaryStatsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listAgentsByStatistic(statsType, pageSize, asc, observableOptions);
         return result.toPromise();
     }
 
@@ -2710,8 +2936,23 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listAgentsByStatistic1(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<Array<AgentSummaryStatsDTO>> {
-        const result = this.api.listAgentsByStatistic1(statsType, pageSize, pageNum, asc, _options);
+    public listAgentsByStatistic1WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listAgentsByStatistic1WithHttpInfo(statsType, pageSize, pageNum, asc, observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
+     * @param pageNum Current page number
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public listAgentsByStatistic1(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: PromiseConfigurationOptions): Promise<Array<AgentSummaryStatsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listAgentsByStatistic1(statsType, pageSize, pageNum, asc, observableOptions);
         return result.toPromise();
     }
 
@@ -2721,8 +2962,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listAgentsByStatistic2WithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
-        const result = this.api.listAgentsByStatistic2WithHttpInfo(statsType, asc, _options);
+    public listAgentsByStatistic2WithHttpInfo(statsType: string, asc?: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listAgentsByStatistic2WithHttpInfo(statsType, asc, observableOptions);
         return result.toPromise();
     }
 
@@ -2732,8 +2974,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listAgentsByStatistic2(statsType: string, asc?: string, _options?: Configuration): Promise<Array<AgentSummaryStatsDTO>> {
-        const result = this.api.listAgentsByStatistic2(statsType, asc, _options);
+    public listAgentsByStatistic2(statsType: string, asc?: string, _options?: PromiseConfigurationOptions): Promise<Array<AgentSummaryStatsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listAgentsByStatistic2(statsType, asc, observableOptions);
         return result.toPromise();
     }
 
@@ -2743,8 +2986,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listCharactersByStatisticWithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
-        const result = this.api.listCharactersByStatisticWithHttpInfo(statsType, asc, _options);
+    public listCharactersByStatisticWithHttpInfo(statsType: string, asc?: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listCharactersByStatisticWithHttpInfo(statsType, asc, observableOptions);
         return result.toPromise();
     }
 
@@ -2754,8 +2998,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listCharactersByStatistic(statsType: string, asc?: string, _options?: Configuration): Promise<Array<CharacterSummaryStatsDTO>> {
-        const result = this.api.listCharactersByStatistic(statsType, asc, _options);
+    public listCharactersByStatistic(statsType: string, asc?: string, _options?: PromiseConfigurationOptions): Promise<Array<CharacterSummaryStatsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listCharactersByStatistic(statsType, asc, observableOptions);
         return result.toPromise();
     }
 
@@ -2766,8 +3011,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageSize Maximum quantity
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listCharactersByStatistic1WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
-        const result = this.api.listCharactersByStatistic1WithHttpInfo(statsType, pageSize, asc, _options);
+    public listCharactersByStatistic1WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listCharactersByStatistic1WithHttpInfo(statsType, pageSize, asc, observableOptions);
         return result.toPromise();
     }
 
@@ -2778,8 +3024,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageSize Maximum quantity
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listCharactersByStatistic1(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<Array<CharacterSummaryStatsDTO>> {
-        const result = this.api.listCharactersByStatistic1(statsType, pageSize, asc, _options);
+    public listCharactersByStatistic1(statsType: string, pageSize: number, asc?: string, _options?: PromiseConfigurationOptions): Promise<Array<CharacterSummaryStatsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listCharactersByStatistic1(statsType, pageSize, asc, observableOptions);
         return result.toPromise();
     }
 
@@ -2791,8 +3038,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listCharactersByStatistic2WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
-        const result = this.api.listCharactersByStatistic2WithHttpInfo(statsType, pageSize, pageNum, asc, _options);
+    public listCharactersByStatistic2WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listCharactersByStatistic2WithHttpInfo(statsType, pageSize, pageNum, asc, observableOptions);
         return result.toPromise();
     }
 
@@ -2804,8 +3052,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listCharactersByStatistic2(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<Array<CharacterSummaryStatsDTO>> {
-        const result = this.api.listCharactersByStatistic2(statsType, pageSize, pageNum, asc, _options);
+    public listCharactersByStatistic2(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: PromiseConfigurationOptions): Promise<Array<CharacterSummaryStatsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listCharactersByStatistic2(statsType, pageSize, pageNum, asc, observableOptions);
         return result.toPromise();
     }
 
@@ -2816,8 +3065,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageSize Maximum quantity
      * @param [text] Key word
      */
-    public listHotTagsWithHttpInfo(infoType: string, pageSize: number, text?: string, _options?: Configuration): Promise<HttpInfo<Array<HotTagDTO>>> {
-        const result = this.api.listHotTagsWithHttpInfo(infoType, pageSize, text, _options);
+    public listHotTagsWithHttpInfo(infoType: string, pageSize: number, text?: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<HotTagDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listHotTagsWithHttpInfo(infoType, pageSize, text, observableOptions);
         return result.toPromise();
     }
 
@@ -2828,8 +3078,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageSize Maximum quantity
      * @param [text] Key word
      */
-    public listHotTags(infoType: string, pageSize: number, text?: string, _options?: Configuration): Promise<Array<HotTagDTO>> {
-        const result = this.api.listHotTags(infoType, pageSize, text, _options);
+    public listHotTags(infoType: string, pageSize: number, text?: string, _options?: PromiseConfigurationOptions): Promise<Array<HotTagDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listHotTags(infoType, pageSize, text, observableOptions);
         return result.toPromise();
     }
 
@@ -2841,8 +3092,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPluginsByStatisticWithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
-        const result = this.api.listPluginsByStatisticWithHttpInfo(statsType, pageSize, pageNum, asc, _options);
+    public listPluginsByStatisticWithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listPluginsByStatisticWithHttpInfo(statsType, pageSize, pageNum, asc, observableOptions);
         return result.toPromise();
     }
 
@@ -2854,8 +3106,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPluginsByStatistic(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<Array<PluginSummaryStatsDTO>> {
-        const result = this.api.listPluginsByStatistic(statsType, pageSize, pageNum, asc, _options);
+    public listPluginsByStatistic(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: PromiseConfigurationOptions): Promise<Array<PluginSummaryStatsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listPluginsByStatistic(statsType, pageSize, pageNum, asc, observableOptions);
         return result.toPromise();
     }
 
@@ -2865,8 +3118,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPluginsByStatistic1WithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
-        const result = this.api.listPluginsByStatistic1WithHttpInfo(statsType, asc, _options);
+    public listPluginsByStatistic1WithHttpInfo(statsType: string, asc?: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listPluginsByStatistic1WithHttpInfo(statsType, asc, observableOptions);
         return result.toPromise();
     }
 
@@ -2876,20 +3130,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPluginsByStatistic1(statsType: string, asc?: string, _options?: Configuration): Promise<Array<PluginSummaryStatsDTO>> {
-        const result = this.api.listPluginsByStatistic1(statsType, asc, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List plugins based on statistics, including interactive statistical data.
-     * List Plugins by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
-     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public listPluginsByStatistic2WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
-        const result = this.api.listPluginsByStatistic2WithHttpInfo(statsType, pageSize, asc, _options);
+    public listPluginsByStatistic1(statsType: string, asc?: string, _options?: PromiseConfigurationOptions): Promise<Array<PluginSummaryStatsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listPluginsByStatistic1(statsType, asc, observableOptions);
         return result.toPromise();
     }
 
@@ -2900,8 +3143,22 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageSize Maximum quantity
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPluginsByStatistic2(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<Array<PluginSummaryStatsDTO>> {
-        const result = this.api.listPluginsByStatistic2(statsType, pageSize, asc, _options);
+    public listPluginsByStatistic2WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listPluginsByStatistic2WithHttpInfo(statsType, pageSize, asc, observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * List plugins based on statistics, including interactive statistical data.
+     * List Plugins by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public listPluginsByStatistic2(statsType: string, pageSize: number, asc?: string, _options?: PromiseConfigurationOptions): Promise<Array<PluginSummaryStatsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listPluginsByStatistic2(statsType, pageSize, asc, observableOptions);
         return result.toPromise();
     }
 
@@ -2911,8 +3168,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPromptsByStatisticWithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
-        const result = this.api.listPromptsByStatisticWithHttpInfo(statsType, asc, _options);
+    public listPromptsByStatisticWithHttpInfo(statsType: string, asc?: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listPromptsByStatisticWithHttpInfo(statsType, asc, observableOptions);
         return result.toPromise();
     }
 
@@ -2922,8 +3180,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPromptsByStatistic(statsType: string, asc?: string, _options?: Configuration): Promise<Array<PromptSummaryStatsDTO>> {
-        const result = this.api.listPromptsByStatistic(statsType, asc, _options);
+    public listPromptsByStatistic(statsType: string, asc?: string, _options?: PromiseConfigurationOptions): Promise<Array<PromptSummaryStatsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listPromptsByStatistic(statsType, asc, observableOptions);
         return result.toPromise();
     }
 
@@ -2934,8 +3193,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageSize Maximum quantity
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPromptsByStatistic1WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
-        const result = this.api.listPromptsByStatistic1WithHttpInfo(statsType, pageSize, asc, _options);
+    public listPromptsByStatistic1WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listPromptsByStatistic1WithHttpInfo(statsType, pageSize, asc, observableOptions);
         return result.toPromise();
     }
 
@@ -2946,8 +3206,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageSize Maximum quantity
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPromptsByStatistic1(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<Array<PromptSummaryStatsDTO>> {
-        const result = this.api.listPromptsByStatistic1(statsType, pageSize, asc, _options);
+    public listPromptsByStatistic1(statsType: string, pageSize: number, asc?: string, _options?: PromiseConfigurationOptions): Promise<Array<PromptSummaryStatsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listPromptsByStatistic1(statsType, pageSize, asc, observableOptions);
         return result.toPromise();
     }
 
@@ -2959,8 +3220,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPromptsByStatistic2WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
-        const result = this.api.listPromptsByStatistic2WithHttpInfo(statsType, pageSize, pageNum, asc, _options);
+    public listPromptsByStatistic2WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listPromptsByStatistic2WithHttpInfo(statsType, pageSize, pageNum, asc, observableOptions);
         return result.toPromise();
     }
 
@@ -2972,8 +3234,9 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPromptsByStatistic2(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<Array<PromptSummaryStatsDTO>> {
-        const result = this.api.listPromptsByStatistic2(statsType, pageSize, pageNum, asc, _options);
+    public listPromptsByStatistic2(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: PromiseConfigurationOptions): Promise<Array<PromptSummaryStatsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listPromptsByStatistic2(statsType, pageSize, pageNum, asc, observableOptions);
         return result.toPromise();
     }
 
@@ -3001,8 +3264,9 @@ export class PromiseOrganizationApi {
      * Get My Superior Relationship
      * @param [all] Whether to return virtual reported owners
      */
-    public getOwnersWithHttpInfo(all?: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        const result = this.api.getOwnersWithHttpInfo(all, _options);
+    public getOwnersWithHttpInfo(all?: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<string>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getOwnersWithHttpInfo(all, observableOptions);
         return result.toPromise();
     }
 
@@ -3011,8 +3275,9 @@ export class PromiseOrganizationApi {
      * Get My Superior Relationship
      * @param [all] Whether to return virtual reported owners
      */
-    public getOwners(all?: string, _options?: Configuration): Promise<Array<string>> {
-        const result = this.api.getOwners(all, _options);
+    public getOwners(all?: string, _options?: PromiseConfigurationOptions): Promise<Array<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getOwners(all, observableOptions);
         return result.toPromise();
     }
 
@@ -3021,8 +3286,9 @@ export class PromiseOrganizationApi {
      * Get DOT of Superior Relationship
      * @param [all] Whether to return virtual reported owners
      */
-    public getOwnersDotWithHttpInfo(all?: string, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.getOwnersDotWithHttpInfo(all, _options);
+    public getOwnersDotWithHttpInfo(all?: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getOwnersDotWithHttpInfo(all, observableOptions);
         return result.toPromise();
     }
 
@@ -3031,8 +3297,9 @@ export class PromiseOrganizationApi {
      * Get DOT of Superior Relationship
      * @param [all] Whether to return virtual reported owners
      */
-    public getOwnersDot(all?: string, _options?: Configuration): Promise<string> {
-        const result = this.api.getOwnersDot(all, _options);
+    public getOwnersDot(all?: string, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getOwnersDot(all, observableOptions);
         return result.toPromise();
     }
 
@@ -3042,8 +3309,9 @@ export class PromiseOrganizationApi {
      * @param username The account being queried, must be a subordinate account of the current account
      * @param [all] Whether to return virtual reported owners
      */
-    public getSubordinateOwnersWithHttpInfo(username: string, all?: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        const result = this.api.getSubordinateOwnersWithHttpInfo(username, all, _options);
+    public getSubordinateOwnersWithHttpInfo(username: string, all?: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<string>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getSubordinateOwnersWithHttpInfo(username, all, observableOptions);
         return result.toPromise();
     }
 
@@ -3053,8 +3321,9 @@ export class PromiseOrganizationApi {
      * @param username The account being queried, must be a subordinate account of the current account
      * @param [all] Whether to return virtual reported owners
      */
-    public getSubordinateOwners(username: string, all?: string, _options?: Configuration): Promise<Array<string>> {
-        const result = this.api.getSubordinateOwners(username, all, _options);
+    public getSubordinateOwners(username: string, all?: string, _options?: PromiseConfigurationOptions): Promise<Array<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getSubordinateOwners(username, all, observableOptions);
         return result.toPromise();
     }
 
@@ -3064,8 +3333,9 @@ export class PromiseOrganizationApi {
      * @param username The account being queried, must be a subordinate account of the current account
      * @param [all] Whether to return virtual managed subordinates
      */
-    public getSubordinateSubordinatesWithHttpInfo(username: string, all?: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        const result = this.api.getSubordinateSubordinatesWithHttpInfo(username, all, _options);
+    public getSubordinateSubordinatesWithHttpInfo(username: string, all?: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<string>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getSubordinateSubordinatesWithHttpInfo(username, all, observableOptions);
         return result.toPromise();
     }
 
@@ -3075,8 +3345,9 @@ export class PromiseOrganizationApi {
      * @param username The account being queried, must be a subordinate account of the current account
      * @param [all] Whether to return virtual managed subordinates
      */
-    public getSubordinateSubordinates(username: string, all?: string, _options?: Configuration): Promise<Array<string>> {
-        const result = this.api.getSubordinateSubordinates(username, all, _options);
+    public getSubordinateSubordinates(username: string, all?: string, _options?: PromiseConfigurationOptions): Promise<Array<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getSubordinateSubordinates(username, all, observableOptions);
         return result.toPromise();
     }
 
@@ -3085,8 +3356,9 @@ export class PromiseOrganizationApi {
      * Get My Subordinate Relationship
      * @param [all] Whether to return virtual managed subordinates
      */
-    public getSubordinatesWithHttpInfo(all?: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        const result = this.api.getSubordinatesWithHttpInfo(all, _options);
+    public getSubordinatesWithHttpInfo(all?: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<string>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getSubordinatesWithHttpInfo(all, observableOptions);
         return result.toPromise();
     }
 
@@ -3095,8 +3367,9 @@ export class PromiseOrganizationApi {
      * Get My Subordinate Relationship
      * @param [all] Whether to return virtual managed subordinates
      */
-    public getSubordinates(all?: string, _options?: Configuration): Promise<Array<string>> {
-        const result = this.api.getSubordinates(all, _options);
+    public getSubordinates(all?: string, _options?: PromiseConfigurationOptions): Promise<Array<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getSubordinates(all, observableOptions);
         return result.toPromise();
     }
 
@@ -3105,8 +3378,9 @@ export class PromiseOrganizationApi {
      * Get DOT of Subordinate Relationship
      * @param [all] Whether to return virtual managed subordinates
      */
-    public getSubordinatesDotWithHttpInfo(all?: string, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.getSubordinatesDotWithHttpInfo(all, _options);
+    public getSubordinatesDotWithHttpInfo(all?: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getSubordinatesDotWithHttpInfo(all, observableOptions);
         return result.toPromise();
     }
 
@@ -3115,8 +3389,9 @@ export class PromiseOrganizationApi {
      * Get DOT of Subordinate Relationship
      * @param [all] Whether to return virtual managed subordinates
      */
-    public getSubordinatesDot(all?: string, _options?: Configuration): Promise<string> {
-        const result = this.api.getSubordinatesDot(all, _options);
+    public getSubordinatesDot(all?: string, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getSubordinatesDot(all, observableOptions);
         return result.toPromise();
     }
 
@@ -3125,8 +3400,9 @@ export class PromiseOrganizationApi {
      * List Subordinate Permissions
      * @param username Username
      */
-    public listSubordinateAuthoritiesWithHttpInfo(username: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        const result = this.api.listSubordinateAuthoritiesWithHttpInfo(username, _options);
+    public listSubordinateAuthoritiesWithHttpInfo(username: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<string>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listSubordinateAuthoritiesWithHttpInfo(username, observableOptions);
         return result.toPromise();
     }
 
@@ -3135,8 +3411,9 @@ export class PromiseOrganizationApi {
      * List Subordinate Permissions
      * @param username Username
      */
-    public listSubordinateAuthorities(username: string, _options?: Configuration): Promise<Array<string>> {
-        const result = this.api.listSubordinateAuthorities(username, _options);
+    public listSubordinateAuthorities(username: string, _options?: PromiseConfigurationOptions): Promise<Array<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listSubordinateAuthorities(username, observableOptions);
         return result.toPromise();
     }
 
@@ -3145,8 +3422,9 @@ export class PromiseOrganizationApi {
      * Clear Subordinate Relationship
      * @param username The account being operated, must be a subordinate account of the current account
      */
-    public removeSubordinateSubordinatesTreeWithHttpInfo(username: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.removeSubordinateSubordinatesTreeWithHttpInfo(username, _options);
+    public removeSubordinateSubordinatesTreeWithHttpInfo(username: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.removeSubordinateSubordinatesTreeWithHttpInfo(username, observableOptions);
         return result.toPromise();
     }
 
@@ -3155,8 +3433,9 @@ export class PromiseOrganizationApi {
      * Clear Subordinate Relationship
      * @param username The account being operated, must be a subordinate account of the current account
      */
-    public removeSubordinateSubordinatesTree(username: string, _options?: Configuration): Promise<boolean> {
-        const result = this.api.removeSubordinateSubordinatesTree(username, _options);
+    public removeSubordinateSubordinatesTree(username: string, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.removeSubordinateSubordinatesTree(username, observableOptions);
         return result.toPromise();
     }
 
@@ -3166,8 +3445,9 @@ export class PromiseOrganizationApi {
      * @param username Username
      * @param requestBody Permission list
      */
-    public updateSubordinateAuthoritiesWithHttpInfo(username: string, requestBody: Set<string>, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.updateSubordinateAuthoritiesWithHttpInfo(username, requestBody, _options);
+    public updateSubordinateAuthoritiesWithHttpInfo(username: string, requestBody: Set<string>, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateSubordinateAuthoritiesWithHttpInfo(username, requestBody, observableOptions);
         return result.toPromise();
     }
 
@@ -3177,8 +3457,9 @@ export class PromiseOrganizationApi {
      * @param username Username
      * @param requestBody Permission list
      */
-    public updateSubordinateAuthorities(username: string, requestBody: Set<string>, _options?: Configuration): Promise<boolean> {
-        const result = this.api.updateSubordinateAuthorities(username, requestBody, _options);
+    public updateSubordinateAuthorities(username: string, requestBody: Set<string>, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateSubordinateAuthorities(username, requestBody, observableOptions);
         return result.toPromise();
     }
 
@@ -3188,8 +3469,9 @@ export class PromiseOrganizationApi {
      * @param username The account being operated, must be a subordinate account of the current account
      * @param requestBody The (direct) superior account of the subordinate account, all accounts must be subordinate accounts of the current account
      */
-    public updateSubordinateOwnersWithHttpInfo(username: string, requestBody: Array<string>, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.updateSubordinateOwnersWithHttpInfo(username, requestBody, _options);
+    public updateSubordinateOwnersWithHttpInfo(username: string, requestBody: Array<string>, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateSubordinateOwnersWithHttpInfo(username, requestBody, observableOptions);
         return result.toPromise();
     }
 
@@ -3199,8 +3481,9 @@ export class PromiseOrganizationApi {
      * @param username The account being operated, must be a subordinate account of the current account
      * @param requestBody The (direct) superior account of the subordinate account, all accounts must be subordinate accounts of the current account
      */
-    public updateSubordinateOwners(username: string, requestBody: Array<string>, _options?: Configuration): Promise<boolean> {
-        const result = this.api.updateSubordinateOwners(username, requestBody, _options);
+    public updateSubordinateOwners(username: string, requestBody: Array<string>, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateSubordinateOwners(username, requestBody, observableOptions);
         return result.toPromise();
     }
 
@@ -3210,8 +3493,9 @@ export class PromiseOrganizationApi {
      * @param username The account being operated, must be a subordinate account of the current account
      * @param requestBody The (direct) subordinate account of the subordinate account, all accounts must be subordinate accounts of the current account
      */
-    public updateSubordinateSubordinatesWithHttpInfo(username: string, requestBody: Array<string>, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.updateSubordinateSubordinatesWithHttpInfo(username, requestBody, _options);
+    public updateSubordinateSubordinatesWithHttpInfo(username: string, requestBody: Array<string>, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateSubordinateSubordinatesWithHttpInfo(username, requestBody, observableOptions);
         return result.toPromise();
     }
 
@@ -3221,8 +3505,9 @@ export class PromiseOrganizationApi {
      * @param username The account being operated, must be a subordinate account of the current account
      * @param requestBody The (direct) subordinate account of the subordinate account, all accounts must be subordinate accounts of the current account
      */
-    public updateSubordinateSubordinates(username: string, requestBody: Array<string>, _options?: Configuration): Promise<boolean> {
-        const result = this.api.updateSubordinateSubordinates(username, requestBody, _options);
+    public updateSubordinateSubordinates(username: string, requestBody: Array<string>, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateSubordinateSubordinates(username, requestBody, observableOptions);
         return result.toPromise();
     }
 
@@ -3250,8 +3535,9 @@ export class PromisePluginApi {
      * Batch Search Plugin Details
      * @param pluginQueryDTO Query conditions
      */
-    public batchSearchPluginDetailsWithHttpInfo(pluginQueryDTO: Array<PluginQueryDTO>, _options?: Configuration): Promise<HttpInfo<Array<Array<PluginDetailsDTO>>>> {
-        const result = this.api.batchSearchPluginDetailsWithHttpInfo(pluginQueryDTO, _options);
+    public batchSearchPluginDetailsWithHttpInfo(pluginQueryDTO: Array<PluginQueryDTO>, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<Array<PluginDetailsDTO>>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.batchSearchPluginDetailsWithHttpInfo(pluginQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3260,8 +3546,9 @@ export class PromisePluginApi {
      * Batch Search Plugin Details
      * @param pluginQueryDTO Query conditions
      */
-    public batchSearchPluginDetails(pluginQueryDTO: Array<PluginQueryDTO>, _options?: Configuration): Promise<Array<Array<PluginDetailsDTO>>> {
-        const result = this.api.batchSearchPluginDetails(pluginQueryDTO, _options);
+    public batchSearchPluginDetails(pluginQueryDTO: Array<PluginQueryDTO>, _options?: PromiseConfigurationOptions): Promise<Array<Array<PluginDetailsDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.batchSearchPluginDetails(pluginQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3270,8 +3557,9 @@ export class PromisePluginApi {
      * Batch Search Plugin Summaries
      * @param pluginQueryDTO Query conditions
      */
-    public batchSearchPluginSummaryWithHttpInfo(pluginQueryDTO: Array<PluginQueryDTO>, _options?: Configuration): Promise<HttpInfo<Array<Array<PluginSummaryDTO>>>> {
-        const result = this.api.batchSearchPluginSummaryWithHttpInfo(pluginQueryDTO, _options);
+    public batchSearchPluginSummaryWithHttpInfo(pluginQueryDTO: Array<PluginQueryDTO>, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<Array<PluginSummaryDTO>>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.batchSearchPluginSummaryWithHttpInfo(pluginQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3280,8 +3568,9 @@ export class PromisePluginApi {
      * Batch Search Plugin Summaries
      * @param pluginQueryDTO Query conditions
      */
-    public batchSearchPluginSummary(pluginQueryDTO: Array<PluginQueryDTO>, _options?: Configuration): Promise<Array<Array<PluginSummaryDTO>>> {
-        const result = this.api.batchSearchPluginSummary(pluginQueryDTO, _options);
+    public batchSearchPluginSummary(pluginQueryDTO: Array<PluginQueryDTO>, _options?: PromiseConfigurationOptions): Promise<Array<Array<PluginSummaryDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.batchSearchPluginSummary(pluginQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3290,8 +3579,9 @@ export class PromisePluginApi {
      * Calculate Number of Plugins
      * @param pluginQueryDTO Query conditions
      */
-    public countPluginsWithHttpInfo(pluginQueryDTO: PluginQueryDTO, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.countPluginsWithHttpInfo(pluginQueryDTO, _options);
+    public countPluginsWithHttpInfo(pluginQueryDTO: PluginQueryDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.countPluginsWithHttpInfo(pluginQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3300,8 +3590,9 @@ export class PromisePluginApi {
      * Calculate Number of Plugins
      * @param pluginQueryDTO Query conditions
      */
-    public countPlugins(pluginQueryDTO: PluginQueryDTO, _options?: Configuration): Promise<number> {
-        const result = this.api.countPlugins(pluginQueryDTO, _options);
+    public countPlugins(pluginQueryDTO: PluginQueryDTO, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.countPlugins(pluginQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3310,8 +3601,9 @@ export class PromisePluginApi {
      * Create Plugin
      * @param pluginCreateDTO Information of the plugin to be created
      */
-    public createPluginWithHttpInfo(pluginCreateDTO: PluginCreateDTO, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.createPluginWithHttpInfo(pluginCreateDTO, _options);
+    public createPluginWithHttpInfo(pluginCreateDTO: PluginCreateDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createPluginWithHttpInfo(pluginCreateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3320,8 +3612,9 @@ export class PromisePluginApi {
      * Create Plugin
      * @param pluginCreateDTO Information of the plugin to be created
      */
-    public createPlugin(pluginCreateDTO: PluginCreateDTO, _options?: Configuration): Promise<number> {
-        const result = this.api.createPlugin(pluginCreateDTO, _options);
+    public createPlugin(pluginCreateDTO: PluginCreateDTO, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createPlugin(pluginCreateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3330,8 +3623,9 @@ export class PromisePluginApi {
      * Batch Create Plugins
      * @param pluginCreateDTO List of plugin information to be created
      */
-    public createPluginsWithHttpInfo(pluginCreateDTO: Array<PluginCreateDTO>, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
-        const result = this.api.createPluginsWithHttpInfo(pluginCreateDTO, _options);
+    public createPluginsWithHttpInfo(pluginCreateDTO: Array<PluginCreateDTO>, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<number>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createPluginsWithHttpInfo(pluginCreateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3340,8 +3634,9 @@ export class PromisePluginApi {
      * Batch Create Plugins
      * @param pluginCreateDTO List of plugin information to be created
      */
-    public createPlugins(pluginCreateDTO: Array<PluginCreateDTO>, _options?: Configuration): Promise<Array<number>> {
-        const result = this.api.createPlugins(pluginCreateDTO, _options);
+    public createPlugins(pluginCreateDTO: Array<PluginCreateDTO>, _options?: PromiseConfigurationOptions): Promise<Array<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createPlugins(pluginCreateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3350,8 +3645,9 @@ export class PromisePluginApi {
      * Delete Plugin
      * @param pluginId The pluginId to be deleted
      */
-    public deletePluginWithHttpInfo(pluginId: number, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.deletePluginWithHttpInfo(pluginId, _options);
+    public deletePluginWithHttpInfo(pluginId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deletePluginWithHttpInfo(pluginId, observableOptions);
         return result.toPromise();
     }
 
@@ -3360,8 +3656,9 @@ export class PromisePluginApi {
      * Delete Plugin
      * @param pluginId The pluginId to be deleted
      */
-    public deletePlugin(pluginId: number, _options?: Configuration): Promise<boolean> {
-        const result = this.api.deletePlugin(pluginId, _options);
+    public deletePlugin(pluginId: number, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deletePlugin(pluginId, observableOptions);
         return result.toPromise();
     }
 
@@ -3370,8 +3667,9 @@ export class PromisePluginApi {
      * Batch Delete Plugins
      * @param requestBody List of pluginIds to be deleted
      */
-    public deletePluginsWithHttpInfo(requestBody: Array<number>, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
-        const result = this.api.deletePluginsWithHttpInfo(requestBody, _options);
+    public deletePluginsWithHttpInfo(requestBody: Array<number>, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<number>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deletePluginsWithHttpInfo(requestBody, observableOptions);
         return result.toPromise();
     }
 
@@ -3380,8 +3678,9 @@ export class PromisePluginApi {
      * Batch Delete Plugins
      * @param requestBody List of pluginIds to be deleted
      */
-    public deletePlugins(requestBody: Array<number>, _options?: Configuration): Promise<Array<number>> {
-        const result = this.api.deletePlugins(requestBody, _options);
+    public deletePlugins(requestBody: Array<number>, _options?: PromiseConfigurationOptions): Promise<Array<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deletePlugins(requestBody, observableOptions);
         return result.toPromise();
     }
 
@@ -3390,8 +3689,9 @@ export class PromisePluginApi {
      * Get Plugin Details
      * @param pluginId PluginId to be obtained
      */
-    public getPluginDetailsWithHttpInfo(pluginId: number, _options?: Configuration): Promise<HttpInfo<PluginDetailsDTO>> {
-        const result = this.api.getPluginDetailsWithHttpInfo(pluginId, _options);
+    public getPluginDetailsWithHttpInfo(pluginId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<PluginDetailsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getPluginDetailsWithHttpInfo(pluginId, observableOptions);
         return result.toPromise();
     }
 
@@ -3400,8 +3700,9 @@ export class PromisePluginApi {
      * Get Plugin Details
      * @param pluginId PluginId to be obtained
      */
-    public getPluginDetails(pluginId: number, _options?: Configuration): Promise<PluginDetailsDTO> {
-        const result = this.api.getPluginDetails(pluginId, _options);
+    public getPluginDetails(pluginId: number, _options?: PromiseConfigurationOptions): Promise<PluginDetailsDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getPluginDetails(pluginId, observableOptions);
         return result.toPromise();
     }
 
@@ -3410,8 +3711,9 @@ export class PromisePluginApi {
      * Get Plugin Summary
      * @param pluginId PluginId to be obtained
      */
-    public getPluginSummaryWithHttpInfo(pluginId: number, _options?: Configuration): Promise<HttpInfo<PluginSummaryDTO>> {
-        const result = this.api.getPluginSummaryWithHttpInfo(pluginId, _options);
+    public getPluginSummaryWithHttpInfo(pluginId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<PluginSummaryDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getPluginSummaryWithHttpInfo(pluginId, observableOptions);
         return result.toPromise();
     }
 
@@ -3420,8 +3722,9 @@ export class PromisePluginApi {
      * Get Plugin Summary
      * @param pluginId PluginId to be obtained
      */
-    public getPluginSummary(pluginId: number, _options?: Configuration): Promise<PluginSummaryDTO> {
-        const result = this.api.getPluginSummary(pluginId, _options);
+    public getPluginSummary(pluginId: number, _options?: PromiseConfigurationOptions): Promise<PluginSummaryDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getPluginSummary(pluginId, observableOptions);
         return result.toPromise();
     }
 
@@ -3430,8 +3733,9 @@ export class PromisePluginApi {
      * Refresh Plugin Information
      * @param pluginId The pluginId to be fetched
      */
-    public refreshPluginInfoWithHttpInfo(pluginId: number, _options?: Configuration): Promise<HttpInfo<void>> {
-        const result = this.api.refreshPluginInfoWithHttpInfo(pluginId, _options);
+    public refreshPluginInfoWithHttpInfo(pluginId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<void>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.refreshPluginInfoWithHttpInfo(pluginId, observableOptions);
         return result.toPromise();
     }
 
@@ -3440,8 +3744,9 @@ export class PromisePluginApi {
      * Refresh Plugin Information
      * @param pluginId The pluginId to be fetched
      */
-    public refreshPluginInfo(pluginId: number, _options?: Configuration): Promise<void> {
-        const result = this.api.refreshPluginInfo(pluginId, _options);
+    public refreshPluginInfo(pluginId: number, _options?: PromiseConfigurationOptions): Promise<void> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.refreshPluginInfo(pluginId, observableOptions);
         return result.toPromise();
     }
 
@@ -3450,8 +3755,9 @@ export class PromisePluginApi {
      * Search Plugin Details
      * @param pluginQueryDTO Query conditions
      */
-    public searchPluginDetailsWithHttpInfo(pluginQueryDTO: PluginQueryDTO, _options?: Configuration): Promise<HttpInfo<Array<PluginDetailsDTO>>> {
-        const result = this.api.searchPluginDetailsWithHttpInfo(pluginQueryDTO, _options);
+    public searchPluginDetailsWithHttpInfo(pluginQueryDTO: PluginQueryDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<PluginDetailsDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.searchPluginDetailsWithHttpInfo(pluginQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3460,8 +3766,9 @@ export class PromisePluginApi {
      * Search Plugin Details
      * @param pluginQueryDTO Query conditions
      */
-    public searchPluginDetails(pluginQueryDTO: PluginQueryDTO, _options?: Configuration): Promise<Array<PluginDetailsDTO>> {
-        const result = this.api.searchPluginDetails(pluginQueryDTO, _options);
+    public searchPluginDetails(pluginQueryDTO: PluginQueryDTO, _options?: PromiseConfigurationOptions): Promise<Array<PluginDetailsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.searchPluginDetails(pluginQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3470,8 +3777,9 @@ export class PromisePluginApi {
      * Search Plugin Summary
      * @param pluginQueryDTO Query conditions
      */
-    public searchPluginSummaryWithHttpInfo(pluginQueryDTO: PluginQueryDTO, _options?: Configuration): Promise<HttpInfo<Array<PluginSummaryDTO>>> {
-        const result = this.api.searchPluginSummaryWithHttpInfo(pluginQueryDTO, _options);
+    public searchPluginSummaryWithHttpInfo(pluginQueryDTO: PluginQueryDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<PluginSummaryDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.searchPluginSummaryWithHttpInfo(pluginQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3480,8 +3788,9 @@ export class PromisePluginApi {
      * Search Plugin Summary
      * @param pluginQueryDTO Query conditions
      */
-    public searchPluginSummary(pluginQueryDTO: PluginQueryDTO, _options?: Configuration): Promise<Array<PluginSummaryDTO>> {
-        const result = this.api.searchPluginSummary(pluginQueryDTO, _options);
+    public searchPluginSummary(pluginQueryDTO: PluginQueryDTO, _options?: PromiseConfigurationOptions): Promise<Array<PluginSummaryDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.searchPluginSummary(pluginQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3491,8 +3800,9 @@ export class PromisePluginApi {
      * @param pluginId The pluginId to be updated
      * @param pluginUpdateDTO The plugin information to be updated
      */
-    public updatePluginWithHttpInfo(pluginId: number, pluginUpdateDTO: PluginUpdateDTO, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.updatePluginWithHttpInfo(pluginId, pluginUpdateDTO, _options);
+    public updatePluginWithHttpInfo(pluginId: number, pluginUpdateDTO: PluginUpdateDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updatePluginWithHttpInfo(pluginId, pluginUpdateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3502,8 +3812,9 @@ export class PromisePluginApi {
      * @param pluginId The pluginId to be updated
      * @param pluginUpdateDTO The plugin information to be updated
      */
-    public updatePlugin(pluginId: number, pluginUpdateDTO: PluginUpdateDTO, _options?: Configuration): Promise<boolean> {
-        const result = this.api.updatePlugin(pluginId, pluginUpdateDTO, _options);
+    public updatePlugin(pluginId: number, pluginUpdateDTO: PluginUpdateDTO, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updatePlugin(pluginId, pluginUpdateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3531,8 +3842,9 @@ export class PromisePromptApi {
      * Apply Parameters to Prompt Record
      * @param promptRefDTO Prompt record
      */
-    public applyPromptRefWithHttpInfo(promptRefDTO: PromptRefDTO, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.applyPromptRefWithHttpInfo(promptRefDTO, _options);
+    public applyPromptRefWithHttpInfo(promptRefDTO: PromptRefDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.applyPromptRefWithHttpInfo(promptRefDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3541,8 +3853,9 @@ export class PromisePromptApi {
      * Apply Parameters to Prompt Record
      * @param promptRefDTO Prompt record
      */
-    public applyPromptRef(promptRefDTO: PromptRefDTO, _options?: Configuration): Promise<string> {
-        const result = this.api.applyPromptRef(promptRefDTO, _options);
+    public applyPromptRef(promptRefDTO: PromptRefDTO, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.applyPromptRef(promptRefDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3551,8 +3864,9 @@ export class PromisePromptApi {
      * Apply Parameters to Prompt Template
      * @param promptTemplateDTO String type prompt template
      */
-    public applyPromptTemplateWithHttpInfo(promptTemplateDTO: PromptTemplateDTO, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.applyPromptTemplateWithHttpInfo(promptTemplateDTO, _options);
+    public applyPromptTemplateWithHttpInfo(promptTemplateDTO: PromptTemplateDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.applyPromptTemplateWithHttpInfo(promptTemplateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3561,8 +3875,9 @@ export class PromisePromptApi {
      * Apply Parameters to Prompt Template
      * @param promptTemplateDTO String type prompt template
      */
-    public applyPromptTemplate(promptTemplateDTO: PromptTemplateDTO, _options?: Configuration): Promise<string> {
-        const result = this.api.applyPromptTemplate(promptTemplateDTO, _options);
+    public applyPromptTemplate(promptTemplateDTO: PromptTemplateDTO, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.applyPromptTemplate(promptTemplateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3571,8 +3886,9 @@ export class PromisePromptApi {
      * Batch Search Prompt Details
      * @param promptQueryDTO Query conditions
      */
-    public batchSearchPromptDetailsWithHttpInfo(promptQueryDTO: Array<PromptQueryDTO>, _options?: Configuration): Promise<HttpInfo<Array<Array<PromptDetailsDTO>>>> {
-        const result = this.api.batchSearchPromptDetailsWithHttpInfo(promptQueryDTO, _options);
+    public batchSearchPromptDetailsWithHttpInfo(promptQueryDTO: Array<PromptQueryDTO>, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<Array<PromptDetailsDTO>>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.batchSearchPromptDetailsWithHttpInfo(promptQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3581,8 +3897,9 @@ export class PromisePromptApi {
      * Batch Search Prompt Details
      * @param promptQueryDTO Query conditions
      */
-    public batchSearchPromptDetails(promptQueryDTO: Array<PromptQueryDTO>, _options?: Configuration): Promise<Array<Array<PromptDetailsDTO>>> {
-        const result = this.api.batchSearchPromptDetails(promptQueryDTO, _options);
+    public batchSearchPromptDetails(promptQueryDTO: Array<PromptQueryDTO>, _options?: PromiseConfigurationOptions): Promise<Array<Array<PromptDetailsDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.batchSearchPromptDetails(promptQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3591,8 +3908,9 @@ export class PromisePromptApi {
      * Batch Search Prompt Summaries
      * @param promptQueryDTO Query conditions
      */
-    public batchSearchPromptSummaryWithHttpInfo(promptQueryDTO: Array<PromptQueryDTO>, _options?: Configuration): Promise<HttpInfo<Array<Array<PromptSummaryDTO>>>> {
-        const result = this.api.batchSearchPromptSummaryWithHttpInfo(promptQueryDTO, _options);
+    public batchSearchPromptSummaryWithHttpInfo(promptQueryDTO: Array<PromptQueryDTO>, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<Array<PromptSummaryDTO>>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.batchSearchPromptSummaryWithHttpInfo(promptQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3601,8 +3919,9 @@ export class PromisePromptApi {
      * Batch Search Prompt Summaries
      * @param promptQueryDTO Query conditions
      */
-    public batchSearchPromptSummary(promptQueryDTO: Array<PromptQueryDTO>, _options?: Configuration): Promise<Array<Array<PromptSummaryDTO>>> {
-        const result = this.api.batchSearchPromptSummary(promptQueryDTO, _options);
+    public batchSearchPromptSummary(promptQueryDTO: Array<PromptQueryDTO>, _options?: PromiseConfigurationOptions): Promise<Array<Array<PromptSummaryDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.batchSearchPromptSummary(promptQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3611,8 +3930,9 @@ export class PromisePromptApi {
      * Clone Prompt
      * @param promptId The referenced promptId
      */
-    public clonePromptWithHttpInfo(promptId: number, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.clonePromptWithHttpInfo(promptId, _options);
+    public clonePromptWithHttpInfo(promptId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.clonePromptWithHttpInfo(promptId, observableOptions);
         return result.toPromise();
     }
 
@@ -3621,8 +3941,9 @@ export class PromisePromptApi {
      * Clone Prompt
      * @param promptId The referenced promptId
      */
-    public clonePrompt(promptId: number, _options?: Configuration): Promise<number> {
-        const result = this.api.clonePrompt(promptId, _options);
+    public clonePrompt(promptId: number, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.clonePrompt(promptId, observableOptions);
         return result.toPromise();
     }
 
@@ -3631,8 +3952,9 @@ export class PromisePromptApi {
      * Batch Clone Prompts
      * @param requestBody List of prompt information to be created
      */
-    public clonePromptsWithHttpInfo(requestBody: Array<number>, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
-        const result = this.api.clonePromptsWithHttpInfo(requestBody, _options);
+    public clonePromptsWithHttpInfo(requestBody: Array<number>, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<number>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.clonePromptsWithHttpInfo(requestBody, observableOptions);
         return result.toPromise();
     }
 
@@ -3641,8 +3963,9 @@ export class PromisePromptApi {
      * Batch Clone Prompts
      * @param requestBody List of prompt information to be created
      */
-    public clonePrompts(requestBody: Array<number>, _options?: Configuration): Promise<Array<number>> {
-        const result = this.api.clonePrompts(requestBody, _options);
+    public clonePrompts(requestBody: Array<number>, _options?: PromiseConfigurationOptions): Promise<Array<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.clonePrompts(requestBody, observableOptions);
         return result.toPromise();
     }
 
@@ -3651,8 +3974,9 @@ export class PromisePromptApi {
      * Calculate Number of Prompts
      * @param promptQueryDTO Query conditions
      */
-    public countPromptsWithHttpInfo(promptQueryDTO: PromptQueryDTO, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.countPromptsWithHttpInfo(promptQueryDTO, _options);
+    public countPromptsWithHttpInfo(promptQueryDTO: PromptQueryDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.countPromptsWithHttpInfo(promptQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3661,8 +3985,9 @@ export class PromisePromptApi {
      * Calculate Number of Prompts
      * @param promptQueryDTO Query conditions
      */
-    public countPrompts(promptQueryDTO: PromptQueryDTO, _options?: Configuration): Promise<number> {
-        const result = this.api.countPrompts(promptQueryDTO, _options);
+    public countPrompts(promptQueryDTO: PromptQueryDTO, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.countPrompts(promptQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3671,8 +3996,9 @@ export class PromisePromptApi {
      * Calculate Number of Public Prompts
      * @param promptQueryDTO Query conditions
      */
-    public countPublicPromptsWithHttpInfo(promptQueryDTO: PromptQueryDTO, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.countPublicPromptsWithHttpInfo(promptQueryDTO, _options);
+    public countPublicPromptsWithHttpInfo(promptQueryDTO: PromptQueryDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.countPublicPromptsWithHttpInfo(promptQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3681,8 +4007,9 @@ export class PromisePromptApi {
      * Calculate Number of Public Prompts
      * @param promptQueryDTO Query conditions
      */
-    public countPublicPrompts(promptQueryDTO: PromptQueryDTO, _options?: Configuration): Promise<number> {
-        const result = this.api.countPublicPrompts(promptQueryDTO, _options);
+    public countPublicPrompts(promptQueryDTO: PromptQueryDTO, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.countPublicPrompts(promptQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3691,8 +4018,9 @@ export class PromisePromptApi {
      * Create Prompt
      * @param promptCreateDTO Information of the prompt to be created
      */
-    public createPromptWithHttpInfo(promptCreateDTO: PromptCreateDTO, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.createPromptWithHttpInfo(promptCreateDTO, _options);
+    public createPromptWithHttpInfo(promptCreateDTO: PromptCreateDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createPromptWithHttpInfo(promptCreateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3701,8 +4029,9 @@ export class PromisePromptApi {
      * Create Prompt
      * @param promptCreateDTO Information of the prompt to be created
      */
-    public createPrompt(promptCreateDTO: PromptCreateDTO, _options?: Configuration): Promise<number> {
-        const result = this.api.createPrompt(promptCreateDTO, _options);
+    public createPrompt(promptCreateDTO: PromptCreateDTO, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createPrompt(promptCreateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3711,8 +4040,9 @@ export class PromisePromptApi {
      * Batch Create Prompts
      * @param promptCreateDTO List of prompt information to be created
      */
-    public createPromptsWithHttpInfo(promptCreateDTO: Array<PromptCreateDTO>, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
-        const result = this.api.createPromptsWithHttpInfo(promptCreateDTO, _options);
+    public createPromptsWithHttpInfo(promptCreateDTO: Array<PromptCreateDTO>, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<number>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createPromptsWithHttpInfo(promptCreateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3721,8 +4051,9 @@ export class PromisePromptApi {
      * Batch Create Prompts
      * @param promptCreateDTO List of prompt information to be created
      */
-    public createPrompts(promptCreateDTO: Array<PromptCreateDTO>, _options?: Configuration): Promise<Array<number>> {
-        const result = this.api.createPrompts(promptCreateDTO, _options);
+    public createPrompts(promptCreateDTO: Array<PromptCreateDTO>, _options?: PromiseConfigurationOptions): Promise<Array<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createPrompts(promptCreateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3731,8 +4062,9 @@ export class PromisePromptApi {
      * Delete Prompt
      * @param promptId The promptId to be deleted
      */
-    public deletePromptWithHttpInfo(promptId: number, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.deletePromptWithHttpInfo(promptId, _options);
+    public deletePromptWithHttpInfo(promptId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deletePromptWithHttpInfo(promptId, observableOptions);
         return result.toPromise();
     }
 
@@ -3741,8 +4073,9 @@ export class PromisePromptApi {
      * Delete Prompt
      * @param promptId The promptId to be deleted
      */
-    public deletePrompt(promptId: number, _options?: Configuration): Promise<boolean> {
-        const result = this.api.deletePrompt(promptId, _options);
+    public deletePrompt(promptId: number, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deletePrompt(promptId, observableOptions);
         return result.toPromise();
     }
 
@@ -3751,8 +4084,9 @@ export class PromisePromptApi {
      * Delete Prompt by Name
      * @param name The prompt name to be deleted
      */
-    public deletePromptByNameWithHttpInfo(name: string, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
-        const result = this.api.deletePromptByNameWithHttpInfo(name, _options);
+    public deletePromptByNameWithHttpInfo(name: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<number>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deletePromptByNameWithHttpInfo(name, observableOptions);
         return result.toPromise();
     }
 
@@ -3761,8 +4095,9 @@ export class PromisePromptApi {
      * Delete Prompt by Name
      * @param name The prompt name to be deleted
      */
-    public deletePromptByName(name: string, _options?: Configuration): Promise<Array<number>> {
-        const result = this.api.deletePromptByName(name, _options);
+    public deletePromptByName(name: string, _options?: PromiseConfigurationOptions): Promise<Array<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deletePromptByName(name, observableOptions);
         return result.toPromise();
     }
 
@@ -3771,8 +4106,9 @@ export class PromisePromptApi {
      * Batch Delete Prompts
      * @param requestBody List of promptIds to be deleted
      */
-    public deletePromptsWithHttpInfo(requestBody: Array<number>, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
-        const result = this.api.deletePromptsWithHttpInfo(requestBody, _options);
+    public deletePromptsWithHttpInfo(requestBody: Array<number>, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<number>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deletePromptsWithHttpInfo(requestBody, observableOptions);
         return result.toPromise();
     }
 
@@ -3781,8 +4117,9 @@ export class PromisePromptApi {
      * Batch Delete Prompts
      * @param requestBody List of promptIds to be deleted
      */
-    public deletePrompts(requestBody: Array<number>, _options?: Configuration): Promise<Array<number>> {
-        const result = this.api.deletePrompts(requestBody, _options);
+    public deletePrompts(requestBody: Array<number>, _options?: PromiseConfigurationOptions): Promise<Array<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deletePrompts(requestBody, observableOptions);
         return result.toPromise();
     }
 
@@ -3791,8 +4128,9 @@ export class PromisePromptApi {
      * Check If Prompt Name Exists
      * @param name Name
      */
-    public existsPromptNameWithHttpInfo(name: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.existsPromptNameWithHttpInfo(name, _options);
+    public existsPromptNameWithHttpInfo(name: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.existsPromptNameWithHttpInfo(name, observableOptions);
         return result.toPromise();
     }
 
@@ -3801,8 +4139,9 @@ export class PromisePromptApi {
      * Check If Prompt Name Exists
      * @param name Name
      */
-    public existsPromptName(name: string, _options?: Configuration): Promise<boolean> {
-        const result = this.api.existsPromptName(name, _options);
+    public existsPromptName(name: string, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.existsPromptName(name, observableOptions);
         return result.toPromise();
     }
 
@@ -3811,8 +4150,9 @@ export class PromisePromptApi {
      * Get Prompt Details
      * @param promptId PromptId to be obtained
      */
-    public getPromptDetailsWithHttpInfo(promptId: number, _options?: Configuration): Promise<HttpInfo<PromptDetailsDTO>> {
-        const result = this.api.getPromptDetailsWithHttpInfo(promptId, _options);
+    public getPromptDetailsWithHttpInfo(promptId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<PromptDetailsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getPromptDetailsWithHttpInfo(promptId, observableOptions);
         return result.toPromise();
     }
 
@@ -3821,8 +4161,9 @@ export class PromisePromptApi {
      * Get Prompt Details
      * @param promptId PromptId to be obtained
      */
-    public getPromptDetails(promptId: number, _options?: Configuration): Promise<PromptDetailsDTO> {
-        const result = this.api.getPromptDetails(promptId, _options);
+    public getPromptDetails(promptId: number, _options?: PromiseConfigurationOptions): Promise<PromptDetailsDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getPromptDetails(promptId, observableOptions);
         return result.toPromise();
     }
 
@@ -3831,8 +4172,9 @@ export class PromisePromptApi {
      * Get Prompt Summary
      * @param promptId PromptId to be obtained
      */
-    public getPromptSummaryWithHttpInfo(promptId: number, _options?: Configuration): Promise<HttpInfo<PromptSummaryDTO>> {
-        const result = this.api.getPromptSummaryWithHttpInfo(promptId, _options);
+    public getPromptSummaryWithHttpInfo(promptId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<PromptSummaryDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getPromptSummaryWithHttpInfo(promptId, observableOptions);
         return result.toPromise();
     }
 
@@ -3841,8 +4183,9 @@ export class PromisePromptApi {
      * Get Prompt Summary
      * @param promptId PromptId to be obtained
      */
-    public getPromptSummary(promptId: number, _options?: Configuration): Promise<PromptSummaryDTO> {
-        const result = this.api.getPromptSummary(promptId, _options);
+    public getPromptSummary(promptId: number, _options?: PromiseConfigurationOptions): Promise<PromptSummaryDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getPromptSummary(promptId, observableOptions);
         return result.toPromise();
     }
 
@@ -3851,8 +4194,9 @@ export class PromisePromptApi {
      * List Versions by Prompt Name
      * @param name Prompt name
      */
-    public listPromptVersionsByNameWithHttpInfo(name: string, _options?: Configuration): Promise<HttpInfo<Array<PromptItemForNameDTO>>> {
-        const result = this.api.listPromptVersionsByNameWithHttpInfo(name, _options);
+    public listPromptVersionsByNameWithHttpInfo(name: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<PromptItemForNameDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listPromptVersionsByNameWithHttpInfo(name, observableOptions);
         return result.toPromise();
     }
 
@@ -3861,8 +4205,9 @@ export class PromisePromptApi {
      * List Versions by Prompt Name
      * @param name Prompt name
      */
-    public listPromptVersionsByName(name: string, _options?: Configuration): Promise<Array<PromptItemForNameDTO>> {
-        const result = this.api.listPromptVersionsByName(name, _options);
+    public listPromptVersionsByName(name: string, _options?: PromiseConfigurationOptions): Promise<Array<PromptItemForNameDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listPromptVersionsByName(name, observableOptions);
         return result.toPromise();
     }
 
@@ -3871,8 +4216,9 @@ export class PromisePromptApi {
      * Create New Prompt Name
      * @param desired Desired name
      */
-    public newPromptNameWithHttpInfo(desired: string, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.newPromptNameWithHttpInfo(desired, _options);
+    public newPromptNameWithHttpInfo(desired: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.newPromptNameWithHttpInfo(desired, observableOptions);
         return result.toPromise();
     }
 
@@ -3881,8 +4227,9 @@ export class PromisePromptApi {
      * Create New Prompt Name
      * @param desired Desired name
      */
-    public newPromptName(desired: string, _options?: Configuration): Promise<string> {
-        const result = this.api.newPromptName(desired, _options);
+    public newPromptName(desired: string, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.newPromptName(desired, observableOptions);
         return result.toPromise();
     }
 
@@ -3892,8 +4239,9 @@ export class PromisePromptApi {
      * @param promptId The promptId to be published
      * @param visibility Visibility: public | private | ...
      */
-    public publishPromptWithHttpInfo(promptId: number, visibility: string, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.publishPromptWithHttpInfo(promptId, visibility, _options);
+    public publishPromptWithHttpInfo(promptId: number, visibility: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.publishPromptWithHttpInfo(promptId, visibility, observableOptions);
         return result.toPromise();
     }
 
@@ -3903,8 +4251,9 @@ export class PromisePromptApi {
      * @param promptId The promptId to be published
      * @param visibility Visibility: public | private | ...
      */
-    public publishPrompt(promptId: number, visibility: string, _options?: Configuration): Promise<number> {
-        const result = this.api.publishPrompt(promptId, visibility, _options);
+    public publishPrompt(promptId: number, visibility: string, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.publishPrompt(promptId, visibility, observableOptions);
         return result.toPromise();
     }
 
@@ -3913,8 +4262,9 @@ export class PromisePromptApi {
      * Search Prompt Details
      * @param promptQueryDTO Query conditions
      */
-    public searchPromptDetailsWithHttpInfo(promptQueryDTO: PromptQueryDTO, _options?: Configuration): Promise<HttpInfo<Array<PromptDetailsDTO>>> {
-        const result = this.api.searchPromptDetailsWithHttpInfo(promptQueryDTO, _options);
+    public searchPromptDetailsWithHttpInfo(promptQueryDTO: PromptQueryDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<PromptDetailsDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.searchPromptDetailsWithHttpInfo(promptQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3923,8 +4273,9 @@ export class PromisePromptApi {
      * Search Prompt Details
      * @param promptQueryDTO Query conditions
      */
-    public searchPromptDetails(promptQueryDTO: PromptQueryDTO, _options?: Configuration): Promise<Array<PromptDetailsDTO>> {
-        const result = this.api.searchPromptDetails(promptQueryDTO, _options);
+    public searchPromptDetails(promptQueryDTO: PromptQueryDTO, _options?: PromiseConfigurationOptions): Promise<Array<PromptDetailsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.searchPromptDetails(promptQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3933,8 +4284,9 @@ export class PromisePromptApi {
      * Search Prompt Summary
      * @param promptQueryDTO Query conditions
      */
-    public searchPromptSummaryWithHttpInfo(promptQueryDTO: PromptQueryDTO, _options?: Configuration): Promise<HttpInfo<Array<PromptSummaryDTO>>> {
-        const result = this.api.searchPromptSummaryWithHttpInfo(promptQueryDTO, _options);
+    public searchPromptSummaryWithHttpInfo(promptQueryDTO: PromptQueryDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<PromptSummaryDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.searchPromptSummaryWithHttpInfo(promptQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3943,8 +4295,9 @@ export class PromisePromptApi {
      * Search Prompt Summary
      * @param promptQueryDTO Query conditions
      */
-    public searchPromptSummary(promptQueryDTO: PromptQueryDTO, _options?: Configuration): Promise<Array<PromptSummaryDTO>> {
-        const result = this.api.searchPromptSummary(promptQueryDTO, _options);
+    public searchPromptSummary(promptQueryDTO: PromptQueryDTO, _options?: PromiseConfigurationOptions): Promise<Array<PromptSummaryDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.searchPromptSummary(promptQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3953,8 +4306,9 @@ export class PromisePromptApi {
      * Search Public Prompt Summary
      * @param promptQueryDTO Query conditions
      */
-    public searchPublicPromptSummaryWithHttpInfo(promptQueryDTO: PromptQueryDTO, _options?: Configuration): Promise<HttpInfo<Array<PromptSummaryDTO>>> {
-        const result = this.api.searchPublicPromptSummaryWithHttpInfo(promptQueryDTO, _options);
+    public searchPublicPromptSummaryWithHttpInfo(promptQueryDTO: PromptQueryDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<PromptSummaryDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.searchPublicPromptSummaryWithHttpInfo(promptQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3963,8 +4317,9 @@ export class PromisePromptApi {
      * Search Public Prompt Summary
      * @param promptQueryDTO Query conditions
      */
-    public searchPublicPromptSummary(promptQueryDTO: PromptQueryDTO, _options?: Configuration): Promise<Array<PromptSummaryDTO>> {
-        const result = this.api.searchPublicPromptSummary(promptQueryDTO, _options);
+    public searchPublicPromptSummary(promptQueryDTO: PromptQueryDTO, _options?: PromiseConfigurationOptions): Promise<Array<PromptSummaryDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.searchPublicPromptSummary(promptQueryDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3973,8 +4328,9 @@ export class PromisePromptApi {
      * Send Prompt
      * @param promptAiParamDTO Call parameters
      */
-    public sendPromptWithHttpInfo(promptAiParamDTO: PromptAiParamDTO, _options?: Configuration): Promise<HttpInfo<LlmResultDTO>> {
-        const result = this.api.sendPromptWithHttpInfo(promptAiParamDTO, _options);
+    public sendPromptWithHttpInfo(promptAiParamDTO: PromptAiParamDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<LlmResultDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.sendPromptWithHttpInfo(promptAiParamDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3983,8 +4339,9 @@ export class PromisePromptApi {
      * Send Prompt
      * @param promptAiParamDTO Call parameters
      */
-    public sendPrompt(promptAiParamDTO: PromptAiParamDTO, _options?: Configuration): Promise<LlmResultDTO> {
-        const result = this.api.sendPrompt(promptAiParamDTO, _options);
+    public sendPrompt(promptAiParamDTO: PromptAiParamDTO, _options?: PromiseConfigurationOptions): Promise<LlmResultDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.sendPrompt(promptAiParamDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -3993,8 +4350,9 @@ export class PromisePromptApi {
      * Send Prompt by Streaming Back
      * @param promptAiParamDTO Call parameters
      */
-    public streamSendPromptWithHttpInfo(promptAiParamDTO: PromptAiParamDTO, _options?: Configuration): Promise<HttpInfo<SseEmitter>> {
-        const result = this.api.streamSendPromptWithHttpInfo(promptAiParamDTO, _options);
+    public streamSendPromptWithHttpInfo(promptAiParamDTO: PromptAiParamDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<SseEmitter>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.streamSendPromptWithHttpInfo(promptAiParamDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -4003,8 +4361,9 @@ export class PromisePromptApi {
      * Send Prompt by Streaming Back
      * @param promptAiParamDTO Call parameters
      */
-    public streamSendPrompt(promptAiParamDTO: PromptAiParamDTO, _options?: Configuration): Promise<SseEmitter> {
-        const result = this.api.streamSendPrompt(promptAiParamDTO, _options);
+    public streamSendPrompt(promptAiParamDTO: PromptAiParamDTO, _options?: PromiseConfigurationOptions): Promise<SseEmitter> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.streamSendPrompt(promptAiParamDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -4014,8 +4373,9 @@ export class PromisePromptApi {
      * @param promptId The promptId to be updated
      * @param promptUpdateDTO The prompt information to be updated
      */
-    public updatePromptWithHttpInfo(promptId: number, promptUpdateDTO: PromptUpdateDTO, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.updatePromptWithHttpInfo(promptId, promptUpdateDTO, _options);
+    public updatePromptWithHttpInfo(promptId: number, promptUpdateDTO: PromptUpdateDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updatePromptWithHttpInfo(promptId, promptUpdateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -4025,8 +4385,9 @@ export class PromisePromptApi {
      * @param promptId The promptId to be updated
      * @param promptUpdateDTO The prompt information to be updated
      */
-    public updatePrompt(promptId: number, promptUpdateDTO: PromptUpdateDTO, _options?: Configuration): Promise<boolean> {
-        const result = this.api.updatePrompt(promptId, promptUpdateDTO, _options);
+    public updatePrompt(promptId: number, promptUpdateDTO: PromptUpdateDTO, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updatePrompt(promptId, promptUpdateDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -4054,8 +4415,9 @@ export class PromisePromptTaskApi {
      * Create Prompt Task
      * @param promptTaskDTO The prompt task to be added
      */
-    public createPromptTaskWithHttpInfo(promptTaskDTO: PromptTaskDTO, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.createPromptTaskWithHttpInfo(promptTaskDTO, _options);
+    public createPromptTaskWithHttpInfo(promptTaskDTO: PromptTaskDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createPromptTaskWithHttpInfo(promptTaskDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -4064,8 +4426,9 @@ export class PromisePromptTaskApi {
      * Create Prompt Task
      * @param promptTaskDTO The prompt task to be added
      */
-    public createPromptTask(promptTaskDTO: PromptTaskDTO, _options?: Configuration): Promise<string> {
-        const result = this.api.createPromptTask(promptTaskDTO, _options);
+    public createPromptTask(promptTaskDTO: PromptTaskDTO, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createPromptTask(promptTaskDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -4074,8 +4437,9 @@ export class PromisePromptTaskApi {
      * Delete Prompt Task
      * @param promptTaskId The promptTaskId to be deleted
      */
-    public deletePromptTaskWithHttpInfo(promptTaskId: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.deletePromptTaskWithHttpInfo(promptTaskId, _options);
+    public deletePromptTaskWithHttpInfo(promptTaskId: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deletePromptTaskWithHttpInfo(promptTaskId, observableOptions);
         return result.toPromise();
     }
 
@@ -4084,8 +4448,9 @@ export class PromisePromptTaskApi {
      * Delete Prompt Task
      * @param promptTaskId The promptTaskId to be deleted
      */
-    public deletePromptTask(promptTaskId: string, _options?: Configuration): Promise<boolean> {
-        const result = this.api.deletePromptTask(promptTaskId, _options);
+    public deletePromptTask(promptTaskId: string, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deletePromptTask(promptTaskId, observableOptions);
         return result.toPromise();
     }
 
@@ -4094,8 +4459,9 @@ export class PromisePromptTaskApi {
      * Get Prompt Task
      * @param promptTaskId The promptTaskId to be queried
      */
-    public getPromptTaskWithHttpInfo(promptTaskId: string, _options?: Configuration): Promise<HttpInfo<PromptTaskDetailsDTO>> {
-        const result = this.api.getPromptTaskWithHttpInfo(promptTaskId, _options);
+    public getPromptTaskWithHttpInfo(promptTaskId: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<PromptTaskDetailsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getPromptTaskWithHttpInfo(promptTaskId, observableOptions);
         return result.toPromise();
     }
 
@@ -4104,8 +4470,9 @@ export class PromisePromptTaskApi {
      * Get Prompt Task
      * @param promptTaskId The promptTaskId to be queried
      */
-    public getPromptTask(promptTaskId: string, _options?: Configuration): Promise<PromptTaskDetailsDTO> {
-        const result = this.api.getPromptTask(promptTaskId, _options);
+    public getPromptTask(promptTaskId: string, _options?: PromiseConfigurationOptions): Promise<PromptTaskDetailsDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getPromptTask(promptTaskId, observableOptions);
         return result.toPromise();
     }
 
@@ -4115,8 +4482,9 @@ export class PromisePromptTaskApi {
      * @param promptTaskId The promptTaskId to be updated
      * @param promptTaskDTO The prompt task info to be updated
      */
-    public updatePromptTaskWithHttpInfo(promptTaskId: string, promptTaskDTO: PromptTaskDTO, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.updatePromptTaskWithHttpInfo(promptTaskId, promptTaskDTO, _options);
+    public updatePromptTaskWithHttpInfo(promptTaskId: string, promptTaskDTO: PromptTaskDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updatePromptTaskWithHttpInfo(promptTaskId, promptTaskDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -4126,8 +4494,9 @@ export class PromisePromptTaskApi {
      * @param promptTaskId The promptTaskId to be updated
      * @param promptTaskDTO The prompt task info to be updated
      */
-    public updatePromptTask(promptTaskId: string, promptTaskDTO: PromptTaskDTO, _options?: Configuration): Promise<boolean> {
-        const result = this.api.updatePromptTask(promptTaskId, promptTaskDTO, _options);
+    public updatePromptTask(promptTaskId: string, promptTaskDTO: PromptTaskDTO, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updatePromptTask(promptTaskId, promptTaskDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -4155,8 +4524,9 @@ export class PromiseRagApi {
      * Cancel RAG Task
      * @param taskId The taskId to be canceled
      */
-    public cancelRagTaskWithHttpInfo(taskId: number, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.cancelRagTaskWithHttpInfo(taskId, _options);
+    public cancelRagTaskWithHttpInfo(taskId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.cancelRagTaskWithHttpInfo(taskId, observableOptions);
         return result.toPromise();
     }
 
@@ -4165,8 +4535,9 @@ export class PromiseRagApi {
      * Cancel RAG Task
      * @param taskId The taskId to be canceled
      */
-    public cancelRagTask(taskId: number, _options?: Configuration): Promise<boolean> {
-        const result = this.api.cancelRagTask(taskId, _options);
+    public cancelRagTask(taskId: number, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.cancelRagTask(taskId, observableOptions);
         return result.toPromise();
     }
 
@@ -4176,8 +4547,9 @@ export class PromiseRagApi {
      * @param characterUid The characterUid to be added a RAG task
      * @param ragTaskDTO The RAG task to be added
      */
-    public createRagTaskWithHttpInfo(characterUid: string, ragTaskDTO: RagTaskDTO, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.createRagTaskWithHttpInfo(characterUid, ragTaskDTO, _options);
+    public createRagTaskWithHttpInfo(characterUid: string, ragTaskDTO: RagTaskDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<number>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createRagTaskWithHttpInfo(characterUid, ragTaskDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -4187,8 +4559,9 @@ export class PromiseRagApi {
      * @param characterUid The characterUid to be added a RAG task
      * @param ragTaskDTO The RAG task to be added
      */
-    public createRagTask(characterUid: string, ragTaskDTO: RagTaskDTO, _options?: Configuration): Promise<number> {
-        const result = this.api.createRagTask(characterUid, ragTaskDTO, _options);
+    public createRagTask(characterUid: string, ragTaskDTO: RagTaskDTO, _options?: PromiseConfigurationOptions): Promise<number> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createRagTask(characterUid, ragTaskDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -4197,8 +4570,9 @@ export class PromiseRagApi {
      * Delete RAG Task
      * @param taskId The taskId to be deleted
      */
-    public deleteRagTaskWithHttpInfo(taskId: number, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.deleteRagTaskWithHttpInfo(taskId, _options);
+    public deleteRagTaskWithHttpInfo(taskId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteRagTaskWithHttpInfo(taskId, observableOptions);
         return result.toPromise();
     }
 
@@ -4207,8 +4581,9 @@ export class PromiseRagApi {
      * Delete RAG Task
      * @param taskId The taskId to be deleted
      */
-    public deleteRagTask(taskId: number, _options?: Configuration): Promise<boolean> {
-        const result = this.api.deleteRagTask(taskId, _options);
+    public deleteRagTask(taskId: number, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteRagTask(taskId, observableOptions);
         return result.toPromise();
     }
 
@@ -4217,8 +4592,9 @@ export class PromiseRagApi {
      * Get RAG Task
      * @param taskId The taskId to be queried
      */
-    public getRagTaskWithHttpInfo(taskId: number, _options?: Configuration): Promise<HttpInfo<RagTaskDetailsDTO>> {
-        const result = this.api.getRagTaskWithHttpInfo(taskId, _options);
+    public getRagTaskWithHttpInfo(taskId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<RagTaskDetailsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getRagTaskWithHttpInfo(taskId, observableOptions);
         return result.toPromise();
     }
 
@@ -4227,8 +4603,9 @@ export class PromiseRagApi {
      * Get RAG Task
      * @param taskId The taskId to be queried
      */
-    public getRagTask(taskId: number, _options?: Configuration): Promise<RagTaskDetailsDTO> {
-        const result = this.api.getRagTask(taskId, _options);
+    public getRagTask(taskId: number, _options?: PromiseConfigurationOptions): Promise<RagTaskDetailsDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getRagTask(taskId, observableOptions);
         return result.toPromise();
     }
 
@@ -4237,8 +4614,9 @@ export class PromiseRagApi {
      * Get RAG Task Status
      * @param taskId The taskId to be queried status
      */
-    public getRagTaskStatusWithHttpInfo(taskId: number, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.getRagTaskStatusWithHttpInfo(taskId, _options);
+    public getRagTaskStatusWithHttpInfo(taskId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getRagTaskStatusWithHttpInfo(taskId, observableOptions);
         return result.toPromise();
     }
 
@@ -4247,8 +4625,9 @@ export class PromiseRagApi {
      * Get RAG Task Status
      * @param taskId The taskId to be queried status
      */
-    public getRagTaskStatus(taskId: number, _options?: Configuration): Promise<string> {
-        const result = this.api.getRagTaskStatus(taskId, _options);
+    public getRagTaskStatus(taskId: number, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getRagTaskStatus(taskId, observableOptions);
         return result.toPromise();
     }
 
@@ -4257,8 +4636,9 @@ export class PromiseRagApi {
      * List RAG Tasks
      * @param characterUid The characterUid to be queried
      */
-    public listRagTasksWithHttpInfo(characterUid: string, _options?: Configuration): Promise<HttpInfo<Array<RagTaskDetailsDTO>>> {
-        const result = this.api.listRagTasksWithHttpInfo(characterUid, _options);
+    public listRagTasksWithHttpInfo(characterUid: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<RagTaskDetailsDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listRagTasksWithHttpInfo(characterUid, observableOptions);
         return result.toPromise();
     }
 
@@ -4267,8 +4647,9 @@ export class PromiseRagApi {
      * List RAG Tasks
      * @param characterUid The characterUid to be queried
      */
-    public listRagTasks(characterUid: string, _options?: Configuration): Promise<Array<RagTaskDetailsDTO>> {
-        const result = this.api.listRagTasks(characterUid, _options);
+    public listRagTasks(characterUid: string, _options?: PromiseConfigurationOptions): Promise<Array<RagTaskDetailsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listRagTasks(characterUid, observableOptions);
         return result.toPromise();
     }
 
@@ -4277,8 +4658,9 @@ export class PromiseRagApi {
      * Start RAG Task
      * @param taskId The taskId to be started
      */
-    public startRagTaskWithHttpInfo(taskId: number, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.startRagTaskWithHttpInfo(taskId, _options);
+    public startRagTaskWithHttpInfo(taskId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.startRagTaskWithHttpInfo(taskId, observableOptions);
         return result.toPromise();
     }
 
@@ -4287,8 +4669,9 @@ export class PromiseRagApi {
      * Start RAG Task
      * @param taskId The taskId to be started
      */
-    public startRagTask(taskId: number, _options?: Configuration): Promise<boolean> {
-        const result = this.api.startRagTask(taskId, _options);
+    public startRagTask(taskId: number, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.startRagTask(taskId, observableOptions);
         return result.toPromise();
     }
 
@@ -4298,8 +4681,9 @@ export class PromiseRagApi {
      * @param taskId The taskId to be updated
      * @param ragTaskDTO The prompt task info to be updated
      */
-    public updateRagTaskWithHttpInfo(taskId: number, ragTaskDTO: RagTaskDTO, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.updateRagTaskWithHttpInfo(taskId, ragTaskDTO, _options);
+    public updateRagTaskWithHttpInfo(taskId: number, ragTaskDTO: RagTaskDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateRagTaskWithHttpInfo(taskId, ragTaskDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -4309,8 +4693,9 @@ export class PromiseRagApi {
      * @param taskId The taskId to be updated
      * @param ragTaskDTO The prompt task info to be updated
      */
-    public updateRagTask(taskId: number, ragTaskDTO: RagTaskDTO, _options?: Configuration): Promise<boolean> {
-        const result = this.api.updateRagTask(taskId, ragTaskDTO, _options);
+    public updateRagTask(taskId: number, ragTaskDTO: RagTaskDTO, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateRagTask(taskId, ragTaskDTO, observableOptions);
         return result.toPromise();
     }
 
@@ -4337,8 +4722,9 @@ export class PromiseTTSServiceApi {
      * Return builtin TTS speakers.
      * List Builtin Speakers
      */
-    public listTtsBuiltinSpeakersWithHttpInfo(_options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        const result = this.api.listTtsBuiltinSpeakersWithHttpInfo(_options);
+    public listTtsBuiltinSpeakersWithHttpInfo(_options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<string>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listTtsBuiltinSpeakersWithHttpInfo(observableOptions);
         return result.toPromise();
     }
 
@@ -4346,8 +4732,9 @@ export class PromiseTTSServiceApi {
      * Return builtin TTS speakers.
      * List Builtin Speakers
      */
-    public listTtsBuiltinSpeakers(_options?: Configuration): Promise<Array<string>> {
-        const result = this.api.listTtsBuiltinSpeakers(_options);
+    public listTtsBuiltinSpeakers(_options?: PromiseConfigurationOptions): Promise<Array<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listTtsBuiltinSpeakers(observableOptions);
         return result.toPromise();
     }
 
@@ -4357,8 +4744,9 @@ export class PromiseTTSServiceApi {
      * @param speakerType The speaker type
      * @param speaker The speaker
      */
-    public playSampleWithHttpInfo(speakerType: string, speaker: string, _options?: Configuration): Promise<HttpInfo<any>> {
-        const result = this.api.playSampleWithHttpInfo(speakerType, speaker, _options);
+    public playSampleWithHttpInfo(speakerType: string, speaker: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<any>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.playSampleWithHttpInfo(speakerType, speaker, observableOptions);
         return result.toPromise();
     }
 
@@ -4368,8 +4756,9 @@ export class PromiseTTSServiceApi {
      * @param speakerType The speaker type
      * @param speaker The speaker
      */
-    public playSample(speakerType: string, speaker: string, _options?: Configuration): Promise<any> {
-        const result = this.api.playSample(speakerType, speaker, _options);
+    public playSample(speakerType: string, speaker: string, _options?: PromiseConfigurationOptions): Promise<any> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.playSample(speakerType, speaker, observableOptions);
         return result.toPromise();
     }
 
@@ -4378,8 +4767,9 @@ export class PromiseTTSServiceApi {
      * Speak Message
      * @param messageId The message id
      */
-    public speakMessageWithHttpInfo(messageId: number, _options?: Configuration): Promise<HttpInfo<any>> {
-        const result = this.api.speakMessageWithHttpInfo(messageId, _options);
+    public speakMessageWithHttpInfo(messageId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<any>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.speakMessageWithHttpInfo(messageId, observableOptions);
         return result.toPromise();
     }
 
@@ -4388,8 +4778,9 @@ export class PromiseTTSServiceApi {
      * Speak Message
      * @param messageId The message id
      */
-    public speakMessage(messageId: number, _options?: Configuration): Promise<any> {
-        const result = this.api.speakMessage(messageId, _options);
+    public speakMessage(messageId: number, _options?: PromiseConfigurationOptions): Promise<any> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.speakMessage(messageId, observableOptions);
         return result.toPromise();
     }
 
@@ -4419,8 +4810,9 @@ export class PromiseTagManagerForBizAdminApi {
      * @param referId Resource identifier of the tag
      * @param tag Tag content
      */
-    public createTagWithHttpInfo(referType: string, referId: string, tag: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.createTagWithHttpInfo(referType, referId, tag, _options);
+    public createTagWithHttpInfo(referType: string, referId: string, tag: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createTagWithHttpInfo(referType, referId, tag, observableOptions);
         return result.toPromise();
     }
 
@@ -4431,8 +4823,9 @@ export class PromiseTagManagerForBizAdminApi {
      * @param referId Resource identifier of the tag
      * @param tag Tag content
      */
-    public createTag(referType: string, referId: string, tag: string, _options?: Configuration): Promise<boolean> {
-        const result = this.api.createTag(referType, referId, tag, _options);
+    public createTag(referType: string, referId: string, tag: string, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createTag(referType, referId, tag, observableOptions);
         return result.toPromise();
     }
 
@@ -4443,8 +4836,9 @@ export class PromiseTagManagerForBizAdminApi {
      * @param referId Resource identifier of the tag
      * @param tag Tag content
      */
-    public deleteTagWithHttpInfo(referType: string, referId: string, tag: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.deleteTagWithHttpInfo(referType, referId, tag, _options);
+    public deleteTagWithHttpInfo(referType: string, referId: string, tag: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<boolean>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteTagWithHttpInfo(referType, referId, tag, observableOptions);
         return result.toPromise();
     }
 
@@ -4455,8 +4849,9 @@ export class PromiseTagManagerForBizAdminApi {
      * @param referId Resource identifier of the tag
      * @param tag Tag content
      */
-    public deleteTag(referType: string, referId: string, tag: string, _options?: Configuration): Promise<boolean> {
-        const result = this.api.deleteTag(referType, referId, tag, _options);
+    public deleteTag(referType: string, referId: string, tag: string, _options?: PromiseConfigurationOptions): Promise<boolean> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteTag(referType, referId, tag, observableOptions);
         return result.toPromise();
     }
 

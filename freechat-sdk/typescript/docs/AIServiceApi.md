@@ -87,7 +87,7 @@ const apiInstance = new AIServiceApi(configuration);
 
 const request: AIServiceApiDeleteAiApiKeyRequest = {
     // Credential identifier
-  id: 1,
+  id: 0,
 };
 
 const data = await apiInstance.deleteAiApiKey(request);
@@ -140,7 +140,7 @@ const apiInstance = new AIServiceApi(configuration);
 
 const request: AIServiceApiDisableAiApiKeyRequest = {
     // Credential identifier
-  id: 1,
+  id: 0,
 };
 
 const data = await apiInstance.disableAiApiKey(request);
@@ -193,7 +193,7 @@ const apiInstance = new AIServiceApi(configuration);
 
 const request: AIServiceApiEnableAiApiKeyRequest = {
     // Credential identifier
-  id: 1,
+  id: 0,
 };
 
 const data = await apiInstance.enableAiApiKey(request);
@@ -246,7 +246,7 @@ const apiInstance = new AIServiceApi(configuration);
 
 const request: AIServiceApiGetAiApiKeyRequest = {
     // Credential identifier
-  id: 1,
+  id: 0,
 };
 
 const data = await apiInstance.getAiApiKey(request);

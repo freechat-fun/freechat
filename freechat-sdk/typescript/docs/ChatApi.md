@@ -637,7 +637,7 @@ const request: ChatApiRollbackMessagesRequest = {
     // Chat session identifier
   chatId: "chatId_example",
     // Message count to be rolled back
-  count: 1,
+  count: 0,
 };
 
 const data = await apiInstance.rollbackMessages(request);
