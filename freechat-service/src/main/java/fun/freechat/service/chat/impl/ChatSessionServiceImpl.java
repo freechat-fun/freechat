@@ -1,6 +1,7 @@
 package fun.freechat.service.chat.impl;
 
 import static dev.langchain4j.data.message.ChatMessageType.USER;
+import static dev.langchain4j.internal.Utils.getOrDefault;
 import static dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey;
 import static fun.freechat.service.ai.AiModelFactory.createAzureOpenAiChatModel;
 import static fun.freechat.service.ai.AiModelFactory.createAzureOpenAiStreamingChatModel;
@@ -10,6 +11,7 @@ import static fun.freechat.service.ai.AiModelFactory.createOpenAiChatModel;
 import static fun.freechat.service.ai.AiModelFactory.createOpenAiModerationModel;
 import static fun.freechat.service.ai.AiModelFactory.createOpenAiStreamingChatModel;
 import static fun.freechat.service.ai.AiModelFactory.createQwenChatModel;
+import static fun.freechat.service.ai.AiModelFactory.createQwenImageModel;
 import static fun.freechat.service.ai.AiModelFactory.createQwenStreamingChatModel;
 import static fun.freechat.service.enums.ChatVar.CHARACTER_CHAT_EXAMPLE;
 import static fun.freechat.service.enums.ChatVar.CHARACTER_CHAT_STYLE;
@@ -30,6 +32,7 @@ import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
 import static fun.freechat.util.ByteUtils.isTrue;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import dev.langchain4j.community.model.dashscope.QwenChatModel;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.SystemMessage;
@@ -168,19 +171,31 @@ public class ChatSessionServiceImpl implements ChatSessionService {
         return cache.get(CACHE_KEY_PREFIX + "_lock_" + chatId, ReentrantLock::new);
     }
 
-    private CloseableAiApiKey getCloseableAiApiKey(ChatContext context, String userId, PromptTask promptTask) {
+    private CloseableAiApiKey getCloseableAiApiKey(ChatContext context, String userId, PromptTask promptTask, String specialApiKey, String specialApiValue) {
         String apiKeyOwner = context.getUserId();
         String apiKeyName = context.getApiKeyName();
         String apiKeyValue = context.getApiKeyValue();
         if (StringUtils.isBlank(apiKeyName) && StringUtils.isBlank(apiKeyValue)) {
             apiKeyOwner = userId;
-            apiKeyName = promptTask.getApiKeyName();
-            apiKeyValue = promptTask.getApiKeyValue();
+            apiKeyName = getOrDefault(specialApiKey, promptTask.getApiKeyName());
+            apiKeyValue = getOrDefault(specialApiValue, promptTask.getApiKeyValue());
         }
 
         return StringUtils.isBlank(apiKeyName)
                 ? aiApiKeyService.use(apiKeyValue)
                 : aiApiKeyService.use(apiKeyOwner, apiKeyName);
+    }
+
+    private CloseableAiApiKey getCloseableAiApiKeyForChatModel(ChatContext context, String userId, PromptTask promptTask) {
+        return getCloseableAiApiKey(context, userId, promptTask, null, null);
+    }
+
+    private CloseableAiApiKey getCloseableAiApiKeyForModerationModel(ChatContext context, String userId, PromptTask promptTask, CharacterBackend backend) {
+        return getCloseableAiApiKey(context, userId, promptTask, backend.getModerationApiKeyName(), backend.getModerationApiKeyValue());
+    }
+
+    private CloseableAiApiKey getCloseableAiApiKeyForImageModel(ChatContext context, String userId, PromptTask promptTask, CharacterBackend backend) {
+        return getCloseableAiApiKey(context, userId, promptTask, backend.getImageApiKeyName(), backend.getImageApiKeyValue());
     }
 
     @Override
@@ -223,6 +238,8 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     characterService.details(characterId, owner).getLeft();
             PromptTask promptTask = promptTaskService.get(backend.getChatPromptTaskId());
             AiModelInfo modelInfo = InfoUtils.toAiModelInfo(promptTask.getModelId());
+            AiModelInfo imageModelInfo = InfoUtils.toAiModelInfo(backend.getImageModelId());
+            AiModelInfo moderationModelInfo = InfoUtils.toAiModelInfo(backend.getModerationModelId());
             ModelProvider provider = ModelProvider.of(modelInfo.getProvider());
             Map<String, Object> parameters = StringUtils.isNotBlank(promptTask.getParams())
                     ? InfoUtils.defaultMapper().readValue(promptTask.getParams(), new TypeReference<>() {})
@@ -230,7 +247,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
             ChatModel chatModel;
             StreamingChatModel streamingChatModel;
-            try (var apiKeyClient = getCloseableAiApiKey(context, ownerId, promptTask)) {
+            try (var apiKeyClient = getCloseableAiApiKeyForChatModel(context, ownerId, promptTask)) {
                 switch (provider) {
                     case OPEN_AI -> {
                         chatModel = createOpenAiChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
@@ -255,20 +272,31 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                 }
             }
 
+            QwenChatModel imageChatModel = null;
+            if (imageModelInfo != null) {
+                ModelProvider specialProvider = getOrDefault(ModelProvider.of(imageModelInfo.getProvider()), provider);
+                Map<String, Object> specialParameters = StringUtils.isNotBlank(backend.getImageParams())
+                        ? InfoUtils.defaultMapper().readValue(backend.getImageParams(), new TypeReference<>() {})
+                        : Collections.emptyMap();
+                try (var apiKeyClient = getCloseableAiApiKeyForImageModel(context, ownerId, promptTask, backend)) {
+                    switch (specialProvider) {
+                        case DASH_SCOPE ->
+                                imageChatModel = createQwenImageModel(apiKeyClient.token(), imageModelInfo.getName(), specialParameters);
+                        default -> throw new NotImplementedException("Not implemented.");
+                    }
+                }
+            }
+
             ModerationModel moderationModel = null;
-            String moderationModelId = backend.getModerationModelId();
-            String moderationApiKeyName = backend.getModerationApiKeyName();
-            if (StringUtils.isNotBlank(moderationModelId) && StringUtils.isNotBlank(moderationApiKeyName)) {
-                modelInfo = InfoUtils.toAiModelInfo(moderationModelId);
-                provider = ModelProvider.of(modelInfo.getProvider());
-                parameters = StringUtils.isNotBlank(backend.getModerationParams())
+            if (moderationModelInfo != null) {
+                ModelProvider specialProvider = getOrDefault(ModelProvider.of(moderationModelInfo.getProvider()), provider);
+                Map<String, Object> specialParameters = StringUtils.isNotBlank(backend.getModerationParams())
                         ? InfoUtils.defaultMapper().readValue(backend.getModerationParams(), new TypeReference<>() {})
                         : Collections.emptyMap();
-                try (var apiKeyClient = aiApiKeyService.use(ownerId, moderationApiKeyName)) {
-                    switch (provider) {
+                try (var apiKeyClient = getCloseableAiApiKeyForModerationModel(context, ownerId, promptTask, backend)) {
+                    switch (specialProvider) {
                         case OPEN_AI ->
-                            moderationModel =
-                                    createOpenAiModerationModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                                moderationModel = createOpenAiModerationModel(apiKeyClient.token(), moderationModelInfo.getName(), specialParameters);
                         default -> throw new NotImplementedException("Not implemented.");
                     }
                 }
@@ -448,6 +476,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             return ChatSession.builder()
                     .chatModel(chatModel)
                     .streamingChatModel(streamingChatModel)
+                    .imageChatModel(imageChatModel)
                     .moderationModel(moderationModel)
                     .chatMemory(chatMemory)
                     .prompt(prompt)
@@ -520,6 +549,8 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     characterService.details(characterId, owner).getLeft();
             PromptTask promptTask = promptTaskService.get(backend.getChatPromptTaskId());
             AiModelInfo modelInfo = InfoUtils.toAiModelInfo(promptTask.getModelId());
+            AiModelInfo imageModelInfo = InfoUtils.toAiModelInfo(backend.getImageModelId());
+            AiModelInfo moderationModelInfo = InfoUtils.toAiModelInfo(backend.getModerationModelId());
             ModelProvider provider = ModelProvider.of(modelInfo.getProvider());
             Map<String, Object> parameters = StringUtils.isNotBlank(promptTask.getParams())
                     ? InfoUtils.defaultMapper().readValue(promptTask.getParams(), new TypeReference<>() {})
@@ -527,7 +558,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
             ChatModel chatModel;
             StreamingChatModel streamingChatModel;
-            try (var apiKeyClient = getCloseableAiApiKey(context, ownerId, promptTask)) {
+            try (var apiKeyClient = getCloseableAiApiKeyForChatModel(context, ownerId, promptTask)) {
                 switch (provider) {
                     case OPEN_AI -> {
                         chatModel = createOpenAiChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
@@ -552,20 +583,31 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                 }
             }
 
+            QwenChatModel imageChatModel = null;
+            if (imageModelInfo != null) {
+                ModelProvider specialProvider = getOrDefault(ModelProvider.of(imageModelInfo.getProvider()), provider);
+                Map<String, Object> specialParameters = StringUtils.isNotBlank(backend.getImageParams())
+                        ? InfoUtils.defaultMapper().readValue(backend.getImageParams(), new TypeReference<>() {})
+                        : Collections.emptyMap();
+                try (var apiKeyClient = getCloseableAiApiKeyForImageModel(context, ownerId, promptTask, backend)) {
+                    switch (specialProvider) {
+                        case DASH_SCOPE ->
+                                imageChatModel = createQwenImageModel(apiKeyClient.token(), imageModelInfo.getName(), specialParameters);
+                        default -> throw new NotImplementedException("Not implemented.");
+                    }
+                }
+            }
+
             ModerationModel moderationModel = null;
-            String moderationModelId = backend.getModerationModelId();
-            String moderationApiKeyName = backend.getModerationApiKeyName();
-            if (StringUtils.isNotBlank(moderationModelId) && StringUtils.isNotBlank(moderationApiKeyName)) {
-                modelInfo = InfoUtils.toAiModelInfo(moderationModelId);
-                provider = ModelProvider.of(modelInfo.getProvider());
-                parameters = StringUtils.isNotBlank(backend.getModerationParams())
+            if (moderationModelInfo != null) {
+                ModelProvider specialProvider = getOrDefault(ModelProvider.of(moderationModelInfo.getProvider()), provider);
+                Map<String, Object> specialParameters = StringUtils.isNotBlank(backend.getModerationParams())
                         ? InfoUtils.defaultMapper().readValue(backend.getModerationParams(), new TypeReference<>() {})
                         : Collections.emptyMap();
-                try (var apiKeyClient = aiApiKeyService.use(ownerId, moderationApiKeyName)) {
-                    switch (provider) {
+                try (var apiKeyClient = getCloseableAiApiKeyForModerationModel(context, ownerId, promptTask, backend)) {
+                    switch (specialProvider) {
                         case OPEN_AI ->
-                            moderationModel =
-                                    createOpenAiModerationModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                                moderationModel = createOpenAiModerationModel(apiKeyClient.token(), moderationModelInfo.getName(), specialParameters);
                         default -> throw new NotImplementedException("Not implemented.");
                     }
                 }
@@ -703,6 +745,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             return ChatSession.builder()
                     .chatModel(chatModel)
                     .streamingChatModel(streamingChatModel)
+                    .imageChatModel(imageChatModel)
                     .moderationModel(moderationModel)
                     .chatMemory(chatMemory)
                     .prompt(prompt)

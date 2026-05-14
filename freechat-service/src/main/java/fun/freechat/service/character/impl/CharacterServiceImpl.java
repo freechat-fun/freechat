@@ -30,6 +30,7 @@ import fun.freechat.service.cache.LongPeriodCacheEvict;
 import fun.freechat.service.character.CharacterBackendEvent;
 import fun.freechat.service.character.CharacterInfoDraft;
 import fun.freechat.service.character.CharacterService;
+import fun.freechat.service.common.EncryptionService;
 import fun.freechat.service.enums.InfoType;
 import fun.freechat.service.enums.StatsType;
 import fun.freechat.service.enums.Visibility;
@@ -103,6 +104,9 @@ public class CharacterServiceImpl implements CharacterService {
 
     @Autowired
     private InteractiveStatsMapper interactiveStatsMapper;
+
+    @Autowired
+    private EncryptionService encryptionService;
 
     private QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder wrapQueryExpression(
             QueryExpressionDSL<SelectModel> c, String currentUserId) {
@@ -915,9 +919,13 @@ public class CharacterServiceImpl implements CharacterService {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             LocalDateTime now = LocalDateTime.now();
+            String plainModerationApiKey = characterBackend.getModerationApiKeyValue();
+            String plainImageApiKey = characterBackend.getImageApiKeyValue();
             int rows = characterBackendMapper.insertSelective(characterBackend
                     .withGmtCreate(now)
                     .withGmtModified(now)
+                    .withModerationApiKeyValue(encryptionService.encrypt(plainModerationApiKey))
+                    .withImageApiKeyValue(encryptionService.encrypt(plainImageApiKey))
                     .withProactiveChatWaitingTime(getOrDefault(characterBackend.getProactiveChatWaitingTime(), 0))
                     .withBackendId(IdUtils.newId()));
 
@@ -926,6 +934,8 @@ public class CharacterServiceImpl implements CharacterService {
             } else {
                 characterBackend.setBackendId(null);
             }
+            characterBackend.setModerationApiKeyValue(plainModerationApiKey);
+            characterBackend.setImageApiKeyValue(plainImageApiKey);
         } catch (Exception e) {
             log.error("Failed to create character backend", e);
             characterBackend.setBackendId(null);
@@ -964,11 +974,18 @@ public class CharacterServiceImpl implements CharacterService {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             LocalDateTime now = LocalDateTime.now();
+            String plainModerationApiKey = characterBackend.getModerationApiKeyValue();
+            String plainImageApiKey = characterBackend.getImageApiKeyValue();
             rows = characterBackendMapper.updateByPrimaryKeySelective(
-                    characterBackend.withGmtModified(now).withCharacterUid(null));
+                    characterBackend.withGmtModified(now)
+                            .withCharacterUid(null)
+                            .withModerationApiKeyValue(encryptionService.encrypt(plainModerationApiKey))
+                            .withImageApiKeyValue(encryptionService.encrypt(plainImageApiKey)));
 
             if (rows > 0) {
                 ensureDefaultBackend(characterBackend, now);
+                characterBackend.setModerationApiKeyValue(plainModerationApiKey);
+                characterBackend.setImageApiKeyValue(plainImageApiKey);
 
                 CharacterBackendEvent event = new CharacterBackendEvent(null, characterBackend.getBackendId());
                 eventPublisher.publishEvent(event);
@@ -1001,13 +1018,22 @@ public class CharacterServiceImpl implements CharacterService {
         return characterBackendMapper
                 .selectOne(c -> c.where(CharacterBackendDynamicSqlSupport.characterUid, isEqualTo(characterUid))
                         .and(CharacterBackendDynamicSqlSupport.isDefault, isEqualTo((byte) 1)))
+                .map(characterBackend -> characterBackend.withModerationApiKeyValue(
+                        encryptionService.decrypt(characterBackend.getModerationApiKeyValue())))
+                .map(characterBackend -> characterBackend.withImageApiKeyValue(
+                        encryptionService.decrypt(characterBackend.getImageApiKeyValue())))
                 .orElse(null);
     }
 
     @Override
     @LongPeriodCache(keyBy = BACKEND_CACHE_KEY_SPEL_PREFIX + "#p0")
     public CharacterBackend getBackend(String characterBackendId) {
-        return characterBackendMapper.selectByPrimaryKey(characterBackendId).orElse(null);
+        return characterBackendMapper.selectByPrimaryKey(characterBackendId)
+                .map(characterBackend -> characterBackend.withModerationApiKeyValue(
+                        encryptionService.decrypt(characterBackend.getModerationApiKeyValue())))
+                .map(characterBackend -> characterBackend.withImageApiKeyValue(
+                        encryptionService.decrypt(characterBackend.getImageApiKeyValue())))
+                .orElse(null);
     }
 
     @Override
@@ -1025,7 +1051,13 @@ public class CharacterServiceImpl implements CharacterService {
     @Override
     public List<CharacterBackend> listBackends(String characterUid) {
         return characterBackendMapper.select(
-                c -> c.where(CharacterBackendDynamicSqlSupport.characterUid, isEqualTo(characterUid)));
+                c -> c.where(CharacterBackendDynamicSqlSupport.characterUid, isEqualTo(characterUid)))
+                .stream()
+                .map(characterBackend -> characterBackend.withModerationApiKeyValue(
+                        encryptionService.decrypt(characterBackend.getModerationApiKeyValue())))
+                .map(characterBackend -> characterBackend.withImageApiKeyValue(
+                        encryptionService.decrypt(characterBackend.getImageApiKeyValue())))
+                .toList();
     }
 
     @Override

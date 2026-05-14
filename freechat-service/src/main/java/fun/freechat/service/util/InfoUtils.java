@@ -36,6 +36,10 @@ public class InfoUtils {
     }
 
     public static AiModelInfo toAiModelInfo(String modelId) {
+        if (StringUtils.isBlank(modelId)) {
+            return null;
+        }
+
         Matcher m = MODEL_ID_PATTERN.matcher(modelId);
         return m.matches()
                 ? AiModelInfo.builder()

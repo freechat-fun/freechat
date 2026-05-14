@@ -26,6 +26,7 @@ import org.apache.commons.collections4.CollectionUtils;
 @Slf4j
 public class ChatSession {
     private final AiServiceContext aiServiceContext;
+    private final ChatModel imageChatModel;
     private final ChatPromptContent prompt;
     private final PromptFormat promptFormat;
     private final Map<String, Object> variables;
@@ -39,6 +40,7 @@ public class ChatSession {
     public ChatSession(
             ChatModel chatModel,
             StreamingChatModel streamingChatModel,
+            ChatModel imageChatModel,
             ModerationModel moderationModel,
             ChatMemory chatMemory,
             ChatPromptContent prompt,
@@ -55,6 +57,7 @@ public class ChatSession {
         aiServiceContext.retrievalAugmentor = retriever;
         aiServiceContext.initChatMemories(memoryId -> chatMemory);
 
+        this.imageChatModel = imageChatModel;
         this.prompt = prompt;
         this.promptFormat = promptFormat;
         this.variables = variables;
