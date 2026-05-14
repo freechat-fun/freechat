@@ -94,10 +94,17 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public boolean changePassword(User user, String newPassword) {
         LocalDateTime now = LocalDateTime.now();
+        String oldPassword = user.getPassword();
         String encryptedPassword = encryptionService.encrypt(newPassword);
         int rows =
                 userMapper.updateByPrimaryKeySelective(user.withGmtModified(now).withPassword(encryptedPassword));
-        return rows > 0;
+        if (rows > 0) {
+            user.setPassword(newPassword);
+            return true;
+        } else {
+            user.setPassword(oldPassword);
+            return false;
+        }
     }
 
     @Override

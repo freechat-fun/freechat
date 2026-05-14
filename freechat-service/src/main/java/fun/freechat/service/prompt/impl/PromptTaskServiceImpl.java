@@ -38,13 +38,16 @@ public class PromptTaskServiceImpl implements PromptTaskService {
         }
 
         LocalDateTime now = LocalDateTime.now();
+        String plainApiKey = task.getApiKeyValue();
         int rows =
-                promptTaskMapper.insertSelective(task.withApiKeyValue(encryptionService.encrypt(task.getApiKeyValue()))
+                promptTaskMapper.insertSelective(task.withApiKeyValue(encryptionService.encrypt(plainApiKey))
                         .withGmtCreate(now)
                         .withGmtModified(now)
                         .withGmtStart(null)
                         .withGmtEnd(null)
                         .withTaskId(IdUtils.newId()));
+
+        task.setApiKeyValue(plainApiKey);
         if (rows <= 0) {
             task.setTaskId(null);
             return false;
@@ -54,9 +57,11 @@ public class PromptTaskServiceImpl implements PromptTaskService {
 
     @Override
     public boolean update(PromptTask task) {
+        String plainApiKey = task.getApiKeyValue();
         int rows = promptTaskMapper.updateByPrimaryKeySelective(
-                task.withApiKeyValue(encryptionService.encrypt(task.getApiKeyValue()))
+                task.withApiKeyValue(encryptionService.encrypt(plainApiKey))
                         .withGmtModified(LocalDateTime.now()));
+        task.setApiKeyValue(plainApiKey);
         return rows > 0;
     }
 
