@@ -18,17 +18,24 @@ public class TestCommonUtils {
 
     public static String defaultModelFor(ModelProvider provider) {
         return switch (provider) {
-            case OPEN_AI, AZURE_OPEN_AI -> "gpt-4o-mini";
-            case DASH_SCOPE -> "qwen3-max";
+            case OPEN_AI, AZURE_OPEN_AI -> "gpt-5.4-mini";
+            case DASH_SCOPE -> "qwen3.6-plus";
             case OLLAMA -> "llama3.2:1b|text2chat";
+            default -> null;
+        };
+    }
+
+    public static String defaultImageModelFor(ModelProvider provider) {
+        return switch (provider) {
+            case DASH_SCOPE -> "qwen-image-2.0";
             default -> null;
         };
     }
 
     public static String defaultEmbeddingModelFor(ModelProvider provider) {
         return switch (provider) {
-            case OPEN_AI, AZURE_OPEN_AI -> "text-embedding-ada-002";
-            case DASH_SCOPE -> "text-embedding-v2";
+            case OPEN_AI, AZURE_OPEN_AI -> "text-embedding-3-small";
+            case DASH_SCOPE -> "text-embedding-v3";
             case OLLAMA -> "all-minilm|embedding";
             default -> null;
         };

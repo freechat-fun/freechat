@@ -46,7 +46,6 @@ public class HttpUtils {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("User-Agent", DEFAULT_USER_AGENT)
-                .header("Content-Type", DEFAULT_CONTENT_TYPE)
                 .header("Accept", DEFAULT_ACCEPT);
         if (MapUtils.isNotEmpty(headers)) {
             headers.forEach(builder::header);
@@ -183,7 +182,6 @@ public class HttpUtils {
     public static String toCurl(String url, Map<String, String> headers, String body, String method) {
         Map<String, String> httpHeaders = new HashMap<>();
         httpHeaders.put("User-Agent", DEFAULT_USER_AGENT);
-        httpHeaders.put("Content-Type", DEFAULT_CONTENT_TYPE);
         httpHeaders.put("Accept", DEFAULT_ACCEPT);
         if (MapUtils.isNotEmpty(headers)) {
             httpHeaders.putAll(headers);

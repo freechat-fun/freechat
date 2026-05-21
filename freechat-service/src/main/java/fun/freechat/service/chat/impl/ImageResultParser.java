@@ -68,13 +68,17 @@ public class ImageResultParser {
             return temporaryUrl;
         }
 
-        String target = PUBLIC_DIR + "chat/files/" + chatId + "/" + IdUtils.newShortId() + "." + extension;
+        String targetDir = PUBLIC_DIR + "chat/files/" + chatId;
+        String targetFile = targetDir + "/" + IdUtils.newShortId() + "." + extension;
         FileStore fileStore = defaultFileStore();
         try {
-            fileStore.write(target, downloaded.content());
-            String targetUrl = fileStore.getShareUrl(target, Integer.MAX_VALUE);
+            if (!fileStore.exists(targetDir)) {
+                fileStore.createDirectories(targetDir);
+            }
+            fileStore.write(targetFile, downloaded.content());
+            String targetUrl = fileStore.getShareUrl(targetFile, Integer.MAX_VALUE);
             if (StringUtils.isBlank(targetUrl)) {
-                String subPath = target.substring(PUBLIC_DIR.length());
+                String subPath = targetFile.substring(PUBLIC_DIR.length());
                 String key = Base64.getUrlEncoder().encodeToString(subPath.getBytes(StandardCharsets.UTF_8));
                 String targetPath = "/public/image/" + key;
                 try {
@@ -88,7 +92,7 @@ public class ImageResultParser {
             }
             return targetUrl;
         } catch (IOException e) {
-            log.warn("Failed to save image from {} to {}", temporaryUrl, target, e);
+            log.warn("Failed to save image from {} to {}", temporaryUrl, targetFile, e);
             return temporaryUrl;
         }
     }

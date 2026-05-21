@@ -75,6 +75,9 @@ public class TestAiApiKeyUtils implements ApplicationContextAware {
     }
 
     public static String keyNameFor(ModelProvider provider) {
+        if (provider == null) {
+            return null;
+        }
         return "test_api_key_" + provider.text();
     }
 

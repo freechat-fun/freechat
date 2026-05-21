@@ -467,6 +467,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                         .homeUrl(homeUrl)
                         .characterService(characterService)
                         .chatContextService(chatContextService)
+                        .chatSessionService(this)
                         .shortLinkService(shortLinkService)
                         .lang(lang)
                         .build();
