@@ -66,6 +66,27 @@ public class HttpUtils {
         return null;
     }
 
+    public record DownloadResult(byte[] content, String contentType) {}
+
+    public static DownloadResult download(String url) {
+        return download(url, null);
+    }
+
+    public static DownloadResult download(String url, Map<String, String> headers) {
+        HttpRequest request = builderFor(url, headers).GET().build();
+        try {
+            HttpResponse<byte[]> response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+            if (response.statusCode() >= 200 && response.statusCode() < 300) {
+                String contentType =
+                        response.headers().firstValue("Content-Type").orElse(null);
+                return new DownloadResult(response.body(), contentType);
+            }
+        } catch (IOException | InterruptedException e) {
+            log.warn("Failed to download from {}", url, e);
+        }
+        return null;
+    }
+
     public static boolean ping(String url) {
         HttpRequest request = builderFor(url, null).HEAD().build();
         try {

@@ -1,6 +1,8 @@
 package fun.freechat.service.chat.impl;
 
+import static dev.langchain4j.agent.tool.ToolSpecifications.toolSpecificationFrom;
 import static dev.langchain4j.data.message.ChatMessageType.USER;
+import static dev.langchain4j.internal.Utils.getAnnotatedMethod;
 import static dev.langchain4j.internal.Utils.getOrDefault;
 import static dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey;
 import static fun.freechat.service.ai.AiModelFactory.createAzureOpenAiChatModel;
@@ -32,6 +34,8 @@ import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
 import static fun.freechat.util.ByteUtils.isTrue;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import dev.langchain4j.agent.tool.Tool;
+import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.community.model.dashscope.QwenChatModel;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
@@ -54,6 +58,8 @@ import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
 import dev.langchain4j.rag.query.Query;
 import dev.langchain4j.rag.query.transformer.QueryTransformer;
 import dev.langchain4j.service.ModerationException;
+import dev.langchain4j.service.tool.DefaultToolExecutor;
+import dev.langchain4j.service.tool.ToolExecutor;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import fun.freechat.langchain4j.memory.chat.SystemAlwaysOnTopMessageWindowChatMemory;
@@ -89,9 +95,9 @@ import fun.freechat.service.util.InfoUtils;
 import fun.freechat.service.util.PromptUtils;
 import fun.freechat.util.LangUtils;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -455,22 +461,33 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             MemoryUsage memoryUsage = chatMemoryService.usage(chatId);
 
             // tools
-            List<Object> tools = new LinkedList<>();
+            Map<ToolSpecification, ToolExecutor> tools = HashMap.newHashMap(1);
             if (isTrue(backend.getEnableAlbumTool())) {
-                tools.add(
-                        "zh".equalsIgnoreCase(lang)
-                                ? ZhAlbumTool.builder()
-                                        .homeUrl(homeUrl)
-                                        .characterService(characterService)
-                                        .chatContextService(chatContextService)
-                                        .shortLinkService(shortLinkService)
-                                        .build()
-                                : EnAlbumTool.builder()
-                                        .homeUrl(homeUrl)
-                                        .characterService(characterService)
-                                        .chatContextService(chatContextService)
-                                        .shortLinkService(shortLinkService)
+                AlbumTool albumTool = AlbumTool.builder()
+                        .homeUrl(homeUrl)
+                        .characterService(characterService)
+                        .chatContextService(chatContextService)
+                        .shortLinkService(shortLinkService)
+                        .lang(lang)
+                        .build();
+                for (Method method : albumTool.getClass().getDeclaredMethods()) {
+                    getAnnotatedMethod(method, Tool.class).ifPresent(toolMethod -> {
+                        ToolSpecification defaultToolSpecification = toolSpecificationFrom(toolMethod);
+                        tools.put(ToolSpecification.builder()
+                                        .name(defaultToolSpecification.name())
+                                        .parameters(defaultToolSpecification.parameters())
+                                        .metadata(defaultToolSpecification.metadata())
+                                        .description(albumTool.description())  // localized description
+                                        .build(),
+                                DefaultToolExecutor.builder()
+                                        .object(albumTool)
+                                        .originalMethod(method)
+                                        .methodToInvoke(method)
+                                        .wrapToolArgumentsExceptions(true)
+                                        .propagateToolExecutionExceptions(true)
                                         .build());
+                    });
+                }
             }
 
             return ChatSession.builder()
@@ -485,7 +502,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     .retriever(retrievalAugmentor)
                     .longTermMemoryRetriever(longTermMemoryRetrievalAugmentor)
                     .memoryUsage(memoryUsage)
-                    .objectsWithTools(tools)
+                    .tools(tools)
                     .build();
         } catch (NotImplementedException | NoSuchElementException | NullPointerException | IOException e) {
             log.warn("Failed to build chat session of {}", chatId, e);

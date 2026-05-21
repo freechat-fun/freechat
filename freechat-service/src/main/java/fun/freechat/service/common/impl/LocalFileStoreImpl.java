@@ -89,6 +89,16 @@ public class LocalFileStoreImpl implements FileStore {
     }
 
     @Override
+    public long write(String path, byte[] bytes, Instant lastModified) throws IOException {
+        Path filePath = toPath(path);
+        Files.write(filePath, bytes);
+        if (lastModified != null) {
+            Files.setLastModifiedTime(filePath, FileTime.from(lastModified));
+        }
+        return bytes.length;
+    }
+
+    @Override
     public OutputStream newOutputStream(String path) throws IOException {
         Path filePath = toPath(path);
         return Files.newOutputStream(filePath);

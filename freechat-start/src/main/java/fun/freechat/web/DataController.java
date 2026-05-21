@@ -17,7 +17,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.PathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -65,7 +65,7 @@ public class DataController {
             }
 
             HttpHeaders headers = getResponseHeaders(pathStr, lastModified, eTag, IMAGE_JPEG, AVAILABLE_IMAGE_TYPES);
-            Resource resource = new PathResource(fileStore.toPath(pathStr));
+            Resource resource = new FileSystemResource(fileStore.toPath(pathStr));
             return ResponseEntity.ok().headers(headers).body(resource);
         } catch (AccessDeniedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
@@ -96,7 +96,7 @@ public class DataController {
 
             HttpHeaders headers = getResponseHeaders(
                     pathStr, lastModified, eTag, MediaType.parseMediaType("video/mp4"), AVAILABLE_VIDEO_TYPES);
-            Resource resource = new PathResource(fileStore.toPath(pathStr));
+            Resource resource = new FileSystemResource(fileStore.toPath(pathStr));
             return ResponseEntity.ok().headers(headers).body(resource);
         } catch (AccessDeniedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
@@ -124,7 +124,7 @@ public class DataController {
             }
 
             HttpHeaders headers = getResponseHeaders(pathStr, lastModified, eTag, APPLICATION_OCTET_STREAM, null);
-            Resource resource = new PathResource(fileStore.toPath(pathStr));
+            Resource resource = new FileSystemResource(fileStore.toPath(pathStr));
             return ResponseEntity.ok().headers(headers).body(resource);
         } catch (AccessDeniedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());

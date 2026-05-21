@@ -21,15 +21,19 @@ public interface FileStore extends Closeable {
 
     long write(String path, InputStream stream, Long contentLength, Instant lastModified) throws IOException;
 
+    long write(String path, byte[] bytes, Instant lastModified) throws IOException;
+
     default long write(String path, InputStream stream) throws IOException {
         return write(path, stream, null, null);
     }
 
     default long write(String path, String content) throws IOException {
         byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
-        try (InputStream stream = new ByteArrayInputStream(bytes)) {
-            return write(path, stream, (long) bytes.length, Instant.now());
-        }
+        return write(path, bytes, Instant.now());
+    }
+
+    default long write(String path, byte[] bytes) throws IOException {
+        return write(path, bytes, Instant.now());
     }
 
     OutputStream newOutputStream(String path) throws IOException;

@@ -21,6 +21,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 
 @Getter
 @Slf4j
@@ -49,7 +50,8 @@ public class ChatSession {
             RetrievalAugmentor retriever,
             RetrievalAugmentor longTermMemoryRetriever,
             MemoryUsage memoryUsage,
-            List<Object> objectsWithTools) {
+            List<Object> objectsWithTools,
+            Map<ToolSpecification, ToolExecutor> tools) {
         aiServiceContext = AiServiceContext.create(ChatService.class);
         aiServiceContext.chatModel = chatModel;
         aiServiceContext.streamingChatModel = streamingChatModel;
@@ -67,11 +69,18 @@ public class ChatSession {
         if (CollectionUtils.isNotEmpty(objectsWithTools)) {
             this.tools(objectsWithTools);
         }
+        if (MapUtils.isNotEmpty(tools)) {
+            this.tools(tools);
+        }
     }
 
     @SuppressWarnings("unused")
     public void tools(List<Object> objectsWithTools) {
         aiServiceContext.toolService.tools(objectsWithTools);
+    }
+
+    public void tools(Map<ToolSpecification, ToolExecutor> tools) {
+        aiServiceContext.toolService.tools(tools);
     }
 
     public ChatModel getChatModel() {
