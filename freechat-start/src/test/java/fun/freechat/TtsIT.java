@@ -26,6 +26,10 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 
 class TtsIT extends AbstractIntegrationTest {
+    static {
+        AbstractIntegrationTest.enableTts = true;
+    }
+
     private static final String VOICE_FILENAME = "voice-for-ttsIT.mp3";
 
     @Value("${tts.baseUrl}")

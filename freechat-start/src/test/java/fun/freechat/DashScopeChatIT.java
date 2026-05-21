@@ -11,4 +11,9 @@ class DashScopeChatIT extends OpenAiChatIT {
     protected ModelProvider modelProvider() {
         return DASH_SCOPE;
     }
+
+    @Override
+    protected ModelProvider imageModelProvider() {
+        return DASH_SCOPE;
+    }
 }

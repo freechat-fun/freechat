@@ -4,6 +4,7 @@ import static dev.langchain4j.internal.ValidationUtils.ensureNotNull;
 import static fun.freechat.service.util.StoreUtils.PUBLIC_DIR;
 
 import dev.langchain4j.agent.tool.Tool;
+import dev.langchain4j.agent.tool.ToolMemoryId;
 import dev.langchain4j.agentic.AgenticServices;
 import dev.langchain4j.agentic.UntypedAgent;
 import dev.langchain4j.agentic.observability.AgentListener;
@@ -36,29 +37,13 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class AlbumTool {
     private static final String DESCRIPTION_EN = """
-            This tool is used to search for images related to a character. When you determine that the user wants to view photos of a character, you should call this tool to retrieve the character's images, then use the Markdown syntax ![img](image URL) to embed them at the appropriate location in your response. You may extract descriptions (or tags) of the desired images from the conversation and pass them to this tool to more accurately find the images the user wants to see, but this is optional.Notes:
-            - This tool returns the image's URL along with a description of the image, with field names url and description respectively, for example:
-            {
-              "url": "URL of the image",
-              "description": "Description of the image"
-            }
-            - You must wrap the result using the Markdown syntax ![img](image URL) and place it at the appropriate location in your response.
-            - The description field may not always contain content, but if provided, you can reference it to craft a more suitable response for the user.
-            - This tool may fail to find any images. In that case, the url field will be empty (null or empty string). You should ignore the tool's result and explain to the user that you currently have no photos to provide.""";
+            Retrieves real character pictures. Call this tool whenever the user wants to see a character's photo or image. Returns {url, description}.
+            NOTE: If a valid URL is returned, you must embed it in your final response using Markdown: ![img](url).
+            CRITICAL: Always use the returned URL—never fabricate, invent, or guess image URLs. To show an image, you MUST call this tool.""";
     private static final String DESCRIPTION_CN = """
-            这个工具用于查找与角色相关的图片。当你判断出用户想要查看角色的照片时，\\
-            应该调用此工具以获取角色的图片，使用 Markdown 标签 "![img](图片的 URL)" \\
-            并将其放置在响应内容的适当位置。你可以从对话中提取要查找的图片的描述（或标签），\\
-            并将它们传递给此工具，以更准确地找到用户想要查看的图片，但这不是必需的。
-            注意：
-            - 此工具返回图片的 URL，以及一段关于图片的描述，字段名分别为 url 和 description，如：
-            {
-                "url": "图片的 URL",
-                "description": "图片的描述"
-            }
-            - 你需要使用 Markdown 标签 "![img](图片的 URL)" 将其封装，并放置在响应内容的适当位置。
-            - description 不一定总是会有内容，但如果提供了，你可以参考 description 中的内容来生成更合适的回复展示给用户。
-            - 此工具可能找不到任何图片，在这种情况下，url 字段中的值将是一个空值。你需要忽略此工具的结果，并向用户解释你目前没有可以提供的照片""";
+            获取真实的角色的图片。当用户想要看某个角色的照片或图片时，必须调用此工具。返回格式为 {url, description}。
+            注意事项：如果返回了有效的 URL，您必须使用 Markdown 格式将其嵌入到最终响应中：![img](url)。
+            核心要求：绝对禁止伪造、捏造或猜测任何图片 URL。必须使用工具实际返回的真实 URL。""";
     private static final String IMAGE_EDIT_AGENT_DESCRIPTION_EN = "Generate a new image based on an input image.";
     private static final String IMAGE_EDIT_AGENT_DESCRIPTION_CN = "根据输入的图片生成一张新图片。";
     private static final String IMAGE_EDIT_AGENT_PROMPT_EN = """
@@ -108,7 +93,7 @@ public class AlbumTool {
     }
 
     @Tool
-    public ImageResult findAnImage(Object memoryId, String description) {
+    public ImageResult findAnImage(@ToolMemoryId Object memoryId, String description) {
         String originImageUrl = loadLocalImage(memoryId);
 
         ChatModel imageChatModel = Optional.ofNullable(memoryId)

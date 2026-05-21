@@ -46,6 +46,8 @@ public class AbstractIntegrationTest {
     static GenericContainer<?> tts;
     static TestOllamaContainer ollama;
 
+    static boolean enableTts = "1".equals(System.getenv("ENABLE_TTS"));
+
     static {
         redis = new GenericContainer<>(redisImageName())
                 .withExposedPorts(6379)
@@ -102,13 +104,16 @@ public class AbstractIntegrationTest {
         redis.start();
         mysql.start();
         milvus.start();
-        tts.start();
 
         registry.add("redis.datasource.url", () -> "redis://" + redis.getHost() + ":" + redis.getFirstMappedPort());
         registry.add("spring.datasource.url", mysql::getJdbcUrl);
         registry.add("embedding.milvus.url", milvus::getEndpoint);
-        registry.add("tts.baseUrl", () -> "http://" + tts.getHost() + ":" + tts.getFirstMappedPort());
         registry.add("disk.workdir", dataPath::toString);
+
+        if (enableTts) {
+            tts.start();
+            registry.add("tts.baseUrl", () -> "http://" + tts.getHost() + ":" + tts.getFirstMappedPort());
+        }
     }
 
     private static void deleteDirectory(Path path) throws IOException {

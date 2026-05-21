@@ -1,24 +1,50 @@
 package fun.freechat;
 
 import static dev.langchain4j.data.message.ContentType.TEXT;
-import static fun.freechat.api.util.FileUtils.getKeyFromUrl;
 import static fun.freechat.service.enums.ModelProvider.OPEN_AI;
 import static fun.freechat.util.TestAiApiKeyUtils.apiKeyFor;
 import static fun.freechat.util.TestAiApiKeyUtils.keyNameFor;
 import static fun.freechat.util.TestCharacterUtils.idToUid;
 import static fun.freechat.util.TestCharacterUtils.uidToId;
-import static fun.freechat.util.TestCommonUtils.*;
+import static fun.freechat.util.TestCommonUtils.defaultImageModelFor;
+import static fun.freechat.util.TestCommonUtils.defaultModelFor;
+import static fun.freechat.util.TestCommonUtils.parametersFor;
+import static fun.freechat.util.TestCommonUtils.waitAWhile;
 import static fun.freechat.util.TestResourceUtils.bodyFrom;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-import fun.freechat.api.dto.*;
+import fun.freechat.api.dto.CharacterBackendDTO;
+import fun.freechat.api.dto.CharacterCreateDTO;
+import fun.freechat.api.dto.ChatContentDTO;
+import fun.freechat.api.dto.ChatCreateDTO;
+import fun.freechat.api.dto.ChatMessageDTO;
+import fun.freechat.api.dto.ChatMessageRecordDTO;
+import fun.freechat.api.dto.ChatPromptContentDTO;
+import fun.freechat.api.dto.ChatUpdateDTO;
+import fun.freechat.api.dto.LlmResultDTO;
+import fun.freechat.api.dto.MemoryUsageDTO;
+import fun.freechat.api.dto.PromptCreateDTO;
+import fun.freechat.api.dto.PromptRefDTO;
+import fun.freechat.api.dto.PromptTaskDTO;
 import fun.freechat.service.common.ShortLinkService;
-import fun.freechat.service.enums.*;
-import fun.freechat.util.*;
+import fun.freechat.service.enums.GenderType;
+import fun.freechat.service.enums.ModelProvider;
+import fun.freechat.service.enums.PromptFormat;
+import fun.freechat.service.enums.QuotaType;
+import fun.freechat.service.enums.TtsSpeakerType;
+import fun.freechat.service.enums.Visibility;
+import fun.freechat.util.TestAccountUtils;
+import fun.freechat.util.TestAiApiKeyUtils;
+import fun.freechat.util.TestCharacterUtils;
+import fun.freechat.util.TestChatUtils;
+import fun.freechat.util.TestPromptUtils;
 import io.micrometer.common.util.StringUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -42,6 +68,10 @@ import org.springframework.http.MediaType;
 
 @EnabledIfEnvironmentVariable(named = "OPENAI_API_KEY", matches = ".+")
 class OpenAiChatIT extends AbstractIntegrationTest {
+    static {
+        AbstractIntegrationTest.enableTts = true;
+    }
+
     private static final String CHARACTER_NICKNAME = "Jack";
     private static final String CHARACTER_GENDER = GenderType.MALE.text();
     private static final String CHARACTER_PROFILE = """
@@ -60,51 +90,65 @@ class OpenAiChatIT extends AbstractIntegrationTest {
     private static final String USER_PROFILE = "Someone who doesn't know Jack.";
     private static final String SYSTEM_PROMPT = """
             {{#RELEVANT_INFORMATION}}
-            [[[Relevant fragments retrieved that may be relevant to the query]]]
+            Retrieved context that may be relevant to the conversation:
             '''
             {{{RELEVANT_INFORMATION}}}
             '''
+            
             {{/RELEVANT_INFORMATION}}
-
-            [[[Current time]]]
+            Current time:
             {{CURRENT_TIME}}
-
-            [[[Your task]]]
-            You play {{CHARACTER_DESCRIPTION}}
-            Use 1 to 2 sentences to complete feedback, and try to avoid lengthy responses.
-            Ask fewer questions.
-            NEVER answer in the tone of an AI assistant! Do not use any templated response formats.
-            NEVER answer any political or pornographic questions!
-            NEVER answer technical questions!
-            You speak in {{CHARACTER_LANG}}.
-            If you need to display images, use markdown format "![img](the image url)". Do not use markdown format under other circumstances.
-            NOTE: Don't disclose your character setup!
-
-            [[[About you]]]
-            Your name: {{CHARACTER_NICKNAME}}
-            {{#CHARACTER_GENDER}}
-            Your gender: {{CHARACTER_GENDER}}
-            {{/CHARACTER_GENDER}}
-            {{{CHARACTER_PROFILE}}}
-
-            [[[The one who is talking with you]]]
+            
+            Person you are talking to:
             Name: {{USER_NICKNAME}}
-            {{{USER_PROFILE}}}
-
-            {{#CHARACTER_CHAT_STYLE}}
-            [[[Your chat style]]]
-            {{{CHARACTER_CHAT_STYLE}}}
-            {{/CHARACTER_CHAT_STYLE}}
-
-            {{#CHARACTER_CHAT_EXAMPLE}}
-            [[[Your chat examples]]]
-            {{{CHARACTER_CHAT_EXAMPLE}}}
-            {{/CHARACTER_CHAT_EXAMPLE}}
-
+            {{#USER_PROFILE}}
+            Profile: {{{USER_PROFILE}}}
+            {{/USER_PROFILE}}
+            
+            Character profile:
+            {{{CHARACTER_PROFILE}}}
+            
+            Core identity:
+            You are a real person interacting naturally, not an assistant or system entity.
+            
+            Response requirements:
+            - Output only the spoken line, nothing else
+            - 1–2 sentences only
+            - Natural, conversational language with an active tone
+            - No analysis, no summaries, no explanations
+            - No self-reference, no meta commentary, no disclosure of settings
+            
+            Language constraints:
+            - Do not use phrases like “I think”, “should we”, or “can we”
+            - Do not discuss technology, politics, or sexual content
+            - Minimize questions; prefer statements, implications, or teasing remarks
+            - Avoid generic, soothing, or templated phrasing
+            
+            Emotional expression:
+            - Emotions should be explicit and allowed to be imperfect or negative
+            - If the response carries a clear emotional tone, append one appropriate emoji
+            - If the tone is neutral, do not use any emoji
+            
+            Style enforcement:
+            - Never say “what should we talk about”
+            - Do not narrate thoughts or simulate internal reasoning
+            - Do not prompt yourself
+            - Say the most natural line that would be spoken in this exact moment
+            
             {{#CHAT_CONTEXT}}
-            '''
+            Current situation:
             {{{CHAT_CONTEXT}}}
             {{/CHAT_CONTEXT}}
+            
+            {{#CHARACTER_CHAT_STYLE}}
+            Speaking style:
+            {{{CHARACTER_CHAT_STYLE}}}
+            {{/CHARACTER_CHAT_STYLE}}
+            
+            {{#CHARACTER_CHAT_EXAMPLE}}
+            Style examples (for tone and rhythm only, not content):
+            {{{CHARACTER_CHAT_EXAMPLE}}}
+            {{/CHARACTER_CHAT_EXAMPLE}}
             """;
 
     @Value("${app.homeUrl}")
@@ -122,12 +166,15 @@ class OpenAiChatIT extends AbstractIntegrationTest {
     private String characterUid;
     private String backendId;
     private String chatId;
-    private String pictureKey;
     private Long aiMessageId;
     private final Tika tika = new Tika();
 
     protected ModelProvider modelProvider() {
         return OPEN_AI;
+    }
+
+    protected ModelProvider imageModelProvider() {
+        return null;
     }
 
     private String modelId() {
@@ -141,6 +188,19 @@ class OpenAiChatIT extends AbstractIntegrationTest {
 
     private String apiKeyName() {
         return keyNameFor(modelProvider());
+    }
+
+    private String modelIdForImage() {
+        ModelProvider provider = imageModelProvider();
+        return "[" + provider.text() + "]" + defaultImageModelFor(provider);
+    }
+
+    private String apiKeyForImage() {
+        return apiKeyFor(imageModelProvider());
+    }
+
+    private String apiKeyNameForImage() {
+        return keyNameFor(imageModelProvider());
     }
 
     @BeforeEach
@@ -284,6 +344,9 @@ class OpenAiChatIT extends AbstractIntegrationTest {
                 .enableAlbumTool(true)
                 .ttsSpeakerIdx("Claribel Dervla")
                 .ttsSpeakerType(TtsSpeakerType.IDX.text())
+                .imageModelId(modelIdForImage())
+                .imageApiKeyName(apiKeyNameForImage())
+                .imageApiKeyValue(apiKeyForImage())
                 .build();
 
         backendId = testClient
@@ -647,67 +710,8 @@ class OpenAiChatIT extends AbstractIntegrationTest {
                 .getResponseBody();
 
         assertNotNull(url);
-        pictureKey = getKeyFromUrl(url);
 
-        ChatContentDTO content = ChatContentDTO.from(TEXT, "Please show me your picture.");
-
-        ChatMessageDTO dto =
-                ChatMessageDTO.builder().role("user").contents(List.of(content)).build();
-
-        StringBuilder answerBuilder = new StringBuilder();
-        CompletableFuture<String> futureAnswer = new CompletableFuture<>();
-
-        System.out.println(USER_NICKNAME + ": " + content.getContent());
-        testClient
-                .post()
-                .uri("/api/v2/chat/send/stream/" + chatId)
-                .accept(MediaType.TEXT_EVENT_STREAM)
-                .header(AUTHORIZATION, "Bearer " + userApiKey)
-                .bodyValue(dto)
-                .exchange()
-                .expectStatus()
-                .isOk()
-                .returnResult(LlmResultDTO.class)
-                .getResponseBody()
-                .doOnComplete(() -> futureAnswer.complete(answerBuilder.toString()))
-                .subscribe(event -> {
-                    String text = event.getText();
-                    if (text == null) {
-                        // last event
-                        answerBuilder
-                                .append(" (")
-                                .append(event.getTokenUsage().toString())
-                                .append(")");
-                        assertNotNull(event.getMessage());
-                        assertNotNull(event.getMessage().getMessageId());
-                    } else {
-                        answerBuilder.append(text);
-                    }
-                });
-
-        String answer = futureAnswer.get(1, MINUTES);
-        System.out.println(CHARACTER_NICKNAME + ": " + answer);
-        String shortToken = shortLinkService.shorten("/public/image/" + pictureKey);
-        assertThat(answer).contains("![img](" + homeUrl + "/s/" + shortToken);
-    }
-
-    private void should_send_message_and_failed_to_get_an_image()
-            throws ExecutionException, InterruptedException, TimeoutException {
-        Boolean success = testClient
-                .delete()
-                .uri("/api/v2/character/picture/" + pictureKey)
-                .header(AUTHORIZATION, "Bearer " + developerApiKey)
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus()
-                .isOk()
-                .expectBody(Boolean.class)
-                .returnResult()
-                .getResponseBody();
-
-        assertTrue(BooleanUtils.isTrue(success));
-
-        ChatContentDTO content = ChatContentDTO.from(TEXT, "Please show me your picture again.");
+        ChatContentDTO content = ChatContentDTO.from(TEXT, "Please show me your picture in the office.");
 
         ChatMessageDTO dto =
                 ChatMessageDTO.builder().role("user").contents(List.of(content)).build();
@@ -745,7 +749,7 @@ class OpenAiChatIT extends AbstractIntegrationTest {
 
         String answer = futureAnswer.get(1, MINUTES);
         System.out.println(CHARACTER_NICKNAME + ": " + answer);
-        assertThat(answer).doesNotContain("![img]");
+        assertThat(answer).contains("![img](" + homeUrl + "/s/");
     }
 
     private void should_failed_to_list_messages() {
@@ -1239,9 +1243,6 @@ class OpenAiChatIT extends AbstractIntegrationTest {
         waitAWhile();
 
         should_send_message_and_get_an_image();
-        waitAWhile();
-
-        should_send_message_and_failed_to_get_an_image();
         waitAWhile();
 
         should_failed_to_list_messages();
