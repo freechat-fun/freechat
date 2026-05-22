@@ -23,17 +23,14 @@ public class ErrorController implements org.springframework.boot.webmvc.error.Er
                     .body(buildApiError(statusCode, originalUri, request));
         }
 
-        return ResponseEntity.status(HttpStatus.FOUND)
-                .location(URI.create("/"))
-                .build();
+        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/")).build();
     }
 
     // ---- 工具方法 ----
 
     private int extractStatus(HttpServletRequest req) {
         Object s = req.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
-        return s != null ? Integer.parseInt(s.toString())
-                : HttpStatus.INTERNAL_SERVER_ERROR.value();
+        return s != null ? Integer.parseInt(s.toString()) : HttpStatus.INTERNAL_SERVER_ERROR.value();
     }
 
     private boolean isApiRequest(String originalUri, HttpServletRequest req) {
@@ -42,13 +39,16 @@ public class ErrorController implements org.springframework.boot.webmvc.error.Er
         return accept != null && accept.contains("application/json");
     }
 
-    private Map<String, Object> buildApiError(
-            int code, String originalUri, HttpServletRequest req) {
+    private Map<String, Object> buildApiError(int code, String originalUri, HttpServletRequest req) {
         String msg = (String) req.getAttribute(RequestDispatcher.ERROR_MESSAGE);
         return Map.of(
-                "code", code,
-                "error", HttpStatus.valueOf(code).getReasonPhrase(),
-                "message", msg != null ? msg : "Request failed",
-                "path", originalUri);
+                "code",
+                code,
+                "error",
+                HttpStatus.valueOf(code).getReasonPhrase(),
+                "message",
+                msg != null ? msg : "Request failed",
+                "path",
+                originalUri);
     }
 }

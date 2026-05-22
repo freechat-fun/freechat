@@ -976,11 +976,11 @@ public class CharacterServiceImpl implements CharacterService {
             LocalDateTime now = LocalDateTime.now();
             String plainModerationApiKey = characterBackend.getModerationApiKeyValue();
             String plainImageApiKey = characterBackend.getImageApiKeyValue();
-            rows = characterBackendMapper.updateByPrimaryKeySelective(
-                    characterBackend.withGmtModified(now)
-                            .withCharacterUid(null)
-                            .withModerationApiKeyValue(encryptionService.encrypt(plainModerationApiKey))
-                            .withImageApiKeyValue(encryptionService.encrypt(plainImageApiKey)));
+            rows = characterBackendMapper.updateByPrimaryKeySelective(characterBackend
+                    .withGmtModified(now)
+                    .withCharacterUid(null)
+                    .withModerationApiKeyValue(encryptionService.encrypt(plainModerationApiKey))
+                    .withImageApiKeyValue(encryptionService.encrypt(plainImageApiKey)));
 
             if (rows > 0) {
                 ensureDefaultBackend(characterBackend, now);
@@ -1028,7 +1028,8 @@ public class CharacterServiceImpl implements CharacterService {
     @Override
     @LongPeriodCache(keyBy = BACKEND_CACHE_KEY_SPEL_PREFIX + "#p0")
     public CharacterBackend getBackend(String characterBackendId) {
-        return characterBackendMapper.selectByPrimaryKey(characterBackendId)
+        return characterBackendMapper
+                .selectByPrimaryKey(characterBackendId)
                 .map(characterBackend -> characterBackend.withModerationApiKeyValue(
                         encryptionService.decrypt(characterBackend.getModerationApiKeyValue())))
                 .map(characterBackend -> characterBackend.withImageApiKeyValue(
@@ -1050,8 +1051,8 @@ public class CharacterServiceImpl implements CharacterService {
 
     @Override
     public List<CharacterBackend> listBackends(String characterUid) {
-        return characterBackendMapper.select(
-                c -> c.where(CharacterBackendDynamicSqlSupport.characterUid, isEqualTo(characterUid)))
+        return characterBackendMapper
+                .select(c -> c.where(CharacterBackendDynamicSqlSupport.characterUid, isEqualTo(characterUid)))
                 .stream()
                 .map(characterBackend -> characterBackend.withModerationApiKeyValue(
                         encryptionService.decrypt(characterBackend.getModerationApiKeyValue())))

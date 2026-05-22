@@ -112,8 +112,7 @@ public class AlbumTool {
         UntypedAgent imageCreator;
         Map<String, Object> input;
         if (originImageUrl == null) {
-            ImageGenerateAgent generateAgent = AgenticServices
-                    .agentBuilder(ImageGenerateAgent.class)
+            ImageGenerateAgent generateAgent = AgenticServices.agentBuilder(ImageGenerateAgent.class)
                     .description(imageGenerateAgentDescription())
                     .chatModel(imageChatModel)
                     .outputKey("generatedImage")
@@ -133,20 +132,24 @@ public class AlbumTool {
                     })
                     .build();
 
-            imageCreator = AgenticServices
-                    .sequenceBuilder()
+            imageCreator = AgenticServices.sequenceBuilder()
                     .subAgents(generateAgent, resultParser)
                     .outputKey("imageResult")
                     .build();
 
-            input = Map.of("chatId", ChatService.asChatId(memoryId),
-                    "homeUrl", homeUrl,
-                    "shortLinkService", shortLinkService,
-                    "prompt", imageGenerateAgentPrompt(),
-                    "description", description);
+            input = Map.of(
+                    "chatId",
+                    ChatService.asChatId(memoryId),
+                    "homeUrl",
+                    homeUrl,
+                    "shortLinkService",
+                    shortLinkService,
+                    "prompt",
+                    imageGenerateAgentPrompt(),
+                    "description",
+                    description);
         } else {
-            ImageEditAgent editAgent = AgenticServices
-                    .agentBuilder(ImageEditAgent.class)
+            ImageEditAgent editAgent = AgenticServices.agentBuilder(ImageEditAgent.class)
                     .description(imageEditAgentDescription())
                     .chatModel(imageChatModel)
                     .outputKey("generatedImage")
@@ -166,18 +169,24 @@ public class AlbumTool {
                     })
                     .build();
 
-            imageCreator = AgenticServices
-                    .sequenceBuilder()
+            imageCreator = AgenticServices.sequenceBuilder()
                     .subAgents(editAgent, resultParser)
                     .outputKey("imageResult")
                     .build();
 
-            input = Map.of("chatId", ChatService.asChatId(memoryId),
-                    "homeUrl", homeUrl,
-                    "shortLinkService", shortLinkService,
-                    "prompt", imageEditAgentPrompt(),
-                    "originImage", ImageContent.from(originImageUrl, ImageContent.DetailLevel.HIGH),
-                    "description", description);
+            input = Map.of(
+                    "chatId",
+                    ChatService.asChatId(memoryId),
+                    "homeUrl",
+                    homeUrl,
+                    "shortLinkService",
+                    shortLinkService,
+                    "prompt",
+                    imageEditAgentPrompt(),
+                    "originImage",
+                    ImageContent.from(originImageUrl, ImageContent.DetailLevel.HIGH),
+                    "description",
+                    description);
         }
 
         return (ImageResult) imageCreator.invoke(input);
