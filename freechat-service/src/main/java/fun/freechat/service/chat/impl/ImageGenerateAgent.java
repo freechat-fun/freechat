@@ -8,7 +8,5 @@ import dev.langchain4j.service.V;
 
 public interface ImageGenerateAgent {
     @Agent
-    Result<AiMessage> generate(
-            @V("prompt") @UserMessage String prompt,
-            @V("description") String description);
+    Result<AiMessage> generate(@V("prompt") @UserMessage String prompt, @V("description") String description);
 }

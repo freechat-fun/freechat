@@ -49,10 +49,7 @@ public class ImageResultParser {
     }
 
     private static String transferUrl(
-            String temporaryUrl,
-            String chatId,
-            String homeUrl,
-            ShortLinkService shortLinkService) {
+            String temporaryUrl, String chatId, String homeUrl, ShortLinkService shortLinkService) {
         if (StringUtils.isBlank(temporaryUrl)) {
             return temporaryUrl;
         }

@@ -13,4 +13,3 @@ public class ImageResult {
     private String url;
     private String description;
 }
-
