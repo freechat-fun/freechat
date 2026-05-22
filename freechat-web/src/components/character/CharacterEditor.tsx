@@ -382,8 +382,13 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
     request.longTermMemoryWindowSize = backend.longTermMemoryWindowSize;
     request.proactiveChatWaitingTime = backend.proactiveChatWaitingTime;
     request.moderationApiKeyName = backend.moderationApiKeyName;
+    request.moderationApiKeyValue = backend.moderationApiKeyValue;
     request.moderationModelId = backend.moderationModelId;
     request.moderationParams = backend.moderationParams;
+    request.imageApiKeyName = backend.imageApiKeyName;
+    request.imageApiKeyValue = backend.imageApiKeyValue;
+    request.imageModelId = backend.imageModelId;
+    request.imageParams = backend.imageParams;
     request.quotaType = backend.quotaType;
     request.initQuota = backend.initQuota;
     request.enableAlbumTool = backend.enableAlbumTool;
