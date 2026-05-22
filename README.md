@@ -18,7 +18,7 @@ It is recommended to run [Ollama](https://ollama.com/) + FreeChat locally to tes
 - Supports setting **RAG** (Retrieval Augmented Generation) for characters.
 - Supports **long-term memory, preset memory** for characters.
 - Supports characters evoking **proactive chat**.
-- Supports characters replies with **mixed text and image information**.
+- Supports **automatic image generation** for characters and replies with mixed text and image messages.
 - Supports setting **quota limits** for characters.
 - Supports characters **importing and exporting**.
 - Supports **character-to-character chats**.
