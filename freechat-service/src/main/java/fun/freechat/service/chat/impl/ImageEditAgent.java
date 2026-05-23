@@ -12,5 +12,5 @@ public interface ImageEditAgent {
     Result<AiMessage> edit(
             @V("prompt") @UserMessage String prompt,
             @V("description") String description,
-            @V("originImage") ImageContent image);
+            @V("originImage") @UserMessage ImageContent image);
 }
