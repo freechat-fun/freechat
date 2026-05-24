@@ -126,7 +126,10 @@ public class AlbumTool {
                         public void afterAgentInvocation(AgentResponse response) {
                             if (response.output() instanceof Result<?> result
                                     && result.content() instanceof AiMessage message) {
-                                log.info("[Output Description]: {}", message.text());
+                                log.info(
+                                        "[Output Description {}]: {}",
+                                        result.finalResponse().metadata().id(),
+                                        message.text());
                             }
                         }
                     })
@@ -163,7 +166,10 @@ public class AlbumTool {
                         public void afterAgentInvocation(AgentResponse response) {
                             if (response.output() instanceof Result<?> result
                                     && result.content() instanceof AiMessage message) {
-                                log.info("[Output Description]: {}", message.text());
+                                log.info(
+                                        "[Output Description {}]: {}",
+                                        result.finalResponse().metadata().id(),
+                                        message.text());
                             }
                         }
                     })
