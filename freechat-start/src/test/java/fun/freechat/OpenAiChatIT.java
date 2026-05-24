@@ -695,21 +695,21 @@ class OpenAiChatIT extends AbstractIntegrationTest {
 
     private void should_send_message_and_get_an_image()
             throws ExecutionException, InterruptedException, TimeoutException {
-//        String url = testClient
-//                .post()
-//                .uri("/api/v2/character/picture/" + characterUid)
-//                .header(AUTHORIZATION, "Bearer " + developerApiKey)
-//                .contentType(MediaType.MULTIPART_FORM_DATA)
-//                .accept(MediaType.TEXT_PLAIN)
-//                .bodyValue(bodyFrom("/freechat_light.png"))
-//                .exchange()
-//                .expectStatus()
-//                .isOk()
-//                .expectBody(String.class)
-//                .returnResult()
-//                .getResponseBody();
-//
-//        assertNotNull(url);
+        //        String url = testClient
+        //                .post()
+        //                .uri("/api/v2/character/picture/" + characterUid)
+        //                .header(AUTHORIZATION, "Bearer " + developerApiKey)
+        //                .contentType(MediaType.MULTIPART_FORM_DATA)
+        //                .accept(MediaType.TEXT_PLAIN)
+        //                .bodyValue(bodyFrom("/freechat_light.png"))
+        //                .exchange()
+        //                .expectStatus()
+        //                .isOk()
+        //                .expectBody(String.class)
+        //                .returnResult()
+        //                .getResponseBody();
+        //
+        //        assertNotNull(url);
 
         ChatContentDTO content = ChatContentDTO.from(TEXT, "Please show me your picture in the office.");
 
