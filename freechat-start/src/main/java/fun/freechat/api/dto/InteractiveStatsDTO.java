@@ -3,7 +3,7 @@ package fun.freechat.api.dto;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.InteractiveStats;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.*;
 
 @Schema(description = "Interactive statistics information")
@@ -13,10 +13,10 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class InteractiveStatsDTO extends TraceableDTO {
     @Schema(description = "Creation time")
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
 
     @Schema(description = "Modification time")
-    private Date gmtModified;
+    private LocalDateTime gmtModified;
 
     @Schema(description = "Resource type")
     private String referType;

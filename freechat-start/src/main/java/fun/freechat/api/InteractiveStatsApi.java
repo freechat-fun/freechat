@@ -190,8 +190,7 @@ public class InteractiveStatsApi {
                 dtoList.add(dto);
             }
         }
-        dtoList.sort((r1, r2) ->
-                (int) (r2.getGmtModified().getTime() - r1.getGmtModified().getTime()));
+        dtoList.sort((r1, r2) -> r2.getGmtModified().compareTo(r1.getGmtModified()));
         return dtoList;
     }
 
@@ -236,8 +235,7 @@ public class InteractiveStatsApi {
                 dtoList.add(dto);
             }
         }
-        dtoList.sort((r1, r2) ->
-                (int) (r2.getGmtModified().getTime() - r1.getGmtModified().getTime()));
+        dtoList.sort((r1, r2) -> r2.getGmtModified().compareTo(r1.getGmtModified()));
         return dtoList;
     }
 
@@ -282,8 +280,7 @@ public class InteractiveStatsApi {
                 dtoList.add(dto);
             }
         }
-        dtoList.sort((r1, r2) ->
-                (int) (r2.getGmtModified().getTime() - r1.getGmtModified().getTime()));
+        dtoList.sort((r1, r2) -> r2.getGmtModified().compareTo(r1.getGmtModified()));
         return dtoList;
     }
 
@@ -328,8 +325,7 @@ public class InteractiveStatsApi {
                 dtoList.add(dto);
             }
         }
-        dtoList.sort((r1, r2) ->
-                (int) (r2.getGmtModified().getTime() - r1.getGmtModified().getTime()));
+        dtoList.sort((r1, r2) -> r2.getGmtModified().compareTo(r1.getGmtModified()));
         return dtoList;
     }
 

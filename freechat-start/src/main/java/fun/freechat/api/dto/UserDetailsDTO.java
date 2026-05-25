@@ -4,7 +4,7 @@ import fun.freechat.api.util.AccountUtils;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.User;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.BooleanUtils;
@@ -24,16 +24,16 @@ public class UserDetailsDTO extends TraceableDTO {
     private String website;
     private String email;
     private String gender;
-    private Date birthdate;
+    private LocalDateTime birthdate;
     private String zoneinfo;
     private String locale;
     private String phoneNumber;
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
     private String platform;
     private Boolean enabled;
     private Boolean locked;
-    private Date expiresAt;
-    private Date passwordExpiresAt;
+    private LocalDateTime expiresAt;
+    private LocalDateTime passwordExpiresAt;
     private String address;
 
     public static UserDetailsDTO from(User user) {

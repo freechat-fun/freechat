@@ -4,7 +4,7 @@ import fun.freechat.api.util.AccountUtils;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.service.ai.MaskedAiApiKey;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,13 +16,13 @@ public class AiApiKeyInfoDTO extends TraceableDTO {
     private Long id;
 
     @Schema(description = "Creation time")
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
 
     @Schema(description = "Modification time")
-    private Date gmtModified;
+    private LocalDateTime gmtModified;
 
     @Schema(description = "Last use time")
-    private Date gmtUsed;
+    private LocalDateTime gmtUsed;
 
     @Schema(description = "Credential name")
     private String name;

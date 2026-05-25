@@ -4,7 +4,7 @@ import fun.freechat.api.util.AccountUtils;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.service.account.MaskedApiToken;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,19 +16,19 @@ public class ApiTokenInfoDTO extends TraceableDTO {
     private Long id;
 
     @Schema(description = "Creation time")
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
 
     @Schema(description = "Modification time")
-    private Date gmtModified;
+    private LocalDateTime gmtModified;
 
     @Schema(description = "Token type")
     private String type;
 
     @Schema(description = "Token issuance time")
-    private Date issuedAt;
+    private LocalDateTime issuedAt;
 
     @Schema(description = "Token expiration time")
-    private Date expiresAt;
+    private LocalDateTime expiresAt;
 
     @Schema(description = "Token content")
     private String token;

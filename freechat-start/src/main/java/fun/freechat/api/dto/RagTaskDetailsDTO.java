@@ -6,7 +6,7 @@ import fun.freechat.api.util.FileUtils;
 import fun.freechat.model.RagTask;
 import fun.freechat.service.enums.SourceType;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
@@ -20,16 +20,16 @@ public class RagTaskDetailsDTO extends TraceableDTO {
     private Long id;
 
     @Schema(description = "Creation time")
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
 
     @Schema(description = "Modification time")
-    private Date gmtModified;
+    private LocalDateTime gmtModified;
 
     @Schema(description = "Task start execution time")
-    private Date gmtStart;
+    private LocalDateTime gmtStart;
 
     @Schema(description = "Task end execution time")
-    private Date gmtEnd;
+    private LocalDateTime gmtEnd;
 
     @Schema(description = "Character identifier")
     private String characterUid;

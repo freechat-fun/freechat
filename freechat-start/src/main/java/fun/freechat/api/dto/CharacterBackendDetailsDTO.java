@@ -5,7 +5,7 @@ import static fun.freechat.util.ByteUtils.isTrue;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.CharacterBackend;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -17,10 +17,10 @@ public class CharacterBackendDetailsDTO extends TraceableDTO {
     private String backendId;
 
     @Schema(description = "Creation time")
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
 
     @Schema(description = "Modification time")
-    private Date gmtModified;
+    private LocalDateTime gmtModified;
 
     @Schema(description = "Character immutable identifier")
     private String characterUid;
