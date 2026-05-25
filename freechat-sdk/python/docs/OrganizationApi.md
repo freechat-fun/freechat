@@ -176,7 +176,9 @@ Name | Type | Description  | Notes
 
 Get Superior Relationship
 
-Get the superior relationship of the subordinate account, including direct and indirect owners, default does not include virtual reported owners, so there will be no circular relationship.<br/> By specifying all=1, virtual reported owners can be returned, in this case, there may be a circular relationship. 
+Get the superior relationship of the subordinate account, including direct and indirect owners, default does not include virtual reported owners, so there will be no circular relationship.<br/>
+By specifying all=1, virtual reported owners can be returned, in this case, there may be a circular relationship.
+
 
 ### Example
 

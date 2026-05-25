@@ -18,16 +18,16 @@ info:
     \ SDKs. These methods enable easy construction of systems for end-users.\n- Supports\
     \ setting **RAG** (Retrieval Augmented Generation) for characters.\n- Supports\
     \ **long-term memory, preset memory** for characters.\n- Supports characters evoking\
-    \ **proactive chat**.\n- Supports characters replies with **mixed text and image\
-    \ information**.\n- Supports setting **quota limits** for characters.\n- Supports\
-    \ characters **importing and exporting**.\n- Supports **character-to-character\
-    \ chats**.\n- Supports **character voices**.\n- Supports individual **debugging\
-    \ and sharing prompts**.\n\n## Snapshots\n### On PC\n#### Home Page\n![Home Page\
-    \ Snapshot](https://freechat.fun/img/snapshot_w1.jpg)\n#### Development View\n\
-    ![Development View Snapshot](https://freechat.fun/img/snapshot_w2.jpg)\n#### Chat\
-    \ View\n![Chat View Snapshot](https://freechat.fun/img/snapshot_w3.jpg)\n\n###\
-    \ On Mobile\n![Chat Snapshot 1](https://freechat.fun/img/snapshot_m1.jpg) ![Chat\
-    \ Snapshot 2](https://freechat.fun/img/snapshot_m2.jpg)<br />\n![Chat Snapshot\
+    \ **proactive chat**.\n- Supports **automatic image generation** for characters\
+    \ and replies with mixed text and image messages.\n- Supports setting **quota\
+    \ limits** for characters.\n- Supports characters **importing and exporting**.\n\
+    - Supports **character-to-character chats**.\n- Supports **character voices**.\n\
+    - Supports individual **debugging and sharing prompts**.\n\n## Snapshots\n###\
+    \ On PC\n#### Home Page\n![Home Page Snapshot](https://freechat.fun/img/snapshot_w1.jpg)\n\
+    #### Development View\n![Development View Snapshot](https://freechat.fun/img/snapshot_w2.jpg)\n\
+    #### Chat View\n![Chat View Snapshot](https://freechat.fun/img/snapshot_w3.jpg)\n\
+    \n### On Mobile\n![Chat Snapshot 1](https://freechat.fun/img/snapshot_m1.jpg)\
+    \ ![Chat Snapshot 2](https://freechat.fun/img/snapshot_m2.jpg)<br />\n![Chat Snapshot\
     \ 3](https://freechat.fun/img/snapshot_m3.jpg) ![Chat Snapshot 4](https://freechat.fun/img/snapshot_m4.jpg)\n\
     \n## Character Design\n```mermaid\nflowchart TD\n    A(Character) --> B(Profile)\n\
     \    A --> C(Knowledge/RAG)\n    A --> D(Album)\n    A --> E(Backend-1)\n    A\
@@ -136,7 +136,7 @@ info:
     \ your model, please contact us. We look forward to AI technology helping people\
     \ create their own \"soul mates\" in the future.\n"
   title: FreeChat OpenAPI Definition
-  version: 2.6.0
+  version: 2.7.0
 servers:
 - url: http://127.0.0.1:8080/
 security:
@@ -164,7 +164,9 @@ paths:
         name: taskId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -189,7 +191,9 @@ paths:
         name: taskId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -197,7 +201,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RagTaskDetailsDTO'
+                $ref: "#/components/schemas/RagTaskDetailsDTO"
           description: OK
       summary: Get RAG Task
       tags:
@@ -214,14 +218,16 @@ paths:
         name: taskId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RagTaskDTO'
+              $ref: "#/components/schemas/RagTaskDTO"
         description: The prompt task info to be updated
         required: true
       responses:
@@ -248,7 +254,9 @@ paths:
         name: promptId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -274,7 +282,9 @@ paths:
         name: promptId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       requestBody:
@@ -295,7 +305,7 @@ paths:
               - "123"
               - "456"
             schema:
-              $ref: '#/components/schemas/PromptUpdateDTO'
+              $ref: "#/components/schemas/PromptUpdateDTO"
         description: The prompt information to be updated
         required: true
       responses:
@@ -355,7 +365,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PromptTaskDetailsDTO'
+                $ref: "#/components/schemas/PromptTaskDetailsDTO"
           description: OK
       summary: Get Prompt Task
       tags:
@@ -379,7 +389,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PromptTaskDTO'
+              $ref: "#/components/schemas/PromptTaskDTO"
         description: The prompt task info to be updated
         required: true
       responses:
@@ -406,7 +416,9 @@ paths:
         name: pluginId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -432,7 +444,9 @@ paths:
         name: pluginId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       requestBody:
@@ -446,7 +460,7 @@ paths:
               - demo2
               - business
             schema:
-              $ref: '#/components/schemas/PluginUpdateDTO'
+              $ref: "#/components/schemas/PluginUpdateDTO"
         description: The plugin information to be updated
         required: true
       responses:
@@ -478,7 +492,9 @@ paths:
         name: pluginId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -541,6 +557,7 @@ paths:
         name: all
         required: false
         schema:
+          nullable: true
           type: string
         style: form
       responses:
@@ -620,6 +637,7 @@ paths:
         name: all
         required: false
         schema:
+          nullable: true
           type: string
         style: form
       responses:
@@ -786,7 +804,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ChatUpdateDTO'
+              $ref: "#/components/schemas/ChatUpdateDTO"
         description: The chat session information to be updated
         required: true
       responses:
@@ -813,7 +831,9 @@ paths:
         name: characterId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -839,7 +859,9 @@ paths:
         name: characterId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       requestBody:
@@ -856,7 +878,7 @@ paths:
               - demo2
               - robot
             schema:
-              $ref: '#/components/schemas/CharacterUpdateDTO'
+              $ref: "#/components/schemas/CharacterUpdateDTO"
         description: The character information to be updated
         required: true
       responses:
@@ -915,7 +937,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CharacterBackendDTO'
+              $ref: "#/components/schemas/CharacterBackendDTO"
         description: The character backend configuration to be updated
         required: true
       responses:
@@ -968,7 +990,9 @@ paths:
         name: id
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -994,7 +1018,9 @@ paths:
         name: id
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -1020,7 +1046,9 @@ paths:
         name: agentId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -1046,7 +1074,9 @@ paths:
         name: agentId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       requestBody:
@@ -1067,7 +1097,7 @@ paths:
               - "123"
               - "456"
             schema:
-              $ref: '#/components/schemas/AgentUpdateDTO'
+              $ref: "#/components/schemas/AgentUpdateDTO"
         description: Agent information to be updated
         required: true
       responses:
@@ -1095,7 +1125,7 @@ paths:
               password: jack
               nickname: Jack（测试账号）
             schema:
-              $ref: '#/components/schemas/UserFullDetailsDTO'
+              $ref: "#/components/schemas/UserFullDetailsDTO"
         description: User information
         required: true
       responses:
@@ -1118,7 +1148,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserFullDetailsDTO'
+              $ref: "#/components/schemas/UserFullDetailsDTO"
         description: User information
         required: true
       responses:
@@ -1312,7 +1342,9 @@ paths:
         name: id
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -1337,7 +1369,9 @@ paths:
         name: id
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -1362,7 +1396,9 @@ paths:
         name: id
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -1388,7 +1424,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserDetailsDTO'
+                $ref: "#/components/schemas/UserDetailsDTO"
           description: OK
       summary: Get User Details
       tags:
@@ -1402,7 +1438,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserDetailsDTO'
+              $ref: "#/components/schemas/UserDetailsDTO"
         description: User information
         required: true
       responses:
@@ -1539,7 +1575,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RagTaskDTO'
+              $ref: "#/components/schemas/RagTaskDTO"
         description: The RAG task to be added
         required: true
       responses:
@@ -1567,7 +1603,9 @@ paths:
         name: taskId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -1593,7 +1631,9 @@ paths:
         name: taskId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -1644,7 +1684,7 @@ paths:
               pageNum: 0
               pageSize: 1
             schema:
-              $ref: '#/components/schemas/PromptQueryDTO'
+              $ref: "#/components/schemas/PromptQueryDTO"
         description: Query conditions
         required: true
       responses:
@@ -1653,7 +1693,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/PromptSummaryDTO'
+                  $ref: "#/components/schemas/PromptSummaryDTO"
                 type: array
           description: OK
       summary: Search Public Prompt Summary
@@ -1671,7 +1711,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PromptQueryDTO'
+              $ref: "#/components/schemas/PromptQueryDTO"
         description: Query conditions
         required: true
       responses:
@@ -1720,7 +1760,7 @@ paths:
               pageNum: 0
               pageSize: 1
             schema:
-              $ref: '#/components/schemas/CharacterQueryDTO'
+              $ref: "#/components/schemas/CharacterQueryDTO"
         description: Query conditions
         required: true
       responses:
@@ -1729,7 +1769,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/CharacterSummaryDTO'
+                  $ref: "#/components/schemas/CharacterSummaryDTO"
                 type: array
           description: OK
       summary: Search Public Character Summary
@@ -1747,7 +1787,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CharacterQueryDTO'
+              $ref: "#/components/schemas/CharacterQueryDTO"
         description: Query conditions
         required: true
       responses:
@@ -1793,7 +1833,7 @@ paths:
               aiModels:
               - "123"
             schema:
-              $ref: '#/components/schemas/PromptCreateDTO'
+              $ref: "#/components/schemas/PromptCreateDTO"
         description: Information of the prompt to be created
         required: true
       responses:
@@ -1830,7 +1870,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/PromptItemForNameDTO'
+                  $ref: "#/components/schemas/PromptItemForNameDTO"
                 type: array
           description: OK
       summary: List Versions by Prompt Name
@@ -1846,7 +1886,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PromptTaskDTO'
+              $ref: "#/components/schemas/PromptTaskDTO"
         description: The prompt task to be added
         required: true
       responses:
@@ -1877,7 +1917,7 @@ paths:
                 apiKey: ""
                 modelId: "[open_ai]gpt-3.5-turbo"
             schema:
-              $ref: '#/components/schemas/PromptAiParamDTO'
+              $ref: "#/components/schemas/PromptAiParamDTO"
         description: Call parameters
         required: true
       responses:
@@ -1885,7 +1925,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LlmResultDTO'
+                $ref: "#/components/schemas/LlmResultDTO"
           description: OK
       summary: Send Prompt
       tags:
@@ -1906,7 +1946,7 @@ paths:
                 apiKey: ""
                 modelId: "[open_ai]gpt-3.5-turbo"
             schema:
-              $ref: '#/components/schemas/PromptAiParamDTO'
+              $ref: "#/components/schemas/PromptAiParamDTO"
         description: Call parameters
         required: true
       responses:
@@ -1914,7 +1954,7 @@ paths:
           content:
             text/event-stream:
               schema:
-                $ref: '#/components/schemas/SseEmitter'
+                $ref: "#/components/schemas/SseEmitter"
           description: OK
       summary: Send Prompt by Streaming Back
       tags:
@@ -1958,7 +1998,7 @@ paths:
               pageNum: 0
               pageSize: 1
             schema:
-              $ref: '#/components/schemas/PromptQueryDTO'
+              $ref: "#/components/schemas/PromptQueryDTO"
         description: Query conditions
         required: true
       responses:
@@ -1967,7 +2007,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/PromptSummaryDTO'
+                  $ref: "#/components/schemas/PromptSummaryDTO"
                 type: array
           description: OK
       summary: Search Prompt Summary
@@ -1989,7 +2029,9 @@ paths:
         name: promptId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       - description: "Visibility: public | private | ..."
@@ -2038,7 +2080,7 @@ paths:
               pageNum: 0
               pageSize: 1
             schema:
-              $ref: '#/components/schemas/PromptQueryDTO'
+              $ref: "#/components/schemas/PromptQueryDTO"
         description: Query conditions
         required: true
       responses:
@@ -2047,7 +2089,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/PromptDetailsDTO'
+                  $ref: "#/components/schemas/PromptDetailsDTO"
                 type: array
           description: OK
       summary: Search Prompt Details
@@ -2065,7 +2107,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PromptQueryDTO'
+              $ref: "#/components/schemas/PromptQueryDTO"
         description: Query conditions
         required: true
       responses:
@@ -2101,7 +2143,9 @@ paths:
         name: promptId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -2178,7 +2222,7 @@ paths:
               - "456"
             schema:
               items:
-                $ref: '#/components/schemas/PromptCreateDTO'
+                $ref: "#/components/schemas/PromptCreateDTO"
               type: array
         description: List of prompt information to be created
         required: true
@@ -2238,7 +2282,7 @@ paths:
               pageSize: 1
             schema:
               items:
-                $ref: '#/components/schemas/PromptQueryDTO'
+                $ref: "#/components/schemas/PromptQueryDTO"
               type: array
         description: Query conditions
         required: true
@@ -2249,7 +2293,7 @@ paths:
               schema:
                 items:
                   items:
-                    $ref: '#/components/schemas/PromptSummaryDTO'
+                    $ref: "#/components/schemas/PromptSummaryDTO"
                   type: array
                 type: array
           description: OK
@@ -2299,7 +2343,7 @@ paths:
               pageSize: 1
             schema:
               items:
-                $ref: '#/components/schemas/PromptQueryDTO'
+                $ref: "#/components/schemas/PromptQueryDTO"
               type: array
         description: Query conditions
         required: true
@@ -2310,7 +2354,7 @@ paths:
               schema:
                 items:
                   items:
-                    $ref: '#/components/schemas/PromptDetailsDTO'
+                    $ref: "#/components/schemas/PromptDetailsDTO"
                   type: array
                 type: array
           description: OK
@@ -2359,7 +2403,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PromptTemplateDTO'
+              $ref: "#/components/schemas/PromptTemplateDTO"
         description: String type prompt template
         required: true
       responses:
@@ -2383,7 +2427,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PromptRefDTO'
+              $ref: "#/components/schemas/PromptRefDTO"
         description: Prompt record
         required: true
       responses:
@@ -2424,7 +2468,7 @@ paths:
               - test
               - demo
             schema:
-              $ref: '#/components/schemas/PluginCreateDTO'
+              $ref: "#/components/schemas/PluginCreateDTO"
         description: Information of the plugin to be created
         required: true
       responses:
@@ -2476,7 +2520,7 @@ paths:
               pageNum: 0
               pageSize: 1
             schema:
-              $ref: '#/components/schemas/PluginQueryDTO'
+              $ref: "#/components/schemas/PluginQueryDTO"
         description: Query conditions
         required: true
       responses:
@@ -2485,7 +2529,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/PluginSummaryDTO'
+                  $ref: "#/components/schemas/PluginSummaryDTO"
                 type: array
           description: OK
       summary: Search Plugin Summary
@@ -2515,7 +2559,7 @@ paths:
               pageNum: 0
               pageSize: 1
             schema:
-              $ref: '#/components/schemas/PluginQueryDTO'
+              $ref: "#/components/schemas/PluginQueryDTO"
         description: Query conditions
         required: true
       responses:
@@ -2524,7 +2568,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/PluginDetailsDTO'
+                  $ref: "#/components/schemas/PluginDetailsDTO"
                 type: array
           description: OK
       summary: Search Plugin Details
@@ -2542,7 +2586,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PluginQueryDTO'
+              $ref: "#/components/schemas/PluginQueryDTO"
         description: Query conditions
         required: true
       responses:
@@ -2617,7 +2661,7 @@ paths:
               - "456"
             schema:
               items:
-                $ref: '#/components/schemas/PluginCreateDTO'
+                $ref: "#/components/schemas/PluginCreateDTO"
               type: array
         description: List of plugin information to be created
         required: true
@@ -2678,7 +2722,7 @@ paths:
               pageSize: 1
             schema:
               items:
-                $ref: '#/components/schemas/PluginQueryDTO'
+                $ref: "#/components/schemas/PluginQueryDTO"
               type: array
         description: Query conditions
         required: true
@@ -2689,7 +2733,7 @@ paths:
               schema:
                 items:
                   items:
-                    $ref: '#/components/schemas/PluginSummaryDTO'
+                    $ref: "#/components/schemas/PluginSummaryDTO"
                   type: array
                 type: array
           description: OK
@@ -2740,7 +2784,7 @@ paths:
               pageSize: 1
             schema:
               items:
-                $ref: '#/components/schemas/PluginQueryDTO'
+                $ref: "#/components/schemas/PluginQueryDTO"
               type: array
         description: Query conditions
         required: true
@@ -2751,7 +2795,7 @@ paths:
               schema:
                 items:
                   items:
-                    $ref: '#/components/schemas/PluginDetailsDTO'
+                    $ref: "#/components/schemas/PluginDetailsDTO"
                   type: array
                 type: array
           description: OK
@@ -2771,7 +2815,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/ChatSessionDTO'
+                  $ref: "#/components/schemas/ChatSessionDTO"
                 type: array
           description: OK
       summary: List Chats
@@ -2786,7 +2830,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ChatCreateDTO'
+              $ref: "#/components/schemas/ChatCreateDTO"
         description: Parameters for starting a chat session
         required: true
       responses:
@@ -2820,7 +2864,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ChatMessageDTO'
+              $ref: "#/components/schemas/ChatMessageDTO"
         description: Chat message
         required: true
       responses:
@@ -2828,7 +2872,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LlmResultDTO'
+                $ref: "#/components/schemas/LlmResultDTO"
           description: OK
       summary: Send Chat Message
       tags:
@@ -2855,7 +2899,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ChatMessageDTO'
+              $ref: "#/components/schemas/ChatMessageDTO"
         description: Chat message
         required: true
       responses:
@@ -2863,7 +2907,7 @@ paths:
           content:
             text/event-stream:
               schema:
-                $ref: '#/components/schemas/SseEmitter'
+                $ref: "#/components/schemas/SseEmitter"
           description: OK
       summary: Send Chat Message by Streaming Back
       tags:
@@ -2891,7 +2935,9 @@ paths:
         name: count
         required: true
         schema:
+          exclusiveMinimum: true
           format: int32
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -2924,7 +2970,7 @@ paths:
               - test
               - demo
             schema:
-              $ref: '#/components/schemas/CharacterCreateDTO'
+              $ref: "#/components/schemas/CharacterCreateDTO"
         description: Information of the character to be created
         required: true
       responses:
@@ -2959,7 +3005,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/uploadCharacterVoice_request'
+              $ref: "#/components/schemas/uploadCharacterVoice_request"
         required: true
       responses:
         "200":
@@ -2992,7 +3038,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/uploadCharacterVideo_request'
+              $ref: "#/components/schemas/uploadCharacterVideo_request"
         required: true
       responses:
         "200":
@@ -3027,7 +3073,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/CharacterItemForNameDTO'
+                  $ref: "#/components/schemas/CharacterItemForNameDTO"
                 type: array
           description: OK
       summary: List Versions by Character Name
@@ -3067,7 +3113,7 @@ paths:
               pageNum: 0
               pageSize: 1
             schema:
-              $ref: '#/components/schemas/CharacterQueryDTO'
+              $ref: "#/components/schemas/CharacterQueryDTO"
         description: Query conditions
         required: true
       responses:
@@ -3076,7 +3122,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/CharacterSummaryDTO'
+                  $ref: "#/components/schemas/CharacterSummaryDTO"
                 type: array
           description: OK
       summary: Search Character Summary
@@ -3098,7 +3144,9 @@ paths:
         name: characterId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       - description: "Visibility: public | private | ..."
@@ -3135,7 +3183,9 @@ paths:
         name: characterId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -3169,7 +3219,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/uploadCharacterPicture_request'
+              $ref: "#/components/schemas/uploadCharacterPicture_request"
         required: true
       responses:
         "200":
@@ -3219,7 +3269,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/importCharacter_request'
+              $ref: "#/components/schemas/importCharacter_request"
         required: true
       responses:
         "200":
@@ -3253,7 +3303,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/uploadCharacterDocument_request'
+              $ref: "#/components/schemas/uploadCharacterDocument_request"
         required: true
       responses:
         "200":
@@ -3290,7 +3340,7 @@ paths:
               pageNum: 0
               pageSize: 1
             schema:
-              $ref: '#/components/schemas/CharacterQueryDTO'
+              $ref: "#/components/schemas/CharacterQueryDTO"
         description: Query conditions
         required: true
       responses:
@@ -3299,7 +3349,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/CharacterDetailsDTO'
+                  $ref: "#/components/schemas/CharacterDetailsDTO"
                 type: array
           description: OK
       summary: Search Character Details
@@ -3317,7 +3367,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CharacterQueryDTO'
+              $ref: "#/components/schemas/CharacterQueryDTO"
         description: Query conditions
         required: true
       responses:
@@ -3353,7 +3403,9 @@ paths:
         name: characterId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -3407,7 +3459,7 @@ paths:
               pageSize: 1
             schema:
               items:
-                $ref: '#/components/schemas/CharacterQueryDTO'
+                $ref: "#/components/schemas/CharacterQueryDTO"
               type: array
         description: Query conditions
         required: true
@@ -3418,7 +3470,7 @@ paths:
               schema:
                 items:
                   items:
-                    $ref: '#/components/schemas/CharacterSummaryDTO'
+                    $ref: "#/components/schemas/CharacterSummaryDTO"
                   type: array
                 type: array
           description: OK
@@ -3466,7 +3518,7 @@ paths:
               pageSize: 1
             schema:
               items:
-                $ref: '#/components/schemas/CharacterQueryDTO'
+                $ref: "#/components/schemas/CharacterQueryDTO"
               type: array
         description: Query conditions
         required: true
@@ -3477,7 +3529,7 @@ paths:
               schema:
                 items:
                   items:
-                    $ref: '#/components/schemas/CharacterDetailsDTO'
+                    $ref: "#/components/schemas/CharacterDetailsDTO"
                   type: array
                 type: array
           description: OK
@@ -3505,7 +3557,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CharacterBackendDTO'
+              $ref: "#/components/schemas/CharacterBackendDTO"
         description: The character backend to be added
         required: true
       responses:
@@ -3539,7 +3591,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/importCharacter_request'
+              $ref: "#/components/schemas/importCharacter_request"
         required: true
       responses:
         "200":
@@ -3650,7 +3702,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AiApiKeyCreateDTO'
+              $ref: "#/components/schemas/AiApiKeyCreateDTO"
         description: Model call credential information
         required: true
       responses:
@@ -3696,7 +3748,7 @@ paths:
               aiModels:
               - "123"
             schema:
-              $ref: '#/components/schemas/AgentCreateDTO'
+              $ref: "#/components/schemas/AgentCreateDTO"
         description: Information of the agent to be created
         required: true
       responses:
@@ -3733,7 +3785,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/AgentItemForNameDTO'
+                  $ref: "#/components/schemas/AgentItemForNameDTO"
                 type: array
           description: OK
       summary: List Versions by Agent Name
@@ -3777,7 +3829,7 @@ paths:
               pageNum: 0
               pageSize: 1
             schema:
-              $ref: '#/components/schemas/AgentQueryDTO'
+              $ref: "#/components/schemas/AgentQueryDTO"
         description: Query conditions
         required: true
       responses:
@@ -3786,7 +3838,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/AgentSummaryDTO'
+                  $ref: "#/components/schemas/AgentSummaryDTO"
                 type: array
           description: OK
       summary: Search Agent Summary
@@ -3808,7 +3860,9 @@ paths:
         name: agentId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       - description: "Visibility: public | private | ..."
@@ -3858,7 +3912,7 @@ paths:
               pageNum: 0
               pageSize: 1
             schema:
-              $ref: '#/components/schemas/AgentQueryDTO'
+              $ref: "#/components/schemas/AgentQueryDTO"
         description: Query conditions
         required: true
       responses:
@@ -3867,7 +3921,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/AgentDetailsDTO'
+                  $ref: "#/components/schemas/AgentDetailsDTO"
                 type: array
           description: OK
       summary: Search Agent Details
@@ -3885,7 +3939,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AgentQueryDTO'
+              $ref: "#/components/schemas/AgentQueryDTO"
         description: Query conditions
         required: true
       responses:
@@ -3921,7 +3975,9 @@ paths:
         name: agentId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -3970,7 +4026,7 @@ paths:
               - "456"
             schema:
               items:
-                $ref: '#/components/schemas/AgentCreateDTO'
+                $ref: "#/components/schemas/AgentCreateDTO"
               type: array
         description: List of agent information to be created
         required: true
@@ -4031,7 +4087,7 @@ paths:
               pageSize: 1
             schema:
               items:
-                $ref: '#/components/schemas/AgentQueryDTO'
+                $ref: "#/components/schemas/AgentQueryDTO"
               type: array
         description: Query conditions
         required: true
@@ -4042,7 +4098,7 @@ paths:
               schema:
                 items:
                   items:
-                    $ref: '#/components/schemas/AgentSummaryDTO'
+                    $ref: "#/components/schemas/AgentSummaryDTO"
                   type: array
                 type: array
           description: OK
@@ -4093,7 +4149,7 @@ paths:
               pageSize: 1
             schema:
               items:
-                $ref: '#/components/schemas/AgentQueryDTO'
+                $ref: "#/components/schemas/AgentQueryDTO"
               type: array
         description: Query conditions
         required: true
@@ -4104,7 +4160,7 @@ paths:
               schema:
                 items:
                   items:
-                    $ref: '#/components/schemas/AgentDetailsDTO'
+                    $ref: "#/components/schemas/AgentDetailsDTO"
                   type: array
                 type: array
           description: OK
@@ -4232,7 +4288,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/uploadUserPicture_request'
+              $ref: "#/components/schemas/uploadUserPicture_request"
         required: true
       responses:
         "200":
@@ -4258,7 +4314,9 @@ paths:
         name: messageId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -4266,19 +4324,19 @@ paths:
           content:
             audio/mpeg:
               schema:
-                $ref: '#/components/schemas/StreamingResponseBody'
+                $ref: "#/components/schemas/StreamingResponseBody"
             audio/aac:
               schema:
-                $ref: '#/components/schemas/StreamingResponseBody'
+                $ref: "#/components/schemas/StreamingResponseBody"
             audio/mp3:
               schema:
-                $ref: '#/components/schemas/StreamingResponseBody'
+                $ref: "#/components/schemas/StreamingResponseBody"
             audio/wav:
               schema:
-                $ref: '#/components/schemas/StreamingResponseBody'
+                $ref: "#/components/schemas/StreamingResponseBody"
             audio/octet-stream:
               schema:
-                $ref: '#/components/schemas/StreamingResponseBody'
+                $ref: "#/components/schemas/StreamingResponseBody"
           description: OK
       summary: Speak Message
       tags:
@@ -4309,7 +4367,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/RagTaskDetailsDTO'
+                  $ref: "#/components/schemas/RagTaskDetailsDTO"
                 type: array
           description: OK
       summary: List RAG Tasks
@@ -4329,7 +4387,9 @@ paths:
         name: taskId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -4372,19 +4432,19 @@ paths:
           content:
             audio/mpeg:
               schema:
-                $ref: '#/components/schemas/StreamingResponseBody'
+                $ref: "#/components/schemas/StreamingResponseBody"
             audio/aac:
               schema:
-                $ref: '#/components/schemas/StreamingResponseBody'
+                $ref: "#/components/schemas/StreamingResponseBody"
             audio/mp3:
               schema:
-                $ref: '#/components/schemas/StreamingResponseBody'
+                $ref: "#/components/schemas/StreamingResponseBody"
             audio/wav:
               schema:
-                $ref: '#/components/schemas/StreamingResponseBody'
+                $ref: "#/components/schemas/StreamingResponseBody"
             audio/octet-stream:
               schema:
-                $ref: '#/components/schemas/StreamingResponseBody'
+                $ref: "#/components/schemas/StreamingResponseBody"
           description: OK
       summary: Play Sample Audio
       tags:
@@ -4450,7 +4510,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/HotTagDTO'
+                  $ref: "#/components/schemas/HotTagDTO"
                 type: array
           description: OK
       summary: Hot Tags
@@ -4486,7 +4546,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InteractiveStatsDTO'
+                $ref: "#/components/schemas/InteractiveStatsDTO"
           description: OK
       summary: Get All Statistics
       tags:
@@ -4562,6 +4622,7 @@ paths:
         name: asc
         required: false
         schema:
+          nullable: true
           type: string
         style: form
       responses:
@@ -4570,7 +4631,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/PromptSummaryStatsDTO'
+                  $ref: "#/components/schemas/PromptSummaryStatsDTO"
                 type: array
           description: OK
       summary: List Prompts by Statistics
@@ -4609,6 +4670,7 @@ paths:
         name: asc
         required: false
         schema:
+          nullable: true
           type: string
         style: form
       responses:
@@ -4617,7 +4679,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/PromptSummaryStatsDTO'
+                  $ref: "#/components/schemas/PromptSummaryStatsDTO"
                 type: array
           description: OK
       summary: List Prompts by Statistics
@@ -4665,6 +4727,7 @@ paths:
         name: asc
         required: false
         schema:
+          nullable: true
           type: string
         style: form
       responses:
@@ -4673,7 +4736,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/PromptSummaryStatsDTO'
+                  $ref: "#/components/schemas/PromptSummaryStatsDTO"
                 type: array
           description: OK
       summary: List Prompts by Statistics
@@ -4721,6 +4784,7 @@ paths:
         name: asc
         required: false
         schema:
+          nullable: true
           type: string
         style: form
       responses:
@@ -4729,7 +4793,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/PluginSummaryStatsDTO'
+                  $ref: "#/components/schemas/PluginSummaryStatsDTO"
                 type: array
           description: OK
       summary: List Plugins by Statistics
@@ -4759,6 +4823,7 @@ paths:
         name: asc
         required: false
         schema:
+          nullable: true
           type: string
         style: form
       responses:
@@ -4767,7 +4832,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/PluginSummaryStatsDTO'
+                  $ref: "#/components/schemas/PluginSummaryStatsDTO"
                 type: array
           description: OK
       summary: List Plugins by Statistics
@@ -4806,6 +4871,7 @@ paths:
         name: asc
         required: false
         schema:
+          nullable: true
           type: string
         style: form
       responses:
@@ -4814,7 +4880,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/PluginSummaryStatsDTO'
+                  $ref: "#/components/schemas/PluginSummaryStatsDTO"
                 type: array
           description: OK
       summary: List Plugins by Statistics
@@ -4844,6 +4910,7 @@ paths:
         name: asc
         required: false
         schema:
+          nullable: true
           type: string
         style: form
       responses:
@@ -4852,7 +4919,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/CharacterSummaryStatsDTO'
+                  $ref: "#/components/schemas/CharacterSummaryStatsDTO"
                 type: array
           description: OK
       summary: List Characters by Statistics
@@ -4891,6 +4958,7 @@ paths:
         name: asc
         required: false
         schema:
+          nullable: true
           type: string
         style: form
       responses:
@@ -4899,7 +4967,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/CharacterSummaryStatsDTO'
+                  $ref: "#/components/schemas/CharacterSummaryStatsDTO"
                 type: array
           description: OK
       summary: List Characters by Statistics
@@ -4947,6 +5015,7 @@ paths:
         name: asc
         required: false
         schema:
+          nullable: true
           type: string
         style: form
       responses:
@@ -4955,7 +5024,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/CharacterSummaryStatsDTO'
+                  $ref: "#/components/schemas/CharacterSummaryStatsDTO"
                 type: array
           description: OK
       summary: List Characters by Statistics
@@ -4994,6 +5063,7 @@ paths:
         name: asc
         required: false
         schema:
+          nullable: true
           type: string
         style: form
       responses:
@@ -5002,7 +5072,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/AgentSummaryStatsDTO'
+                  $ref: "#/components/schemas/AgentSummaryStatsDTO"
                 type: array
           description: OK
       summary: List Agents by Statistics
@@ -5050,6 +5120,7 @@ paths:
         name: asc
         required: false
         schema:
+          nullable: true
           type: string
         style: form
       responses:
@@ -5058,7 +5129,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/AgentSummaryStatsDTO'
+                  $ref: "#/components/schemas/AgentSummaryStatsDTO"
                 type: array
           description: OK
       summary: List Agents by Statistics
@@ -5088,6 +5159,7 @@ paths:
         name: asc
         required: false
         schema:
+          nullable: true
           type: string
         style: form
       responses:
@@ -5096,7 +5168,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/AgentSummaryStatsDTO'
+                  $ref: "#/components/schemas/AgentSummaryStatsDTO"
                 type: array
           description: OK
       summary: List Agents by Statistics
@@ -5151,7 +5223,9 @@ paths:
         name: promptId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -5159,7 +5233,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PromptSummaryDTO'
+                $ref: "#/components/schemas/PromptSummaryDTO"
           description: OK
       summary: Get Prompt Summary
       tags:
@@ -5203,7 +5277,9 @@ paths:
         name: promptId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -5211,7 +5287,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PromptDetailsDTO'
+                $ref: "#/components/schemas/PromptDetailsDTO"
           description: OK
       summary: Get Prompt Details
       tags:
@@ -5255,7 +5331,9 @@ paths:
         name: pluginId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -5263,7 +5341,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PluginSummaryDTO'
+                $ref: "#/components/schemas/PluginSummaryDTO"
           description: OK
       summary: Get Plugin Summary
       tags:
@@ -5281,7 +5359,9 @@ paths:
         name: pluginId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -5289,7 +5369,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PluginDetailsDTO'
+                $ref: "#/components/schemas/PluginDetailsDTO"
           description: OK
       summary: Get Plugin Details
       tags:
@@ -5311,6 +5391,7 @@ paths:
         name: all
         required: false
         schema:
+          nullable: true
           type: string
         style: form
       responses:
@@ -5339,6 +5420,7 @@ paths:
         name: all
         required: false
         schema:
+          nullable: true
           type: string
         style: form
       responses:
@@ -5368,6 +5450,7 @@ paths:
         name: all
         required: false
         schema:
+          nullable: true
           type: string
         style: form
       responses:
@@ -5396,6 +5479,7 @@ paths:
         name: all
         required: false
         schema:
+          nullable: true
           type: string
         style: form
       responses:
@@ -5465,7 +5549,7 @@ paths:
           content:
             text/event-stream:
               schema:
-                $ref: '#/components/schemas/SseEmitter'
+                $ref: "#/components/schemas/SseEmitter"
           description: OK
       summary: Send Assistant for Chat Message by Streaming Back
       tags:
@@ -5500,7 +5584,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LlmResultDTO'
+                $ref: "#/components/schemas/LlmResultDTO"
           description: OK
       summary: Send Assistant for Chat Message
       tags:
@@ -5536,7 +5620,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/ChatMessageRecordDTO'
+                  $ref: "#/components/schemas/ChatMessageRecordDTO"
                 type: array
           description: OK
       summary: List Chat Messages
@@ -5582,7 +5666,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/ChatMessageRecordDTO'
+                  $ref: "#/components/schemas/ChatMessageRecordDTO"
                 type: array
           description: OK
       summary: List Chat Messages
@@ -5610,7 +5694,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/ChatMessageRecordDTO'
+                  $ref: "#/components/schemas/ChatMessageRecordDTO"
                 type: array
           description: OK
       summary: List Chat Messages
@@ -5647,7 +5731,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/ChatMessageRecordDTO'
+                  $ref: "#/components/schemas/ChatMessageRecordDTO"
                 type: array
           description: OK
       summary: List Chat Debug Messages
@@ -5693,7 +5777,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/ChatMessageRecordDTO'
+                  $ref: "#/components/schemas/ChatMessageRecordDTO"
                 type: array
           description: OK
       summary: List Chat Debug Messages
@@ -5721,7 +5805,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/ChatMessageRecordDTO'
+                  $ref: "#/components/schemas/ChatMessageRecordDTO"
                 type: array
           description: OK
       summary: List Chat Debug Messages
@@ -5748,7 +5832,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MemoryUsageDTO'
+                $ref: "#/components/schemas/MemoryUsageDTO"
           description: OK
       summary: Get Memory Usage
       tags:
@@ -5822,7 +5906,9 @@ paths:
         name: characterId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -5830,7 +5916,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CharacterSummaryDTO'
+                $ref: "#/components/schemas/CharacterSummaryDTO"
           description: OK
       summary: Get Character Summary
       tags:
@@ -5877,7 +5963,9 @@ paths:
         name: characterId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -5953,7 +6041,9 @@ paths:
         name: characterId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -5961,7 +6051,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CharacterDetailsDTO'
+                $ref: "#/components/schemas/CharacterDetailsDTO"
           description: OK
       summary: Get Character Details
       tags:
@@ -6014,7 +6104,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/CharacterBackendDetailsDTO'
+                  $ref: "#/components/schemas/CharacterBackendDetailsDTO"
                 type: array
           description: OK
       summary: List Character Backends
@@ -6069,7 +6159,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CharacterBackendDetailsDTO'
+                $ref: "#/components/schemas/CharacterBackendDetailsDTO"
           description: OK
       summary: Get Default Character Backend
       tags:
@@ -6096,7 +6186,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/AiApiKeyInfoDTO'
+                  $ref: "#/components/schemas/AiApiKeyInfoDTO"
                 type: array
           description: OK
       summary: List Credentials of Model Provider
@@ -6115,7 +6205,9 @@ paths:
         name: id
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -6140,7 +6232,9 @@ paths:
         name: id
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -6148,7 +6242,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AiApiKeyInfoDTO'
+                $ref: "#/components/schemas/AiApiKeyInfoDTO"
           description: OK
       summary: Get credential of Model Provider
       tags:
@@ -6166,7 +6260,9 @@ paths:
         name: agentId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -6174,7 +6270,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AgentSummaryDTO'
+                $ref: "#/components/schemas/AgentSummaryDTO"
           description: OK
       summary: Get Agent Summary
       tags:
@@ -6192,7 +6288,9 @@ paths:
         name: agentId
         required: true
         schema:
+          exclusiveMinimum: true
           format: int64
+          minimum: 0
           type: integer
         style: simple
       responses:
@@ -6200,7 +6298,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AgentDetailsDTO'
+                $ref: "#/components/schemas/AgentDetailsDTO"
           description: OK
       summary: Get Agent Details
       tags:
@@ -6237,7 +6335,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/UserBasicInfoDTO'
+                  $ref: "#/components/schemas/UserBasicInfoDTO"
                 type: array
           description: OK
       summary: List User Information
@@ -6257,7 +6355,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/UserBasicInfoDTO'
+                  $ref: "#/components/schemas/UserBasicInfoDTO"
                 type: array
           description: OK
       summary: List User Information
@@ -6286,7 +6384,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/UserBasicInfoDTO'
+                  $ref: "#/components/schemas/UserBasicInfoDTO"
                 type: array
           description: OK
       summary: List User Information
@@ -6338,7 +6436,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserDetailsDTO'
+                $ref: "#/components/schemas/UserDetailsDTO"
           description: OK
       summary: Get User Details
       tags:
@@ -6364,7 +6462,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserDetailsDTO'
+                $ref: "#/components/schemas/UserDetailsDTO"
           description: OK
       summary: Get User by API Token
       tags:
@@ -6391,7 +6489,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/ApiTokenInfoDTO'
+                  $ref: "#/components/schemas/ApiTokenInfoDTO"
                 type: array
           description: OK
       summary: Get API Token of User
@@ -6435,7 +6533,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AppMetaDTO'
+                $ref: "#/components/schemas/AppMetaDTO"
           description: OK
       summary: Get Application Information
       tags:
@@ -6468,7 +6566,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/ApiTokenInfoDTO'
+                  $ref: "#/components/schemas/ApiTokenInfoDTO"
                 type: array
           description: OK
       summary: List API Tokens
@@ -6495,7 +6593,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserBasicInfoDTO'
+                $ref: "#/components/schemas/UserBasicInfoDTO"
           description: OK
       summary: Get User Basic Information
       tags:
@@ -6513,7 +6611,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserBasicInfoDTO'
+                $ref: "#/components/schemas/UserBasicInfoDTO"
           description: OK
       summary: Get User Basic Information
       tags:
@@ -6570,7 +6668,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/ChatMessageRecordDTO'
+                  $ref: "#/components/schemas/ChatMessageRecordDTO"
                 type: array
           description: OK
       summary: Clear Memory
@@ -6856,12 +6954,12 @@ components:
           description: "default: dialogue content; tool_result: tool call result,\
             \ serialized as json"
           items:
-            $ref: '#/components/schemas/ChatContentDTO'
+            $ref: "#/components/schemas/ChatContentDTO"
           type: array
         toolCalls:
           description: Tool calls information during the conversation
           items:
-            $ref: '#/components/schemas/ChatToolCallDTO'
+            $ref: "#/components/schemas/ChatToolCallDTO"
           type: array
         thinking:
           description: Thinking information
@@ -6876,71 +6974,18 @@ components:
           type: integer
     ChatPromptContentDTO:
       description: Prompt chat template content
-      example:
-        system: system
-        messages:
-        - role: role
-          contents:
-          - type: type
-            content: content
-          - type: type
-            content: content
-          name: name
-          context: context
-          messageId: 0
-          toolCalls:
-          - name: name
-            arguments: arguments
-            id: id
-          - name: name
-            arguments: arguments
-            id: id
-          thinking: thinking
-        - role: role
-          contents:
-          - type: type
-            content: content
-          - type: type
-            content: content
-          name: name
-          context: context
-          messageId: 0
-          toolCalls:
-          - name: name
-            arguments: arguments
-            id: id
-          - name: name
-            arguments: arguments
-            id: id
-          thinking: thinking
-        messageToSend:
-          role: role
-          contents:
-          - type: type
-            content: content
-          - type: type
-            content: content
-          name: name
-          context: context
-          messageId: 0
-          toolCalls:
-          - name: name
-            arguments: arguments
-            id: id
-          - name: name
-            arguments: arguments
-            id: id
-          thinking: thinking
       properties:
         system:
           description: Prompt system template
           type: string
         messageToSend:
-          $ref: '#/components/schemas/ChatMessageDTO'
+          allOf:
+          - $ref: "#/components/schemas/ChatMessageDTO"
+          description: Chat new message template (usually as user role)
         messages:
           description: Pre-set chat messages in the Prompt
           items:
-            $ref: '#/components/schemas/ChatMessageDTO'
+            $ref: "#/components/schemas/ChatMessageDTO"
           type: array
     ChatToolCallDTO:
       description: Tool call information during the conversation
@@ -6975,61 +7020,7 @@ components:
         tags:
         - tags
         - tags
-        chatTemplate:
-          system: system
-          messages:
-          - role: role
-            contents:
-            - type: type
-              content: content
-            - type: type
-              content: content
-            name: name
-            context: context
-            messageId: 0
-            toolCalls:
-            - name: name
-              arguments: arguments
-              id: id
-            - name: name
-              arguments: arguments
-              id: id
-            thinking: thinking
-          - role: role
-            contents:
-            - type: type
-              content: content
-            - type: type
-              content: content
-            name: name
-            context: context
-            messageId: 0
-            toolCalls:
-            - name: name
-              arguments: arguments
-              id: id
-            - name: name
-              arguments: arguments
-              id: id
-            thinking: thinking
-          messageToSend:
-            role: role
-            contents:
-            - type: type
-              content: content
-            - type: type
-              content: content
-            name: name
-            context: context
-            messageId: 0
-            toolCalls:
-            - name: name
-              arguments: arguments
-              id: id
-            - name: name
-              arguments: arguments
-              id: id
-            thinking: thinking
+        chatTemplate: ""
         draft: draft
         name: name
         lang: lang
@@ -7051,7 +7042,9 @@ components:
             \ chatTemplate field, priority: template > chatTemplate"
           type: string
         chatTemplate:
-          $ref: '#/components/schemas/ChatPromptContentDTO'
+          allOf:
+          - $ref: "#/components/schemas/ChatPromptContentDTO"
+          description: Prompt chat template content
         format:
           description: "Prompt format: mustache (default) | f_string"
           pattern: mustache|f_string
@@ -7108,11 +7101,7 @@ components:
       example:
         apiKeyValue: apiKeyValue
         cron: cron
-        promptRef:
-          variables:
-            key: ""
-          promptId: 0
-          draft: true
+        promptRef: ""
         modelId: modelId
         apiKeyName: apiKeyName
         params:
@@ -7120,7 +7109,9 @@ components:
         status: status
       properties:
         promptRef:
-          $ref: '#/components/schemas/PromptRefDTO'
+          allOf:
+          - $ref: "#/components/schemas/PromptRefDTO"
+          description: Prompt reference information
         modelId:
           description: Model identifier
           type: string
@@ -7335,6 +7326,7 @@ components:
         moderationApiKeyName: moderationApiKeyName
         ttsSpeakerType: ttsSpeakerType
         moderationParams: moderationParams
+        imageModelId: imageModelId
         greetingPromptTaskId: greetingPromptTaskId
         moderationModelId: moderationModelId
         ttsSpeakerWav: ttsSpeakerWav
@@ -7342,12 +7334,16 @@ components:
         enableAlbumTool: true
         quotaType: quotaType
         isDefault: true
+        moderationApiKeyValue: moderationApiKeyValue
         initQuota: 5
+        imageApiKeyName: imageApiKeyName
         chatPromptTaskId: chatPromptTaskId
         messageWindowSize: 0
         proactiveChatWaitingTime: 1
         ttsSpeakerIdx: ttsSpeakerIdx
         longTermMemoryWindowSize: 6
+        imageApiKeyValue: imageApiKeyValue
+        imageParams: imageParams
       properties:
         isDefault:
           description: Whether it is the default backend
@@ -7364,8 +7360,23 @@ components:
         moderationApiKeyName:
           description: Api key name for moderation model
           type: string
+        moderationApiKeyValue:
+          description: Api key value for moderation model
+          type: string
         moderationParams:
           description: Parameters for moderation model
+          type: string
+        imageModelId:
+          description: Image model for the character
+          type: string
+        imageApiKeyName:
+          description: Api key name for image model
+          type: string
+        imageApiKeyValue:
+          description: Api key value for image model
+          type: string
+        imageParams:
+          description: Parameters for image model
           type: string
         messageWindowSize:
           description: Max messages in the character's memory
@@ -7627,21 +7638,6 @@ components:
           type: string
     PromptQuery.Where:
       description: Query condition
-      example:
-        aiModels:
-        - aiModels
-        - aiModels
-        tagsOp: tagsOp
-        visibility: visibility
-        name: name
-        aiModelsOp: aiModelsOp
-        text: text
-        type: type
-        lang: lang
-        username: username
-        tags:
-        - tags
-        - tags
       properties:
         visibility:
           description: "Visibility: public, public_org (search this organization),\
@@ -7691,25 +7687,13 @@ components:
         - orderBy
         - orderBy
         pageSize: 6
-        where:
-          aiModels:
-          - aiModels
-          - aiModels
-          tagsOp: tagsOp
-          visibility: visibility
-          name: name
-          aiModelsOp: aiModelsOp
-          text: text
-          type: type
-          lang: lang
-          username: username
-          tags:
-          - tags
-          - tags
+        where: ""
         pageNum: 0
       properties:
         where:
-          $ref: '#/components/schemas/PromptQuery.Where'
+          allOf:
+          - $ref: "#/components/schemas/PromptQuery.Where"
+          description: Query condition
         orderBy:
           description: |
             Sorting condition, supported sorting fields are:
@@ -7758,7 +7742,7 @@ components:
           type: string
         type:
           description: "Model type: text2text | text2chat | text2image | embedding\
-            \ | moderation"
+            \ | moderation | multimodal"
           type: string
     PromptSummaryDTO:
       description: Prompt summary content
@@ -7849,21 +7833,10 @@ components:
         aiModels:
           description: Supported model set
           items:
-            $ref: '#/components/schemas/AiModelInfoDTO'
+            $ref: "#/components/schemas/AiModelInfoDTO"
           type: array
     CharacterQuery.Where:
       description: Query condition
-      example:
-        highPriority: true
-        tagsOp: tagsOp
-        visibility: visibility
-        name: name
-        text: text
-        lang: lang
-        username: username
-        tags:
-        - tags
-        - tags
       properties:
         visibility:
           description: "Visibility: public, public_org (search this organization),\
@@ -7904,21 +7877,13 @@ components:
         - orderBy
         - orderBy
         pageSize: 6
-        where:
-          highPriority: true
-          tagsOp: tagsOp
-          visibility: visibility
-          name: name
-          text: text
-          lang: lang
-          username: username
-          tags:
-          - tags
-          - tags
+        where: ""
         pageNum: 0
       properties:
         where:
-          $ref: '#/components/schemas/CharacterQuery.Where'
+          allOf:
+          - $ref: "#/components/schemas/CharacterQuery.Where"
+          description: Query condition
         orderBy:
           description: |
             Sorting condition, supported sorting fields are:
@@ -8053,61 +8018,7 @@ components:
         tags:
         - tags
         - tags
-        chatTemplate:
-          system: system
-          messages:
-          - role: role
-            contents:
-            - type: type
-              content: content
-            - type: type
-              content: content
-            name: name
-            context: context
-            messageId: 0
-            toolCalls:
-            - name: name
-              arguments: arguments
-              id: id
-            - name: name
-              arguments: arguments
-              id: id
-            thinking: thinking
-          - role: role
-            contents:
-            - type: type
-              content: content
-            - type: type
-              content: content
-            name: name
-            context: context
-            messageId: 0
-            toolCalls:
-            - name: name
-              arguments: arguments
-              id: id
-            - name: name
-              arguments: arguments
-              id: id
-            thinking: thinking
-          messageToSend:
-            role: role
-            contents:
-            - type: type
-              content: content
-            - type: type
-              content: content
-            name: name
-            context: context
-            messageId: 0
-            toolCalls:
-            - name: name
-              arguments: arguments
-              id: id
-            - name: name
-              arguments: arguments
-              id: id
-            thinking: thinking
+        chatTemplate: ""
         draft: draft
         name: name
         lang: lang
@@ -8129,7 +8040,9 @@ components:
             \ chatTemplate field, priority: template > chatTemplate"
           type: string
         chatTemplate:
-          $ref: '#/components/schemas/ChatPromptContentDTO'
+          allOf:
+          - $ref: "#/components/schemas/ChatPromptContentDTO"
+          description: Prompt chat template content
         format:
           description: "Prompt format: mustache (default) | f_string"
           pattern: mustache|f_string
@@ -8164,15 +8077,15 @@ components:
     InteractiveStatsDTO:
       description: Interactive statistics information
       example:
-        referCount: 5
-        score: 7
+        referCount: 6
+        score: 5
         gmtModified: 2000-01-23T04:56:07.000+00:00
-        recommendCount: 5
+        recommendCount: 1
         requestId: requestId
-        scoreCount: 2
+        scoreCount: 5
         referId: referId
         referType: referType
-        viewCount: 1
+        viewCount: 0
         gmtCreate: 2000-01-23T04:56:07.000+00:00
       properties:
         requestId:
@@ -8215,17 +8128,7 @@ components:
     PromptItemForNameDTO:
       description: Prompt identifier and version information
       example:
-        stats:
-          referCount: 5
-          score: 7
-          gmtModified: 2000-01-23T04:56:07.000+00:00
-          recommendCount: 5
-          requestId: requestId
-          scoreCount: 2
-          referId: referId
-          referType: referType
-          viewCount: 1
-          gmtCreate: 2000-01-23T04:56:07.000+00:00
+        stats: ""
         promptId: 0
         version: 6
       properties:
@@ -8238,87 +8141,30 @@ components:
           format: int32
           type: integer
         stats:
-          $ref: '#/components/schemas/InteractiveStatsDTO'
+          allOf:
+          - $ref: "#/components/schemas/InteractiveStatsDTO"
+          description: Interactive statistics information
     PromptAiParamDTO:
       description: Prompt AI service information
       example:
-        promptRef:
-          variables:
-            key: ""
-          promptId: 0
-          draft: true
+        promptRef: ""
         params:
           key: ""
         prompt: prompt
-        promptTemplate:
-          template: template
-          variables:
-            key: ""
-          chatTemplate:
-            system: system
-            messages:
-            - role: role
-              contents:
-              - type: type
-                content: content
-              - type: type
-                content: content
-              name: name
-              context: context
-              messageId: 0
-              toolCalls:
-              - name: name
-                arguments: arguments
-                id: id
-              - name: name
-                arguments: arguments
-                id: id
-              thinking: thinking
-            - role: role
-              contents:
-              - type: type
-                content: content
-              - type: type
-                content: content
-              name: name
-              context: context
-              messageId: 0
-              toolCalls:
-              - name: name
-                arguments: arguments
-                id: id
-              - name: name
-                arguments: arguments
-                id: id
-              thinking: thinking
-            messageToSend:
-              role: role
-              contents:
-              - type: type
-                content: content
-              - type: type
-                content: content
-              name: name
-              context: context
-              messageId: 0
-              toolCalls:
-              - name: name
-                arguments: arguments
-                id: id
-              - name: name
-                arguments: arguments
-                id: id
-              thinking: thinking
-          format: format
+        promptTemplate: ""
       properties:
         prompt:
           description: "Complete input content, priority: prompt > promptTemplate\
             \ > promptRef"
           type: string
         promptTemplate:
-          $ref: '#/components/schemas/PromptTemplateDTO'
+          allOf:
+          - $ref: "#/components/schemas/PromptTemplateDTO"
+          description: Prompt template content
         promptRef:
-          $ref: '#/components/schemas/PromptRefDTO'
+          allOf:
+          - $ref: "#/components/schemas/PromptRefDTO"
+          description: Prompt reference information
         params:
           additionalProperties: {}
           description: "Model call parameters, the actual supported fields are related\
@@ -8332,61 +8178,7 @@ components:
         template: template
         variables:
           key: ""
-        chatTemplate:
-          system: system
-          messages:
-          - role: role
-            contents:
-            - type: type
-              content: content
-            - type: type
-              content: content
-            name: name
-            context: context
-            messageId: 0
-            toolCalls:
-            - name: name
-              arguments: arguments
-              id: id
-            - name: name
-              arguments: arguments
-              id: id
-            thinking: thinking
-          - role: role
-            contents:
-            - type: type
-              content: content
-            - type: type
-              content: content
-            name: name
-            context: context
-            messageId: 0
-            toolCalls:
-            - name: name
-              arguments: arguments
-              id: id
-            - name: name
-              arguments: arguments
-              id: id
-            thinking: thinking
-          messageToSend:
-            role: role
-            contents:
-            - type: type
-              content: content
-            - type: type
-              content: content
-            name: name
-            context: context
-            messageId: 0
-            toolCalls:
-            - name: name
-              arguments: arguments
-              id: id
-            - name: name
-              arguments: arguments
-              id: id
-            thinking: thinking
+        chatTemplate: ""
         format: format
       properties:
         template:
@@ -8394,7 +8186,9 @@ components:
             \ chatTemplate field, priority: template > chatTemplate"
           type: string
         chatTemplate:
-          $ref: '#/components/schemas/ChatPromptContentDTO'
+          allOf:
+          - $ref: "#/components/schemas/ChatPromptContentDTO"
+          description: Prompt chat template content
         variables:
           additionalProperties: {}
           description: "Variables applied to the template, can be empty"
@@ -8406,30 +8200,10 @@ components:
       description: Prompt service result
       example:
         requestId: requestId
-        tokenUsage:
-          inputTokenCount: 0
-          totalTokenCount: 1
-          outputTokenCount: 6
+        tokenUsage: ""
         finishReason: finishReason
         text: text
-        message:
-          role: role
-          contents:
-          - type: type
-            content: content
-          - type: type
-            content: content
-          name: name
-          context: context
-          messageId: 0
-          toolCalls:
-          - name: name
-            arguments: arguments
-            id: id
-          - name: name
-            arguments: arguments
-            id: id
-          thinking: thinking
+        message: ""
       properties:
         requestId:
           description: Request identifier
@@ -8441,18 +8215,18 @@ components:
             \ of the last frame message field)"
           type: string
         message:
-          $ref: '#/components/schemas/ChatMessageDTO'
+          allOf:
+          - $ref: "#/components/schemas/ChatMessageDTO"
+          description: "Chat response message (usually as assistant, sometimes tool_call)"
         finishReason:
           description: "Model end reason: stop | length | tool_execution | content_filter"
           type: string
         tokenUsage:
-          $ref: '#/components/schemas/TokenUsageDTO'
+          allOf:
+          - $ref: "#/components/schemas/TokenUsageDTO"
+          description: Token usage information
     TokenUsageDTO:
       description: Token usage information
-      example:
-        inputTokenCount: 0
-        totalTokenCount: 1
-        outputTokenCount: 6
       properties:
         inputTokenCount:
           description: Input token count
@@ -8503,61 +8277,7 @@ components:
         - tags
         - tags
         example: example
-        chatTemplate:
-          system: system
-          messages:
-          - role: role
-            contents:
-            - type: type
-              content: content
-            - type: type
-              content: content
-            name: name
-            context: context
-            messageId: 0
-            toolCalls:
-            - name: name
-              arguments: arguments
-              id: id
-            - name: name
-              arguments: arguments
-              id: id
-            thinking: thinking
-          - role: role
-            contents:
-            - type: type
-              content: content
-            - type: type
-              content: content
-            name: name
-            context: context
-            messageId: 0
-            toolCalls:
-            - name: name
-              arguments: arguments
-              id: id
-            - name: name
-              arguments: arguments
-              id: id
-            thinking: thinking
-          messageToSend:
-            role: role
-            contents:
-            - type: type
-              content: content
-            - type: type
-              content: content
-            name: name
-            context: context
-            messageId: 0
-            toolCalls:
-            - name: name
-              arguments: arguments
-              id: id
-            - name: name
-              arguments: arguments
-              id: id
-            thinking: thinking
+        chatTemplate: ""
         requestId: requestId
         promptId: 0
         draft: draft
@@ -8620,13 +8340,15 @@ components:
         aiModels:
           description: Supported model set
           items:
-            $ref: '#/components/schemas/AiModelInfoDTO'
+            $ref: "#/components/schemas/AiModelInfoDTO"
           type: array
         template:
           description: Prompt text template content
           type: string
         chatTemplate:
-          $ref: '#/components/schemas/ChatPromptContentDTO'
+          allOf:
+          - $ref: "#/components/schemas/ChatPromptContentDTO"
+          description: Prompt chat template content
         example:
           description: Prompt example
           type: string
@@ -8696,22 +8418,6 @@ components:
       - name
     PluginQuery.Where:
       description: Query condition
-      example:
-        aiModels:
-        - aiModels
-        - aiModels
-        tagsOp: tagsOp
-        visibility: visibility
-        apiFormat: apiFormat
-        provider: provider
-        name: name
-        aiModelsOp: aiModelsOp
-        text: text
-        manifestFormat: manifestFormat
-        username: username
-        tags:
-        - tags
-        - tags
       properties:
         visibility:
           description: "Visibility: public, public_org (search this organization),\
@@ -8764,26 +8470,13 @@ components:
         - orderBy
         - orderBy
         pageSize: 6
-        where:
-          aiModels:
-          - aiModels
-          - aiModels
-          tagsOp: tagsOp
-          visibility: visibility
-          apiFormat: apiFormat
-          provider: provider
-          name: name
-          aiModelsOp: aiModelsOp
-          text: text
-          manifestFormat: manifestFormat
-          username: username
-          tags:
-          - tags
-          - tags
+        where: ""
         pageNum: 0
       properties:
         where:
-          $ref: '#/components/schemas/PluginQuery.Where'
+          allOf:
+          - $ref: "#/components/schemas/PluginQuery.Where"
+          description: Query condition
         orderBy:
           description: |
             Ordering condition, supported sorting fields are:
@@ -8877,7 +8570,7 @@ components:
         aiModels:
           description: Supported model set
           items:
-            $ref: '#/components/schemas/AiModelInfoDTO'
+            $ref: "#/components/schemas/AiModelInfoDTO"
           type: array
     PluginDetailsDTO:
       description: Plugin detailed content
@@ -8959,7 +8652,7 @@ components:
         aiModels:
           description: Supported model set
           items:
-            $ref: '#/components/schemas/AiModelInfoDTO'
+            $ref: "#/components/schemas/AiModelInfoDTO"
           type: array
         manifestInfo:
           description: "Manifest content, different formats may have differences"
@@ -9106,17 +8799,7 @@ components:
     CharacterItemForNameDTO:
       description: Character identifier and version information
       example:
-        stats:
-          referCount: 5
-          score: 7
-          gmtModified: 2000-01-23T04:56:07.000+00:00
-          recommendCount: 5
-          requestId: requestId
-          scoreCount: 2
-          referId: referId
-          referType: referType
-          viewCount: 1
-          gmtCreate: 2000-01-23T04:56:07.000+00:00
+        stats: ""
         characterId: 0
         version: 6
       properties:
@@ -9129,31 +8812,38 @@ components:
           format: int32
           type: integer
         stats:
-          $ref: '#/components/schemas/InteractiveStatsDTO'
+          allOf:
+          - $ref: "#/components/schemas/InteractiveStatsDTO"
+          description: Interactive statistics information
     CharacterBackendDetailsDTO:
       description: Character backend detailed information
       example:
-        moderationApiKeyName: moderationApiKeyName
-        ttsSpeakerType: ttsSpeakerType
         gmtModified: 2000-01-23T04:56:07.000+00:00
         moderationParams: moderationParams
+        imageModelId: imageModelId
+        ttsSpeakerWav: ttsSpeakerWav
+        requestId: requestId
+        moderationApiKeyValue: moderationApiKeyValue
+        initQuota: 7
+        imageApiKeyName: imageApiKeyName
+        ttsSpeakerIdx: ttsSpeakerIdx
+        longTermMemoryWindowSize: 5
+        characterUid: characterUid
+        moderationApiKeyName: moderationApiKeyName
+        ttsSpeakerType: ttsSpeakerType
         greetingPromptTaskId: greetingPromptTaskId
         moderationModelId: moderationModelId
-        ttsSpeakerWav: ttsSpeakerWav
         backendId: backendId
         enableTts: true
         gmtCreate: 2000-01-23T04:56:07.000+00:00
         enableAlbumTool: true
         quotaType: quotaType
         isDefault: true
-        requestId: requestId
-        initQuota: 7
         chatPromptTaskId: chatPromptTaskId
         messageWindowSize: 5
         proactiveChatWaitingTime: 2
-        ttsSpeakerIdx: ttsSpeakerIdx
-        longTermMemoryWindowSize: 5
-        characterUid: characterUid
+        imageApiKeyValue: imageApiKeyValue
+        imageParams: imageParams
       properties:
         requestId:
           description: Request identifier
@@ -9187,8 +8877,23 @@ components:
         moderationApiKeyName:
           description: Api key name for moderation model
           type: string
+        moderationApiKeyValue:
+          description: Api key value for moderation model
+          type: string
         moderationParams:
           description: Parameters for moderation model
+          type: string
+        imageModelId:
+          description: Image model for the character
+          type: string
+        imageApiKeyName:
+          description: Api key name for image model
+          type: string
+        imageApiKeyValue:
+          description: Api key value for image model
+          type: string
+        imageParams:
+          description: Parameters for image model
           type: string
         messageWindowSize:
           description: Max messages in the character's memory
@@ -9251,48 +8956,58 @@ components:
         priority: 1
         version: 6
         backends:
-        - moderationApiKeyName: moderationApiKeyName
-          ttsSpeakerType: ttsSpeakerType
-          gmtModified: 2000-01-23T04:56:07.000+00:00
+        - gmtModified: 2000-01-23T04:56:07.000+00:00
           moderationParams: moderationParams
+          imageModelId: imageModelId
+          ttsSpeakerWav: ttsSpeakerWav
+          requestId: requestId
+          moderationApiKeyValue: moderationApiKeyValue
+          initQuota: 7
+          imageApiKeyName: imageApiKeyName
+          ttsSpeakerIdx: ttsSpeakerIdx
+          longTermMemoryWindowSize: 5
+          characterUid: characterUid
+          moderationApiKeyName: moderationApiKeyName
+          ttsSpeakerType: ttsSpeakerType
           greetingPromptTaskId: greetingPromptTaskId
           moderationModelId: moderationModelId
-          ttsSpeakerWav: ttsSpeakerWav
           backendId: backendId
           enableTts: true
           gmtCreate: 2000-01-23T04:56:07.000+00:00
           enableAlbumTool: true
           quotaType: quotaType
           isDefault: true
-          requestId: requestId
-          initQuota: 7
           chatPromptTaskId: chatPromptTaskId
           messageWindowSize: 5
           proactiveChatWaitingTime: 2
+          imageApiKeyValue: imageApiKeyValue
+          imageParams: imageParams
+        - gmtModified: 2000-01-23T04:56:07.000+00:00
+          moderationParams: moderationParams
+          imageModelId: imageModelId
+          ttsSpeakerWav: ttsSpeakerWav
+          requestId: requestId
+          moderationApiKeyValue: moderationApiKeyValue
+          initQuota: 7
+          imageApiKeyName: imageApiKeyName
           ttsSpeakerIdx: ttsSpeakerIdx
           longTermMemoryWindowSize: 5
           characterUid: characterUid
-        - moderationApiKeyName: moderationApiKeyName
+          moderationApiKeyName: moderationApiKeyName
           ttsSpeakerType: ttsSpeakerType
-          gmtModified: 2000-01-23T04:56:07.000+00:00
-          moderationParams: moderationParams
           greetingPromptTaskId: greetingPromptTaskId
           moderationModelId: moderationModelId
-          ttsSpeakerWav: ttsSpeakerWav
           backendId: backendId
           enableTts: true
           gmtCreate: 2000-01-23T04:56:07.000+00:00
           enableAlbumTool: true
           quotaType: quotaType
           isDefault: true
-          requestId: requestId
-          initQuota: 7
           chatPromptTaskId: chatPromptTaskId
           messageWindowSize: 5
           proactiveChatWaitingTime: 2
-          ttsSpeakerIdx: ttsSpeakerIdx
-          longTermMemoryWindowSize: 5
-          characterUid: characterUid
+          imageApiKeyValue: imageApiKeyValue
+          imageParams: imageParams
         picture: picture
         tags:
         - tags
@@ -9389,7 +9104,7 @@ components:
         backends:
           description: Character backends information
           items:
-            $ref: '#/components/schemas/CharacterBackendDetailsDTO'
+            $ref: "#/components/schemas/CharacterBackendDetailsDTO"
           type: array
     AiApiKeyCreateDTO:
       description: Request data for adding new model credential information
@@ -9483,17 +9198,7 @@ components:
       description: Agent identifier and version information
       example:
         agentId: 0
-        stats:
-          referCount: 5
-          score: 7
-          gmtModified: 2000-01-23T04:56:07.000+00:00
-          recommendCount: 5
-          requestId: requestId
-          scoreCount: 2
-          referId: referId
-          referType: referType
-          viewCount: 1
-          gmtCreate: 2000-01-23T04:56:07.000+00:00
+        stats: ""
         version: 6
       properties:
         agentId:
@@ -9505,23 +9210,11 @@ components:
           format: int32
           type: integer
         stats:
-          $ref: '#/components/schemas/InteractiveStatsDTO'
+          allOf:
+          - $ref: "#/components/schemas/InteractiveStatsDTO"
+          description: Interactive statistics information
     AgentQuery.Where:
       description: Query condition
-      example:
-        aiModels:
-        - aiModels
-        - aiModels
-        tagsOp: tagsOp
-        visibility: visibility
-        format: format
-        name: name
-        aiModelsOp: aiModelsOp
-        text: text
-        username: username
-        tags:
-        - tags
-        - tags
       properties:
         visibility:
           description: "Visibility: public, public_org (search this organization),\
@@ -9567,24 +9260,13 @@ components:
         - orderBy
         - orderBy
         pageSize: 6
-        where:
-          aiModels:
-          - aiModels
-          - aiModels
-          tagsOp: tagsOp
-          visibility: visibility
-          format: format
-          name: name
-          aiModelsOp: aiModelsOp
-          text: text
-          username: username
-          tags:
-          - tags
-          - tags
+        where: ""
         pageNum: 0
       properties:
         where:
-          $ref: '#/components/schemas/AgentQuery.Where'
+          allOf:
+          - $ref: "#/components/schemas/AgentQuery.Where"
+          description: Query condition
         orderBy:
           description: |
             Sorting condition, supported sorting fields are:
@@ -9684,7 +9366,7 @@ components:
         aiModels:
           description: Supported model set
           items:
-            $ref: '#/components/schemas/AiModelInfoDTO'
+            $ref: "#/components/schemas/AiModelInfoDTO"
           type: array
     AgentDetailsDTO:
       description: Agent detailed content
@@ -9771,7 +9453,7 @@ components:
         aiModels:
           description: Supported model set
           items:
-            $ref: '#/components/schemas/AiModelInfoDTO'
+            $ref: "#/components/schemas/AiModelInfoDTO"
           type: array
         config:
           description: Agent configuration
@@ -9961,7 +9643,7 @@ components:
         aiModels:
           description: Supported model set
           items:
-            $ref: '#/components/schemas/AiModelInfoDTO'
+            $ref: "#/components/schemas/AiModelInfoDTO"
           type: array
         viewCount:
           description: View count
@@ -10064,7 +9746,7 @@ components:
         aiModels:
           description: Supported model set
           items:
-            $ref: '#/components/schemas/AiModelInfoDTO'
+            $ref: "#/components/schemas/AiModelInfoDTO"
           type: array
         viewCount:
           description: View count
@@ -10295,7 +9977,7 @@ components:
         aiModels:
           description: Supported model set
           items:
-            $ref: '#/components/schemas/AiModelInfoDTO'
+            $ref: "#/components/schemas/AiModelInfoDTO"
           type: array
         viewCount:
           description: View count
@@ -10324,11 +10006,7 @@ components:
         cron: cron
         ext: ext
         gmtModified: 2000-01-23T04:56:07.000+00:00
-        promptRef:
-          variables:
-            key: ""
-          promptId: 0
-          draft: true
+        promptRef: ""
         modelId: modelId
         apiKeyName: apiKeyName
         gmtCreate: 2000-01-23T04:56:07.000+00:00
@@ -10363,7 +10041,9 @@ components:
           format: date-time
           type: string
         promptRef:
-          $ref: '#/components/schemas/PromptRefDTO'
+          allOf:
+          - $ref: "#/components/schemas/PromptRefDTO"
+          description: Prompt reference information
         modelId:
           description: Model identifier
           type: string
@@ -10389,22 +10069,6 @@ components:
           type: string
     ChatContextDTO:
       description: Chat context
-      example:
-        characterNickname: characterNickname
-        apiKeyValue: apiKeyValue
-        ext: ext
-        gmtModified: 2000-01-23T04:56:07.000+00:00
-        chatId: chatId
-        about: about
-        userNickname: userNickname
-        backendId: backendId
-        apiKeyName: apiKeyName
-        gmtCreate: 2000-01-23T04:56:07.000+00:00
-        userProfile: userProfile
-        gmtRead: 2000-01-23T04:56:07.000+00:00
-        quotaType: quotaType
-        requestId: requestId
-        quota: 0
       properties:
         requestId:
           description: Request identifier
@@ -10461,28 +10125,13 @@ components:
       description: Chat message record
       example:
         ext: ext
-        message:
-          role: role
-          contents:
-          - type: type
-            content: content
-          - type: type
-            content: content
-          name: name
-          context: context
-          messageId: 0
-          toolCalls:
-          - name: name
-            arguments: arguments
-            id: id
-          - name: name
-            arguments: arguments
-            id: id
-          thinking: thinking
+        message: ""
         gmtCreate: 2000-01-23T04:56:07.000+00:00
       properties:
         message:
-          $ref: '#/components/schemas/ChatMessageDTO'
+          allOf:
+          - $ref: "#/components/schemas/ChatMessageDTO"
+          description: Message
         gmtCreate:
           description: Creation time
           format: date-time
@@ -10493,85 +10142,33 @@ components:
     ChatSessionDTO:
       description: Chat session
       example:
-        character:
-          parentUid: parentUid
-          gmtModified: 2000-01-23T04:56:07.000+00:00
-          visibility: visibility
-          gender: gender
-          defaultScene: defaultScene
-          greeting: greeting
-          description: description
-          avatar: avatar
-          video: video
-          gmtCreate: 2000-01-23T04:56:07.000+00:00
-          priority: 1
-          version: 6
-          picture: picture
-          tags:
-          - tags
-          - tags
-          requestId: requestId
-          name: name
-          nickname: nickname
-          lang: lang
-          characterId: 0
-          characterUid: characterUid
-          username: username
+        character: ""
         provider: provider
         senderStatus: senderStatus
-        context:
-          characterNickname: characterNickname
-          apiKeyValue: apiKeyValue
-          ext: ext
-          gmtModified: 2000-01-23T04:56:07.000+00:00
-          chatId: chatId
-          about: about
-          userNickname: userNickname
-          backendId: backendId
-          apiKeyName: apiKeyName
-          gmtCreate: 2000-01-23T04:56:07.000+00:00
-          userProfile: userProfile
-          gmtRead: 2000-01-23T04:56:07.000+00:00
-          quotaType: quotaType
-          requestId: requestId
-          quota: 0
-        proactiveChatWaitingTime: 6
+        context: ""
+        proactiveChatWaitingTime: 0
         isDebugEnabled: true
         isTtsEnabled: true
         isCustomizedApiKeyEnabled: true
-        latestMessageRecord:
-          ext: ext
-          message:
-            role: role
-            contents:
-            - type: type
-              content: content
-            - type: type
-              content: content
-            name: name
-            context: context
-            messageId: 0
-            toolCalls:
-            - name: name
-              arguments: arguments
-              id: id
-            - name: name
-              arguments: arguments
-              id: id
-            thinking: thinking
-          gmtCreate: 2000-01-23T04:56:07.000+00:00
+        latestMessageRecord: ""
       properties:
         context:
-          $ref: '#/components/schemas/ChatContextDTO'
+          allOf:
+          - $ref: "#/components/schemas/ChatContextDTO"
+          description: Chat context
         character:
-          $ref: '#/components/schemas/CharacterSummaryDTO'
+          allOf:
+          - $ref: "#/components/schemas/CharacterSummaryDTO"
+          description: Character summary info
         provider:
           description: "Model provider: hugging_face | open_ai | azure_open_ai | dash_scope\
             \ | ollama | unknown"
           pattern: hugging_face|open_ai|azure_open_ai|dash_scope|ollama|unknown
           type: string
         latestMessageRecord:
-          $ref: '#/components/schemas/ChatMessageRecordDTO'
+          allOf:
+          - $ref: "#/components/schemas/ChatMessageRecordDTO"
+          description: Latest message record
         proactiveChatWaitingTime:
           description: Minutes to wait for a proactive chat
           format: int32
@@ -10594,10 +10191,7 @@ components:
       example:
         messageUsage: 0
         requestId: requestId
-        tokenUsage:
-          inputTokenCount: 0
-          totalTokenCount: 1
-          outputTokenCount: 6
+        tokenUsage: ""
       properties:
         requestId:
           description: Request identifier
@@ -10607,7 +10201,9 @@ components:
           format: int64
           type: integer
         tokenUsage:
-          $ref: '#/components/schemas/TokenUsageDTO'
+          allOf:
+          - $ref: "#/components/schemas/TokenUsageDTO"
+          description: Token usage information
     AiApiKeyInfoDTO:
       description: Model credential information
       example:

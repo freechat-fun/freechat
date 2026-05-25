@@ -1,8 +1,8 @@
 /*
  * FreeChat OpenAPI Definition
- * # FreeChat: Create Friends for Yourself with AI  English | [中文版](https://github.com/freechat-fun/freechat/blob/main/README.zh-CN.md)  ## Introduction Welcome! FreeChat aims to build a cloud-native, robust, and quickly commercializable enterprise-level AI virtual character platform.  It also serves as a prompt engineering platform.  It is recommended to run [Ollama](https://ollama.com/) + FreeChat locally to test your models. See the instructions below for [running locally](#running-locally)  ## Features - Primarily uses Java and emphasizes **security, robustness, scalability, traceability, and maintainability**. - Boasts **account systems and permission management**, supporting OAuth2 authentication. Introduces the \"organization\" concept and related permission constraint functions. - Extensively employs distributed technologies and caching to support **high concurrency** access. - Provides flexible character customization options, supports direct intervention in prompts, and supports **configuring multiple backends for each character**. - **Offers a comprehensive range of Open APIs**, with [more than 180 methods](https://freechat.fun/w/docs) and provides java/python/typescript SDKs. These methods enable easy construction of systems for end-users. - Supports setting **RAG** (Retrieval Augmented Generation) for characters. - Supports **long-term memory, preset memory** for characters. - Supports characters evoking **proactive chat**. - Supports characters replies with **mixed text and image information**. - Supports setting **quota limits** for characters. - Supports characters **importing and exporting**. - Supports **character-to-character chats**. - Supports **character voices**. - Supports individual **debugging and sharing prompts**.  ## Snapshots ### On PC #### Home Page ![Home Page Snapshot](https://freechat.fun/img/snapshot_w1.jpg) #### Development View ![Development View Snapshot](https://freechat.fun/img/snapshot_w2.jpg) #### Chat View ![Chat View Snapshot](https://freechat.fun/img/snapshot_w3.jpg)  ### On Mobile ![Chat Snapshot 1](https://freechat.fun/img/snapshot_m1.jpg) ![Chat Snapshot 2](https://freechat.fun/img/snapshot_m2.jpg)<br /> ![Chat Snapshot 3](https://freechat.fun/img/snapshot_m3.jpg) ![Chat Snapshot 4](https://freechat.fun/img/snapshot_m4.jpg)  ## Character Design ```mermaid flowchart TD     A(Character) --> B(Profile)     A --> C(Knowledge/RAG)     A --> D(Album)     A --> E(Backend-1)     A --> F(Backend-n...)     E --> G(Message Window)     E --> H(Long Term Memory Settings)     E --> I(Quota Limit)     E --> J(Chat/Greeting Prompt Tasks)     E --> P(Album/TTS Tools)     E --> L(Moderation Settings)     J --> M(Model & Parameters)     J --> N(API Keys)     J --> O(Prompt Reference)     O --> R(Template)     O --> S(Variables)     O --> T(Version)     O --> U(...)     style L stroke-dasharray: 5, 5 ```  After setting up an unified persona and knowledge for a character, different backends can be configured. For example, different model may be adopted for different users based on cost considerations.  ## How to Play ### Online Website You can visit [freechat.fun](https://freechat.fun) to experience FreeChat. Share your designed AI character!  ### Running in a Kubernetes Cluster FreeChat is dedicated to the principles of cloud-native design. If you have a Kubernetes cluster, you can deploy FreeChat to your environment by following these steps:  1. Put the Kubernetes configuration file in the `configs/helm/` directory, named `kube-private.conf`. 2. Place the Helm configuration file in the same directory, named `values-private.yaml`. Make sure to reference the default `values.yaml` and customize the variables as needed. 3. Switch to the `scripts/` directory. 4. If needed, run `install-in.sh` to deploy `ingress-nginx` on the Kubernetes cluster. 5. If needed, run `install-cm.sh` to deploy `cert-manager` on the Kubernetes cluster, which automatically issues certificates for domains specified in `ingress.hosts`. 6. Run `install.sh` script to install FreeChat and its dependencies. 7. FreeChat aims to provide Open API services. If you like the interactive experience of [freechat.fun](https://freechat.fun), run `install-web.sh` to deploy the front-end application. 8. Run `restart.sh` to restart the service. 9. If you modified any Helm configuration files, use `upgrade.sh` to update the corresponding Kubernetes resources. 10. To remove specific resources, run the `uninstall*.sh` script corresponding to the resource you want to uninstall.  As a cloud-native application, the services FreeChat relies on are obtained and deployed to your cluster through the helm repository.  If you prefer cloud services with SLA (Service Level Agreement) guarantees, simply make the relevant settings in `configs/helm/values-private.yaml`: ```yaml mysql:   enabled: false   url: <your mysql url>   auth:     rootPassword: <your mysql root password>     username: <your mysql username>     password: <your mysql password for the username>  redis:   enabled: false   url: <your redis url>   auth:     password: <your redis password>   milvus:   enabled: false   url: <your milvus url>   milvus:     auth:       token: <your milvus api-key> ```  With this, FreeChat will not automatically install these services, but rather use the configuration information to connect directly.  If your Kubernetes cluster does not have a standalone monitoring system, you can enable the following switch. This will install Prometheus and Grafana services in the same namespace, dedicated to monitoring the status of the services under the FreeChat application: ```yaml prometheus:   enabled: true grafana:   enabled: true ```  ### Running Locally You can also run FreeChat locally. Currently supported on MacOS and Linux (although only tested on MacOS). You need to install the Docker toolset and have a network that can access [Docker Hub](https://hub.docker.com/).  Once ready, enter the `scripts/` directory and run `local-run.sh`, which will download and run the necessary docker containers. After a successful startup, you can access `http://localhost` via a browser to see the locally running freechat.fun. The built-in administrator username and password are \"admin:freechat\". Use `local-run.sh --help` to view the supported options of the script. Good luck!  ### Running in an IDE To run FreeChat in an IDE, you need to start all dependent services first but do not need to run the container for the FreeChat application itself. You can execute the `scripts/local-deps.sh` script to start services like `MySQL`, `Redis`, `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。Make sure you have set the following startup VM options: ```shell -Dspring.config.location=classpath:/application.yml \\ -DAPP_HOME=local-data/freechat \\ -Dspring.profiles.active=local ```  ### Use SDK #### Java - **Dependency** ```xml <dependency>   <groupId>fun.freechat</groupId>   <artifactId>freechat-sdk</artifactId>   <version>${freechat-sdk.version}</version> </dependency> ```  - **Example** ```java import fun.freechat.client.ApiClient; import fun.freechat.client.ApiException; import fun.freechat.client.Configuration; import fun.freechat.client.api.AccountApi; import fun.freechat.client.auth.ApiKeyAuth; import fun.freechat.client.model.UserDetailsDTO;  public class AccountClientExample {     public static void main(String[] args) {         ApiClient defaultClient = Configuration.getDefaultApiClient();         defaultClient.setBasePath(\"https://freechat.fun\");                  // Configure HTTP bearer authorization: bearerAuth         HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication(\"bearerAuth\");         bearerAuth.setBearerToken(\"FREECHAT_TOKEN\");          AccountApi apiInstance = new AccountApi(defaultClient);         try {             UserDetailsDTO result = apiInstance.getUserDetails();             System.out.println(result);         } catch (ApiException e) {             e.printStackTrace();         }     } } ```  #### Python - **Installation** ```shell pip install freechat-sdk ```  - **Example** ```python import freechat_sdk from freechat_sdk.rest import ApiException from pprint import pprint  # Defining the host is optional and defaults to https://freechat.fun # See configuration.py for a list of all supported configuration parameters. configuration = freechat_sdk.Configuration(     host = \"https://freechat.fun\" )  # Configure Bearer authorization: bearerAuth configuration = freechat_sdk.Configuration(     access_token = os.environ[\"FREECHAT_TOKEN\"] )  # Enter a context with an instance of the API client with freechat_sdk.ApiClient(configuration) as api_client:     # Create an instance of the API class     api_instance = freechat_sdk.AccountApi(api_client)      try:         details = api_instance.get_user_details()         pprint(details)     except ApiException as e:         print(\"Exception when calling AccountClient->get_user_details: %s\\n\" % e) ```  #### TypeScript - **Installation** ```shell npm install freechat-sdk --save ```  - **Example**  Refer to [FreeChatApiContext.tsx](https://github.com/freechat-fun/freechat/blob/main/freechat-web/src/contexts/FreeChatApiProvider.tsx)  ## System Dependencies | | Projects | ---- | ---- | Application Framework | [Spring Boot](https://spring.io/projects/spring-boot/) | LLM Framework | [LangChain4j](https://docs.langchain4j.dev/) | Model Providers | [Ollama](https://ollama.com/), [OpenAI](https://platform.openai.com/), [Azure OpenAI](https://oai.azure.com/), [DashScope(Alibaba)](https://dashscope.aliyun.com/) | Database Systems | [MySQL](https://www.mysql.com/), [Redis](https://redis.io/), [Milvus](https://milvus.io/) | Monitoring & Alerting | [Kube State Metrics](https://kubernetes.io/docs/concepts/cluster-administration/kube-state-metrics/), [Prometheus](https://prometheus.io/), [Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/), [Loki](https://grafana.com/oss/loki/), [Grafana](https://grafana.com/) | OpenAPI Tools | [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator), [OpenAPI Explorer](https://github.com/Authress-Engineering/openapi-explorer)  ## Collaboration ### Application Integration The FreeChat system is entirely oriented towards Open APIs. The site [freechat.fun](https://freechat.fun) is developed using its TypeScript SDK and hardly depends on private interfaces. You can use these online interfaces to develop your own applications or sites, making them fit your preferences. Currently, the online FreeChat service is completely free and there are no current plans for charging.  ### Model Integration FreeChat aims to explore AI virtual character technology with anthropomorphic characteristics. If you are researching this area and hope FreeChat supports your model, please contact us. We look forward to AI technology helping people create their own \"soul mates\" in the future. 
+ * # FreeChat: Create Friends for Yourself with AI  English | [中文版](https://github.com/freechat-fun/freechat/blob/main/README.zh-CN.md)  ## Introduction Welcome! FreeChat aims to build a cloud-native, robust, and quickly commercializable enterprise-level AI virtual character platform.  It also serves as a prompt engineering platform.  It is recommended to run [Ollama](https://ollama.com/) + FreeChat locally to test your models. See the instructions below for [running locally](#running-locally)  ## Features - Primarily uses Java and emphasizes **security, robustness, scalability, traceability, and maintainability**. - Boasts **account systems and permission management**, supporting OAuth2 authentication. Introduces the \"organization\" concept and related permission constraint functions. - Extensively employs distributed technologies and caching to support **high concurrency** access. - Provides flexible character customization options, supports direct intervention in prompts, and supports **configuring multiple backends for each character**. - **Offers a comprehensive range of Open APIs**, with [more than 180 methods](https://freechat.fun/w/docs) and provides java/python/typescript SDKs. These methods enable easy construction of systems for end-users. - Supports setting **RAG** (Retrieval Augmented Generation) for characters. - Supports **long-term memory, preset memory** for characters. - Supports characters evoking **proactive chat**. - Supports **automatic image generation** for characters and replies with mixed text and image messages. - Supports setting **quota limits** for characters. - Supports characters **importing and exporting**. - Supports **character-to-character chats**. - Supports **character voices**. - Supports individual **debugging and sharing prompts**.  ## Snapshots ### On PC #### Home Page ![Home Page Snapshot](https://freechat.fun/img/snapshot_w1.jpg) #### Development View ![Development View Snapshot](https://freechat.fun/img/snapshot_w2.jpg) #### Chat View ![Chat View Snapshot](https://freechat.fun/img/snapshot_w3.jpg)  ### On Mobile ![Chat Snapshot 1](https://freechat.fun/img/snapshot_m1.jpg) ![Chat Snapshot 2](https://freechat.fun/img/snapshot_m2.jpg)<br /> ![Chat Snapshot 3](https://freechat.fun/img/snapshot_m3.jpg) ![Chat Snapshot 4](https://freechat.fun/img/snapshot_m4.jpg)  ## Character Design ```mermaid flowchart TD     A(Character) --> B(Profile)     A --> C(Knowledge/RAG)     A --> D(Album)     A --> E(Backend-1)     A --> F(Backend-n...)     E --> G(Message Window)     E --> H(Long Term Memory Settings)     E --> I(Quota Limit)     E --> J(Chat/Greeting Prompt Tasks)     E --> P(Album/TTS Tools)     E --> L(Moderation Settings)     J --> M(Model & Parameters)     J --> N(API Keys)     J --> O(Prompt Reference)     O --> R(Template)     O --> S(Variables)     O --> T(Version)     O --> U(...)     style L stroke-dasharray: 5, 5 ```  After setting up an unified persona and knowledge for a character, different backends can be configured. For example, different model may be adopted for different users based on cost considerations.  ## How to Play ### Online Website You can visit [freechat.fun](https://freechat.fun) to experience FreeChat. Share your designed AI character!  ### Running in a Kubernetes Cluster FreeChat is dedicated to the principles of cloud-native design. If you have a Kubernetes cluster, you can deploy FreeChat to your environment by following these steps:  1. Put the Kubernetes configuration file in the `configs/helm/` directory, named `kube-private.conf`. 2. Place the Helm configuration file in the same directory, named `values-private.yaml`. Make sure to reference the default `values.yaml` and customize the variables as needed. 3. Switch to the `scripts/` directory. 4. If needed, run `install-in.sh` to deploy `ingress-nginx` on the Kubernetes cluster. 5. If needed, run `install-cm.sh` to deploy `cert-manager` on the Kubernetes cluster, which automatically issues certificates for domains specified in `ingress.hosts`. 6. Run `install.sh` script to install FreeChat and its dependencies. 7. FreeChat aims to provide Open API services. If you like the interactive experience of [freechat.fun](https://freechat.fun), run `install-web.sh` to deploy the front-end application. 8. Run `restart.sh` to restart the service. 9. If you modified any Helm configuration files, use `upgrade.sh` to update the corresponding Kubernetes resources. 10. To remove specific resources, run the `uninstall*.sh` script corresponding to the resource you want to uninstall.  As a cloud-native application, the services FreeChat relies on are obtained and deployed to your cluster through the helm repository.  If you prefer cloud services with SLA (Service Level Agreement) guarantees, simply make the relevant settings in `configs/helm/values-private.yaml`: ```yaml mysql:   enabled: false   url: <your mysql url>   auth:     rootPassword: <your mysql root password>     username: <your mysql username>     password: <your mysql password for the username>  redis:   enabled: false   url: <your redis url>   auth:     password: <your redis password>   milvus:   enabled: false   url: <your milvus url>   milvus:     auth:       token: <your milvus api-key> ```  With this, FreeChat will not automatically install these services, but rather use the configuration information to connect directly.  If your Kubernetes cluster does not have a standalone monitoring system, you can enable the following switch. This will install Prometheus and Grafana services in the same namespace, dedicated to monitoring the status of the services under the FreeChat application: ```yaml prometheus:   enabled: true grafana:   enabled: true ```  ### Running Locally You can also run FreeChat locally. Currently supported on MacOS and Linux (although only tested on MacOS). You need to install the Docker toolset and have a network that can access [Docker Hub](https://hub.docker.com/).  Once ready, enter the `scripts/` directory and run `local-run.sh`, which will download and run the necessary docker containers. After a successful startup, you can access `http://localhost` via a browser to see the locally running freechat.fun. The built-in administrator username and password are \"admin:freechat\". Use `local-run.sh --help` to view the supported options of the script. Good luck!  ### Running in an IDE To run FreeChat in an IDE, you need to start all dependent services first but do not need to run the container for the FreeChat application itself. You can execute the `scripts/local-deps.sh` script to start services like `MySQL`, `Redis`, `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。Make sure you have set the following startup VM options: ```shell -Dspring.config.location=classpath:/application.yml \\ -DAPP_HOME=local-data/freechat \\ -Dspring.profiles.active=local ```  ### Use SDK #### Java - **Dependency** ```xml <dependency>   <groupId>fun.freechat</groupId>   <artifactId>freechat-sdk</artifactId>   <version>${freechat-sdk.version}</version> </dependency> ```  - **Example** ```java import fun.freechat.client.ApiClient; import fun.freechat.client.ApiException; import fun.freechat.client.Configuration; import fun.freechat.client.api.AccountApi; import fun.freechat.client.auth.ApiKeyAuth; import fun.freechat.client.model.UserDetailsDTO;  public class AccountClientExample {     public static void main(String[] args) {         ApiClient defaultClient = Configuration.getDefaultApiClient();         defaultClient.setBasePath(\"https://freechat.fun\");                  // Configure HTTP bearer authorization: bearerAuth         HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication(\"bearerAuth\");         bearerAuth.setBearerToken(\"FREECHAT_TOKEN\");          AccountApi apiInstance = new AccountApi(defaultClient);         try {             UserDetailsDTO result = apiInstance.getUserDetails();             System.out.println(result);         } catch (ApiException e) {             e.printStackTrace();         }     } } ```  #### Python - **Installation** ```shell pip install freechat-sdk ```  - **Example** ```python import freechat_sdk from freechat_sdk.rest import ApiException from pprint import pprint  # Defining the host is optional and defaults to https://freechat.fun # See configuration.py for a list of all supported configuration parameters. configuration = freechat_sdk.Configuration(     host = \"https://freechat.fun\" )  # Configure Bearer authorization: bearerAuth configuration = freechat_sdk.Configuration(     access_token = os.environ[\"FREECHAT_TOKEN\"] )  # Enter a context with an instance of the API client with freechat_sdk.ApiClient(configuration) as api_client:     # Create an instance of the API class     api_instance = freechat_sdk.AccountApi(api_client)      try:         details = api_instance.get_user_details()         pprint(details)     except ApiException as e:         print(\"Exception when calling AccountClient->get_user_details: %s\\n\" % e) ```  #### TypeScript - **Installation** ```shell npm install freechat-sdk --save ```  - **Example**  Refer to [FreeChatApiContext.tsx](https://github.com/freechat-fun/freechat/blob/main/freechat-web/src/contexts/FreeChatApiProvider.tsx)  ## System Dependencies | | Projects | ---- | ---- | Application Framework | [Spring Boot](https://spring.io/projects/spring-boot/) | LLM Framework | [LangChain4j](https://docs.langchain4j.dev/) | Model Providers | [Ollama](https://ollama.com/), [OpenAI](https://platform.openai.com/), [Azure OpenAI](https://oai.azure.com/), [DashScope(Alibaba)](https://dashscope.aliyun.com/) | Database Systems | [MySQL](https://www.mysql.com/), [Redis](https://redis.io/), [Milvus](https://milvus.io/) | Monitoring & Alerting | [Kube State Metrics](https://kubernetes.io/docs/concepts/cluster-administration/kube-state-metrics/), [Prometheus](https://prometheus.io/), [Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/), [Loki](https://grafana.com/oss/loki/), [Grafana](https://grafana.com/) | OpenAPI Tools | [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator), [OpenAPI Explorer](https://github.com/Authress-Engineering/openapi-explorer)  ## Collaboration ### Application Integration The FreeChat system is entirely oriented towards Open APIs. The site [freechat.fun](https://freechat.fun) is developed using its TypeScript SDK and hardly depends on private interfaces. You can use these online interfaces to develop your own applications or sites, making them fit your preferences. Currently, the online FreeChat service is completely free and there are no current plans for charging.  ### Model Integration FreeChat aims to explore AI virtual character technology with anthropomorphic characteristics. If you are researching this area and hope FreeChat supports your model, please contact us. We look forward to AI technology helping people create their own \"soul mates\" in the future. 
  *
- * The version of the OpenAPI document: 2.6.0
+ * The version of the OpenAPI document: 2.7.0
  * 
  *
  * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
@@ -93,7 +93,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call addStatisticCall(String infoType, String infoId, String statsType, Long delta, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call addStatisticCall(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId, @javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long delta, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -142,7 +142,7 @@ public class InteractiveStatisticsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call addStatisticValidateBeforeCall(String infoType, String infoId, String statsType, Long delta, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call addStatisticValidateBeforeCall(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId, @javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long delta, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'infoType' is set
         if (infoType == null) {
             throw new ApiException("Missing the required parameter 'infoType' when calling addStatistic(Async)");
@@ -183,7 +183,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public Long addStatistic(String infoType, String infoId, String statsType, Long delta) throws ApiException {
+    public Long addStatistic(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId, @javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long delta) throws ApiException {
         ApiResponse<Long> localVarResp = addStatisticWithHttpInfo(infoType, infoId, statsType, delta);
         return localVarResp.getData();
     }
@@ -204,7 +204,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Long> addStatisticWithHttpInfo(String infoType, String infoId, String statsType, Long delta) throws ApiException {
+    public ApiResponse<Long> addStatisticWithHttpInfo(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId, @javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long delta) throws ApiException {
         okhttp3.Call localVarCall = addStatisticValidateBeforeCall(infoType, infoId, statsType, delta, null);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -227,7 +227,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call addStatisticAsync(String infoType, String infoId, String statsType, Long delta, final ApiCallback<Long> _callback) throws ApiException {
+    public okhttp3.Call addStatisticAsync(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId, @javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long delta, final ApiCallback<Long> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = addStatisticValidateBeforeCall(infoType, infoId, statsType, delta, _callback);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
@@ -248,7 +248,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getScoreCall(String infoType, String infoId, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call getScoreCall(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -295,7 +295,7 @@ public class InteractiveStatisticsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call getScoreValidateBeforeCall(String infoType, String infoId, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call getScoreValidateBeforeCall(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'infoType' is set
         if (infoType == null) {
             throw new ApiException("Missing the required parameter 'infoType' when calling getScore(Async)");
@@ -324,7 +324,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public Long getScore(String infoType, String infoId) throws ApiException {
+    public Long getScore(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId) throws ApiException {
         ApiResponse<Long> localVarResp = getScoreWithHttpInfo(infoType, infoId);
         return localVarResp.getData();
     }
@@ -343,7 +343,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Long> getScoreWithHttpInfo(String infoType, String infoId) throws ApiException {
+    public ApiResponse<Long> getScoreWithHttpInfo(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId) throws ApiException {
         okhttp3.Call localVarCall = getScoreValidateBeforeCall(infoType, infoId, null);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -364,7 +364,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getScoreAsync(String infoType, String infoId, final ApiCallback<Long> _callback) throws ApiException {
+    public okhttp3.Call getScoreAsync(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId, final ApiCallback<Long> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = getScoreValidateBeforeCall(infoType, infoId, _callback);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
@@ -386,7 +386,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getStatisticCall(String infoType, String infoId, String statsType, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call getStatisticCall(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId, @javax.annotation.Nonnull String statsType, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -434,7 +434,7 @@ public class InteractiveStatisticsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call getStatisticValidateBeforeCall(String infoType, String infoId, String statsType, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call getStatisticValidateBeforeCall(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId, @javax.annotation.Nonnull String statsType, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'infoType' is set
         if (infoType == null) {
             throw new ApiException("Missing the required parameter 'infoType' when calling getStatistic(Async)");
@@ -469,7 +469,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public Long getStatistic(String infoType, String infoId, String statsType) throws ApiException {
+    public Long getStatistic(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId, @javax.annotation.Nonnull String statsType) throws ApiException {
         ApiResponse<Long> localVarResp = getStatisticWithHttpInfo(infoType, infoId, statsType);
         return localVarResp.getData();
     }
@@ -489,7 +489,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Long> getStatisticWithHttpInfo(String infoType, String infoId, String statsType) throws ApiException {
+    public ApiResponse<Long> getStatisticWithHttpInfo(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId, @javax.annotation.Nonnull String statsType) throws ApiException {
         okhttp3.Call localVarCall = getStatisticValidateBeforeCall(infoType, infoId, statsType, null);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -511,7 +511,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getStatisticAsync(String infoType, String infoId, String statsType, final ApiCallback<Long> _callback) throws ApiException {
+    public okhttp3.Call getStatisticAsync(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId, @javax.annotation.Nonnull String statsType, final ApiCallback<Long> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = getStatisticValidateBeforeCall(infoType, infoId, statsType, _callback);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
@@ -532,7 +532,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getStatisticsCall(String infoType, String infoId, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call getStatisticsCall(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -579,7 +579,7 @@ public class InteractiveStatisticsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call getStatisticsValidateBeforeCall(String infoType, String infoId, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call getStatisticsValidateBeforeCall(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'infoType' is set
         if (infoType == null) {
             throw new ApiException("Missing the required parameter 'infoType' when calling getStatistics(Async)");
@@ -608,7 +608,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public InteractiveStatsDTO getStatistics(String infoType, String infoId) throws ApiException {
+    public InteractiveStatsDTO getStatistics(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId) throws ApiException {
         ApiResponse<InteractiveStatsDTO> localVarResp = getStatisticsWithHttpInfo(infoType, infoId);
         return localVarResp.getData();
     }
@@ -627,7 +627,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<InteractiveStatsDTO> getStatisticsWithHttpInfo(String infoType, String infoId) throws ApiException {
+    public ApiResponse<InteractiveStatsDTO> getStatisticsWithHttpInfo(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId) throws ApiException {
         okhttp3.Call localVarCall = getStatisticsValidateBeforeCall(infoType, infoId, null);
         Type localVarReturnType = new TypeToken<InteractiveStatsDTO>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -648,7 +648,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getStatisticsAsync(String infoType, String infoId, final ApiCallback<InteractiveStatsDTO> _callback) throws ApiException {
+    public okhttp3.Call getStatisticsAsync(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId, final ApiCallback<InteractiveStatsDTO> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = getStatisticsValidateBeforeCall(infoType, infoId, _callback);
         Type localVarReturnType = new TypeToken<InteractiveStatsDTO>(){}.getType();
@@ -670,7 +670,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call increaseStatisticCall(String infoType, String infoId, String statsType, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call increaseStatisticCall(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId, @javax.annotation.Nonnull String statsType, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -718,7 +718,7 @@ public class InteractiveStatisticsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call increaseStatisticValidateBeforeCall(String infoType, String infoId, String statsType, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call increaseStatisticValidateBeforeCall(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId, @javax.annotation.Nonnull String statsType, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'infoType' is set
         if (infoType == null) {
             throw new ApiException("Missing the required parameter 'infoType' when calling increaseStatistic(Async)");
@@ -753,7 +753,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public Long increaseStatistic(String infoType, String infoId, String statsType) throws ApiException {
+    public Long increaseStatistic(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId, @javax.annotation.Nonnull String statsType) throws ApiException {
         ApiResponse<Long> localVarResp = increaseStatisticWithHttpInfo(infoType, infoId, statsType);
         return localVarResp.getData();
     }
@@ -773,7 +773,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Long> increaseStatisticWithHttpInfo(String infoType, String infoId, String statsType) throws ApiException {
+    public ApiResponse<Long> increaseStatisticWithHttpInfo(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId, @javax.annotation.Nonnull String statsType) throws ApiException {
         okhttp3.Call localVarCall = increaseStatisticValidateBeforeCall(infoType, infoId, statsType, null);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -795,7 +795,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call increaseStatisticAsync(String infoType, String infoId, String statsType, final ApiCallback<Long> _callback) throws ApiException {
+    public okhttp3.Call increaseStatisticAsync(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull String infoId, @javax.annotation.Nonnull String statsType, final ApiCallback<Long> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = increaseStatisticValidateBeforeCall(infoType, infoId, statsType, _callback);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
@@ -817,7 +817,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listAgentsByStatisticCall(String statsType, Long pageSize, String asc, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call listAgentsByStatisticCall(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -868,7 +868,7 @@ public class InteractiveStatisticsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call listAgentsByStatisticValidateBeforeCall(String statsType, Long pageSize, String asc, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call listAgentsByStatisticValidateBeforeCall(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'statsType' is set
         if (statsType == null) {
             throw new ApiException("Missing the required parameter 'statsType' when calling listAgentsByStatistic(Async)");
@@ -898,7 +898,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<AgentSummaryStatsDTO> listAgentsByStatistic(String statsType, Long pageSize, String asc) throws ApiException {
+    public List<AgentSummaryStatsDTO> listAgentsByStatistic(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String asc) throws ApiException {
         ApiResponse<List<AgentSummaryStatsDTO>> localVarResp = listAgentsByStatisticWithHttpInfo(statsType, pageSize, asc);
         return localVarResp.getData();
     }
@@ -918,7 +918,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<AgentSummaryStatsDTO>> listAgentsByStatisticWithHttpInfo(String statsType, Long pageSize, String asc) throws ApiException {
+    public ApiResponse<List<AgentSummaryStatsDTO>> listAgentsByStatisticWithHttpInfo(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String asc) throws ApiException {
         okhttp3.Call localVarCall = listAgentsByStatisticValidateBeforeCall(statsType, pageSize, asc, null);
         Type localVarReturnType = new TypeToken<List<AgentSummaryStatsDTO>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -940,7 +940,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listAgentsByStatisticAsync(String statsType, Long pageSize, String asc, final ApiCallback<List<AgentSummaryStatsDTO>> _callback) throws ApiException {
+    public okhttp3.Call listAgentsByStatisticAsync(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String asc, final ApiCallback<List<AgentSummaryStatsDTO>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = listAgentsByStatisticValidateBeforeCall(statsType, pageSize, asc, _callback);
         Type localVarReturnType = new TypeToken<List<AgentSummaryStatsDTO>>(){}.getType();
@@ -963,7 +963,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listAgentsByStatistic1Call(String statsType, Long pageSize, Long pageNum, String asc, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call listAgentsByStatistic1Call(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nonnull Long pageNum, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -1015,7 +1015,7 @@ public class InteractiveStatisticsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call listAgentsByStatistic1ValidateBeforeCall(String statsType, Long pageSize, Long pageNum, String asc, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call listAgentsByStatistic1ValidateBeforeCall(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nonnull Long pageNum, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'statsType' is set
         if (statsType == null) {
             throw new ApiException("Missing the required parameter 'statsType' when calling listAgentsByStatistic1(Async)");
@@ -1051,7 +1051,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<AgentSummaryStatsDTO> listAgentsByStatistic1(String statsType, Long pageSize, Long pageNum, String asc) throws ApiException {
+    public List<AgentSummaryStatsDTO> listAgentsByStatistic1(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nonnull Long pageNum, @javax.annotation.Nullable String asc) throws ApiException {
         ApiResponse<List<AgentSummaryStatsDTO>> localVarResp = listAgentsByStatistic1WithHttpInfo(statsType, pageSize, pageNum, asc);
         return localVarResp.getData();
     }
@@ -1072,7 +1072,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<AgentSummaryStatsDTO>> listAgentsByStatistic1WithHttpInfo(String statsType, Long pageSize, Long pageNum, String asc) throws ApiException {
+    public ApiResponse<List<AgentSummaryStatsDTO>> listAgentsByStatistic1WithHttpInfo(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nonnull Long pageNum, @javax.annotation.Nullable String asc) throws ApiException {
         okhttp3.Call localVarCall = listAgentsByStatistic1ValidateBeforeCall(statsType, pageSize, pageNum, asc, null);
         Type localVarReturnType = new TypeToken<List<AgentSummaryStatsDTO>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -1095,7 +1095,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listAgentsByStatistic1Async(String statsType, Long pageSize, Long pageNum, String asc, final ApiCallback<List<AgentSummaryStatsDTO>> _callback) throws ApiException {
+    public okhttp3.Call listAgentsByStatistic1Async(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nonnull Long pageNum, @javax.annotation.Nullable String asc, final ApiCallback<List<AgentSummaryStatsDTO>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = listAgentsByStatistic1ValidateBeforeCall(statsType, pageSize, pageNum, asc, _callback);
         Type localVarReturnType = new TypeToken<List<AgentSummaryStatsDTO>>(){}.getType();
@@ -1116,7 +1116,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listAgentsByStatistic2Call(String statsType, String asc, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call listAgentsByStatistic2Call(@javax.annotation.Nonnull String statsType, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -1166,7 +1166,7 @@ public class InteractiveStatisticsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call listAgentsByStatistic2ValidateBeforeCall(String statsType, String asc, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call listAgentsByStatistic2ValidateBeforeCall(@javax.annotation.Nonnull String statsType, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'statsType' is set
         if (statsType == null) {
             throw new ApiException("Missing the required parameter 'statsType' when calling listAgentsByStatistic2(Async)");
@@ -1190,7 +1190,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<AgentSummaryStatsDTO> listAgentsByStatistic2(String statsType, String asc) throws ApiException {
+    public List<AgentSummaryStatsDTO> listAgentsByStatistic2(@javax.annotation.Nonnull String statsType, @javax.annotation.Nullable String asc) throws ApiException {
         ApiResponse<List<AgentSummaryStatsDTO>> localVarResp = listAgentsByStatistic2WithHttpInfo(statsType, asc);
         return localVarResp.getData();
     }
@@ -1209,7 +1209,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<AgentSummaryStatsDTO>> listAgentsByStatistic2WithHttpInfo(String statsType, String asc) throws ApiException {
+    public ApiResponse<List<AgentSummaryStatsDTO>> listAgentsByStatistic2WithHttpInfo(@javax.annotation.Nonnull String statsType, @javax.annotation.Nullable String asc) throws ApiException {
         okhttp3.Call localVarCall = listAgentsByStatistic2ValidateBeforeCall(statsType, asc, null);
         Type localVarReturnType = new TypeToken<List<AgentSummaryStatsDTO>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -1230,7 +1230,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listAgentsByStatistic2Async(String statsType, String asc, final ApiCallback<List<AgentSummaryStatsDTO>> _callback) throws ApiException {
+    public okhttp3.Call listAgentsByStatistic2Async(@javax.annotation.Nonnull String statsType, @javax.annotation.Nullable String asc, final ApiCallback<List<AgentSummaryStatsDTO>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = listAgentsByStatistic2ValidateBeforeCall(statsType, asc, _callback);
         Type localVarReturnType = new TypeToken<List<AgentSummaryStatsDTO>>(){}.getType();
@@ -1251,7 +1251,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listCharactersByStatisticCall(String statsType, String asc, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call listCharactersByStatisticCall(@javax.annotation.Nonnull String statsType, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -1301,7 +1301,7 @@ public class InteractiveStatisticsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call listCharactersByStatisticValidateBeforeCall(String statsType, String asc, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call listCharactersByStatisticValidateBeforeCall(@javax.annotation.Nonnull String statsType, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'statsType' is set
         if (statsType == null) {
             throw new ApiException("Missing the required parameter 'statsType' when calling listCharactersByStatistic(Async)");
@@ -1325,7 +1325,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<CharacterSummaryStatsDTO> listCharactersByStatistic(String statsType, String asc) throws ApiException {
+    public List<CharacterSummaryStatsDTO> listCharactersByStatistic(@javax.annotation.Nonnull String statsType, @javax.annotation.Nullable String asc) throws ApiException {
         ApiResponse<List<CharacterSummaryStatsDTO>> localVarResp = listCharactersByStatisticWithHttpInfo(statsType, asc);
         return localVarResp.getData();
     }
@@ -1344,7 +1344,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<CharacterSummaryStatsDTO>> listCharactersByStatisticWithHttpInfo(String statsType, String asc) throws ApiException {
+    public ApiResponse<List<CharacterSummaryStatsDTO>> listCharactersByStatisticWithHttpInfo(@javax.annotation.Nonnull String statsType, @javax.annotation.Nullable String asc) throws ApiException {
         okhttp3.Call localVarCall = listCharactersByStatisticValidateBeforeCall(statsType, asc, null);
         Type localVarReturnType = new TypeToken<List<CharacterSummaryStatsDTO>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -1365,7 +1365,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listCharactersByStatisticAsync(String statsType, String asc, final ApiCallback<List<CharacterSummaryStatsDTO>> _callback) throws ApiException {
+    public okhttp3.Call listCharactersByStatisticAsync(@javax.annotation.Nonnull String statsType, @javax.annotation.Nullable String asc, final ApiCallback<List<CharacterSummaryStatsDTO>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = listCharactersByStatisticValidateBeforeCall(statsType, asc, _callback);
         Type localVarReturnType = new TypeToken<List<CharacterSummaryStatsDTO>>(){}.getType();
@@ -1387,7 +1387,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listCharactersByStatistic1Call(String statsType, Long pageSize, String asc, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call listCharactersByStatistic1Call(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -1438,7 +1438,7 @@ public class InteractiveStatisticsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call listCharactersByStatistic1ValidateBeforeCall(String statsType, Long pageSize, String asc, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call listCharactersByStatistic1ValidateBeforeCall(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'statsType' is set
         if (statsType == null) {
             throw new ApiException("Missing the required parameter 'statsType' when calling listCharactersByStatistic1(Async)");
@@ -1468,7 +1468,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<CharacterSummaryStatsDTO> listCharactersByStatistic1(String statsType, Long pageSize, String asc) throws ApiException {
+    public List<CharacterSummaryStatsDTO> listCharactersByStatistic1(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String asc) throws ApiException {
         ApiResponse<List<CharacterSummaryStatsDTO>> localVarResp = listCharactersByStatistic1WithHttpInfo(statsType, pageSize, asc);
         return localVarResp.getData();
     }
@@ -1488,7 +1488,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<CharacterSummaryStatsDTO>> listCharactersByStatistic1WithHttpInfo(String statsType, Long pageSize, String asc) throws ApiException {
+    public ApiResponse<List<CharacterSummaryStatsDTO>> listCharactersByStatistic1WithHttpInfo(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String asc) throws ApiException {
         okhttp3.Call localVarCall = listCharactersByStatistic1ValidateBeforeCall(statsType, pageSize, asc, null);
         Type localVarReturnType = new TypeToken<List<CharacterSummaryStatsDTO>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -1510,7 +1510,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listCharactersByStatistic1Async(String statsType, Long pageSize, String asc, final ApiCallback<List<CharacterSummaryStatsDTO>> _callback) throws ApiException {
+    public okhttp3.Call listCharactersByStatistic1Async(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String asc, final ApiCallback<List<CharacterSummaryStatsDTO>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = listCharactersByStatistic1ValidateBeforeCall(statsType, pageSize, asc, _callback);
         Type localVarReturnType = new TypeToken<List<CharacterSummaryStatsDTO>>(){}.getType();
@@ -1533,7 +1533,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listCharactersByStatistic2Call(String statsType, Long pageSize, Long pageNum, String asc, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call listCharactersByStatistic2Call(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nonnull Long pageNum, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -1585,7 +1585,7 @@ public class InteractiveStatisticsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call listCharactersByStatistic2ValidateBeforeCall(String statsType, Long pageSize, Long pageNum, String asc, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call listCharactersByStatistic2ValidateBeforeCall(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nonnull Long pageNum, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'statsType' is set
         if (statsType == null) {
             throw new ApiException("Missing the required parameter 'statsType' when calling listCharactersByStatistic2(Async)");
@@ -1621,7 +1621,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<CharacterSummaryStatsDTO> listCharactersByStatistic2(String statsType, Long pageSize, Long pageNum, String asc) throws ApiException {
+    public List<CharacterSummaryStatsDTO> listCharactersByStatistic2(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nonnull Long pageNum, @javax.annotation.Nullable String asc) throws ApiException {
         ApiResponse<List<CharacterSummaryStatsDTO>> localVarResp = listCharactersByStatistic2WithHttpInfo(statsType, pageSize, pageNum, asc);
         return localVarResp.getData();
     }
@@ -1642,7 +1642,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<CharacterSummaryStatsDTO>> listCharactersByStatistic2WithHttpInfo(String statsType, Long pageSize, Long pageNum, String asc) throws ApiException {
+    public ApiResponse<List<CharacterSummaryStatsDTO>> listCharactersByStatistic2WithHttpInfo(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nonnull Long pageNum, @javax.annotation.Nullable String asc) throws ApiException {
         okhttp3.Call localVarCall = listCharactersByStatistic2ValidateBeforeCall(statsType, pageSize, pageNum, asc, null);
         Type localVarReturnType = new TypeToken<List<CharacterSummaryStatsDTO>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -1665,7 +1665,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listCharactersByStatistic2Async(String statsType, Long pageSize, Long pageNum, String asc, final ApiCallback<List<CharacterSummaryStatsDTO>> _callback) throws ApiException {
+    public okhttp3.Call listCharactersByStatistic2Async(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nonnull Long pageNum, @javax.annotation.Nullable String asc, final ApiCallback<List<CharacterSummaryStatsDTO>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = listCharactersByStatistic2ValidateBeforeCall(statsType, pageSize, pageNum, asc, _callback);
         Type localVarReturnType = new TypeToken<List<CharacterSummaryStatsDTO>>(){}.getType();
@@ -1687,7 +1687,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listHotTagsCall(String infoType, Long pageSize, String text, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call listHotTagsCall(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String text, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -1738,7 +1738,7 @@ public class InteractiveStatisticsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call listHotTagsValidateBeforeCall(String infoType, Long pageSize, String text, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call listHotTagsValidateBeforeCall(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String text, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'infoType' is set
         if (infoType == null) {
             throw new ApiException("Missing the required parameter 'infoType' when calling listHotTags(Async)");
@@ -1768,7 +1768,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<HotTagDTO> listHotTags(String infoType, Long pageSize, String text) throws ApiException {
+    public List<HotTagDTO> listHotTags(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String text) throws ApiException {
         ApiResponse<List<HotTagDTO>> localVarResp = listHotTagsWithHttpInfo(infoType, pageSize, text);
         return localVarResp.getData();
     }
@@ -1788,7 +1788,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<HotTagDTO>> listHotTagsWithHttpInfo(String infoType, Long pageSize, String text) throws ApiException {
+    public ApiResponse<List<HotTagDTO>> listHotTagsWithHttpInfo(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String text) throws ApiException {
         okhttp3.Call localVarCall = listHotTagsValidateBeforeCall(infoType, pageSize, text, null);
         Type localVarReturnType = new TypeToken<List<HotTagDTO>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -1810,7 +1810,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listHotTagsAsync(String infoType, Long pageSize, String text, final ApiCallback<List<HotTagDTO>> _callback) throws ApiException {
+    public okhttp3.Call listHotTagsAsync(@javax.annotation.Nonnull String infoType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String text, final ApiCallback<List<HotTagDTO>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = listHotTagsValidateBeforeCall(infoType, pageSize, text, _callback);
         Type localVarReturnType = new TypeToken<List<HotTagDTO>>(){}.getType();
@@ -1833,7 +1833,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listPluginsByStatisticCall(String statsType, Long pageSize, Long pageNum, String asc, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call listPluginsByStatisticCall(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nonnull Long pageNum, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -1885,7 +1885,7 @@ public class InteractiveStatisticsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call listPluginsByStatisticValidateBeforeCall(String statsType, Long pageSize, Long pageNum, String asc, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call listPluginsByStatisticValidateBeforeCall(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nonnull Long pageNum, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'statsType' is set
         if (statsType == null) {
             throw new ApiException("Missing the required parameter 'statsType' when calling listPluginsByStatistic(Async)");
@@ -1921,7 +1921,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<PluginSummaryStatsDTO> listPluginsByStatistic(String statsType, Long pageSize, Long pageNum, String asc) throws ApiException {
+    public List<PluginSummaryStatsDTO> listPluginsByStatistic(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nonnull Long pageNum, @javax.annotation.Nullable String asc) throws ApiException {
         ApiResponse<List<PluginSummaryStatsDTO>> localVarResp = listPluginsByStatisticWithHttpInfo(statsType, pageSize, pageNum, asc);
         return localVarResp.getData();
     }
@@ -1942,7 +1942,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<PluginSummaryStatsDTO>> listPluginsByStatisticWithHttpInfo(String statsType, Long pageSize, Long pageNum, String asc) throws ApiException {
+    public ApiResponse<List<PluginSummaryStatsDTO>> listPluginsByStatisticWithHttpInfo(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nonnull Long pageNum, @javax.annotation.Nullable String asc) throws ApiException {
         okhttp3.Call localVarCall = listPluginsByStatisticValidateBeforeCall(statsType, pageSize, pageNum, asc, null);
         Type localVarReturnType = new TypeToken<List<PluginSummaryStatsDTO>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -1965,7 +1965,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listPluginsByStatisticAsync(String statsType, Long pageSize, Long pageNum, String asc, final ApiCallback<List<PluginSummaryStatsDTO>> _callback) throws ApiException {
+    public okhttp3.Call listPluginsByStatisticAsync(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nonnull Long pageNum, @javax.annotation.Nullable String asc, final ApiCallback<List<PluginSummaryStatsDTO>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = listPluginsByStatisticValidateBeforeCall(statsType, pageSize, pageNum, asc, _callback);
         Type localVarReturnType = new TypeToken<List<PluginSummaryStatsDTO>>(){}.getType();
@@ -1986,7 +1986,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listPluginsByStatistic1Call(String statsType, String asc, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call listPluginsByStatistic1Call(@javax.annotation.Nonnull String statsType, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -2036,7 +2036,7 @@ public class InteractiveStatisticsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call listPluginsByStatistic1ValidateBeforeCall(String statsType, String asc, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call listPluginsByStatistic1ValidateBeforeCall(@javax.annotation.Nonnull String statsType, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'statsType' is set
         if (statsType == null) {
             throw new ApiException("Missing the required parameter 'statsType' when calling listPluginsByStatistic1(Async)");
@@ -2060,7 +2060,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<PluginSummaryStatsDTO> listPluginsByStatistic1(String statsType, String asc) throws ApiException {
+    public List<PluginSummaryStatsDTO> listPluginsByStatistic1(@javax.annotation.Nonnull String statsType, @javax.annotation.Nullable String asc) throws ApiException {
         ApiResponse<List<PluginSummaryStatsDTO>> localVarResp = listPluginsByStatistic1WithHttpInfo(statsType, asc);
         return localVarResp.getData();
     }
@@ -2079,7 +2079,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<PluginSummaryStatsDTO>> listPluginsByStatistic1WithHttpInfo(String statsType, String asc) throws ApiException {
+    public ApiResponse<List<PluginSummaryStatsDTO>> listPluginsByStatistic1WithHttpInfo(@javax.annotation.Nonnull String statsType, @javax.annotation.Nullable String asc) throws ApiException {
         okhttp3.Call localVarCall = listPluginsByStatistic1ValidateBeforeCall(statsType, asc, null);
         Type localVarReturnType = new TypeToken<List<PluginSummaryStatsDTO>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -2100,7 +2100,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listPluginsByStatistic1Async(String statsType, String asc, final ApiCallback<List<PluginSummaryStatsDTO>> _callback) throws ApiException {
+    public okhttp3.Call listPluginsByStatistic1Async(@javax.annotation.Nonnull String statsType, @javax.annotation.Nullable String asc, final ApiCallback<List<PluginSummaryStatsDTO>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = listPluginsByStatistic1ValidateBeforeCall(statsType, asc, _callback);
         Type localVarReturnType = new TypeToken<List<PluginSummaryStatsDTO>>(){}.getType();
@@ -2122,7 +2122,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listPluginsByStatistic2Call(String statsType, Long pageSize, String asc, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call listPluginsByStatistic2Call(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -2173,7 +2173,7 @@ public class InteractiveStatisticsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call listPluginsByStatistic2ValidateBeforeCall(String statsType, Long pageSize, String asc, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call listPluginsByStatistic2ValidateBeforeCall(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'statsType' is set
         if (statsType == null) {
             throw new ApiException("Missing the required parameter 'statsType' when calling listPluginsByStatistic2(Async)");
@@ -2203,7 +2203,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<PluginSummaryStatsDTO> listPluginsByStatistic2(String statsType, Long pageSize, String asc) throws ApiException {
+    public List<PluginSummaryStatsDTO> listPluginsByStatistic2(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String asc) throws ApiException {
         ApiResponse<List<PluginSummaryStatsDTO>> localVarResp = listPluginsByStatistic2WithHttpInfo(statsType, pageSize, asc);
         return localVarResp.getData();
     }
@@ -2223,7 +2223,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<PluginSummaryStatsDTO>> listPluginsByStatistic2WithHttpInfo(String statsType, Long pageSize, String asc) throws ApiException {
+    public ApiResponse<List<PluginSummaryStatsDTO>> listPluginsByStatistic2WithHttpInfo(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String asc) throws ApiException {
         okhttp3.Call localVarCall = listPluginsByStatistic2ValidateBeforeCall(statsType, pageSize, asc, null);
         Type localVarReturnType = new TypeToken<List<PluginSummaryStatsDTO>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -2245,7 +2245,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listPluginsByStatistic2Async(String statsType, Long pageSize, String asc, final ApiCallback<List<PluginSummaryStatsDTO>> _callback) throws ApiException {
+    public okhttp3.Call listPluginsByStatistic2Async(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String asc, final ApiCallback<List<PluginSummaryStatsDTO>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = listPluginsByStatistic2ValidateBeforeCall(statsType, pageSize, asc, _callback);
         Type localVarReturnType = new TypeToken<List<PluginSummaryStatsDTO>>(){}.getType();
@@ -2266,7 +2266,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listPromptsByStatisticCall(String statsType, String asc, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call listPromptsByStatisticCall(@javax.annotation.Nonnull String statsType, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -2316,7 +2316,7 @@ public class InteractiveStatisticsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call listPromptsByStatisticValidateBeforeCall(String statsType, String asc, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call listPromptsByStatisticValidateBeforeCall(@javax.annotation.Nonnull String statsType, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'statsType' is set
         if (statsType == null) {
             throw new ApiException("Missing the required parameter 'statsType' when calling listPromptsByStatistic(Async)");
@@ -2340,7 +2340,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<PromptSummaryStatsDTO> listPromptsByStatistic(String statsType, String asc) throws ApiException {
+    public List<PromptSummaryStatsDTO> listPromptsByStatistic(@javax.annotation.Nonnull String statsType, @javax.annotation.Nullable String asc) throws ApiException {
         ApiResponse<List<PromptSummaryStatsDTO>> localVarResp = listPromptsByStatisticWithHttpInfo(statsType, asc);
         return localVarResp.getData();
     }
@@ -2359,7 +2359,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<PromptSummaryStatsDTO>> listPromptsByStatisticWithHttpInfo(String statsType, String asc) throws ApiException {
+    public ApiResponse<List<PromptSummaryStatsDTO>> listPromptsByStatisticWithHttpInfo(@javax.annotation.Nonnull String statsType, @javax.annotation.Nullable String asc) throws ApiException {
         okhttp3.Call localVarCall = listPromptsByStatisticValidateBeforeCall(statsType, asc, null);
         Type localVarReturnType = new TypeToken<List<PromptSummaryStatsDTO>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -2380,7 +2380,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listPromptsByStatisticAsync(String statsType, String asc, final ApiCallback<List<PromptSummaryStatsDTO>> _callback) throws ApiException {
+    public okhttp3.Call listPromptsByStatisticAsync(@javax.annotation.Nonnull String statsType, @javax.annotation.Nullable String asc, final ApiCallback<List<PromptSummaryStatsDTO>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = listPromptsByStatisticValidateBeforeCall(statsType, asc, _callback);
         Type localVarReturnType = new TypeToken<List<PromptSummaryStatsDTO>>(){}.getType();
@@ -2402,7 +2402,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listPromptsByStatistic1Call(String statsType, Long pageSize, String asc, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call listPromptsByStatistic1Call(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -2453,7 +2453,7 @@ public class InteractiveStatisticsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call listPromptsByStatistic1ValidateBeforeCall(String statsType, Long pageSize, String asc, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call listPromptsByStatistic1ValidateBeforeCall(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'statsType' is set
         if (statsType == null) {
             throw new ApiException("Missing the required parameter 'statsType' when calling listPromptsByStatistic1(Async)");
@@ -2483,7 +2483,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<PromptSummaryStatsDTO> listPromptsByStatistic1(String statsType, Long pageSize, String asc) throws ApiException {
+    public List<PromptSummaryStatsDTO> listPromptsByStatistic1(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String asc) throws ApiException {
         ApiResponse<List<PromptSummaryStatsDTO>> localVarResp = listPromptsByStatistic1WithHttpInfo(statsType, pageSize, asc);
         return localVarResp.getData();
     }
@@ -2503,7 +2503,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<PromptSummaryStatsDTO>> listPromptsByStatistic1WithHttpInfo(String statsType, Long pageSize, String asc) throws ApiException {
+    public ApiResponse<List<PromptSummaryStatsDTO>> listPromptsByStatistic1WithHttpInfo(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String asc) throws ApiException {
         okhttp3.Call localVarCall = listPromptsByStatistic1ValidateBeforeCall(statsType, pageSize, asc, null);
         Type localVarReturnType = new TypeToken<List<PromptSummaryStatsDTO>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -2525,7 +2525,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listPromptsByStatistic1Async(String statsType, Long pageSize, String asc, final ApiCallback<List<PromptSummaryStatsDTO>> _callback) throws ApiException {
+    public okhttp3.Call listPromptsByStatistic1Async(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nullable String asc, final ApiCallback<List<PromptSummaryStatsDTO>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = listPromptsByStatistic1ValidateBeforeCall(statsType, pageSize, asc, _callback);
         Type localVarReturnType = new TypeToken<List<PromptSummaryStatsDTO>>(){}.getType();
@@ -2548,7 +2548,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listPromptsByStatistic2Call(String statsType, Long pageSize, Long pageNum, String asc, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call listPromptsByStatistic2Call(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nonnull Long pageNum, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -2600,7 +2600,7 @@ public class InteractiveStatisticsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call listPromptsByStatistic2ValidateBeforeCall(String statsType, Long pageSize, Long pageNum, String asc, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call listPromptsByStatistic2ValidateBeforeCall(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nonnull Long pageNum, @javax.annotation.Nullable String asc, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'statsType' is set
         if (statsType == null) {
             throw new ApiException("Missing the required parameter 'statsType' when calling listPromptsByStatistic2(Async)");
@@ -2636,7 +2636,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<PromptSummaryStatsDTO> listPromptsByStatistic2(String statsType, Long pageSize, Long pageNum, String asc) throws ApiException {
+    public List<PromptSummaryStatsDTO> listPromptsByStatistic2(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nonnull Long pageNum, @javax.annotation.Nullable String asc) throws ApiException {
         ApiResponse<List<PromptSummaryStatsDTO>> localVarResp = listPromptsByStatistic2WithHttpInfo(statsType, pageSize, pageNum, asc);
         return localVarResp.getData();
     }
@@ -2657,7 +2657,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<PromptSummaryStatsDTO>> listPromptsByStatistic2WithHttpInfo(String statsType, Long pageSize, Long pageNum, String asc) throws ApiException {
+    public ApiResponse<List<PromptSummaryStatsDTO>> listPromptsByStatistic2WithHttpInfo(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nonnull Long pageNum, @javax.annotation.Nullable String asc) throws ApiException {
         okhttp3.Call localVarCall = listPromptsByStatistic2ValidateBeforeCall(statsType, pageSize, pageNum, asc, null);
         Type localVarReturnType = new TypeToken<List<PromptSummaryStatsDTO>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -2680,7 +2680,7 @@ public class InteractiveStatisticsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listPromptsByStatistic2Async(String statsType, Long pageSize, Long pageNum, String asc, final ApiCallback<List<PromptSummaryStatsDTO>> _callback) throws ApiException {
+    public okhttp3.Call listPromptsByStatistic2Async(@javax.annotation.Nonnull String statsType, @javax.annotation.Nonnull Long pageSize, @javax.annotation.Nonnull Long pageNum, @javax.annotation.Nullable String asc, final ApiCallback<List<PromptSummaryStatsDTO>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = listPromptsByStatistic2ValidateBeforeCall(statsType, pageSize, pageNum, asc, _callback);
         Type localVarReturnType = new TypeToken<List<PromptSummaryStatsDTO>>(){}.getType();

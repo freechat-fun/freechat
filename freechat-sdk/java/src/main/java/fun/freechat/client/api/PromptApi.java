@@ -1,8 +1,8 @@
 /*
  * FreeChat OpenAPI Definition
- * # FreeChat: Create Friends for Yourself with AI  English | [中文版](https://github.com/freechat-fun/freechat/blob/main/README.zh-CN.md)  ## Introduction Welcome! FreeChat aims to build a cloud-native, robust, and quickly commercializable enterprise-level AI virtual character platform.  It also serves as a prompt engineering platform.  It is recommended to run [Ollama](https://ollama.com/) + FreeChat locally to test your models. See the instructions below for [running locally](#running-locally)  ## Features - Primarily uses Java and emphasizes **security, robustness, scalability, traceability, and maintainability**. - Boasts **account systems and permission management**, supporting OAuth2 authentication. Introduces the \"organization\" concept and related permission constraint functions. - Extensively employs distributed technologies and caching to support **high concurrency** access. - Provides flexible character customization options, supports direct intervention in prompts, and supports **configuring multiple backends for each character**. - **Offers a comprehensive range of Open APIs**, with [more than 180 methods](https://freechat.fun/w/docs) and provides java/python/typescript SDKs. These methods enable easy construction of systems for end-users. - Supports setting **RAG** (Retrieval Augmented Generation) for characters. - Supports **long-term memory, preset memory** for characters. - Supports characters evoking **proactive chat**. - Supports characters replies with **mixed text and image information**. - Supports setting **quota limits** for characters. - Supports characters **importing and exporting**. - Supports **character-to-character chats**. - Supports **character voices**. - Supports individual **debugging and sharing prompts**.  ## Snapshots ### On PC #### Home Page ![Home Page Snapshot](https://freechat.fun/img/snapshot_w1.jpg) #### Development View ![Development View Snapshot](https://freechat.fun/img/snapshot_w2.jpg) #### Chat View ![Chat View Snapshot](https://freechat.fun/img/snapshot_w3.jpg)  ### On Mobile ![Chat Snapshot 1](https://freechat.fun/img/snapshot_m1.jpg) ![Chat Snapshot 2](https://freechat.fun/img/snapshot_m2.jpg)<br /> ![Chat Snapshot 3](https://freechat.fun/img/snapshot_m3.jpg) ![Chat Snapshot 4](https://freechat.fun/img/snapshot_m4.jpg)  ## Character Design ```mermaid flowchart TD     A(Character) --> B(Profile)     A --> C(Knowledge/RAG)     A --> D(Album)     A --> E(Backend-1)     A --> F(Backend-n...)     E --> G(Message Window)     E --> H(Long Term Memory Settings)     E --> I(Quota Limit)     E --> J(Chat/Greeting Prompt Tasks)     E --> P(Album/TTS Tools)     E --> L(Moderation Settings)     J --> M(Model & Parameters)     J --> N(API Keys)     J --> O(Prompt Reference)     O --> R(Template)     O --> S(Variables)     O --> T(Version)     O --> U(...)     style L stroke-dasharray: 5, 5 ```  After setting up an unified persona and knowledge for a character, different backends can be configured. For example, different model may be adopted for different users based on cost considerations.  ## How to Play ### Online Website You can visit [freechat.fun](https://freechat.fun) to experience FreeChat. Share your designed AI character!  ### Running in a Kubernetes Cluster FreeChat is dedicated to the principles of cloud-native design. If you have a Kubernetes cluster, you can deploy FreeChat to your environment by following these steps:  1. Put the Kubernetes configuration file in the `configs/helm/` directory, named `kube-private.conf`. 2. Place the Helm configuration file in the same directory, named `values-private.yaml`. Make sure to reference the default `values.yaml` and customize the variables as needed. 3. Switch to the `scripts/` directory. 4. If needed, run `install-in.sh` to deploy `ingress-nginx` on the Kubernetes cluster. 5. If needed, run `install-cm.sh` to deploy `cert-manager` on the Kubernetes cluster, which automatically issues certificates for domains specified in `ingress.hosts`. 6. Run `install.sh` script to install FreeChat and its dependencies. 7. FreeChat aims to provide Open API services. If you like the interactive experience of [freechat.fun](https://freechat.fun), run `install-web.sh` to deploy the front-end application. 8. Run `restart.sh` to restart the service. 9. If you modified any Helm configuration files, use `upgrade.sh` to update the corresponding Kubernetes resources. 10. To remove specific resources, run the `uninstall*.sh` script corresponding to the resource you want to uninstall.  As a cloud-native application, the services FreeChat relies on are obtained and deployed to your cluster through the helm repository.  If you prefer cloud services with SLA (Service Level Agreement) guarantees, simply make the relevant settings in `configs/helm/values-private.yaml`: ```yaml mysql:   enabled: false   url: <your mysql url>   auth:     rootPassword: <your mysql root password>     username: <your mysql username>     password: <your mysql password for the username>  redis:   enabled: false   url: <your redis url>   auth:     password: <your redis password>   milvus:   enabled: false   url: <your milvus url>   milvus:     auth:       token: <your milvus api-key> ```  With this, FreeChat will not automatically install these services, but rather use the configuration information to connect directly.  If your Kubernetes cluster does not have a standalone monitoring system, you can enable the following switch. This will install Prometheus and Grafana services in the same namespace, dedicated to monitoring the status of the services under the FreeChat application: ```yaml prometheus:   enabled: true grafana:   enabled: true ```  ### Running Locally You can also run FreeChat locally. Currently supported on MacOS and Linux (although only tested on MacOS). You need to install the Docker toolset and have a network that can access [Docker Hub](https://hub.docker.com/).  Once ready, enter the `scripts/` directory and run `local-run.sh`, which will download and run the necessary docker containers. After a successful startup, you can access `http://localhost` via a browser to see the locally running freechat.fun. The built-in administrator username and password are \"admin:freechat\". Use `local-run.sh --help` to view the supported options of the script. Good luck!  ### Running in an IDE To run FreeChat in an IDE, you need to start all dependent services first but do not need to run the container for the FreeChat application itself. You can execute the `scripts/local-deps.sh` script to start services like `MySQL`, `Redis`, `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。Make sure you have set the following startup VM options: ```shell -Dspring.config.location=classpath:/application.yml \\ -DAPP_HOME=local-data/freechat \\ -Dspring.profiles.active=local ```  ### Use SDK #### Java - **Dependency** ```xml <dependency>   <groupId>fun.freechat</groupId>   <artifactId>freechat-sdk</artifactId>   <version>${freechat-sdk.version}</version> </dependency> ```  - **Example** ```java import fun.freechat.client.ApiClient; import fun.freechat.client.ApiException; import fun.freechat.client.Configuration; import fun.freechat.client.api.AccountApi; import fun.freechat.client.auth.ApiKeyAuth; import fun.freechat.client.model.UserDetailsDTO;  public class AccountClientExample {     public static void main(String[] args) {         ApiClient defaultClient = Configuration.getDefaultApiClient();         defaultClient.setBasePath(\"https://freechat.fun\");                  // Configure HTTP bearer authorization: bearerAuth         HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication(\"bearerAuth\");         bearerAuth.setBearerToken(\"FREECHAT_TOKEN\");          AccountApi apiInstance = new AccountApi(defaultClient);         try {             UserDetailsDTO result = apiInstance.getUserDetails();             System.out.println(result);         } catch (ApiException e) {             e.printStackTrace();         }     } } ```  #### Python - **Installation** ```shell pip install freechat-sdk ```  - **Example** ```python import freechat_sdk from freechat_sdk.rest import ApiException from pprint import pprint  # Defining the host is optional and defaults to https://freechat.fun # See configuration.py for a list of all supported configuration parameters. configuration = freechat_sdk.Configuration(     host = \"https://freechat.fun\" )  # Configure Bearer authorization: bearerAuth configuration = freechat_sdk.Configuration(     access_token = os.environ[\"FREECHAT_TOKEN\"] )  # Enter a context with an instance of the API client with freechat_sdk.ApiClient(configuration) as api_client:     # Create an instance of the API class     api_instance = freechat_sdk.AccountApi(api_client)      try:         details = api_instance.get_user_details()         pprint(details)     except ApiException as e:         print(\"Exception when calling AccountClient->get_user_details: %s\\n\" % e) ```  #### TypeScript - **Installation** ```shell npm install freechat-sdk --save ```  - **Example**  Refer to [FreeChatApiContext.tsx](https://github.com/freechat-fun/freechat/blob/main/freechat-web/src/contexts/FreeChatApiProvider.tsx)  ## System Dependencies | | Projects | ---- | ---- | Application Framework | [Spring Boot](https://spring.io/projects/spring-boot/) | LLM Framework | [LangChain4j](https://docs.langchain4j.dev/) | Model Providers | [Ollama](https://ollama.com/), [OpenAI](https://platform.openai.com/), [Azure OpenAI](https://oai.azure.com/), [DashScope(Alibaba)](https://dashscope.aliyun.com/) | Database Systems | [MySQL](https://www.mysql.com/), [Redis](https://redis.io/), [Milvus](https://milvus.io/) | Monitoring & Alerting | [Kube State Metrics](https://kubernetes.io/docs/concepts/cluster-administration/kube-state-metrics/), [Prometheus](https://prometheus.io/), [Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/), [Loki](https://grafana.com/oss/loki/), [Grafana](https://grafana.com/) | OpenAPI Tools | [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator), [OpenAPI Explorer](https://github.com/Authress-Engineering/openapi-explorer)  ## Collaboration ### Application Integration The FreeChat system is entirely oriented towards Open APIs. The site [freechat.fun](https://freechat.fun) is developed using its TypeScript SDK and hardly depends on private interfaces. You can use these online interfaces to develop your own applications or sites, making them fit your preferences. Currently, the online FreeChat service is completely free and there are no current plans for charging.  ### Model Integration FreeChat aims to explore AI virtual character technology with anthropomorphic characteristics. If you are researching this area and hope FreeChat supports your model, please contact us. We look forward to AI technology helping people create their own \"soul mates\" in the future. 
+ * # FreeChat: Create Friends for Yourself with AI  English | [中文版](https://github.com/freechat-fun/freechat/blob/main/README.zh-CN.md)  ## Introduction Welcome! FreeChat aims to build a cloud-native, robust, and quickly commercializable enterprise-level AI virtual character platform.  It also serves as a prompt engineering platform.  It is recommended to run [Ollama](https://ollama.com/) + FreeChat locally to test your models. See the instructions below for [running locally](#running-locally)  ## Features - Primarily uses Java and emphasizes **security, robustness, scalability, traceability, and maintainability**. - Boasts **account systems and permission management**, supporting OAuth2 authentication. Introduces the \"organization\" concept and related permission constraint functions. - Extensively employs distributed technologies and caching to support **high concurrency** access. - Provides flexible character customization options, supports direct intervention in prompts, and supports **configuring multiple backends for each character**. - **Offers a comprehensive range of Open APIs**, with [more than 180 methods](https://freechat.fun/w/docs) and provides java/python/typescript SDKs. These methods enable easy construction of systems for end-users. - Supports setting **RAG** (Retrieval Augmented Generation) for characters. - Supports **long-term memory, preset memory** for characters. - Supports characters evoking **proactive chat**. - Supports **automatic image generation** for characters and replies with mixed text and image messages. - Supports setting **quota limits** for characters. - Supports characters **importing and exporting**. - Supports **character-to-character chats**. - Supports **character voices**. - Supports individual **debugging and sharing prompts**.  ## Snapshots ### On PC #### Home Page ![Home Page Snapshot](https://freechat.fun/img/snapshot_w1.jpg) #### Development View ![Development View Snapshot](https://freechat.fun/img/snapshot_w2.jpg) #### Chat View ![Chat View Snapshot](https://freechat.fun/img/snapshot_w3.jpg)  ### On Mobile ![Chat Snapshot 1](https://freechat.fun/img/snapshot_m1.jpg) ![Chat Snapshot 2](https://freechat.fun/img/snapshot_m2.jpg)<br /> ![Chat Snapshot 3](https://freechat.fun/img/snapshot_m3.jpg) ![Chat Snapshot 4](https://freechat.fun/img/snapshot_m4.jpg)  ## Character Design ```mermaid flowchart TD     A(Character) --> B(Profile)     A --> C(Knowledge/RAG)     A --> D(Album)     A --> E(Backend-1)     A --> F(Backend-n...)     E --> G(Message Window)     E --> H(Long Term Memory Settings)     E --> I(Quota Limit)     E --> J(Chat/Greeting Prompt Tasks)     E --> P(Album/TTS Tools)     E --> L(Moderation Settings)     J --> M(Model & Parameters)     J --> N(API Keys)     J --> O(Prompt Reference)     O --> R(Template)     O --> S(Variables)     O --> T(Version)     O --> U(...)     style L stroke-dasharray: 5, 5 ```  After setting up an unified persona and knowledge for a character, different backends can be configured. For example, different model may be adopted for different users based on cost considerations.  ## How to Play ### Online Website You can visit [freechat.fun](https://freechat.fun) to experience FreeChat. Share your designed AI character!  ### Running in a Kubernetes Cluster FreeChat is dedicated to the principles of cloud-native design. If you have a Kubernetes cluster, you can deploy FreeChat to your environment by following these steps:  1. Put the Kubernetes configuration file in the `configs/helm/` directory, named `kube-private.conf`. 2. Place the Helm configuration file in the same directory, named `values-private.yaml`. Make sure to reference the default `values.yaml` and customize the variables as needed. 3. Switch to the `scripts/` directory. 4. If needed, run `install-in.sh` to deploy `ingress-nginx` on the Kubernetes cluster. 5. If needed, run `install-cm.sh` to deploy `cert-manager` on the Kubernetes cluster, which automatically issues certificates for domains specified in `ingress.hosts`. 6. Run `install.sh` script to install FreeChat and its dependencies. 7. FreeChat aims to provide Open API services. If you like the interactive experience of [freechat.fun](https://freechat.fun), run `install-web.sh` to deploy the front-end application. 8. Run `restart.sh` to restart the service. 9. If you modified any Helm configuration files, use `upgrade.sh` to update the corresponding Kubernetes resources. 10. To remove specific resources, run the `uninstall*.sh` script corresponding to the resource you want to uninstall.  As a cloud-native application, the services FreeChat relies on are obtained and deployed to your cluster through the helm repository.  If you prefer cloud services with SLA (Service Level Agreement) guarantees, simply make the relevant settings in `configs/helm/values-private.yaml`: ```yaml mysql:   enabled: false   url: <your mysql url>   auth:     rootPassword: <your mysql root password>     username: <your mysql username>     password: <your mysql password for the username>  redis:   enabled: false   url: <your redis url>   auth:     password: <your redis password>   milvus:   enabled: false   url: <your milvus url>   milvus:     auth:       token: <your milvus api-key> ```  With this, FreeChat will not automatically install these services, but rather use the configuration information to connect directly.  If your Kubernetes cluster does not have a standalone monitoring system, you can enable the following switch. This will install Prometheus and Grafana services in the same namespace, dedicated to monitoring the status of the services under the FreeChat application: ```yaml prometheus:   enabled: true grafana:   enabled: true ```  ### Running Locally You can also run FreeChat locally. Currently supported on MacOS and Linux (although only tested on MacOS). You need to install the Docker toolset and have a network that can access [Docker Hub](https://hub.docker.com/).  Once ready, enter the `scripts/` directory and run `local-run.sh`, which will download and run the necessary docker containers. After a successful startup, you can access `http://localhost` via a browser to see the locally running freechat.fun. The built-in administrator username and password are \"admin:freechat\". Use `local-run.sh --help` to view the supported options of the script. Good luck!  ### Running in an IDE To run FreeChat in an IDE, you need to start all dependent services first but do not need to run the container for the FreeChat application itself. You can execute the `scripts/local-deps.sh` script to start services like `MySQL`, `Redis`, `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。Make sure you have set the following startup VM options: ```shell -Dspring.config.location=classpath:/application.yml \\ -DAPP_HOME=local-data/freechat \\ -Dspring.profiles.active=local ```  ### Use SDK #### Java - **Dependency** ```xml <dependency>   <groupId>fun.freechat</groupId>   <artifactId>freechat-sdk</artifactId>   <version>${freechat-sdk.version}</version> </dependency> ```  - **Example** ```java import fun.freechat.client.ApiClient; import fun.freechat.client.ApiException; import fun.freechat.client.Configuration; import fun.freechat.client.api.AccountApi; import fun.freechat.client.auth.ApiKeyAuth; import fun.freechat.client.model.UserDetailsDTO;  public class AccountClientExample {     public static void main(String[] args) {         ApiClient defaultClient = Configuration.getDefaultApiClient();         defaultClient.setBasePath(\"https://freechat.fun\");                  // Configure HTTP bearer authorization: bearerAuth         HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication(\"bearerAuth\");         bearerAuth.setBearerToken(\"FREECHAT_TOKEN\");          AccountApi apiInstance = new AccountApi(defaultClient);         try {             UserDetailsDTO result = apiInstance.getUserDetails();             System.out.println(result);         } catch (ApiException e) {             e.printStackTrace();         }     } } ```  #### Python - **Installation** ```shell pip install freechat-sdk ```  - **Example** ```python import freechat_sdk from freechat_sdk.rest import ApiException from pprint import pprint  # Defining the host is optional and defaults to https://freechat.fun # See configuration.py for a list of all supported configuration parameters. configuration = freechat_sdk.Configuration(     host = \"https://freechat.fun\" )  # Configure Bearer authorization: bearerAuth configuration = freechat_sdk.Configuration(     access_token = os.environ[\"FREECHAT_TOKEN\"] )  # Enter a context with an instance of the API client with freechat_sdk.ApiClient(configuration) as api_client:     # Create an instance of the API class     api_instance = freechat_sdk.AccountApi(api_client)      try:         details = api_instance.get_user_details()         pprint(details)     except ApiException as e:         print(\"Exception when calling AccountClient->get_user_details: %s\\n\" % e) ```  #### TypeScript - **Installation** ```shell npm install freechat-sdk --save ```  - **Example**  Refer to [FreeChatApiContext.tsx](https://github.com/freechat-fun/freechat/blob/main/freechat-web/src/contexts/FreeChatApiProvider.tsx)  ## System Dependencies | | Projects | ---- | ---- | Application Framework | [Spring Boot](https://spring.io/projects/spring-boot/) | LLM Framework | [LangChain4j](https://docs.langchain4j.dev/) | Model Providers | [Ollama](https://ollama.com/), [OpenAI](https://platform.openai.com/), [Azure OpenAI](https://oai.azure.com/), [DashScope(Alibaba)](https://dashscope.aliyun.com/) | Database Systems | [MySQL](https://www.mysql.com/), [Redis](https://redis.io/), [Milvus](https://milvus.io/) | Monitoring & Alerting | [Kube State Metrics](https://kubernetes.io/docs/concepts/cluster-administration/kube-state-metrics/), [Prometheus](https://prometheus.io/), [Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/), [Loki](https://grafana.com/oss/loki/), [Grafana](https://grafana.com/) | OpenAPI Tools | [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator), [OpenAPI Explorer](https://github.com/Authress-Engineering/openapi-explorer)  ## Collaboration ### Application Integration The FreeChat system is entirely oriented towards Open APIs. The site [freechat.fun](https://freechat.fun) is developed using its TypeScript SDK and hardly depends on private interfaces. You can use these online interfaces to develop your own applications or sites, making them fit your preferences. Currently, the online FreeChat service is completely free and there are no current plans for charging.  ### Model Integration FreeChat aims to explore AI virtual character technology with anthropomorphic characteristics. If you are researching this area and hope FreeChat supports your model, please contact us. We look forward to AI technology helping people create their own \"soul mates\" in the future. 
  *
- * The version of the OpenAPI document: 2.6.0
+ * The version of the OpenAPI document: 2.7.0
  * 
  *
  * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
@@ -95,7 +95,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call applyPromptRefCall(PromptRefDTO promptRefDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call applyPromptRefCall(@javax.annotation.Nonnull PromptRefDTO promptRefDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -141,7 +141,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call applyPromptRefValidateBeforeCall(PromptRefDTO promptRefDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call applyPromptRefValidateBeforeCall(@javax.annotation.Nonnull PromptRefDTO promptRefDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'promptRefDTO' is set
         if (promptRefDTO == null) {
             throw new ApiException("Missing the required parameter 'promptRefDTO' when calling applyPromptRef(Async)");
@@ -164,7 +164,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public String applyPromptRef(PromptRefDTO promptRefDTO) throws ApiException {
+    public String applyPromptRef(@javax.annotation.Nonnull PromptRefDTO promptRefDTO) throws ApiException {
         ApiResponse<String> localVarResp = applyPromptRefWithHttpInfo(promptRefDTO);
         return localVarResp.getData();
     }
@@ -182,7 +182,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<String> applyPromptRefWithHttpInfo(PromptRefDTO promptRefDTO) throws ApiException {
+    public ApiResponse<String> applyPromptRefWithHttpInfo(@javax.annotation.Nonnull PromptRefDTO promptRefDTO) throws ApiException {
         okhttp3.Call localVarCall = applyPromptRefValidateBeforeCall(promptRefDTO, null);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -202,7 +202,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call applyPromptRefAsync(PromptRefDTO promptRefDTO, final ApiCallback<String> _callback) throws ApiException {
+    public okhttp3.Call applyPromptRefAsync(@javax.annotation.Nonnull PromptRefDTO promptRefDTO, final ApiCallback<String> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = applyPromptRefValidateBeforeCall(promptRefDTO, _callback);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
@@ -222,7 +222,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call applyPromptTemplateCall(PromptTemplateDTO promptTemplateDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call applyPromptTemplateCall(@javax.annotation.Nonnull PromptTemplateDTO promptTemplateDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -268,7 +268,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call applyPromptTemplateValidateBeforeCall(PromptTemplateDTO promptTemplateDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call applyPromptTemplateValidateBeforeCall(@javax.annotation.Nonnull PromptTemplateDTO promptTemplateDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'promptTemplateDTO' is set
         if (promptTemplateDTO == null) {
             throw new ApiException("Missing the required parameter 'promptTemplateDTO' when calling applyPromptTemplate(Async)");
@@ -291,7 +291,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public String applyPromptTemplate(PromptTemplateDTO promptTemplateDTO) throws ApiException {
+    public String applyPromptTemplate(@javax.annotation.Nonnull PromptTemplateDTO promptTemplateDTO) throws ApiException {
         ApiResponse<String> localVarResp = applyPromptTemplateWithHttpInfo(promptTemplateDTO);
         return localVarResp.getData();
     }
@@ -309,7 +309,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<String> applyPromptTemplateWithHttpInfo(PromptTemplateDTO promptTemplateDTO) throws ApiException {
+    public ApiResponse<String> applyPromptTemplateWithHttpInfo(@javax.annotation.Nonnull PromptTemplateDTO promptTemplateDTO) throws ApiException {
         okhttp3.Call localVarCall = applyPromptTemplateValidateBeforeCall(promptTemplateDTO, null);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -329,7 +329,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call applyPromptTemplateAsync(PromptTemplateDTO promptTemplateDTO, final ApiCallback<String> _callback) throws ApiException {
+    public okhttp3.Call applyPromptTemplateAsync(@javax.annotation.Nonnull PromptTemplateDTO promptTemplateDTO, final ApiCallback<String> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = applyPromptTemplateValidateBeforeCall(promptTemplateDTO, _callback);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
@@ -349,7 +349,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call batchSearchPromptDetailsCall(List<PromptQueryDTO> promptQueryDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call batchSearchPromptDetailsCall(@javax.annotation.Nonnull List<PromptQueryDTO> promptQueryDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -395,7 +395,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call batchSearchPromptDetailsValidateBeforeCall(List<PromptQueryDTO> promptQueryDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call batchSearchPromptDetailsValidateBeforeCall(@javax.annotation.Nonnull List<PromptQueryDTO> promptQueryDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'promptQueryDTO' is set
         if (promptQueryDTO == null) {
             throw new ApiException("Missing the required parameter 'promptQueryDTO' when calling batchSearchPromptDetails(Async)");
@@ -418,7 +418,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<List<PromptDetailsDTO>> batchSearchPromptDetails(List<PromptQueryDTO> promptQueryDTO) throws ApiException {
+    public List<List<PromptDetailsDTO>> batchSearchPromptDetails(@javax.annotation.Nonnull List<PromptQueryDTO> promptQueryDTO) throws ApiException {
         ApiResponse<List<List<PromptDetailsDTO>>> localVarResp = batchSearchPromptDetailsWithHttpInfo(promptQueryDTO);
         return localVarResp.getData();
     }
@@ -436,7 +436,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<List<PromptDetailsDTO>>> batchSearchPromptDetailsWithHttpInfo(List<PromptQueryDTO> promptQueryDTO) throws ApiException {
+    public ApiResponse<List<List<PromptDetailsDTO>>> batchSearchPromptDetailsWithHttpInfo(@javax.annotation.Nonnull List<PromptQueryDTO> promptQueryDTO) throws ApiException {
         okhttp3.Call localVarCall = batchSearchPromptDetailsValidateBeforeCall(promptQueryDTO, null);
         Type localVarReturnType = new TypeToken<List<List<PromptDetailsDTO>>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -456,7 +456,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call batchSearchPromptDetailsAsync(List<PromptQueryDTO> promptQueryDTO, final ApiCallback<List<List<PromptDetailsDTO>>> _callback) throws ApiException {
+    public okhttp3.Call batchSearchPromptDetailsAsync(@javax.annotation.Nonnull List<PromptQueryDTO> promptQueryDTO, final ApiCallback<List<List<PromptDetailsDTO>>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = batchSearchPromptDetailsValidateBeforeCall(promptQueryDTO, _callback);
         Type localVarReturnType = new TypeToken<List<List<PromptDetailsDTO>>>(){}.getType();
@@ -476,7 +476,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call batchSearchPromptSummaryCall(List<PromptQueryDTO> promptQueryDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call batchSearchPromptSummaryCall(@javax.annotation.Nonnull List<PromptQueryDTO> promptQueryDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -522,7 +522,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call batchSearchPromptSummaryValidateBeforeCall(List<PromptQueryDTO> promptQueryDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call batchSearchPromptSummaryValidateBeforeCall(@javax.annotation.Nonnull List<PromptQueryDTO> promptQueryDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'promptQueryDTO' is set
         if (promptQueryDTO == null) {
             throw new ApiException("Missing the required parameter 'promptQueryDTO' when calling batchSearchPromptSummary(Async)");
@@ -545,7 +545,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<List<PromptSummaryDTO>> batchSearchPromptSummary(List<PromptQueryDTO> promptQueryDTO) throws ApiException {
+    public List<List<PromptSummaryDTO>> batchSearchPromptSummary(@javax.annotation.Nonnull List<PromptQueryDTO> promptQueryDTO) throws ApiException {
         ApiResponse<List<List<PromptSummaryDTO>>> localVarResp = batchSearchPromptSummaryWithHttpInfo(promptQueryDTO);
         return localVarResp.getData();
     }
@@ -563,7 +563,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<List<PromptSummaryDTO>>> batchSearchPromptSummaryWithHttpInfo(List<PromptQueryDTO> promptQueryDTO) throws ApiException {
+    public ApiResponse<List<List<PromptSummaryDTO>>> batchSearchPromptSummaryWithHttpInfo(@javax.annotation.Nonnull List<PromptQueryDTO> promptQueryDTO) throws ApiException {
         okhttp3.Call localVarCall = batchSearchPromptSummaryValidateBeforeCall(promptQueryDTO, null);
         Type localVarReturnType = new TypeToken<List<List<PromptSummaryDTO>>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -583,7 +583,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call batchSearchPromptSummaryAsync(List<PromptQueryDTO> promptQueryDTO, final ApiCallback<List<List<PromptSummaryDTO>>> _callback) throws ApiException {
+    public okhttp3.Call batchSearchPromptSummaryAsync(@javax.annotation.Nonnull List<PromptQueryDTO> promptQueryDTO, final ApiCallback<List<List<PromptSummaryDTO>>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = batchSearchPromptSummaryValidateBeforeCall(promptQueryDTO, _callback);
         Type localVarReturnType = new TypeToken<List<List<PromptSummaryDTO>>>(){}.getType();
@@ -603,7 +603,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call clonePromptCall(Long promptId, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call clonePromptCall(@javax.annotation.Nonnull Long promptId, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -649,7 +649,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call clonePromptValidateBeforeCall(Long promptId, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call clonePromptValidateBeforeCall(@javax.annotation.Nonnull Long promptId, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'promptId' is set
         if (promptId == null) {
             throw new ApiException("Missing the required parameter 'promptId' when calling clonePrompt(Async)");
@@ -672,7 +672,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public Long clonePrompt(Long promptId) throws ApiException {
+    public Long clonePrompt(@javax.annotation.Nonnull Long promptId) throws ApiException {
         ApiResponse<Long> localVarResp = clonePromptWithHttpInfo(promptId);
         return localVarResp.getData();
     }
@@ -690,7 +690,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Long> clonePromptWithHttpInfo(Long promptId) throws ApiException {
+    public ApiResponse<Long> clonePromptWithHttpInfo(@javax.annotation.Nonnull Long promptId) throws ApiException {
         okhttp3.Call localVarCall = clonePromptValidateBeforeCall(promptId, null);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -710,7 +710,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call clonePromptAsync(Long promptId, final ApiCallback<Long> _callback) throws ApiException {
+    public okhttp3.Call clonePromptAsync(@javax.annotation.Nonnull Long promptId, final ApiCallback<Long> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = clonePromptValidateBeforeCall(promptId, _callback);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
@@ -730,7 +730,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call clonePromptsCall(List<Long> requestBody, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call clonePromptsCall(@javax.annotation.Nonnull List<Long> requestBody, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -776,7 +776,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call clonePromptsValidateBeforeCall(List<Long> requestBody, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call clonePromptsValidateBeforeCall(@javax.annotation.Nonnull List<Long> requestBody, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'requestBody' is set
         if (requestBody == null) {
             throw new ApiException("Missing the required parameter 'requestBody' when calling clonePrompts(Async)");
@@ -799,7 +799,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<Long> clonePrompts(List<Long> requestBody) throws ApiException {
+    public List<Long> clonePrompts(@javax.annotation.Nonnull List<Long> requestBody) throws ApiException {
         ApiResponse<List<Long>> localVarResp = clonePromptsWithHttpInfo(requestBody);
         return localVarResp.getData();
     }
@@ -817,7 +817,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<Long>> clonePromptsWithHttpInfo(List<Long> requestBody) throws ApiException {
+    public ApiResponse<List<Long>> clonePromptsWithHttpInfo(@javax.annotation.Nonnull List<Long> requestBody) throws ApiException {
         okhttp3.Call localVarCall = clonePromptsValidateBeforeCall(requestBody, null);
         Type localVarReturnType = new TypeToken<List<Long>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -837,7 +837,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call clonePromptsAsync(List<Long> requestBody, final ApiCallback<List<Long>> _callback) throws ApiException {
+    public okhttp3.Call clonePromptsAsync(@javax.annotation.Nonnull List<Long> requestBody, final ApiCallback<List<Long>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = clonePromptsValidateBeforeCall(requestBody, _callback);
         Type localVarReturnType = new TypeToken<List<Long>>(){}.getType();
@@ -857,7 +857,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call countPromptsCall(PromptQueryDTO promptQueryDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call countPromptsCall(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -903,7 +903,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call countPromptsValidateBeforeCall(PromptQueryDTO promptQueryDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call countPromptsValidateBeforeCall(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'promptQueryDTO' is set
         if (promptQueryDTO == null) {
             throw new ApiException("Missing the required parameter 'promptQueryDTO' when calling countPrompts(Async)");
@@ -926,7 +926,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public Long countPrompts(PromptQueryDTO promptQueryDTO) throws ApiException {
+    public Long countPrompts(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO) throws ApiException {
         ApiResponse<Long> localVarResp = countPromptsWithHttpInfo(promptQueryDTO);
         return localVarResp.getData();
     }
@@ -944,7 +944,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Long> countPromptsWithHttpInfo(PromptQueryDTO promptQueryDTO) throws ApiException {
+    public ApiResponse<Long> countPromptsWithHttpInfo(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO) throws ApiException {
         okhttp3.Call localVarCall = countPromptsValidateBeforeCall(promptQueryDTO, null);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -964,7 +964,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call countPromptsAsync(PromptQueryDTO promptQueryDTO, final ApiCallback<Long> _callback) throws ApiException {
+    public okhttp3.Call countPromptsAsync(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO, final ApiCallback<Long> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = countPromptsValidateBeforeCall(promptQueryDTO, _callback);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
@@ -984,7 +984,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call countPublicPromptsCall(PromptQueryDTO promptQueryDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call countPublicPromptsCall(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -1030,7 +1030,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call countPublicPromptsValidateBeforeCall(PromptQueryDTO promptQueryDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call countPublicPromptsValidateBeforeCall(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'promptQueryDTO' is set
         if (promptQueryDTO == null) {
             throw new ApiException("Missing the required parameter 'promptQueryDTO' when calling countPublicPrompts(Async)");
@@ -1053,7 +1053,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public Long countPublicPrompts(PromptQueryDTO promptQueryDTO) throws ApiException {
+    public Long countPublicPrompts(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO) throws ApiException {
         ApiResponse<Long> localVarResp = countPublicPromptsWithHttpInfo(promptQueryDTO);
         return localVarResp.getData();
     }
@@ -1071,7 +1071,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Long> countPublicPromptsWithHttpInfo(PromptQueryDTO promptQueryDTO) throws ApiException {
+    public ApiResponse<Long> countPublicPromptsWithHttpInfo(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO) throws ApiException {
         okhttp3.Call localVarCall = countPublicPromptsValidateBeforeCall(promptQueryDTO, null);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -1091,7 +1091,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call countPublicPromptsAsync(PromptQueryDTO promptQueryDTO, final ApiCallback<Long> _callback) throws ApiException {
+    public okhttp3.Call countPublicPromptsAsync(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO, final ApiCallback<Long> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = countPublicPromptsValidateBeforeCall(promptQueryDTO, _callback);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
@@ -1111,7 +1111,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call createPromptCall(PromptCreateDTO promptCreateDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call createPromptCall(@javax.annotation.Nonnull PromptCreateDTO promptCreateDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -1157,7 +1157,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call createPromptValidateBeforeCall(PromptCreateDTO promptCreateDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call createPromptValidateBeforeCall(@javax.annotation.Nonnull PromptCreateDTO promptCreateDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'promptCreateDTO' is set
         if (promptCreateDTO == null) {
             throw new ApiException("Missing the required parameter 'promptCreateDTO' when calling createPrompt(Async)");
@@ -1180,7 +1180,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public Long createPrompt(PromptCreateDTO promptCreateDTO) throws ApiException {
+    public Long createPrompt(@javax.annotation.Nonnull PromptCreateDTO promptCreateDTO) throws ApiException {
         ApiResponse<Long> localVarResp = createPromptWithHttpInfo(promptCreateDTO);
         return localVarResp.getData();
     }
@@ -1198,7 +1198,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Long> createPromptWithHttpInfo(PromptCreateDTO promptCreateDTO) throws ApiException {
+    public ApiResponse<Long> createPromptWithHttpInfo(@javax.annotation.Nonnull PromptCreateDTO promptCreateDTO) throws ApiException {
         okhttp3.Call localVarCall = createPromptValidateBeforeCall(promptCreateDTO, null);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -1218,7 +1218,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call createPromptAsync(PromptCreateDTO promptCreateDTO, final ApiCallback<Long> _callback) throws ApiException {
+    public okhttp3.Call createPromptAsync(@javax.annotation.Nonnull PromptCreateDTO promptCreateDTO, final ApiCallback<Long> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = createPromptValidateBeforeCall(promptCreateDTO, _callback);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
@@ -1238,7 +1238,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call createPromptsCall(List<PromptCreateDTO> promptCreateDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call createPromptsCall(@javax.annotation.Nonnull List<PromptCreateDTO> promptCreateDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -1284,7 +1284,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call createPromptsValidateBeforeCall(List<PromptCreateDTO> promptCreateDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call createPromptsValidateBeforeCall(@javax.annotation.Nonnull List<PromptCreateDTO> promptCreateDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'promptCreateDTO' is set
         if (promptCreateDTO == null) {
             throw new ApiException("Missing the required parameter 'promptCreateDTO' when calling createPrompts(Async)");
@@ -1307,7 +1307,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<Long> createPrompts(List<PromptCreateDTO> promptCreateDTO) throws ApiException {
+    public List<Long> createPrompts(@javax.annotation.Nonnull List<PromptCreateDTO> promptCreateDTO) throws ApiException {
         ApiResponse<List<Long>> localVarResp = createPromptsWithHttpInfo(promptCreateDTO);
         return localVarResp.getData();
     }
@@ -1325,7 +1325,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<Long>> createPromptsWithHttpInfo(List<PromptCreateDTO> promptCreateDTO) throws ApiException {
+    public ApiResponse<List<Long>> createPromptsWithHttpInfo(@javax.annotation.Nonnull List<PromptCreateDTO> promptCreateDTO) throws ApiException {
         okhttp3.Call localVarCall = createPromptsValidateBeforeCall(promptCreateDTO, null);
         Type localVarReturnType = new TypeToken<List<Long>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -1345,7 +1345,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call createPromptsAsync(List<PromptCreateDTO> promptCreateDTO, final ApiCallback<List<Long>> _callback) throws ApiException {
+    public okhttp3.Call createPromptsAsync(@javax.annotation.Nonnull List<PromptCreateDTO> promptCreateDTO, final ApiCallback<List<Long>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = createPromptsValidateBeforeCall(promptCreateDTO, _callback);
         Type localVarReturnType = new TypeToken<List<Long>>(){}.getType();
@@ -1365,7 +1365,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call deletePromptCall(Long promptId, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call deletePromptCall(@javax.annotation.Nonnull Long promptId, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -1411,7 +1411,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call deletePromptValidateBeforeCall(Long promptId, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call deletePromptValidateBeforeCall(@javax.annotation.Nonnull Long promptId, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'promptId' is set
         if (promptId == null) {
             throw new ApiException("Missing the required parameter 'promptId' when calling deletePrompt(Async)");
@@ -1434,7 +1434,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public Boolean deletePrompt(Long promptId) throws ApiException {
+    public Boolean deletePrompt(@javax.annotation.Nonnull Long promptId) throws ApiException {
         ApiResponse<Boolean> localVarResp = deletePromptWithHttpInfo(promptId);
         return localVarResp.getData();
     }
@@ -1452,7 +1452,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Boolean> deletePromptWithHttpInfo(Long promptId) throws ApiException {
+    public ApiResponse<Boolean> deletePromptWithHttpInfo(@javax.annotation.Nonnull Long promptId) throws ApiException {
         okhttp3.Call localVarCall = deletePromptValidateBeforeCall(promptId, null);
         Type localVarReturnType = new TypeToken<Boolean>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -1472,7 +1472,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call deletePromptAsync(Long promptId, final ApiCallback<Boolean> _callback) throws ApiException {
+    public okhttp3.Call deletePromptAsync(@javax.annotation.Nonnull Long promptId, final ApiCallback<Boolean> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = deletePromptValidateBeforeCall(promptId, _callback);
         Type localVarReturnType = new TypeToken<Boolean>(){}.getType();
@@ -1492,7 +1492,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call deletePromptByNameCall(String name, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call deletePromptByNameCall(@javax.annotation.Nonnull String name, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -1538,7 +1538,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call deletePromptByNameValidateBeforeCall(String name, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call deletePromptByNameValidateBeforeCall(@javax.annotation.Nonnull String name, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'name' is set
         if (name == null) {
             throw new ApiException("Missing the required parameter 'name' when calling deletePromptByName(Async)");
@@ -1561,7 +1561,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<Long> deletePromptByName(String name) throws ApiException {
+    public List<Long> deletePromptByName(@javax.annotation.Nonnull String name) throws ApiException {
         ApiResponse<List<Long>> localVarResp = deletePromptByNameWithHttpInfo(name);
         return localVarResp.getData();
     }
@@ -1579,7 +1579,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<Long>> deletePromptByNameWithHttpInfo(String name) throws ApiException {
+    public ApiResponse<List<Long>> deletePromptByNameWithHttpInfo(@javax.annotation.Nonnull String name) throws ApiException {
         okhttp3.Call localVarCall = deletePromptByNameValidateBeforeCall(name, null);
         Type localVarReturnType = new TypeToken<List<Long>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -1599,7 +1599,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call deletePromptByNameAsync(String name, final ApiCallback<List<Long>> _callback) throws ApiException {
+    public okhttp3.Call deletePromptByNameAsync(@javax.annotation.Nonnull String name, final ApiCallback<List<Long>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = deletePromptByNameValidateBeforeCall(name, _callback);
         Type localVarReturnType = new TypeToken<List<Long>>(){}.getType();
@@ -1619,7 +1619,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call deletePromptsCall(List<Long> requestBody, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call deletePromptsCall(@javax.annotation.Nonnull List<Long> requestBody, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -1665,7 +1665,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call deletePromptsValidateBeforeCall(List<Long> requestBody, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call deletePromptsValidateBeforeCall(@javax.annotation.Nonnull List<Long> requestBody, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'requestBody' is set
         if (requestBody == null) {
             throw new ApiException("Missing the required parameter 'requestBody' when calling deletePrompts(Async)");
@@ -1688,7 +1688,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<Long> deletePrompts(List<Long> requestBody) throws ApiException {
+    public List<Long> deletePrompts(@javax.annotation.Nonnull List<Long> requestBody) throws ApiException {
         ApiResponse<List<Long>> localVarResp = deletePromptsWithHttpInfo(requestBody);
         return localVarResp.getData();
     }
@@ -1706,7 +1706,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<Long>> deletePromptsWithHttpInfo(List<Long> requestBody) throws ApiException {
+    public ApiResponse<List<Long>> deletePromptsWithHttpInfo(@javax.annotation.Nonnull List<Long> requestBody) throws ApiException {
         okhttp3.Call localVarCall = deletePromptsValidateBeforeCall(requestBody, null);
         Type localVarReturnType = new TypeToken<List<Long>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -1726,7 +1726,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call deletePromptsAsync(List<Long> requestBody, final ApiCallback<List<Long>> _callback) throws ApiException {
+    public okhttp3.Call deletePromptsAsync(@javax.annotation.Nonnull List<Long> requestBody, final ApiCallback<List<Long>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = deletePromptsValidateBeforeCall(requestBody, _callback);
         Type localVarReturnType = new TypeToken<List<Long>>(){}.getType();
@@ -1746,7 +1746,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call existsPromptNameCall(String name, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call existsPromptNameCall(@javax.annotation.Nonnull String name, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -1792,7 +1792,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call existsPromptNameValidateBeforeCall(String name, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call existsPromptNameValidateBeforeCall(@javax.annotation.Nonnull String name, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'name' is set
         if (name == null) {
             throw new ApiException("Missing the required parameter 'name' when calling existsPromptName(Async)");
@@ -1815,7 +1815,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public Boolean existsPromptName(String name) throws ApiException {
+    public Boolean existsPromptName(@javax.annotation.Nonnull String name) throws ApiException {
         ApiResponse<Boolean> localVarResp = existsPromptNameWithHttpInfo(name);
         return localVarResp.getData();
     }
@@ -1833,7 +1833,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Boolean> existsPromptNameWithHttpInfo(String name) throws ApiException {
+    public ApiResponse<Boolean> existsPromptNameWithHttpInfo(@javax.annotation.Nonnull String name) throws ApiException {
         okhttp3.Call localVarCall = existsPromptNameValidateBeforeCall(name, null);
         Type localVarReturnType = new TypeToken<Boolean>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -1853,7 +1853,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call existsPromptNameAsync(String name, final ApiCallback<Boolean> _callback) throws ApiException {
+    public okhttp3.Call existsPromptNameAsync(@javax.annotation.Nonnull String name, final ApiCallback<Boolean> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = existsPromptNameValidateBeforeCall(name, _callback);
         Type localVarReturnType = new TypeToken<Boolean>(){}.getType();
@@ -1873,7 +1873,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getPromptDetailsCall(Long promptId, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call getPromptDetailsCall(@javax.annotation.Nonnull Long promptId, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -1919,7 +1919,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call getPromptDetailsValidateBeforeCall(Long promptId, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call getPromptDetailsValidateBeforeCall(@javax.annotation.Nonnull Long promptId, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'promptId' is set
         if (promptId == null) {
             throw new ApiException("Missing the required parameter 'promptId' when calling getPromptDetails(Async)");
@@ -1942,7 +1942,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public PromptDetailsDTO getPromptDetails(Long promptId) throws ApiException {
+    public PromptDetailsDTO getPromptDetails(@javax.annotation.Nonnull Long promptId) throws ApiException {
         ApiResponse<PromptDetailsDTO> localVarResp = getPromptDetailsWithHttpInfo(promptId);
         return localVarResp.getData();
     }
@@ -1960,7 +1960,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<PromptDetailsDTO> getPromptDetailsWithHttpInfo(Long promptId) throws ApiException {
+    public ApiResponse<PromptDetailsDTO> getPromptDetailsWithHttpInfo(@javax.annotation.Nonnull Long promptId) throws ApiException {
         okhttp3.Call localVarCall = getPromptDetailsValidateBeforeCall(promptId, null);
         Type localVarReturnType = new TypeToken<PromptDetailsDTO>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -1980,7 +1980,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getPromptDetailsAsync(Long promptId, final ApiCallback<PromptDetailsDTO> _callback) throws ApiException {
+    public okhttp3.Call getPromptDetailsAsync(@javax.annotation.Nonnull Long promptId, final ApiCallback<PromptDetailsDTO> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = getPromptDetailsValidateBeforeCall(promptId, _callback);
         Type localVarReturnType = new TypeToken<PromptDetailsDTO>(){}.getType();
@@ -2000,7 +2000,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getPromptSummaryCall(Long promptId, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call getPromptSummaryCall(@javax.annotation.Nonnull Long promptId, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -2046,7 +2046,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call getPromptSummaryValidateBeforeCall(Long promptId, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call getPromptSummaryValidateBeforeCall(@javax.annotation.Nonnull Long promptId, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'promptId' is set
         if (promptId == null) {
             throw new ApiException("Missing the required parameter 'promptId' when calling getPromptSummary(Async)");
@@ -2069,7 +2069,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public PromptSummaryDTO getPromptSummary(Long promptId) throws ApiException {
+    public PromptSummaryDTO getPromptSummary(@javax.annotation.Nonnull Long promptId) throws ApiException {
         ApiResponse<PromptSummaryDTO> localVarResp = getPromptSummaryWithHttpInfo(promptId);
         return localVarResp.getData();
     }
@@ -2087,7 +2087,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<PromptSummaryDTO> getPromptSummaryWithHttpInfo(Long promptId) throws ApiException {
+    public ApiResponse<PromptSummaryDTO> getPromptSummaryWithHttpInfo(@javax.annotation.Nonnull Long promptId) throws ApiException {
         okhttp3.Call localVarCall = getPromptSummaryValidateBeforeCall(promptId, null);
         Type localVarReturnType = new TypeToken<PromptSummaryDTO>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -2107,7 +2107,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getPromptSummaryAsync(Long promptId, final ApiCallback<PromptSummaryDTO> _callback) throws ApiException {
+    public okhttp3.Call getPromptSummaryAsync(@javax.annotation.Nonnull Long promptId, final ApiCallback<PromptSummaryDTO> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = getPromptSummaryValidateBeforeCall(promptId, _callback);
         Type localVarReturnType = new TypeToken<PromptSummaryDTO>(){}.getType();
@@ -2127,7 +2127,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listPromptVersionsByNameCall(String name, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call listPromptVersionsByNameCall(@javax.annotation.Nonnull String name, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -2173,7 +2173,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call listPromptVersionsByNameValidateBeforeCall(String name, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call listPromptVersionsByNameValidateBeforeCall(@javax.annotation.Nonnull String name, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'name' is set
         if (name == null) {
             throw new ApiException("Missing the required parameter 'name' when calling listPromptVersionsByName(Async)");
@@ -2196,7 +2196,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<PromptItemForNameDTO> listPromptVersionsByName(String name) throws ApiException {
+    public List<PromptItemForNameDTO> listPromptVersionsByName(@javax.annotation.Nonnull String name) throws ApiException {
         ApiResponse<List<PromptItemForNameDTO>> localVarResp = listPromptVersionsByNameWithHttpInfo(name);
         return localVarResp.getData();
     }
@@ -2214,7 +2214,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<PromptItemForNameDTO>> listPromptVersionsByNameWithHttpInfo(String name) throws ApiException {
+    public ApiResponse<List<PromptItemForNameDTO>> listPromptVersionsByNameWithHttpInfo(@javax.annotation.Nonnull String name) throws ApiException {
         okhttp3.Call localVarCall = listPromptVersionsByNameValidateBeforeCall(name, null);
         Type localVarReturnType = new TypeToken<List<PromptItemForNameDTO>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -2234,7 +2234,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listPromptVersionsByNameAsync(String name, final ApiCallback<List<PromptItemForNameDTO>> _callback) throws ApiException {
+    public okhttp3.Call listPromptVersionsByNameAsync(@javax.annotation.Nonnull String name, final ApiCallback<List<PromptItemForNameDTO>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = listPromptVersionsByNameValidateBeforeCall(name, _callback);
         Type localVarReturnType = new TypeToken<List<PromptItemForNameDTO>>(){}.getType();
@@ -2254,7 +2254,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call newPromptNameCall(String desired, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call newPromptNameCall(@javax.annotation.Nonnull String desired, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -2300,7 +2300,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call newPromptNameValidateBeforeCall(String desired, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call newPromptNameValidateBeforeCall(@javax.annotation.Nonnull String desired, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'desired' is set
         if (desired == null) {
             throw new ApiException("Missing the required parameter 'desired' when calling newPromptName(Async)");
@@ -2323,7 +2323,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public String newPromptName(String desired) throws ApiException {
+    public String newPromptName(@javax.annotation.Nonnull String desired) throws ApiException {
         ApiResponse<String> localVarResp = newPromptNameWithHttpInfo(desired);
         return localVarResp.getData();
     }
@@ -2341,7 +2341,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<String> newPromptNameWithHttpInfo(String desired) throws ApiException {
+    public ApiResponse<String> newPromptNameWithHttpInfo(@javax.annotation.Nonnull String desired) throws ApiException {
         okhttp3.Call localVarCall = newPromptNameValidateBeforeCall(desired, null);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -2361,7 +2361,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call newPromptNameAsync(String desired, final ApiCallback<String> _callback) throws ApiException {
+    public okhttp3.Call newPromptNameAsync(@javax.annotation.Nonnull String desired, final ApiCallback<String> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = newPromptNameValidateBeforeCall(desired, _callback);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
@@ -2382,7 +2382,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call publishPromptCall(Long promptId, String visibility, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call publishPromptCall(@javax.annotation.Nonnull Long promptId, @javax.annotation.Nonnull String visibility, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -2429,7 +2429,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call publishPromptValidateBeforeCall(Long promptId, String visibility, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call publishPromptValidateBeforeCall(@javax.annotation.Nonnull Long promptId, @javax.annotation.Nonnull String visibility, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'promptId' is set
         if (promptId == null) {
             throw new ApiException("Missing the required parameter 'promptId' when calling publishPrompt(Async)");
@@ -2458,7 +2458,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public Long publishPrompt(Long promptId, String visibility) throws ApiException {
+    public Long publishPrompt(@javax.annotation.Nonnull Long promptId, @javax.annotation.Nonnull String visibility) throws ApiException {
         ApiResponse<Long> localVarResp = publishPromptWithHttpInfo(promptId, visibility);
         return localVarResp.getData();
     }
@@ -2477,7 +2477,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Long> publishPromptWithHttpInfo(Long promptId, String visibility) throws ApiException {
+    public ApiResponse<Long> publishPromptWithHttpInfo(@javax.annotation.Nonnull Long promptId, @javax.annotation.Nonnull String visibility) throws ApiException {
         okhttp3.Call localVarCall = publishPromptValidateBeforeCall(promptId, visibility, null);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -2498,7 +2498,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call publishPromptAsync(Long promptId, String visibility, final ApiCallback<Long> _callback) throws ApiException {
+    public okhttp3.Call publishPromptAsync(@javax.annotation.Nonnull Long promptId, @javax.annotation.Nonnull String visibility, final ApiCallback<Long> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = publishPromptValidateBeforeCall(promptId, visibility, _callback);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
@@ -2518,7 +2518,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call searchPromptDetailsCall(PromptQueryDTO promptQueryDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call searchPromptDetailsCall(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -2564,7 +2564,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call searchPromptDetailsValidateBeforeCall(PromptQueryDTO promptQueryDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call searchPromptDetailsValidateBeforeCall(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'promptQueryDTO' is set
         if (promptQueryDTO == null) {
             throw new ApiException("Missing the required parameter 'promptQueryDTO' when calling searchPromptDetails(Async)");
@@ -2587,7 +2587,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<PromptDetailsDTO> searchPromptDetails(PromptQueryDTO promptQueryDTO) throws ApiException {
+    public List<PromptDetailsDTO> searchPromptDetails(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO) throws ApiException {
         ApiResponse<List<PromptDetailsDTO>> localVarResp = searchPromptDetailsWithHttpInfo(promptQueryDTO);
         return localVarResp.getData();
     }
@@ -2605,7 +2605,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<PromptDetailsDTO>> searchPromptDetailsWithHttpInfo(PromptQueryDTO promptQueryDTO) throws ApiException {
+    public ApiResponse<List<PromptDetailsDTO>> searchPromptDetailsWithHttpInfo(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO) throws ApiException {
         okhttp3.Call localVarCall = searchPromptDetailsValidateBeforeCall(promptQueryDTO, null);
         Type localVarReturnType = new TypeToken<List<PromptDetailsDTO>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -2625,7 +2625,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call searchPromptDetailsAsync(PromptQueryDTO promptQueryDTO, final ApiCallback<List<PromptDetailsDTO>> _callback) throws ApiException {
+    public okhttp3.Call searchPromptDetailsAsync(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO, final ApiCallback<List<PromptDetailsDTO>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = searchPromptDetailsValidateBeforeCall(promptQueryDTO, _callback);
         Type localVarReturnType = new TypeToken<List<PromptDetailsDTO>>(){}.getType();
@@ -2645,7 +2645,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call searchPromptSummaryCall(PromptQueryDTO promptQueryDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call searchPromptSummaryCall(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -2691,7 +2691,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call searchPromptSummaryValidateBeforeCall(PromptQueryDTO promptQueryDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call searchPromptSummaryValidateBeforeCall(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'promptQueryDTO' is set
         if (promptQueryDTO == null) {
             throw new ApiException("Missing the required parameter 'promptQueryDTO' when calling searchPromptSummary(Async)");
@@ -2714,7 +2714,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<PromptSummaryDTO> searchPromptSummary(PromptQueryDTO promptQueryDTO) throws ApiException {
+    public List<PromptSummaryDTO> searchPromptSummary(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO) throws ApiException {
         ApiResponse<List<PromptSummaryDTO>> localVarResp = searchPromptSummaryWithHttpInfo(promptQueryDTO);
         return localVarResp.getData();
     }
@@ -2732,7 +2732,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<PromptSummaryDTO>> searchPromptSummaryWithHttpInfo(PromptQueryDTO promptQueryDTO) throws ApiException {
+    public ApiResponse<List<PromptSummaryDTO>> searchPromptSummaryWithHttpInfo(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO) throws ApiException {
         okhttp3.Call localVarCall = searchPromptSummaryValidateBeforeCall(promptQueryDTO, null);
         Type localVarReturnType = new TypeToken<List<PromptSummaryDTO>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -2752,7 +2752,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call searchPromptSummaryAsync(PromptQueryDTO promptQueryDTO, final ApiCallback<List<PromptSummaryDTO>> _callback) throws ApiException {
+    public okhttp3.Call searchPromptSummaryAsync(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO, final ApiCallback<List<PromptSummaryDTO>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = searchPromptSummaryValidateBeforeCall(promptQueryDTO, _callback);
         Type localVarReturnType = new TypeToken<List<PromptSummaryDTO>>(){}.getType();
@@ -2772,7 +2772,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call searchPublicPromptSummaryCall(PromptQueryDTO promptQueryDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call searchPublicPromptSummaryCall(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -2818,7 +2818,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call searchPublicPromptSummaryValidateBeforeCall(PromptQueryDTO promptQueryDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call searchPublicPromptSummaryValidateBeforeCall(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'promptQueryDTO' is set
         if (promptQueryDTO == null) {
             throw new ApiException("Missing the required parameter 'promptQueryDTO' when calling searchPublicPromptSummary(Async)");
@@ -2841,7 +2841,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<PromptSummaryDTO> searchPublicPromptSummary(PromptQueryDTO promptQueryDTO) throws ApiException {
+    public List<PromptSummaryDTO> searchPublicPromptSummary(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO) throws ApiException {
         ApiResponse<List<PromptSummaryDTO>> localVarResp = searchPublicPromptSummaryWithHttpInfo(promptQueryDTO);
         return localVarResp.getData();
     }
@@ -2859,7 +2859,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<PromptSummaryDTO>> searchPublicPromptSummaryWithHttpInfo(PromptQueryDTO promptQueryDTO) throws ApiException {
+    public ApiResponse<List<PromptSummaryDTO>> searchPublicPromptSummaryWithHttpInfo(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO) throws ApiException {
         okhttp3.Call localVarCall = searchPublicPromptSummaryValidateBeforeCall(promptQueryDTO, null);
         Type localVarReturnType = new TypeToken<List<PromptSummaryDTO>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -2879,7 +2879,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call searchPublicPromptSummaryAsync(PromptQueryDTO promptQueryDTO, final ApiCallback<List<PromptSummaryDTO>> _callback) throws ApiException {
+    public okhttp3.Call searchPublicPromptSummaryAsync(@javax.annotation.Nonnull PromptQueryDTO promptQueryDTO, final ApiCallback<List<PromptSummaryDTO>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = searchPublicPromptSummaryValidateBeforeCall(promptQueryDTO, _callback);
         Type localVarReturnType = new TypeToken<List<PromptSummaryDTO>>(){}.getType();
@@ -2899,7 +2899,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call sendPromptCall(PromptAiParamDTO promptAiParamDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call sendPromptCall(@javax.annotation.Nonnull PromptAiParamDTO promptAiParamDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -2945,7 +2945,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call sendPromptValidateBeforeCall(PromptAiParamDTO promptAiParamDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call sendPromptValidateBeforeCall(@javax.annotation.Nonnull PromptAiParamDTO promptAiParamDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'promptAiParamDTO' is set
         if (promptAiParamDTO == null) {
             throw new ApiException("Missing the required parameter 'promptAiParamDTO' when calling sendPrompt(Async)");
@@ -2968,7 +2968,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public LlmResultDTO sendPrompt(PromptAiParamDTO promptAiParamDTO) throws ApiException {
+    public LlmResultDTO sendPrompt(@javax.annotation.Nonnull PromptAiParamDTO promptAiParamDTO) throws ApiException {
         ApiResponse<LlmResultDTO> localVarResp = sendPromptWithHttpInfo(promptAiParamDTO);
         return localVarResp.getData();
     }
@@ -2986,7 +2986,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<LlmResultDTO> sendPromptWithHttpInfo(PromptAiParamDTO promptAiParamDTO) throws ApiException {
+    public ApiResponse<LlmResultDTO> sendPromptWithHttpInfo(@javax.annotation.Nonnull PromptAiParamDTO promptAiParamDTO) throws ApiException {
         okhttp3.Call localVarCall = sendPromptValidateBeforeCall(promptAiParamDTO, null);
         Type localVarReturnType = new TypeToken<LlmResultDTO>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -3006,7 +3006,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call sendPromptAsync(PromptAiParamDTO promptAiParamDTO, final ApiCallback<LlmResultDTO> _callback) throws ApiException {
+    public okhttp3.Call sendPromptAsync(@javax.annotation.Nonnull PromptAiParamDTO promptAiParamDTO, final ApiCallback<LlmResultDTO> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = sendPromptValidateBeforeCall(promptAiParamDTO, _callback);
         Type localVarReturnType = new TypeToken<LlmResultDTO>(){}.getType();
@@ -3026,7 +3026,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call streamSendPromptCall(PromptAiParamDTO promptAiParamDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call streamSendPromptCall(@javax.annotation.Nonnull PromptAiParamDTO promptAiParamDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -3072,7 +3072,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call streamSendPromptValidateBeforeCall(PromptAiParamDTO promptAiParamDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call streamSendPromptValidateBeforeCall(@javax.annotation.Nonnull PromptAiParamDTO promptAiParamDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'promptAiParamDTO' is set
         if (promptAiParamDTO == null) {
             throw new ApiException("Missing the required parameter 'promptAiParamDTO' when calling streamSendPrompt(Async)");
@@ -3095,7 +3095,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public SseEmitter streamSendPrompt(PromptAiParamDTO promptAiParamDTO) throws ApiException {
+    public SseEmitter streamSendPrompt(@javax.annotation.Nonnull PromptAiParamDTO promptAiParamDTO) throws ApiException {
         ApiResponse<SseEmitter> localVarResp = streamSendPromptWithHttpInfo(promptAiParamDTO);
         return localVarResp.getData();
     }
@@ -3113,7 +3113,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<SseEmitter> streamSendPromptWithHttpInfo(PromptAiParamDTO promptAiParamDTO) throws ApiException {
+    public ApiResponse<SseEmitter> streamSendPromptWithHttpInfo(@javax.annotation.Nonnull PromptAiParamDTO promptAiParamDTO) throws ApiException {
         okhttp3.Call localVarCall = streamSendPromptValidateBeforeCall(promptAiParamDTO, null);
         Type localVarReturnType = new TypeToken<SseEmitter>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -3133,7 +3133,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call streamSendPromptAsync(PromptAiParamDTO promptAiParamDTO, final ApiCallback<SseEmitter> _callback) throws ApiException {
+    public okhttp3.Call streamSendPromptAsync(@javax.annotation.Nonnull PromptAiParamDTO promptAiParamDTO, final ApiCallback<SseEmitter> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = streamSendPromptValidateBeforeCall(promptAiParamDTO, _callback);
         Type localVarReturnType = new TypeToken<SseEmitter>(){}.getType();
@@ -3154,7 +3154,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call updatePromptCall(Long promptId, PromptUpdateDTO promptUpdateDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call updatePromptCall(@javax.annotation.Nonnull Long promptId, @javax.annotation.Nonnull PromptUpdateDTO promptUpdateDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -3201,7 +3201,7 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call updatePromptValidateBeforeCall(Long promptId, PromptUpdateDTO promptUpdateDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call updatePromptValidateBeforeCall(@javax.annotation.Nonnull Long promptId, @javax.annotation.Nonnull PromptUpdateDTO promptUpdateDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'promptId' is set
         if (promptId == null) {
             throw new ApiException("Missing the required parameter 'promptId' when calling updatePrompt(Async)");
@@ -3230,7 +3230,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public Boolean updatePrompt(Long promptId, PromptUpdateDTO promptUpdateDTO) throws ApiException {
+    public Boolean updatePrompt(@javax.annotation.Nonnull Long promptId, @javax.annotation.Nonnull PromptUpdateDTO promptUpdateDTO) throws ApiException {
         ApiResponse<Boolean> localVarResp = updatePromptWithHttpInfo(promptId, promptUpdateDTO);
         return localVarResp.getData();
     }
@@ -3249,7 +3249,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Boolean> updatePromptWithHttpInfo(Long promptId, PromptUpdateDTO promptUpdateDTO) throws ApiException {
+    public ApiResponse<Boolean> updatePromptWithHttpInfo(@javax.annotation.Nonnull Long promptId, @javax.annotation.Nonnull PromptUpdateDTO promptUpdateDTO) throws ApiException {
         okhttp3.Call localVarCall = updatePromptValidateBeforeCall(promptId, promptUpdateDTO, null);
         Type localVarReturnType = new TypeToken<Boolean>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -3270,7 +3270,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call updatePromptAsync(Long promptId, PromptUpdateDTO promptUpdateDTO, final ApiCallback<Boolean> _callback) throws ApiException {
+    public okhttp3.Call updatePromptAsync(@javax.annotation.Nonnull Long promptId, @javax.annotation.Nonnull PromptUpdateDTO promptUpdateDTO, final ApiCallback<Boolean> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = updatePromptValidateBeforeCall(promptId, promptUpdateDTO, _callback);
         Type localVarReturnType = new TypeToken<Boolean>(){}.getType();

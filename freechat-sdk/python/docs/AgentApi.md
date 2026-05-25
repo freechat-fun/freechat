@@ -185,7 +185,15 @@ Name | Type | Description  | Notes
 
 Clone Agent
 
-Enter the agentId, generate a new record, the content is basically the same as the original agent, but the following fields are different: - Version number is 1 - Visibility is private - The parent agent is the source agentId - The creation time is the current moment.  - All statistical indicators are zeroed.  Return the new agentId. 
+Enter the agentId, generate a new record, the content is basically the same as the original agent, but the following fields are different:
+- Version number is 1
+- Visibility is private
+- The parent agent is the source agentId
+- The creation time is the current moment.
+ - All statistical indicators are zeroed.
+
+Return the new agentId.
+
 
 ### Example
 
@@ -417,7 +425,17 @@ Name | Type | Description  | Notes
 
 Create Agent
 
-Create a agent, ignore required fields: - Agent name - Agent configuration  Limitations: - Description: 300 characters - Configuration: 2000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10 
+Create a agent, ignore required fields:
+- Agent name
+- Agent configuration
+
+Limitations:
+- Description: 300 characters
+- Configuration: 2000 characters
+- Example: 2000 characters
+- Tags: 5
+- Parameters: 10
+
 
 ### Example
 
@@ -1119,7 +1137,19 @@ Name | Type | Description  | Notes
 
 Search Agent Summary
 
-Search agents: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Format: exact match, currently supported: langflow   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - General: name, description, example, fuzzy match, one hit is enough; public scope + all user's general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the agent summary content. - Support pagination. 
+Search agents:
+- Specifiable query fields, and relationship:
+  - Scope: private, public_org or public. Private can only search this account.
+  - Username: exact match, only valid when searching public, public_org. If not specified, search all users.
+  - Format: exact match, currently supported: langflow
+  - Tags: exact match (support and, or logic).
+  - Model type: exact match (support and, or logic).
+  - Name: left match.
+  - General: name, description, example, fuzzy match, one hit is enough; public scope + all user's general search does not guarantee timeliness.
+- A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending.
+- The search result is the agent summary content.
+- Support pagination.
+
 
 ### Example
 

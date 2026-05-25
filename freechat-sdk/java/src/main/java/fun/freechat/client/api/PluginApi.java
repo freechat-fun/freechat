@@ -1,8 +1,8 @@
 /*
  * FreeChat OpenAPI Definition
- * # FreeChat: Create Friends for Yourself with AI  English | [中文版](https://github.com/freechat-fun/freechat/blob/main/README.zh-CN.md)  ## Introduction Welcome! FreeChat aims to build a cloud-native, robust, and quickly commercializable enterprise-level AI virtual character platform.  It also serves as a prompt engineering platform.  It is recommended to run [Ollama](https://ollama.com/) + FreeChat locally to test your models. See the instructions below for [running locally](#running-locally)  ## Features - Primarily uses Java and emphasizes **security, robustness, scalability, traceability, and maintainability**. - Boasts **account systems and permission management**, supporting OAuth2 authentication. Introduces the \"organization\" concept and related permission constraint functions. - Extensively employs distributed technologies and caching to support **high concurrency** access. - Provides flexible character customization options, supports direct intervention in prompts, and supports **configuring multiple backends for each character**. - **Offers a comprehensive range of Open APIs**, with [more than 180 methods](https://freechat.fun/w/docs) and provides java/python/typescript SDKs. These methods enable easy construction of systems for end-users. - Supports setting **RAG** (Retrieval Augmented Generation) for characters. - Supports **long-term memory, preset memory** for characters. - Supports characters evoking **proactive chat**. - Supports characters replies with **mixed text and image information**. - Supports setting **quota limits** for characters. - Supports characters **importing and exporting**. - Supports **character-to-character chats**. - Supports **character voices**. - Supports individual **debugging and sharing prompts**.  ## Snapshots ### On PC #### Home Page ![Home Page Snapshot](https://freechat.fun/img/snapshot_w1.jpg) #### Development View ![Development View Snapshot](https://freechat.fun/img/snapshot_w2.jpg) #### Chat View ![Chat View Snapshot](https://freechat.fun/img/snapshot_w3.jpg)  ### On Mobile ![Chat Snapshot 1](https://freechat.fun/img/snapshot_m1.jpg) ![Chat Snapshot 2](https://freechat.fun/img/snapshot_m2.jpg)<br /> ![Chat Snapshot 3](https://freechat.fun/img/snapshot_m3.jpg) ![Chat Snapshot 4](https://freechat.fun/img/snapshot_m4.jpg)  ## Character Design ```mermaid flowchart TD     A(Character) --> B(Profile)     A --> C(Knowledge/RAG)     A --> D(Album)     A --> E(Backend-1)     A --> F(Backend-n...)     E --> G(Message Window)     E --> H(Long Term Memory Settings)     E --> I(Quota Limit)     E --> J(Chat/Greeting Prompt Tasks)     E --> P(Album/TTS Tools)     E --> L(Moderation Settings)     J --> M(Model & Parameters)     J --> N(API Keys)     J --> O(Prompt Reference)     O --> R(Template)     O --> S(Variables)     O --> T(Version)     O --> U(...)     style L stroke-dasharray: 5, 5 ```  After setting up an unified persona and knowledge for a character, different backends can be configured. For example, different model may be adopted for different users based on cost considerations.  ## How to Play ### Online Website You can visit [freechat.fun](https://freechat.fun) to experience FreeChat. Share your designed AI character!  ### Running in a Kubernetes Cluster FreeChat is dedicated to the principles of cloud-native design. If you have a Kubernetes cluster, you can deploy FreeChat to your environment by following these steps:  1. Put the Kubernetes configuration file in the `configs/helm/` directory, named `kube-private.conf`. 2. Place the Helm configuration file in the same directory, named `values-private.yaml`. Make sure to reference the default `values.yaml` and customize the variables as needed. 3. Switch to the `scripts/` directory. 4. If needed, run `install-in.sh` to deploy `ingress-nginx` on the Kubernetes cluster. 5. If needed, run `install-cm.sh` to deploy `cert-manager` on the Kubernetes cluster, which automatically issues certificates for domains specified in `ingress.hosts`. 6. Run `install.sh` script to install FreeChat and its dependencies. 7. FreeChat aims to provide Open API services. If you like the interactive experience of [freechat.fun](https://freechat.fun), run `install-web.sh` to deploy the front-end application. 8. Run `restart.sh` to restart the service. 9. If you modified any Helm configuration files, use `upgrade.sh` to update the corresponding Kubernetes resources. 10. To remove specific resources, run the `uninstall*.sh` script corresponding to the resource you want to uninstall.  As a cloud-native application, the services FreeChat relies on are obtained and deployed to your cluster through the helm repository.  If you prefer cloud services with SLA (Service Level Agreement) guarantees, simply make the relevant settings in `configs/helm/values-private.yaml`: ```yaml mysql:   enabled: false   url: <your mysql url>   auth:     rootPassword: <your mysql root password>     username: <your mysql username>     password: <your mysql password for the username>  redis:   enabled: false   url: <your redis url>   auth:     password: <your redis password>   milvus:   enabled: false   url: <your milvus url>   milvus:     auth:       token: <your milvus api-key> ```  With this, FreeChat will not automatically install these services, but rather use the configuration information to connect directly.  If your Kubernetes cluster does not have a standalone monitoring system, you can enable the following switch. This will install Prometheus and Grafana services in the same namespace, dedicated to monitoring the status of the services under the FreeChat application: ```yaml prometheus:   enabled: true grafana:   enabled: true ```  ### Running Locally You can also run FreeChat locally. Currently supported on MacOS and Linux (although only tested on MacOS). You need to install the Docker toolset and have a network that can access [Docker Hub](https://hub.docker.com/).  Once ready, enter the `scripts/` directory and run `local-run.sh`, which will download and run the necessary docker containers. After a successful startup, you can access `http://localhost` via a browser to see the locally running freechat.fun. The built-in administrator username and password are \"admin:freechat\". Use `local-run.sh --help` to view the supported options of the script. Good luck!  ### Running in an IDE To run FreeChat in an IDE, you need to start all dependent services first but do not need to run the container for the FreeChat application itself. You can execute the `scripts/local-deps.sh` script to start services like `MySQL`, `Redis`, `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。Make sure you have set the following startup VM options: ```shell -Dspring.config.location=classpath:/application.yml \\ -DAPP_HOME=local-data/freechat \\ -Dspring.profiles.active=local ```  ### Use SDK #### Java - **Dependency** ```xml <dependency>   <groupId>fun.freechat</groupId>   <artifactId>freechat-sdk</artifactId>   <version>${freechat-sdk.version}</version> </dependency> ```  - **Example** ```java import fun.freechat.client.ApiClient; import fun.freechat.client.ApiException; import fun.freechat.client.Configuration; import fun.freechat.client.api.AccountApi; import fun.freechat.client.auth.ApiKeyAuth; import fun.freechat.client.model.UserDetailsDTO;  public class AccountClientExample {     public static void main(String[] args) {         ApiClient defaultClient = Configuration.getDefaultApiClient();         defaultClient.setBasePath(\"https://freechat.fun\");                  // Configure HTTP bearer authorization: bearerAuth         HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication(\"bearerAuth\");         bearerAuth.setBearerToken(\"FREECHAT_TOKEN\");          AccountApi apiInstance = new AccountApi(defaultClient);         try {             UserDetailsDTO result = apiInstance.getUserDetails();             System.out.println(result);         } catch (ApiException e) {             e.printStackTrace();         }     } } ```  #### Python - **Installation** ```shell pip install freechat-sdk ```  - **Example** ```python import freechat_sdk from freechat_sdk.rest import ApiException from pprint import pprint  # Defining the host is optional and defaults to https://freechat.fun # See configuration.py for a list of all supported configuration parameters. configuration = freechat_sdk.Configuration(     host = \"https://freechat.fun\" )  # Configure Bearer authorization: bearerAuth configuration = freechat_sdk.Configuration(     access_token = os.environ[\"FREECHAT_TOKEN\"] )  # Enter a context with an instance of the API client with freechat_sdk.ApiClient(configuration) as api_client:     # Create an instance of the API class     api_instance = freechat_sdk.AccountApi(api_client)      try:         details = api_instance.get_user_details()         pprint(details)     except ApiException as e:         print(\"Exception when calling AccountClient->get_user_details: %s\\n\" % e) ```  #### TypeScript - **Installation** ```shell npm install freechat-sdk --save ```  - **Example**  Refer to [FreeChatApiContext.tsx](https://github.com/freechat-fun/freechat/blob/main/freechat-web/src/contexts/FreeChatApiProvider.tsx)  ## System Dependencies | | Projects | ---- | ---- | Application Framework | [Spring Boot](https://spring.io/projects/spring-boot/) | LLM Framework | [LangChain4j](https://docs.langchain4j.dev/) | Model Providers | [Ollama](https://ollama.com/), [OpenAI](https://platform.openai.com/), [Azure OpenAI](https://oai.azure.com/), [DashScope(Alibaba)](https://dashscope.aliyun.com/) | Database Systems | [MySQL](https://www.mysql.com/), [Redis](https://redis.io/), [Milvus](https://milvus.io/) | Monitoring & Alerting | [Kube State Metrics](https://kubernetes.io/docs/concepts/cluster-administration/kube-state-metrics/), [Prometheus](https://prometheus.io/), [Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/), [Loki](https://grafana.com/oss/loki/), [Grafana](https://grafana.com/) | OpenAPI Tools | [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator), [OpenAPI Explorer](https://github.com/Authress-Engineering/openapi-explorer)  ## Collaboration ### Application Integration The FreeChat system is entirely oriented towards Open APIs. The site [freechat.fun](https://freechat.fun) is developed using its TypeScript SDK and hardly depends on private interfaces. You can use these online interfaces to develop your own applications or sites, making them fit your preferences. Currently, the online FreeChat service is completely free and there are no current plans for charging.  ### Model Integration FreeChat aims to explore AI virtual character technology with anthropomorphic characteristics. If you are researching this area and hope FreeChat supports your model, please contact us. We look forward to AI technology helping people create their own \"soul mates\" in the future. 
+ * # FreeChat: Create Friends for Yourself with AI  English | [中文版](https://github.com/freechat-fun/freechat/blob/main/README.zh-CN.md)  ## Introduction Welcome! FreeChat aims to build a cloud-native, robust, and quickly commercializable enterprise-level AI virtual character platform.  It also serves as a prompt engineering platform.  It is recommended to run [Ollama](https://ollama.com/) + FreeChat locally to test your models. See the instructions below for [running locally](#running-locally)  ## Features - Primarily uses Java and emphasizes **security, robustness, scalability, traceability, and maintainability**. - Boasts **account systems and permission management**, supporting OAuth2 authentication. Introduces the \"organization\" concept and related permission constraint functions. - Extensively employs distributed technologies and caching to support **high concurrency** access. - Provides flexible character customization options, supports direct intervention in prompts, and supports **configuring multiple backends for each character**. - **Offers a comprehensive range of Open APIs**, with [more than 180 methods](https://freechat.fun/w/docs) and provides java/python/typescript SDKs. These methods enable easy construction of systems for end-users. - Supports setting **RAG** (Retrieval Augmented Generation) for characters. - Supports **long-term memory, preset memory** for characters. - Supports characters evoking **proactive chat**. - Supports **automatic image generation** for characters and replies with mixed text and image messages. - Supports setting **quota limits** for characters. - Supports characters **importing and exporting**. - Supports **character-to-character chats**. - Supports **character voices**. - Supports individual **debugging and sharing prompts**.  ## Snapshots ### On PC #### Home Page ![Home Page Snapshot](https://freechat.fun/img/snapshot_w1.jpg) #### Development View ![Development View Snapshot](https://freechat.fun/img/snapshot_w2.jpg) #### Chat View ![Chat View Snapshot](https://freechat.fun/img/snapshot_w3.jpg)  ### On Mobile ![Chat Snapshot 1](https://freechat.fun/img/snapshot_m1.jpg) ![Chat Snapshot 2](https://freechat.fun/img/snapshot_m2.jpg)<br /> ![Chat Snapshot 3](https://freechat.fun/img/snapshot_m3.jpg) ![Chat Snapshot 4](https://freechat.fun/img/snapshot_m4.jpg)  ## Character Design ```mermaid flowchart TD     A(Character) --> B(Profile)     A --> C(Knowledge/RAG)     A --> D(Album)     A --> E(Backend-1)     A --> F(Backend-n...)     E --> G(Message Window)     E --> H(Long Term Memory Settings)     E --> I(Quota Limit)     E --> J(Chat/Greeting Prompt Tasks)     E --> P(Album/TTS Tools)     E --> L(Moderation Settings)     J --> M(Model & Parameters)     J --> N(API Keys)     J --> O(Prompt Reference)     O --> R(Template)     O --> S(Variables)     O --> T(Version)     O --> U(...)     style L stroke-dasharray: 5, 5 ```  After setting up an unified persona and knowledge for a character, different backends can be configured. For example, different model may be adopted for different users based on cost considerations.  ## How to Play ### Online Website You can visit [freechat.fun](https://freechat.fun) to experience FreeChat. Share your designed AI character!  ### Running in a Kubernetes Cluster FreeChat is dedicated to the principles of cloud-native design. If you have a Kubernetes cluster, you can deploy FreeChat to your environment by following these steps:  1. Put the Kubernetes configuration file in the `configs/helm/` directory, named `kube-private.conf`. 2. Place the Helm configuration file in the same directory, named `values-private.yaml`. Make sure to reference the default `values.yaml` and customize the variables as needed. 3. Switch to the `scripts/` directory. 4. If needed, run `install-in.sh` to deploy `ingress-nginx` on the Kubernetes cluster. 5. If needed, run `install-cm.sh` to deploy `cert-manager` on the Kubernetes cluster, which automatically issues certificates for domains specified in `ingress.hosts`. 6. Run `install.sh` script to install FreeChat and its dependencies. 7. FreeChat aims to provide Open API services. If you like the interactive experience of [freechat.fun](https://freechat.fun), run `install-web.sh` to deploy the front-end application. 8. Run `restart.sh` to restart the service. 9. If you modified any Helm configuration files, use `upgrade.sh` to update the corresponding Kubernetes resources. 10. To remove specific resources, run the `uninstall*.sh` script corresponding to the resource you want to uninstall.  As a cloud-native application, the services FreeChat relies on are obtained and deployed to your cluster through the helm repository.  If you prefer cloud services with SLA (Service Level Agreement) guarantees, simply make the relevant settings in `configs/helm/values-private.yaml`: ```yaml mysql:   enabled: false   url: <your mysql url>   auth:     rootPassword: <your mysql root password>     username: <your mysql username>     password: <your mysql password for the username>  redis:   enabled: false   url: <your redis url>   auth:     password: <your redis password>   milvus:   enabled: false   url: <your milvus url>   milvus:     auth:       token: <your milvus api-key> ```  With this, FreeChat will not automatically install these services, but rather use the configuration information to connect directly.  If your Kubernetes cluster does not have a standalone monitoring system, you can enable the following switch. This will install Prometheus and Grafana services in the same namespace, dedicated to monitoring the status of the services under the FreeChat application: ```yaml prometheus:   enabled: true grafana:   enabled: true ```  ### Running Locally You can also run FreeChat locally. Currently supported on MacOS and Linux (although only tested on MacOS). You need to install the Docker toolset and have a network that can access [Docker Hub](https://hub.docker.com/).  Once ready, enter the `scripts/` directory and run `local-run.sh`, which will download and run the necessary docker containers. After a successful startup, you can access `http://localhost` via a browser to see the locally running freechat.fun. The built-in administrator username and password are \"admin:freechat\". Use `local-run.sh --help` to view the supported options of the script. Good luck!  ### Running in an IDE To run FreeChat in an IDE, you need to start all dependent services first but do not need to run the container for the FreeChat application itself. You can execute the `scripts/local-deps.sh` script to start services like `MySQL`, `Redis`, `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。Make sure you have set the following startup VM options: ```shell -Dspring.config.location=classpath:/application.yml \\ -DAPP_HOME=local-data/freechat \\ -Dspring.profiles.active=local ```  ### Use SDK #### Java - **Dependency** ```xml <dependency>   <groupId>fun.freechat</groupId>   <artifactId>freechat-sdk</artifactId>   <version>${freechat-sdk.version}</version> </dependency> ```  - **Example** ```java import fun.freechat.client.ApiClient; import fun.freechat.client.ApiException; import fun.freechat.client.Configuration; import fun.freechat.client.api.AccountApi; import fun.freechat.client.auth.ApiKeyAuth; import fun.freechat.client.model.UserDetailsDTO;  public class AccountClientExample {     public static void main(String[] args) {         ApiClient defaultClient = Configuration.getDefaultApiClient();         defaultClient.setBasePath(\"https://freechat.fun\");                  // Configure HTTP bearer authorization: bearerAuth         HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication(\"bearerAuth\");         bearerAuth.setBearerToken(\"FREECHAT_TOKEN\");          AccountApi apiInstance = new AccountApi(defaultClient);         try {             UserDetailsDTO result = apiInstance.getUserDetails();             System.out.println(result);         } catch (ApiException e) {             e.printStackTrace();         }     } } ```  #### Python - **Installation** ```shell pip install freechat-sdk ```  - **Example** ```python import freechat_sdk from freechat_sdk.rest import ApiException from pprint import pprint  # Defining the host is optional and defaults to https://freechat.fun # See configuration.py for a list of all supported configuration parameters. configuration = freechat_sdk.Configuration(     host = \"https://freechat.fun\" )  # Configure Bearer authorization: bearerAuth configuration = freechat_sdk.Configuration(     access_token = os.environ[\"FREECHAT_TOKEN\"] )  # Enter a context with an instance of the API client with freechat_sdk.ApiClient(configuration) as api_client:     # Create an instance of the API class     api_instance = freechat_sdk.AccountApi(api_client)      try:         details = api_instance.get_user_details()         pprint(details)     except ApiException as e:         print(\"Exception when calling AccountClient->get_user_details: %s\\n\" % e) ```  #### TypeScript - **Installation** ```shell npm install freechat-sdk --save ```  - **Example**  Refer to [FreeChatApiContext.tsx](https://github.com/freechat-fun/freechat/blob/main/freechat-web/src/contexts/FreeChatApiProvider.tsx)  ## System Dependencies | | Projects | ---- | ---- | Application Framework | [Spring Boot](https://spring.io/projects/spring-boot/) | LLM Framework | [LangChain4j](https://docs.langchain4j.dev/) | Model Providers | [Ollama](https://ollama.com/), [OpenAI](https://platform.openai.com/), [Azure OpenAI](https://oai.azure.com/), [DashScope(Alibaba)](https://dashscope.aliyun.com/) | Database Systems | [MySQL](https://www.mysql.com/), [Redis](https://redis.io/), [Milvus](https://milvus.io/) | Monitoring & Alerting | [Kube State Metrics](https://kubernetes.io/docs/concepts/cluster-administration/kube-state-metrics/), [Prometheus](https://prometheus.io/), [Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/), [Loki](https://grafana.com/oss/loki/), [Grafana](https://grafana.com/) | OpenAPI Tools | [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator), [OpenAPI Explorer](https://github.com/Authress-Engineering/openapi-explorer)  ## Collaboration ### Application Integration The FreeChat system is entirely oriented towards Open APIs. The site [freechat.fun](https://freechat.fun) is developed using its TypeScript SDK and hardly depends on private interfaces. You can use these online interfaces to develop your own applications or sites, making them fit your preferences. Currently, the online FreeChat service is completely free and there are no current plans for charging.  ### Model Integration FreeChat aims to explore AI virtual character technology with anthropomorphic characteristics. If you are researching this area and hope FreeChat supports your model, please contact us. We look forward to AI technology helping people create their own \"soul mates\" in the future. 
  *
- * The version of the OpenAPI document: 2.6.0
+ * The version of the OpenAPI document: 2.7.0
  * 
  *
  * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
@@ -89,7 +89,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call batchSearchPluginDetailsCall(List<PluginQueryDTO> pluginQueryDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call batchSearchPluginDetailsCall(@javax.annotation.Nonnull List<PluginQueryDTO> pluginQueryDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -135,7 +135,7 @@ public class PluginApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call batchSearchPluginDetailsValidateBeforeCall(List<PluginQueryDTO> pluginQueryDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call batchSearchPluginDetailsValidateBeforeCall(@javax.annotation.Nonnull List<PluginQueryDTO> pluginQueryDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'pluginQueryDTO' is set
         if (pluginQueryDTO == null) {
             throw new ApiException("Missing the required parameter 'pluginQueryDTO' when calling batchSearchPluginDetails(Async)");
@@ -158,7 +158,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<List<PluginDetailsDTO>> batchSearchPluginDetails(List<PluginQueryDTO> pluginQueryDTO) throws ApiException {
+    public List<List<PluginDetailsDTO>> batchSearchPluginDetails(@javax.annotation.Nonnull List<PluginQueryDTO> pluginQueryDTO) throws ApiException {
         ApiResponse<List<List<PluginDetailsDTO>>> localVarResp = batchSearchPluginDetailsWithHttpInfo(pluginQueryDTO);
         return localVarResp.getData();
     }
@@ -176,7 +176,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<List<PluginDetailsDTO>>> batchSearchPluginDetailsWithHttpInfo(List<PluginQueryDTO> pluginQueryDTO) throws ApiException {
+    public ApiResponse<List<List<PluginDetailsDTO>>> batchSearchPluginDetailsWithHttpInfo(@javax.annotation.Nonnull List<PluginQueryDTO> pluginQueryDTO) throws ApiException {
         okhttp3.Call localVarCall = batchSearchPluginDetailsValidateBeforeCall(pluginQueryDTO, null);
         Type localVarReturnType = new TypeToken<List<List<PluginDetailsDTO>>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -196,7 +196,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call batchSearchPluginDetailsAsync(List<PluginQueryDTO> pluginQueryDTO, final ApiCallback<List<List<PluginDetailsDTO>>> _callback) throws ApiException {
+    public okhttp3.Call batchSearchPluginDetailsAsync(@javax.annotation.Nonnull List<PluginQueryDTO> pluginQueryDTO, final ApiCallback<List<List<PluginDetailsDTO>>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = batchSearchPluginDetailsValidateBeforeCall(pluginQueryDTO, _callback);
         Type localVarReturnType = new TypeToken<List<List<PluginDetailsDTO>>>(){}.getType();
@@ -216,7 +216,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call batchSearchPluginSummaryCall(List<PluginQueryDTO> pluginQueryDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call batchSearchPluginSummaryCall(@javax.annotation.Nonnull List<PluginQueryDTO> pluginQueryDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -262,7 +262,7 @@ public class PluginApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call batchSearchPluginSummaryValidateBeforeCall(List<PluginQueryDTO> pluginQueryDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call batchSearchPluginSummaryValidateBeforeCall(@javax.annotation.Nonnull List<PluginQueryDTO> pluginQueryDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'pluginQueryDTO' is set
         if (pluginQueryDTO == null) {
             throw new ApiException("Missing the required parameter 'pluginQueryDTO' when calling batchSearchPluginSummary(Async)");
@@ -285,7 +285,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<List<PluginSummaryDTO>> batchSearchPluginSummary(List<PluginQueryDTO> pluginQueryDTO) throws ApiException {
+    public List<List<PluginSummaryDTO>> batchSearchPluginSummary(@javax.annotation.Nonnull List<PluginQueryDTO> pluginQueryDTO) throws ApiException {
         ApiResponse<List<List<PluginSummaryDTO>>> localVarResp = batchSearchPluginSummaryWithHttpInfo(pluginQueryDTO);
         return localVarResp.getData();
     }
@@ -303,7 +303,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<List<PluginSummaryDTO>>> batchSearchPluginSummaryWithHttpInfo(List<PluginQueryDTO> pluginQueryDTO) throws ApiException {
+    public ApiResponse<List<List<PluginSummaryDTO>>> batchSearchPluginSummaryWithHttpInfo(@javax.annotation.Nonnull List<PluginQueryDTO> pluginQueryDTO) throws ApiException {
         okhttp3.Call localVarCall = batchSearchPluginSummaryValidateBeforeCall(pluginQueryDTO, null);
         Type localVarReturnType = new TypeToken<List<List<PluginSummaryDTO>>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -323,7 +323,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call batchSearchPluginSummaryAsync(List<PluginQueryDTO> pluginQueryDTO, final ApiCallback<List<List<PluginSummaryDTO>>> _callback) throws ApiException {
+    public okhttp3.Call batchSearchPluginSummaryAsync(@javax.annotation.Nonnull List<PluginQueryDTO> pluginQueryDTO, final ApiCallback<List<List<PluginSummaryDTO>>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = batchSearchPluginSummaryValidateBeforeCall(pluginQueryDTO, _callback);
         Type localVarReturnType = new TypeToken<List<List<PluginSummaryDTO>>>(){}.getType();
@@ -343,7 +343,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call countPluginsCall(PluginQueryDTO pluginQueryDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call countPluginsCall(@javax.annotation.Nonnull PluginQueryDTO pluginQueryDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -389,7 +389,7 @@ public class PluginApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call countPluginsValidateBeforeCall(PluginQueryDTO pluginQueryDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call countPluginsValidateBeforeCall(@javax.annotation.Nonnull PluginQueryDTO pluginQueryDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'pluginQueryDTO' is set
         if (pluginQueryDTO == null) {
             throw new ApiException("Missing the required parameter 'pluginQueryDTO' when calling countPlugins(Async)");
@@ -412,7 +412,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public Long countPlugins(PluginQueryDTO pluginQueryDTO) throws ApiException {
+    public Long countPlugins(@javax.annotation.Nonnull PluginQueryDTO pluginQueryDTO) throws ApiException {
         ApiResponse<Long> localVarResp = countPluginsWithHttpInfo(pluginQueryDTO);
         return localVarResp.getData();
     }
@@ -430,7 +430,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Long> countPluginsWithHttpInfo(PluginQueryDTO pluginQueryDTO) throws ApiException {
+    public ApiResponse<Long> countPluginsWithHttpInfo(@javax.annotation.Nonnull PluginQueryDTO pluginQueryDTO) throws ApiException {
         okhttp3.Call localVarCall = countPluginsValidateBeforeCall(pluginQueryDTO, null);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -450,7 +450,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call countPluginsAsync(PluginQueryDTO pluginQueryDTO, final ApiCallback<Long> _callback) throws ApiException {
+    public okhttp3.Call countPluginsAsync(@javax.annotation.Nonnull PluginQueryDTO pluginQueryDTO, final ApiCallback<Long> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = countPluginsValidateBeforeCall(pluginQueryDTO, _callback);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
@@ -470,7 +470,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call createPluginCall(PluginCreateDTO pluginCreateDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call createPluginCall(@javax.annotation.Nonnull PluginCreateDTO pluginCreateDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -516,7 +516,7 @@ public class PluginApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call createPluginValidateBeforeCall(PluginCreateDTO pluginCreateDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call createPluginValidateBeforeCall(@javax.annotation.Nonnull PluginCreateDTO pluginCreateDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'pluginCreateDTO' is set
         if (pluginCreateDTO == null) {
             throw new ApiException("Missing the required parameter 'pluginCreateDTO' when calling createPlugin(Async)");
@@ -539,7 +539,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public Long createPlugin(PluginCreateDTO pluginCreateDTO) throws ApiException {
+    public Long createPlugin(@javax.annotation.Nonnull PluginCreateDTO pluginCreateDTO) throws ApiException {
         ApiResponse<Long> localVarResp = createPluginWithHttpInfo(pluginCreateDTO);
         return localVarResp.getData();
     }
@@ -557,7 +557,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Long> createPluginWithHttpInfo(PluginCreateDTO pluginCreateDTO) throws ApiException {
+    public ApiResponse<Long> createPluginWithHttpInfo(@javax.annotation.Nonnull PluginCreateDTO pluginCreateDTO) throws ApiException {
         okhttp3.Call localVarCall = createPluginValidateBeforeCall(pluginCreateDTO, null);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -577,7 +577,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call createPluginAsync(PluginCreateDTO pluginCreateDTO, final ApiCallback<Long> _callback) throws ApiException {
+    public okhttp3.Call createPluginAsync(@javax.annotation.Nonnull PluginCreateDTO pluginCreateDTO, final ApiCallback<Long> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = createPluginValidateBeforeCall(pluginCreateDTO, _callback);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
@@ -597,7 +597,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call createPluginsCall(List<PluginCreateDTO> pluginCreateDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call createPluginsCall(@javax.annotation.Nonnull List<PluginCreateDTO> pluginCreateDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -643,7 +643,7 @@ public class PluginApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call createPluginsValidateBeforeCall(List<PluginCreateDTO> pluginCreateDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call createPluginsValidateBeforeCall(@javax.annotation.Nonnull List<PluginCreateDTO> pluginCreateDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'pluginCreateDTO' is set
         if (pluginCreateDTO == null) {
             throw new ApiException("Missing the required parameter 'pluginCreateDTO' when calling createPlugins(Async)");
@@ -666,7 +666,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<Long> createPlugins(List<PluginCreateDTO> pluginCreateDTO) throws ApiException {
+    public List<Long> createPlugins(@javax.annotation.Nonnull List<PluginCreateDTO> pluginCreateDTO) throws ApiException {
         ApiResponse<List<Long>> localVarResp = createPluginsWithHttpInfo(pluginCreateDTO);
         return localVarResp.getData();
     }
@@ -684,7 +684,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<Long>> createPluginsWithHttpInfo(List<PluginCreateDTO> pluginCreateDTO) throws ApiException {
+    public ApiResponse<List<Long>> createPluginsWithHttpInfo(@javax.annotation.Nonnull List<PluginCreateDTO> pluginCreateDTO) throws ApiException {
         okhttp3.Call localVarCall = createPluginsValidateBeforeCall(pluginCreateDTO, null);
         Type localVarReturnType = new TypeToken<List<Long>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -704,7 +704,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call createPluginsAsync(List<PluginCreateDTO> pluginCreateDTO, final ApiCallback<List<Long>> _callback) throws ApiException {
+    public okhttp3.Call createPluginsAsync(@javax.annotation.Nonnull List<PluginCreateDTO> pluginCreateDTO, final ApiCallback<List<Long>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = createPluginsValidateBeforeCall(pluginCreateDTO, _callback);
         Type localVarReturnType = new TypeToken<List<Long>>(){}.getType();
@@ -724,7 +724,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call deletePluginCall(Long pluginId, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call deletePluginCall(@javax.annotation.Nonnull Long pluginId, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -770,7 +770,7 @@ public class PluginApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call deletePluginValidateBeforeCall(Long pluginId, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call deletePluginValidateBeforeCall(@javax.annotation.Nonnull Long pluginId, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'pluginId' is set
         if (pluginId == null) {
             throw new ApiException("Missing the required parameter 'pluginId' when calling deletePlugin(Async)");
@@ -793,7 +793,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public Boolean deletePlugin(Long pluginId) throws ApiException {
+    public Boolean deletePlugin(@javax.annotation.Nonnull Long pluginId) throws ApiException {
         ApiResponse<Boolean> localVarResp = deletePluginWithHttpInfo(pluginId);
         return localVarResp.getData();
     }
@@ -811,7 +811,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Boolean> deletePluginWithHttpInfo(Long pluginId) throws ApiException {
+    public ApiResponse<Boolean> deletePluginWithHttpInfo(@javax.annotation.Nonnull Long pluginId) throws ApiException {
         okhttp3.Call localVarCall = deletePluginValidateBeforeCall(pluginId, null);
         Type localVarReturnType = new TypeToken<Boolean>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -831,7 +831,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call deletePluginAsync(Long pluginId, final ApiCallback<Boolean> _callback) throws ApiException {
+    public okhttp3.Call deletePluginAsync(@javax.annotation.Nonnull Long pluginId, final ApiCallback<Boolean> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = deletePluginValidateBeforeCall(pluginId, _callback);
         Type localVarReturnType = new TypeToken<Boolean>(){}.getType();
@@ -851,7 +851,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call deletePluginsCall(List<Long> requestBody, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call deletePluginsCall(@javax.annotation.Nonnull List<Long> requestBody, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -897,7 +897,7 @@ public class PluginApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call deletePluginsValidateBeforeCall(List<Long> requestBody, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call deletePluginsValidateBeforeCall(@javax.annotation.Nonnull List<Long> requestBody, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'requestBody' is set
         if (requestBody == null) {
             throw new ApiException("Missing the required parameter 'requestBody' when calling deletePlugins(Async)");
@@ -920,7 +920,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<Long> deletePlugins(List<Long> requestBody) throws ApiException {
+    public List<Long> deletePlugins(@javax.annotation.Nonnull List<Long> requestBody) throws ApiException {
         ApiResponse<List<Long>> localVarResp = deletePluginsWithHttpInfo(requestBody);
         return localVarResp.getData();
     }
@@ -938,7 +938,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<Long>> deletePluginsWithHttpInfo(List<Long> requestBody) throws ApiException {
+    public ApiResponse<List<Long>> deletePluginsWithHttpInfo(@javax.annotation.Nonnull List<Long> requestBody) throws ApiException {
         okhttp3.Call localVarCall = deletePluginsValidateBeforeCall(requestBody, null);
         Type localVarReturnType = new TypeToken<List<Long>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -958,7 +958,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call deletePluginsAsync(List<Long> requestBody, final ApiCallback<List<Long>> _callback) throws ApiException {
+    public okhttp3.Call deletePluginsAsync(@javax.annotation.Nonnull List<Long> requestBody, final ApiCallback<List<Long>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = deletePluginsValidateBeforeCall(requestBody, _callback);
         Type localVarReturnType = new TypeToken<List<Long>>(){}.getType();
@@ -978,7 +978,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getPluginDetailsCall(Long pluginId, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call getPluginDetailsCall(@javax.annotation.Nonnull Long pluginId, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -1024,7 +1024,7 @@ public class PluginApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call getPluginDetailsValidateBeforeCall(Long pluginId, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call getPluginDetailsValidateBeforeCall(@javax.annotation.Nonnull Long pluginId, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'pluginId' is set
         if (pluginId == null) {
             throw new ApiException("Missing the required parameter 'pluginId' when calling getPluginDetails(Async)");
@@ -1047,7 +1047,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public PluginDetailsDTO getPluginDetails(Long pluginId) throws ApiException {
+    public PluginDetailsDTO getPluginDetails(@javax.annotation.Nonnull Long pluginId) throws ApiException {
         ApiResponse<PluginDetailsDTO> localVarResp = getPluginDetailsWithHttpInfo(pluginId);
         return localVarResp.getData();
     }
@@ -1065,7 +1065,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<PluginDetailsDTO> getPluginDetailsWithHttpInfo(Long pluginId) throws ApiException {
+    public ApiResponse<PluginDetailsDTO> getPluginDetailsWithHttpInfo(@javax.annotation.Nonnull Long pluginId) throws ApiException {
         okhttp3.Call localVarCall = getPluginDetailsValidateBeforeCall(pluginId, null);
         Type localVarReturnType = new TypeToken<PluginDetailsDTO>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -1085,7 +1085,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getPluginDetailsAsync(Long pluginId, final ApiCallback<PluginDetailsDTO> _callback) throws ApiException {
+    public okhttp3.Call getPluginDetailsAsync(@javax.annotation.Nonnull Long pluginId, final ApiCallback<PluginDetailsDTO> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = getPluginDetailsValidateBeforeCall(pluginId, _callback);
         Type localVarReturnType = new TypeToken<PluginDetailsDTO>(){}.getType();
@@ -1105,7 +1105,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getPluginSummaryCall(Long pluginId, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call getPluginSummaryCall(@javax.annotation.Nonnull Long pluginId, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -1151,7 +1151,7 @@ public class PluginApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call getPluginSummaryValidateBeforeCall(Long pluginId, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call getPluginSummaryValidateBeforeCall(@javax.annotation.Nonnull Long pluginId, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'pluginId' is set
         if (pluginId == null) {
             throw new ApiException("Missing the required parameter 'pluginId' when calling getPluginSummary(Async)");
@@ -1174,7 +1174,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public PluginSummaryDTO getPluginSummary(Long pluginId) throws ApiException {
+    public PluginSummaryDTO getPluginSummary(@javax.annotation.Nonnull Long pluginId) throws ApiException {
         ApiResponse<PluginSummaryDTO> localVarResp = getPluginSummaryWithHttpInfo(pluginId);
         return localVarResp.getData();
     }
@@ -1192,7 +1192,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<PluginSummaryDTO> getPluginSummaryWithHttpInfo(Long pluginId) throws ApiException {
+    public ApiResponse<PluginSummaryDTO> getPluginSummaryWithHttpInfo(@javax.annotation.Nonnull Long pluginId) throws ApiException {
         okhttp3.Call localVarCall = getPluginSummaryValidateBeforeCall(pluginId, null);
         Type localVarReturnType = new TypeToken<PluginSummaryDTO>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -1212,7 +1212,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getPluginSummaryAsync(Long pluginId, final ApiCallback<PluginSummaryDTO> _callback) throws ApiException {
+    public okhttp3.Call getPluginSummaryAsync(@javax.annotation.Nonnull Long pluginId, final ApiCallback<PluginSummaryDTO> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = getPluginSummaryValidateBeforeCall(pluginId, _callback);
         Type localVarReturnType = new TypeToken<PluginSummaryDTO>(){}.getType();
@@ -1232,7 +1232,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call refreshPluginInfoCall(Long pluginId, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call refreshPluginInfoCall(@javax.annotation.Nonnull Long pluginId, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -1277,7 +1277,7 @@ public class PluginApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call refreshPluginInfoValidateBeforeCall(Long pluginId, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call refreshPluginInfoValidateBeforeCall(@javax.annotation.Nonnull Long pluginId, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'pluginId' is set
         if (pluginId == null) {
             throw new ApiException("Missing the required parameter 'pluginId' when calling refreshPluginInfo(Async)");
@@ -1299,7 +1299,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public void refreshPluginInfo(Long pluginId) throws ApiException {
+    public void refreshPluginInfo(@javax.annotation.Nonnull Long pluginId) throws ApiException {
         refreshPluginInfoWithHttpInfo(pluginId);
     }
 
@@ -1316,7 +1316,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Void> refreshPluginInfoWithHttpInfo(Long pluginId) throws ApiException {
+    public ApiResponse<Void> refreshPluginInfoWithHttpInfo(@javax.annotation.Nonnull Long pluginId) throws ApiException {
         okhttp3.Call localVarCall = refreshPluginInfoValidateBeforeCall(pluginId, null);
         return localVarApiClient.execute(localVarCall);
     }
@@ -1335,7 +1335,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call refreshPluginInfoAsync(Long pluginId, final ApiCallback<Void> _callback) throws ApiException {
+    public okhttp3.Call refreshPluginInfoAsync(@javax.annotation.Nonnull Long pluginId, final ApiCallback<Void> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = refreshPluginInfoValidateBeforeCall(pluginId, _callback);
         localVarApiClient.executeAsync(localVarCall, _callback);
@@ -1354,7 +1354,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call searchPluginDetailsCall(PluginQueryDTO pluginQueryDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call searchPluginDetailsCall(@javax.annotation.Nonnull PluginQueryDTO pluginQueryDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -1400,7 +1400,7 @@ public class PluginApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call searchPluginDetailsValidateBeforeCall(PluginQueryDTO pluginQueryDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call searchPluginDetailsValidateBeforeCall(@javax.annotation.Nonnull PluginQueryDTO pluginQueryDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'pluginQueryDTO' is set
         if (pluginQueryDTO == null) {
             throw new ApiException("Missing the required parameter 'pluginQueryDTO' when calling searchPluginDetails(Async)");
@@ -1423,7 +1423,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<PluginDetailsDTO> searchPluginDetails(PluginQueryDTO pluginQueryDTO) throws ApiException {
+    public List<PluginDetailsDTO> searchPluginDetails(@javax.annotation.Nonnull PluginQueryDTO pluginQueryDTO) throws ApiException {
         ApiResponse<List<PluginDetailsDTO>> localVarResp = searchPluginDetailsWithHttpInfo(pluginQueryDTO);
         return localVarResp.getData();
     }
@@ -1441,7 +1441,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<PluginDetailsDTO>> searchPluginDetailsWithHttpInfo(PluginQueryDTO pluginQueryDTO) throws ApiException {
+    public ApiResponse<List<PluginDetailsDTO>> searchPluginDetailsWithHttpInfo(@javax.annotation.Nonnull PluginQueryDTO pluginQueryDTO) throws ApiException {
         okhttp3.Call localVarCall = searchPluginDetailsValidateBeforeCall(pluginQueryDTO, null);
         Type localVarReturnType = new TypeToken<List<PluginDetailsDTO>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -1461,7 +1461,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call searchPluginDetailsAsync(PluginQueryDTO pluginQueryDTO, final ApiCallback<List<PluginDetailsDTO>> _callback) throws ApiException {
+    public okhttp3.Call searchPluginDetailsAsync(@javax.annotation.Nonnull PluginQueryDTO pluginQueryDTO, final ApiCallback<List<PluginDetailsDTO>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = searchPluginDetailsValidateBeforeCall(pluginQueryDTO, _callback);
         Type localVarReturnType = new TypeToken<List<PluginDetailsDTO>>(){}.getType();
@@ -1481,7 +1481,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call searchPluginSummaryCall(PluginQueryDTO pluginQueryDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call searchPluginSummaryCall(@javax.annotation.Nonnull PluginQueryDTO pluginQueryDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -1527,7 +1527,7 @@ public class PluginApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call searchPluginSummaryValidateBeforeCall(PluginQueryDTO pluginQueryDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call searchPluginSummaryValidateBeforeCall(@javax.annotation.Nonnull PluginQueryDTO pluginQueryDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'pluginQueryDTO' is set
         if (pluginQueryDTO == null) {
             throw new ApiException("Missing the required parameter 'pluginQueryDTO' when calling searchPluginSummary(Async)");
@@ -1550,7 +1550,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<PluginSummaryDTO> searchPluginSummary(PluginQueryDTO pluginQueryDTO) throws ApiException {
+    public List<PluginSummaryDTO> searchPluginSummary(@javax.annotation.Nonnull PluginQueryDTO pluginQueryDTO) throws ApiException {
         ApiResponse<List<PluginSummaryDTO>> localVarResp = searchPluginSummaryWithHttpInfo(pluginQueryDTO);
         return localVarResp.getData();
     }
@@ -1568,7 +1568,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<PluginSummaryDTO>> searchPluginSummaryWithHttpInfo(PluginQueryDTO pluginQueryDTO) throws ApiException {
+    public ApiResponse<List<PluginSummaryDTO>> searchPluginSummaryWithHttpInfo(@javax.annotation.Nonnull PluginQueryDTO pluginQueryDTO) throws ApiException {
         okhttp3.Call localVarCall = searchPluginSummaryValidateBeforeCall(pluginQueryDTO, null);
         Type localVarReturnType = new TypeToken<List<PluginSummaryDTO>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -1588,7 +1588,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call searchPluginSummaryAsync(PluginQueryDTO pluginQueryDTO, final ApiCallback<List<PluginSummaryDTO>> _callback) throws ApiException {
+    public okhttp3.Call searchPluginSummaryAsync(@javax.annotation.Nonnull PluginQueryDTO pluginQueryDTO, final ApiCallback<List<PluginSummaryDTO>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = searchPluginSummaryValidateBeforeCall(pluginQueryDTO, _callback);
         Type localVarReturnType = new TypeToken<List<PluginSummaryDTO>>(){}.getType();
@@ -1609,7 +1609,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call updatePluginCall(Long pluginId, PluginUpdateDTO pluginUpdateDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call updatePluginCall(@javax.annotation.Nonnull Long pluginId, @javax.annotation.Nonnull PluginUpdateDTO pluginUpdateDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -1656,7 +1656,7 @@ public class PluginApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call updatePluginValidateBeforeCall(Long pluginId, PluginUpdateDTO pluginUpdateDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call updatePluginValidateBeforeCall(@javax.annotation.Nonnull Long pluginId, @javax.annotation.Nonnull PluginUpdateDTO pluginUpdateDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'pluginId' is set
         if (pluginId == null) {
             throw new ApiException("Missing the required parameter 'pluginId' when calling updatePlugin(Async)");
@@ -1685,7 +1685,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public Boolean updatePlugin(Long pluginId, PluginUpdateDTO pluginUpdateDTO) throws ApiException {
+    public Boolean updatePlugin(@javax.annotation.Nonnull Long pluginId, @javax.annotation.Nonnull PluginUpdateDTO pluginUpdateDTO) throws ApiException {
         ApiResponse<Boolean> localVarResp = updatePluginWithHttpInfo(pluginId, pluginUpdateDTO);
         return localVarResp.getData();
     }
@@ -1704,7 +1704,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Boolean> updatePluginWithHttpInfo(Long pluginId, PluginUpdateDTO pluginUpdateDTO) throws ApiException {
+    public ApiResponse<Boolean> updatePluginWithHttpInfo(@javax.annotation.Nonnull Long pluginId, @javax.annotation.Nonnull PluginUpdateDTO pluginUpdateDTO) throws ApiException {
         okhttp3.Call localVarCall = updatePluginValidateBeforeCall(pluginId, pluginUpdateDTO, null);
         Type localVarReturnType = new TypeToken<Boolean>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
@@ -1725,7 +1725,7 @@ public class PluginApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call updatePluginAsync(Long pluginId, PluginUpdateDTO pluginUpdateDTO, final ApiCallback<Boolean> _callback) throws ApiException {
+    public okhttp3.Call updatePluginAsync(@javax.annotation.Nonnull Long pluginId, @javax.annotation.Nonnull PluginUpdateDTO pluginUpdateDTO, final ApiCallback<Boolean> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = updatePluginValidateBeforeCall(pluginId, pluginUpdateDTO, _callback);
         Type localVarReturnType = new TypeToken<Boolean>(){}.getType();

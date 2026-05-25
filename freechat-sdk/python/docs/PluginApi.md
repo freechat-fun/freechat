@@ -260,7 +260,16 @@ Name | Type | Description  | Notes
 
 Create Plugin
 
-Create a plugin, required fields: - Plugin name - Plugin manifestInfo (URL or JSON) - Plugin apiInfo (URL or JSON)  Limitations: - Name: 100 characters - Example: 2000 characters - Tags: 5 
+Create a plugin, required fields:
+- Plugin name
+- Plugin manifestInfo (URL or JSON)
+- Plugin apiInfo (URL or JSON)
+
+Limitations:
+- Name: 100 characters
+- Example: 2000 characters
+- Tags: 5
+
 
 ### Example
 
@@ -880,7 +889,21 @@ Name | Type | Description  | Notes
 
 Search Plugin Summary
 
-Search plugins: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Plugin information format: currently supported: dash_scope, open_ai.   - Interface information format: currently supported: openapi_v3.   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - Provider: left match.   - General: name, provider information, manifest (real-time pull mode is not currently supported), fuzzy match, one hit is enough; public scope + all user's general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the plugin summary content. - Support pagination. 
+Search plugins:
+- Specifiable query fields, and relationship:
+  - Scope: private, public_org or public. Private can only search this account.
+  - Username: exact match, only valid when searching public, public_org. If not specified, search all users.
+  - Plugin information format: currently supported: dash_scope, open_ai.
+  - Interface information format: currently supported: openapi_v3.
+  - Tags: exact match (support and, or logic).
+  - Model type: exact match (support and, or logic).
+  - Name: left match.
+  - Provider: left match.
+  - General: name, provider information, manifest (real-time pull mode is not currently supported), fuzzy match, one hit is enough; public scope + all user's general search does not guarantee timeliness.
+- A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending.
+- The search result is the plugin summary content.
+- Support pagination.
+
 
 ### Example
 

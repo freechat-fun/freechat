@@ -292,7 +292,15 @@ Name | Type | Description  | Notes
 
 Clone Character
 
-Enter the characterId, generate a new record, the content is basically the same as the original character, but the following fields are different: - Version number is 1 - Visibility is private - The parent character is the source characterId - The creation time is the current moment. - All statistical indicators are zeroed.  Return the new characterId. 
+Enter the characterId, generate a new record, the content is basically the same as the original character, but the following fields are different:
+- Version number is 1
+- Visibility is private
+- The parent character is the source characterId
+- The creation time is the current moment.
+- All statistical indicators are zeroed.
+
+Return the new characterId.
+
 
 ### Example
 
@@ -1638,7 +1646,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.CharacterApi(api_client)
-    file = None # bytearray | Character avatar
+    file = None # bytes | Character avatar
 
     try:
         # Import Character Configuration
@@ -1656,7 +1664,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **file** | **bytearray**| Character avatar | 
+ **file** | **bytes**| Character avatar | 
 
 ### Return type
 
@@ -2614,7 +2622,18 @@ Name | Type | Description  | Notes
 
 Search Character Summary
 
-Search characters: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Name: left match.   - Language, exact match.   - General: name, description, profile, chat style, experience, fuzzy match, one hit is enough; public scope + all user's general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the character summary content. - Support pagination. 
+Search characters:
+- Specifiable query fields, and relationship:
+  - Scope: private, public_org or public. Private can only search this account.
+  - Username: exact match, only valid when searching public, public_org. If not specified, search all users.
+  - Tags: exact match (support and, or logic).
+  - Name: left match.
+  - Language, exact match.
+  - General: name, description, profile, chat style, experience, fuzzy match, one hit is enough; public scope + all user's general search does not guarantee timeliness.
+- A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending.
+- The search result is the character summary content.
+- Support pagination.
+
 
 ### Example
 
@@ -2693,7 +2712,18 @@ Name | Type | Description  | Notes
 
 Search Public Character Summary
 
-Search characters: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Name: left match.   - Language, exact match.   - General: name, description, profile, chat style, experience, fuzzy match, one hit is enough; public scope + all user's general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the character summary content. - Support pagination. 
+Search characters:
+- Specifiable query fields, and relationship:
+  - Scope: public(fixed).
+  - Username: exact match. If not specified, search all users.
+  - Tags: exact match (support and, or logic).
+  - Name: left match.
+  - Language, exact match.
+  - General: name, description, profile, chat style, experience, fuzzy match, one hit is enough; public scope + all user's general search does not guarantee timeliness.
+- A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending.
+- The search result is the character summary content.
+- Support pagination.
+
 
 ### Example
 
@@ -3041,7 +3071,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.CharacterApi(api_client)
     character_uid = 'character_uid_example' # str | Character unique identifier
-    file = None # bytearray | Character avatar
+    file = None # bytes | Character avatar
 
     try:
         # Upload Character Avatar
@@ -3060,7 +3090,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **character_uid** | **str**| Character unique identifier | 
- **file** | **bytearray**| Character avatar | 
+ **file** | **bytes**| Character avatar | 
 
 ### Return type
 
@@ -3120,7 +3150,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.CharacterApi(api_client)
     character_uid = 'character_uid_example' # str | Character unique identifier
-    file = None # bytearray | Character document
+    file = None # bytes | Character document
 
     try:
         # Upload Character Document
@@ -3139,7 +3169,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **character_uid** | **str**| Character unique identifier | 
- **file** | **bytearray**| Character document | 
+ **file** | **bytes**| Character document | 
 
 ### Return type
 
@@ -3199,7 +3229,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.CharacterApi(api_client)
     character_uid = 'character_uid_example' # str | Character unique identifier
-    file = None # bytearray | Character picture
+    file = None # bytes | Character picture
 
     try:
         # Upload Character Picture
@@ -3218,7 +3248,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **character_uid** | **str**| Character unique identifier | 
- **file** | **bytearray**| Character picture | 
+ **file** | **bytes**| Character picture | 
 
 ### Return type
 
@@ -3278,7 +3308,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.CharacterApi(api_client)
     character_uid = 'character_uid_example' # str | Character unique identifier
-    file = None # bytearray | Character video
+    file = None # bytes | Character video
 
     try:
         # Upload Character Video
@@ -3297,7 +3327,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **character_uid** | **str**| Character unique identifier | 
- **file** | **bytearray**| Character video | 
+ **file** | **bytes**| Character video | 
 
 ### Return type
 
@@ -3357,7 +3387,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.CharacterApi(api_client)
     character_backend_id = 'character_backend_id_example' # str | The characterBackendId
-    file = None # bytearray | Character voice
+    file = None # bytes | Character voice
 
     try:
         # Upload Character Voice
@@ -3376,7 +3406,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **character_backend_id** | **str**| The characterBackendId | 
- **file** | **bytearray**| Character voice | 
+ **file** | **bytes**| Character voice | 
 
 ### Return type
 
