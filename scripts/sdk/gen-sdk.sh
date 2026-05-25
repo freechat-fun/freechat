@@ -149,6 +149,8 @@ scmUrl=${SCM_URL}
   rm -rf ${sdk_output}
   cp -rf ${output} ${SDK_PATH}
   cp -f java/publish.sh ${sdk_output}/publish.sh
+  sed '/<plugins>/r java/pom-private.xml' -i ${sdk_output}/pom.xml
+
   clean_tmp ${sdk_output}
 }
 
