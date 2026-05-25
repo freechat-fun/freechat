@@ -17,14 +17,13 @@
     }
   },
   "scripts": {
-    "build": "rollup -c",
-    "prepare": "npm run build"
+    "build": "rollup -c"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "latest",
     "@rollup/plugin-commonjs": "latest",
+    "@rollup/plugin-terser": "latest",
     "rollup-plugin-typescript2": "latest",
-    "rollup-plugin-terser": "latest",
     "rollup-plugin-sourcemaps": "latest"
   }
 }

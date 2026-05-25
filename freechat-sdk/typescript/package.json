@@ -28,8 +28,7 @@
   ],
   "typings": "./dist/index.d.ts",
   "scripts": {
-    "build": "rollup -c",
-    "prepare": "npm run build"
+    "build": "rollup -c"
   },
   "dependencies": {
     "whatwg-fetch": "^3.0.0",
@@ -39,8 +38,8 @@
     "typescript": "^5.0",
     "@rollup/plugin-node-resolve": "latest",
     "@rollup/plugin-commonjs": "latest",
+    "@rollup/plugin-terser": "latest",
     "rollup-plugin-typescript2": "latest",
-    "rollup-plugin-terser": "latest",
     "rollup-plugin-sourcemaps": "latest"
   },
   "module": "dist/index.esm.js",

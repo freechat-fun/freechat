@@ -586,7 +586,7 @@ public class Example {
 
     OrganizationApi apiInstance = new OrganizationApi(defaultClient);
     String username = "username_example"; // String | Username
-    Set<String> requestBody = Arrays.asList(); // Set<String> | Permission list
+    Set<String> requestBody = new LinkedHashSet<>(); // Set<String> | Permission list
     try {
       Boolean result = apiInstance.updateSubordinateAuthorities(username, requestBody);
       System.out.println(result);

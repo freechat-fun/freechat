@@ -18,7 +18,12 @@ Character backend detailed information
 |**greetingPromptTaskId** | **String** | Prompt task identifier for greeting |  [optional] |
 |**moderationModelId** | **String** | Moderation model for the character&#39;s response |  [optional] |
 |**moderationApiKeyName** | **String** | Api key name for moderation model |  [optional] |
+|**moderationApiKeyValue** | **String** | Api key value for moderation model |  [optional] |
 |**moderationParams** | **String** | Parameters for moderation model |  [optional] |
+|**imageModelId** | **String** | Image model for the character |  [optional] |
+|**imageApiKeyName** | **String** | Api key name for image model |  [optional] |
+|**imageApiKeyValue** | **String** | Api key value for image model |  [optional] |
+|**imageParams** | **String** | Parameters for image model |  [optional] |
 |**messageWindowSize** | **Integer** | Max messages in the character&#39;s memory |  [optional] |
 |**longTermMemoryWindowSize** | **Integer** | Max rounds (a round includes a user message and a character reply) in the character&#39;s long term memory |  [optional] |
 |**proactiveChatWaitingTime** | **Integer** | Minutes to wait for a proactive chat |  [optional] |

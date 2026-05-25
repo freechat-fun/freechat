@@ -350,7 +350,15 @@ Name | Type | Description  | Notes
 
 Clone Prompt
 
-Enter the promptId, generate a new record, the content is basically the same as the original prompt, but the following fields are different: - Version number is 1 - Visibility is private - The parent prompt is the source promptId - The creation time is the current moment. - All statistical indicators are zeroed.  Return the new promptId. 
+Enter the promptId, generate a new record, the content is basically the same as the original prompt, but the following fields are different:
+- Version number is 1
+- Visibility is private
+- The parent prompt is the source promptId
+- The creation time is the current moment.
+- All statistical indicators are zeroed.
+
+Return the new promptId.
+
 
 ### Example
 
@@ -660,7 +668,18 @@ Name | Type | Description  | Notes
 
 Create Prompt
 
-Create a prompt, required fields: - Prompt name - Prompt content - Applicable model  Limitations: - Description: 300 characters - Template: 1000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10 
+Create a prompt, required fields:
+- Prompt name
+- Prompt content
+- Applicable model
+
+Limitations:
+- Description: 300 characters
+- Template: 1000 characters
+- Example: 2000 characters
+- Tags: 5
+- Parameters: 10
+
 
 ### Example
 
@@ -1593,7 +1612,20 @@ Name | Type | Description  | Notes
 
 Search Prompt Summary
 
-Search prompts: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - Type, exact match: string (default) | chat.   - Language, exact match.   - General: name, description, template, example, fuzzy match, one hit is enough; public scope + all user's general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the prompt summary content. - Support pagination. 
+Search prompts:
+- Specifiable query fields, and relationship:
+  - Scope: private, public_org or public. Private can only search this account.
+  - Username: exact match, only valid when searching public, public_org. If not specified, search all users.
+  - Tags: exact match (support and, or logic).
+  - Model type: exact match (support and, or logic).
+  - Name: left match.
+  - Type, exact match: string (default) | chat.
+  - Language, exact match.
+  - General: name, description, template, example, fuzzy match, one hit is enough; public scope + all user's general search does not guarantee timeliness.
+- A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending.
+- The search result is the prompt summary content.
+- Support pagination.
+
 
 ### Example
 
@@ -1672,7 +1704,20 @@ Name | Type | Description  | Notes
 
 Search Public Prompt Summary
 
-Search prompts: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - Type, exact match: string (default) | chat.   - Language, exact match.   - General: name, description, template, example, fuzzy match, one hit is enough; public scope + all user's general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the prompt summary content. - Support pagination. 
+Search prompts:
+- Specifiable query fields, and relationship:
+  - Scope: public(fixed).
+  - Username: exact match. If not specified, search all users.
+  - Tags: exact match (support and, or logic).
+  - Model type: exact match (support and, or logic).
+  - Name: left match.
+  - Type, exact match: string (default) | chat.
+  - Language, exact match.
+  - General: name, description, template, example, fuzzy match, one hit is enough; public scope + all user's general search does not guarantee timeliness.
+- A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending.
+- The search result is the prompt summary content.
+- Support pagination.
+
 
 ### Example
 

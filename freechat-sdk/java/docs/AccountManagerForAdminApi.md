@@ -853,7 +853,7 @@ public class Example {
 
     AccountManagerForAdminApi apiInstance = new AccountManagerForAdminApi(defaultClient);
     String username = "username_example"; // String | Username
-    Set<String> requestBody = Arrays.asList(); // Set<String> | Permission list
+    Set<String> requestBody = new LinkedHashSet<>(); // Set<String> | Permission list
     try {
       Boolean result = apiInstance.updateAuthoritiesOfUser(username, requestBody);
       System.out.println(result);

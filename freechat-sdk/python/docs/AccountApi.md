@@ -968,7 +968,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.AccountApi(api_client)
-    file = None # bytearray | User picture
+    file = None # bytes | User picture
 
     try:
         # Upload User Picture
@@ -986,7 +986,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **file** | **bytearray**| User picture | 
+ **file** | **bytes**| User picture | 
 
 ### Return type
 
