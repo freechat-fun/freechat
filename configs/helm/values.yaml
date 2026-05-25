@@ -154,7 +154,7 @@ cert:
     version: v1.16.1
 mysql:
   enabled: true
-  url: jdbc:mysql://freechat-mysql:3306/freechat?useUnicode=true&characterEncoding=utf-8
+  url: jdbc:mysql://freechat-mysql:3306/freechat?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
   auth:
     database: freechat
     username: freechat

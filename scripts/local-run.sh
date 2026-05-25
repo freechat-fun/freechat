@@ -142,7 +142,7 @@ export SERVICE_OPTS="\
   -Dspring.config.location=classpath:/application.yml \
   -Dspring.profiles.active=local \
   -Dembedding.milvus.url=\"http://milvus:${MILVUS_PORT}\" \
-  -Dspring.datasource.url=\"jdbc:mysql://mysql:${MYSQL_PORT}/${PROJECT_NAME}?useUnicode=true&characterEncoding=utf-8\" \
+  -Dspring.datasource.url=\"jdbc:mysql://mysql:${MYSQL_PORT}/${PROJECT_NAME}?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC\" \
   -Dredis.datasource.url=\"redis://redis:${REDIS_PORT}\" \
   ${APP_ARGS[@]}"
 

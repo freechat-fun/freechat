@@ -14,7 +14,7 @@
         </commentGenerator>
 
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                        connectionURL="jdbc:mysql://127.0.0.1:3309/freechat?useUnicode=true&amp;characterEncoding=utf-8"
+                        connectionURL="jdbc:mysql://127.0.0.1:3309/freechat?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC"
                         userId="root"
                         password="passwordformgb">
             <property name="nullCatalogMeansCurrent" value="true" />

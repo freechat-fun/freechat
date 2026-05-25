@@ -38,7 +38,7 @@ do_start() {
   local memTotal=`cat /proc/meminfo | grep MemTotal | awk '{printf "%d", $2/1024 }'`
   echo "INFO: OS total memory: "${memTotal}"M"
 
-  SERVICE_OPTS="${SERVICE_OPTS} -Djava.awt.headless=true -Dproject.name=${APP_NAME}"
+  SERVICE_OPTS="${SERVICE_OPTS} -Duser.timezone=UTC -Djava.awt.headless=true -Dproject.name=${APP_NAME}"
 
   SERVICE_ARGS="${SERVICE_ARGS} --server.tomcat.uri-encoding=ISO-8859-1 --server.tomcat.max-threads=400"
   SERVICE_ARGS="${SERVICE_ARGS} --server.port=${SERVER_PORT}  --management.server.port=${MANAGEMENT_PORT}"
