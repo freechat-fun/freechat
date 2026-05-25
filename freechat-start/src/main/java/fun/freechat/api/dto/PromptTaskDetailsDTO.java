@@ -7,7 +7,7 @@ import fun.freechat.api.util.PromptUtils;
 import fun.freechat.model.PromptTask;
 import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Map;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,16 +23,16 @@ public class PromptTaskDetailsDTO extends TraceableDTO {
     private String taskId;
 
     @Schema(description = "Creation time")
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
 
     @Schema(description = "Modification time")
-    private Date gmtModified;
+    private LocalDateTime gmtModified;
 
     @Schema(description = "Task start execution time")
-    private Date gmtStart;
+    private LocalDateTime gmtStart;
 
     @Schema(description = "Task end execution time")
-    private Date gmtEnd;
+    private LocalDateTime gmtEnd;
 
     @Schema(description = "Prompt reference information")
     private PromptRefDTO promptRef;

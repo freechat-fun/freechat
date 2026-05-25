@@ -5,7 +5,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.ChatContext;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 @Schema(description = "Chat context")
@@ -15,13 +15,13 @@ public class ChatContextDTO extends TraceableDTO {
     private String chatId;
 
     @Schema(description = "Creation time")
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
 
     @Schema(description = "Modification time")
-    private Date gmtModified;
+    private LocalDateTime gmtModified;
 
     @Schema(description = "Read time")
-    private Date gmtRead;
+    private LocalDateTime gmtRead;
 
     @Schema(description = "User nickname for this session")
     private String userNickname;
