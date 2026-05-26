@@ -16,7 +16,7 @@
     </modules>
 
     <properties>
-        <revision>2.7.0</revision>
+        <revision>2.8.0</revision>
         <maven.compiler.release>25</maven.compiler.release>
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
