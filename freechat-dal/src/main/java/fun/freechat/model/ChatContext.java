@@ -28,6 +28,10 @@ public class ChatContext implements Serializable {
 
     private String quotaType;
 
+    private Long tgUserId;
+
+    private Long tgChatId;
+
     private String userProfile;
 
     private String about;
@@ -194,6 +198,32 @@ public class ChatContext implements Serializable {
         this.quotaType = quotaType;
     }
 
+    public Long getTgUserId() {
+        return tgUserId;
+    }
+
+    public ChatContext withTgUserId(Long tgUserId) {
+        this.setTgUserId(tgUserId);
+        return this;
+    }
+
+    public void setTgUserId(Long tgUserId) {
+        this.tgUserId = tgUserId;
+    }
+
+    public Long getTgChatId() {
+        return tgChatId;
+    }
+
+    public ChatContext withTgChatId(Long tgChatId) {
+        this.setTgChatId(tgChatId);
+        return this;
+    }
+
+    public void setTgChatId(Long tgChatId) {
+        this.tgChatId = tgChatId;
+    }
+
     public String getUserProfile() {
         return userProfile;
     }
@@ -270,6 +300,8 @@ public class ChatContext implements Serializable {
             && (this.getApiKeyName() == null ? other.getApiKeyName() == null : this.getApiKeyName().equals(other.getApiKeyName()))
             && (this.getQuota() == null ? other.getQuota() == null : this.getQuota().equals(other.getQuota()))
             && (this.getQuotaType() == null ? other.getQuotaType() == null : this.getQuotaType().equals(other.getQuotaType()))
+            && (this.getTgUserId() == null ? other.getTgUserId() == null : this.getTgUserId().equals(other.getTgUserId()))
+            && (this.getTgChatId() == null ? other.getTgChatId() == null : this.getTgChatId().equals(other.getTgChatId()))
             && (this.getUserProfile() == null ? other.getUserProfile() == null : this.getUserProfile().equals(other.getUserProfile()))
             && (this.getAbout() == null ? other.getAbout() == null : this.getAbout().equals(other.getAbout()))
             && (this.getApiKeyValue() == null ? other.getApiKeyValue() == null : this.getApiKeyValue().equals(other.getApiKeyValue()))
@@ -292,6 +324,8 @@ public class ChatContext implements Serializable {
         result = prime * result + ((getApiKeyName() == null) ? 0 : getApiKeyName().hashCode());
         result = prime * result + ((getQuota() == null) ? 0 : getQuota().hashCode());
         result = prime * result + ((getQuotaType() == null) ? 0 : getQuotaType().hashCode());
+        result = prime * result + ((getTgUserId() == null) ? 0 : getTgUserId().hashCode());
+        result = prime * result + ((getTgChatId() == null) ? 0 : getTgChatId().hashCode());
         result = prime * result + ((getUserProfile() == null) ? 0 : getUserProfile().hashCode());
         result = prime * result + ((getAbout() == null) ? 0 : getAbout().hashCode());
         result = prime * result + ((getApiKeyValue() == null) ? 0 : getApiKeyValue().hashCode());
@@ -317,6 +351,8 @@ public class ChatContext implements Serializable {
         sb.append(", apiKeyName=").append(apiKeyName);
         sb.append(", quota=").append(quota);
         sb.append(", quotaType=").append(quotaType);
+        sb.append(", tgUserId=").append(tgUserId);
+        sb.append(", tgChatId=").append(tgChatId);
         sb.append(", userProfile=").append(userProfile);
         sb.append(", about=").append(about);
         sb.append(", apiKeyValue=").append(apiKeyValue);

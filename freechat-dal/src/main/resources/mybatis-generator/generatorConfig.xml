@@ -98,5 +98,17 @@
         <table tableName="short_link">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
+
+        <table tableName="tg_bot" />
+
+        <table tableName="tg_user">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+
+        <table tableName="tg_chat" />
+
+        <table tableName="tg_message">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
     </context>
 </generatorConfiguration>

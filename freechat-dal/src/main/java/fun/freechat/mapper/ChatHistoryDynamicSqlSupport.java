@@ -18,6 +18,8 @@ public final class ChatHistoryDynamicSqlSupport {
 
     public static final SqlColumn<Byte> enabled = chatHistory.enabled;
 
+    public static final SqlColumn<Long> tgMessageId = chatHistory.tgMessageId;
+
     public static final SqlColumn<String> message = chatHistory.message;
 
     public static final SqlColumn<String> ext = chatHistory.ext;
@@ -32,6 +34,8 @@ public final class ChatHistoryDynamicSqlSupport {
         public final SqlColumn<LocalDateTime> gmtModified = column("gmt_modified", JDBCType.TIMESTAMP).withJavaProperty("gmtModified");
 
         public final SqlColumn<Byte> enabled = column("enabled", JDBCType.TINYINT).withJavaProperty("enabled");
+
+        public final SqlColumn<Long> tgMessageId = column("tg_message_id", JDBCType.BIGINT).withJavaProperty("tgMessageId");
 
         public final SqlColumn<String> message = column("message", JDBCType.LONGVARCHAR).withJavaProperty("message");
 

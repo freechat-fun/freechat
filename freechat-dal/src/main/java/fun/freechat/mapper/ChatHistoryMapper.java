@@ -30,7 +30,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
 public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper, CommonUpdateMapper {
-    BasicColumn[] selectList = BasicColumn.columnList(id, memoryId, gmtCreate, gmtModified, enabled, message, ext);
+    BasicColumn[] selectList = BasicColumn.columnList(id, memoryId, gmtCreate, gmtModified, enabled, tgMessageId, message, ext);
 
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     @SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="row.id", before=false, resultType=Long.class)
@@ -43,6 +43,7 @@ public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper
         @Result(column="gmt_create", property="gmtCreate", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="gmt_modified", property="gmtModified", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="enabled", property="enabled", jdbcType=JdbcType.TINYINT),
+        @Result(column="tg_message_id", property="tgMessageId", jdbcType=JdbcType.BIGINT),
         @Result(column="message", property="message", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="ext", property="ext", jdbcType=JdbcType.LONGVARCHAR)
     })
@@ -72,6 +73,7 @@ public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper
             .withMappedColumn(gmtCreate)
             .withMappedColumn(gmtModified)
             .withMappedColumn(enabled)
+            .withMappedColumn(tgMessageId)
             .withMappedColumn(message)
             .withMappedColumn(ext)
         );
@@ -83,6 +85,7 @@ public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper
             .withMappedColumnWhenPresent(gmtCreate, row::getGmtCreate)
             .withMappedColumnWhenPresent(gmtModified, row::getGmtModified)
             .withMappedColumnWhenPresent(enabled, row::getEnabled)
+            .withMappedColumnWhenPresent(tgMessageId, row::getTgMessageId)
             .withMappedColumnWhenPresent(message, row::getMessage)
             .withMappedColumnWhenPresent(ext, row::getExt)
         );
@@ -116,6 +119,7 @@ public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper
                 .set(gmtCreate).equalTo(row::getGmtCreate)
                 .set(gmtModified).equalTo(row::getGmtModified)
                 .set(enabled).equalTo(row::getEnabled)
+                .set(tgMessageId).equalTo(row::getTgMessageId)
                 .set(message).equalTo(row::getMessage)
                 .set(ext).equalTo(row::getExt);
     }
@@ -126,6 +130,7 @@ public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper
                 .set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
                 .set(gmtModified).equalToWhenPresent(row::getGmtModified)
                 .set(enabled).equalToWhenPresent(row::getEnabled)
+                .set(tgMessageId).equalToWhenPresent(row::getTgMessageId)
                 .set(message).equalToWhenPresent(row::getMessage)
                 .set(ext).equalToWhenPresent(row::getExt);
     }
@@ -136,6 +141,7 @@ public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper
             .set(gmtCreate).equalTo(row::getGmtCreate)
             .set(gmtModified).equalTo(row::getGmtModified)
             .set(enabled).equalTo(row::getEnabled)
+            .set(tgMessageId).equalTo(row::getTgMessageId)
             .set(message).equalTo(row::getMessage)
             .set(ext).equalTo(row::getExt)
             .where(id, isEqualTo(row::getId))
@@ -148,6 +154,7 @@ public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper
             .set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
             .set(gmtModified).equalToWhenPresent(row::getGmtModified)
             .set(enabled).equalToWhenPresent(row::getEnabled)
+            .set(tgMessageId).equalToWhenPresent(row::getTgMessageId)
             .set(message).equalToWhenPresent(row::getMessage)
             .set(ext).equalToWhenPresent(row::getExt)
             .where(id, isEqualTo(row::getId))

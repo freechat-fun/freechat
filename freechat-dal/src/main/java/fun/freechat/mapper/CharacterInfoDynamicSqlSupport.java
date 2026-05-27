@@ -40,6 +40,8 @@ public final class CharacterInfoDynamicSqlSupport {
 
     public static final SqlColumn<Integer> priority = characterInfo.priority;
 
+    public static final SqlColumn<Long> tgBotId = characterInfo.tgBotId;
+
     public static final SqlColumn<String> description = characterInfo.description;
 
     public static final SqlColumn<String> profile = characterInfo.profile;
@@ -88,6 +90,8 @@ public final class CharacterInfoDynamicSqlSupport {
         public final SqlColumn<Integer> version = column("version", JDBCType.INTEGER).withJavaProperty("version");
 
         public final SqlColumn<Integer> priority = column("priority", JDBCType.INTEGER).withJavaProperty("priority");
+
+        public final SqlColumn<Long> tgBotId = column("tg_bot_id", JDBCType.BIGINT).withJavaProperty("tgBotId");
 
         public final SqlColumn<String> description = column("description", JDBCType.LONGVARCHAR).withJavaProperty("description");
 
