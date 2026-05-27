@@ -32,6 +32,10 @@ public final class ChatContextDynamicSqlSupport {
 
     public static final SqlColumn<String> quotaType = chatContext.quotaType;
 
+    public static final SqlColumn<Long> tgUserId = chatContext.tgUserId;
+
+    public static final SqlColumn<Long> tgChatId = chatContext.tgChatId;
+
     public static final SqlColumn<String> userProfile = chatContext.userProfile;
 
     public static final SqlColumn<String> about = chatContext.about;
@@ -64,6 +68,10 @@ public final class ChatContextDynamicSqlSupport {
         public final SqlColumn<Long> quota = column("quota", JDBCType.BIGINT).withJavaProperty("quota");
 
         public final SqlColumn<String> quotaType = column("quota_type", JDBCType.VARCHAR).withJavaProperty("quotaType");
+
+        public final SqlColumn<Long> tgUserId = column("tg_user_id", JDBCType.BIGINT).withJavaProperty("tgUserId");
+
+        public final SqlColumn<Long> tgChatId = column("tg_chat_id", JDBCType.BIGINT).withJavaProperty("tgChatId");
 
         public final SqlColumn<String> userProfile = column("user_profile", JDBCType.LONGVARCHAR).withJavaProperty("userProfile");
 

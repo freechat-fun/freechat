@@ -29,7 +29,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
 public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<ChatContext>, CommonUpdateMapper {
-    BasicColumn[] selectList = BasicColumn.columnList(chatId, gmtCreate, gmtModified, gmtRead, chatType, userId, userNickname, backendId, characterNickname, apiKeyName, quota, quotaType, userProfile, about, apiKeyValue, ext);
+    BasicColumn[] selectList = BasicColumn.columnList(chatId, gmtCreate, gmtModified, gmtRead, chatType, userId, userNickname, backendId, characterNickname, apiKeyName, quota, quotaType, tgUserId, tgChatId, userProfile, about, apiKeyValue, ext);
 
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="ChatContextResult", value = {
@@ -45,6 +45,8 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
         @Result(column="api_key_name", property="apiKeyName", jdbcType=JdbcType.VARCHAR),
         @Result(column="quota", property="quota", jdbcType=JdbcType.BIGINT),
         @Result(column="quota_type", property="quotaType", jdbcType=JdbcType.VARCHAR),
+        @Result(column="tg_user_id", property="tgUserId", jdbcType=JdbcType.BIGINT),
+        @Result(column="tg_chat_id", property="tgChatId", jdbcType=JdbcType.BIGINT),
         @Result(column="user_profile", property="userProfile", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="about", property="about", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="api_key_value", property="apiKeyValue", jdbcType=JdbcType.LONGVARCHAR),
@@ -84,6 +86,8 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
             .withMappedColumn(apiKeyName)
             .withMappedColumn(quota)
             .withMappedColumn(quotaType)
+            .withMappedColumn(tgUserId)
+            .withMappedColumn(tgChatId)
             .withMappedColumn(userProfile)
             .withMappedColumn(about)
             .withMappedColumn(apiKeyValue)
@@ -105,6 +109,8 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
             .withMappedColumn(apiKeyName)
             .withMappedColumn(quota)
             .withMappedColumn(quotaType)
+            .withMappedColumn(tgUserId)
+            .withMappedColumn(tgChatId)
             .withMappedColumn(userProfile)
             .withMappedColumn(about)
             .withMappedColumn(apiKeyValue)
@@ -126,6 +132,8 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
             .withMappedColumnWhenPresent(apiKeyName, row::getApiKeyName)
             .withMappedColumnWhenPresent(quota, row::getQuota)
             .withMappedColumnWhenPresent(quotaType, row::getQuotaType)
+            .withMappedColumnWhenPresent(tgUserId, row::getTgUserId)
+            .withMappedColumnWhenPresent(tgChatId, row::getTgChatId)
             .withMappedColumnWhenPresent(userProfile, row::getUserProfile)
             .withMappedColumnWhenPresent(about, row::getAbout)
             .withMappedColumnWhenPresent(apiKeyValue, row::getApiKeyValue)
@@ -168,6 +176,8 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
                 .set(apiKeyName).equalTo(row::getApiKeyName)
                 .set(quota).equalTo(row::getQuota)
                 .set(quotaType).equalTo(row::getQuotaType)
+                .set(tgUserId).equalTo(row::getTgUserId)
+                .set(tgChatId).equalTo(row::getTgChatId)
                 .set(userProfile).equalTo(row::getUserProfile)
                 .set(about).equalTo(row::getAbout)
                 .set(apiKeyValue).equalTo(row::getApiKeyValue)
@@ -187,6 +197,8 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
                 .set(apiKeyName).equalToWhenPresent(row::getApiKeyName)
                 .set(quota).equalToWhenPresent(row::getQuota)
                 .set(quotaType).equalToWhenPresent(row::getQuotaType)
+                .set(tgUserId).equalToWhenPresent(row::getTgUserId)
+                .set(tgChatId).equalToWhenPresent(row::getTgChatId)
                 .set(userProfile).equalToWhenPresent(row::getUserProfile)
                 .set(about).equalToWhenPresent(row::getAbout)
                 .set(apiKeyValue).equalToWhenPresent(row::getApiKeyValue)
@@ -206,6 +218,8 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
             .set(apiKeyName).equalTo(row::getApiKeyName)
             .set(quota).equalTo(row::getQuota)
             .set(quotaType).equalTo(row::getQuotaType)
+            .set(tgUserId).equalTo(row::getTgUserId)
+            .set(tgChatId).equalTo(row::getTgChatId)
             .set(userProfile).equalTo(row::getUserProfile)
             .set(about).equalTo(row::getAbout)
             .set(apiKeyValue).equalTo(row::getApiKeyValue)
@@ -227,6 +241,8 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
             .set(apiKeyName).equalToWhenPresent(row::getApiKeyName)
             .set(quota).equalToWhenPresent(row::getQuota)
             .set(quotaType).equalToWhenPresent(row::getQuotaType)
+            .set(tgUserId).equalToWhenPresent(row::getTgUserId)
+            .set(tgChatId).equalToWhenPresent(row::getTgChatId)
             .set(userProfile).equalToWhenPresent(row::getUserProfile)
             .set(about).equalToWhenPresent(row::getAbout)
             .set(apiKeyValue).equalToWhenPresent(row::getApiKeyValue)

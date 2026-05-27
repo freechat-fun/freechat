@@ -14,6 +14,8 @@ public class ChatHistory implements Serializable {
 
     private Byte enabled;
 
+    private Long tgMessageId;
+
     private String message;
 
     private String ext;
@@ -85,6 +87,19 @@ public class ChatHistory implements Serializable {
         this.enabled = enabled;
     }
 
+    public Long getTgMessageId() {
+        return tgMessageId;
+    }
+
+    public ChatHistory withTgMessageId(Long tgMessageId) {
+        this.setTgMessageId(tgMessageId);
+        return this;
+    }
+
+    public void setTgMessageId(Long tgMessageId) {
+        this.tgMessageId = tgMessageId;
+    }
+
     public String getMessage() {
         return message;
     }
@@ -128,6 +143,7 @@ public class ChatHistory implements Serializable {
             && (this.getGmtCreate() == null ? other.getGmtCreate() == null : this.getGmtCreate().equals(other.getGmtCreate()))
             && (this.getGmtModified() == null ? other.getGmtModified() == null : this.getGmtModified().equals(other.getGmtModified()))
             && (this.getEnabled() == null ? other.getEnabled() == null : this.getEnabled().equals(other.getEnabled()))
+            && (this.getTgMessageId() == null ? other.getTgMessageId() == null : this.getTgMessageId().equals(other.getTgMessageId()))
             && (this.getMessage() == null ? other.getMessage() == null : this.getMessage().equals(other.getMessage()))
             && (this.getExt() == null ? other.getExt() == null : this.getExt().equals(other.getExt()));
     }
@@ -141,6 +157,7 @@ public class ChatHistory implements Serializable {
         result = prime * result + ((getGmtCreate() == null) ? 0 : getGmtCreate().hashCode());
         result = prime * result + ((getGmtModified() == null) ? 0 : getGmtModified().hashCode());
         result = prime * result + ((getEnabled() == null) ? 0 : getEnabled().hashCode());
+        result = prime * result + ((getTgMessageId() == null) ? 0 : getTgMessageId().hashCode());
         result = prime * result + ((getMessage() == null) ? 0 : getMessage().hashCode());
         result = prime * result + ((getExt() == null) ? 0 : getExt().hashCode());
         return result;
@@ -157,6 +174,7 @@ public class ChatHistory implements Serializable {
         sb.append(", gmtCreate=").append(gmtCreate);
         sb.append(", gmtModified=").append(gmtModified);
         sb.append(", enabled=").append(enabled);
+        sb.append(", tgMessageId=").append(tgMessageId);
         sb.append(", message=").append(message);
         sb.append(", ext=").append(ext);
         sb.append(", serialVersionUID=").append(serialVersionUID);

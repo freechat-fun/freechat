@@ -30,7 +30,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
 public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapper, CommonUpdateMapper {
-    BasicColumn[] selectList = BasicColumn.columnList(characterId, characterUid, gmtCreate, gmtModified, userId, parentUid, visibility, name, nickname, avatar, picture, video, gender, lang, version, priority, description, profile, greeting, chatStyle, chatExample, defaultScene, ext, draft);
+    BasicColumn[] selectList = BasicColumn.columnList(characterId, characterUid, gmtCreate, gmtModified, userId, parentUid, visibility, name, nickname, avatar, picture, video, gender, lang, version, priority, tgBotId, description, profile, greeting, chatStyle, chatExample, defaultScene, ext, draft);
 
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     @SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="row.characterId", before=false, resultType=Long.class)
@@ -54,6 +54,7 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
         @Result(column="lang", property="lang", jdbcType=JdbcType.VARCHAR),
         @Result(column="version", property="version", jdbcType=JdbcType.INTEGER),
         @Result(column="priority", property="priority", jdbcType=JdbcType.INTEGER),
+        @Result(column="tg_bot_id", property="tgBotId", jdbcType=JdbcType.BIGINT),
         @Result(column="description", property="description", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="profile", property="profile", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="greeting", property="greeting", jdbcType=JdbcType.LONGVARCHAR),
@@ -100,6 +101,7 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
             .withMappedColumn(lang)
             .withMappedColumn(version)
             .withMappedColumn(priority)
+            .withMappedColumn(tgBotId)
             .withMappedColumn(description)
             .withMappedColumn(profile)
             .withMappedColumn(greeting)
@@ -128,6 +130,7 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
             .withMappedColumnWhenPresent(lang, row::getLang)
             .withMappedColumnWhenPresent(version, row::getVersion)
             .withMappedColumnWhenPresent(priority, row::getPriority)
+            .withMappedColumnWhenPresent(tgBotId, row::getTgBotId)
             .withMappedColumnWhenPresent(description, row::getDescription)
             .withMappedColumnWhenPresent(profile, row::getProfile)
             .withMappedColumnWhenPresent(greeting, row::getGreeting)
@@ -178,6 +181,7 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
                 .set(lang).equalTo(row::getLang)
                 .set(version).equalTo(row::getVersion)
                 .set(priority).equalTo(row::getPriority)
+                .set(tgBotId).equalTo(row::getTgBotId)
                 .set(description).equalTo(row::getDescription)
                 .set(profile).equalTo(row::getProfile)
                 .set(greeting).equalTo(row::getGreeting)
@@ -205,6 +209,7 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
                 .set(lang).equalToWhenPresent(row::getLang)
                 .set(version).equalToWhenPresent(row::getVersion)
                 .set(priority).equalToWhenPresent(row::getPriority)
+                .set(tgBotId).equalToWhenPresent(row::getTgBotId)
                 .set(description).equalToWhenPresent(row::getDescription)
                 .set(profile).equalToWhenPresent(row::getProfile)
                 .set(greeting).equalToWhenPresent(row::getGreeting)
@@ -232,6 +237,7 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
             .set(lang).equalTo(row::getLang)
             .set(version).equalTo(row::getVersion)
             .set(priority).equalTo(row::getPriority)
+            .set(tgBotId).equalTo(row::getTgBotId)
             .set(description).equalTo(row::getDescription)
             .set(profile).equalTo(row::getProfile)
             .set(greeting).equalTo(row::getGreeting)
@@ -261,6 +267,7 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
             .set(lang).equalToWhenPresent(row::getLang)
             .set(version).equalToWhenPresent(row::getVersion)
             .set(priority).equalToWhenPresent(row::getPriority)
+            .set(tgBotId).equalToWhenPresent(row::getTgBotId)
             .set(description).equalToWhenPresent(row::getDescription)
             .set(profile).equalToWhenPresent(row::getProfile)
             .set(greeting).equalToWhenPresent(row::getGreeting)
