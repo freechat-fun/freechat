@@ -10,9 +10,7 @@ public class TgUser implements Serializable {
 
     private LocalDateTime gmtModified;
 
-    private LocalDateTime gmtActive;
-
-    private String botId;
+    private String backendId;
 
     private Long tgUserId;
 
@@ -21,18 +19,6 @@ public class TgUser implements Serializable {
     private String firstName;
 
     private String lastName;
-
-    private String lang;
-
-    private Byte isBot;
-
-    private Byte isPremium;
-
-    private String phoneNumber;
-
-    private Byte enabled;
-
-    private Byte blocked;
 
     private String ext;
 
@@ -77,30 +63,17 @@ public class TgUser implements Serializable {
         this.gmtModified = gmtModified;
     }
 
-    public LocalDateTime getGmtActive() {
-        return gmtActive;
+    public String getBackendId() {
+        return backendId;
     }
 
-    public TgUser withGmtActive(LocalDateTime gmtActive) {
-        this.setGmtActive(gmtActive);
+    public TgUser withBackendId(String backendId) {
+        this.setBackendId(backendId);
         return this;
     }
 
-    public void setGmtActive(LocalDateTime gmtActive) {
-        this.gmtActive = gmtActive;
-    }
-
-    public String getBotId() {
-        return botId;
-    }
-
-    public TgUser withBotId(String botId) {
-        this.setBotId(botId);
-        return this;
-    }
-
-    public void setBotId(String botId) {
-        this.botId = botId;
+    public void setBackendId(String backendId) {
+        this.backendId = backendId;
     }
 
     public Long getTgUserId() {
@@ -155,84 +128,6 @@ public class TgUser implements Serializable {
         this.lastName = lastName;
     }
 
-    public String getLang() {
-        return lang;
-    }
-
-    public TgUser withLang(String lang) {
-        this.setLang(lang);
-        return this;
-    }
-
-    public void setLang(String lang) {
-        this.lang = lang;
-    }
-
-    public Byte getIsBot() {
-        return isBot;
-    }
-
-    public TgUser withIsBot(Byte isBot) {
-        this.setIsBot(isBot);
-        return this;
-    }
-
-    public void setIsBot(Byte isBot) {
-        this.isBot = isBot;
-    }
-
-    public Byte getIsPremium() {
-        return isPremium;
-    }
-
-    public TgUser withIsPremium(Byte isPremium) {
-        this.setIsPremium(isPremium);
-        return this;
-    }
-
-    public void setIsPremium(Byte isPremium) {
-        this.isPremium = isPremium;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public TgUser withPhoneNumber(String phoneNumber) {
-        this.setPhoneNumber(phoneNumber);
-        return this;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public Byte getEnabled() {
-        return enabled;
-    }
-
-    public TgUser withEnabled(Byte enabled) {
-        this.setEnabled(enabled);
-        return this;
-    }
-
-    public void setEnabled(Byte enabled) {
-        this.enabled = enabled;
-    }
-
-    public Byte getBlocked() {
-        return blocked;
-    }
-
-    public TgUser withBlocked(Byte blocked) {
-        this.setBlocked(blocked);
-        return this;
-    }
-
-    public void setBlocked(Byte blocked) {
-        this.blocked = blocked;
-    }
-
     public String getExt() {
         return ext;
     }
@@ -261,18 +156,11 @@ public class TgUser implements Serializable {
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getGmtCreate() == null ? other.getGmtCreate() == null : this.getGmtCreate().equals(other.getGmtCreate()))
             && (this.getGmtModified() == null ? other.getGmtModified() == null : this.getGmtModified().equals(other.getGmtModified()))
-            && (this.getGmtActive() == null ? other.getGmtActive() == null : this.getGmtActive().equals(other.getGmtActive()))
-            && (this.getBotId() == null ? other.getBotId() == null : this.getBotId().equals(other.getBotId()))
+            && (this.getBackendId() == null ? other.getBackendId() == null : this.getBackendId().equals(other.getBackendId()))
             && (this.getTgUserId() == null ? other.getTgUserId() == null : this.getTgUserId().equals(other.getTgUserId()))
             && (this.getUsername() == null ? other.getUsername() == null : this.getUsername().equals(other.getUsername()))
             && (this.getFirstName() == null ? other.getFirstName() == null : this.getFirstName().equals(other.getFirstName()))
             && (this.getLastName() == null ? other.getLastName() == null : this.getLastName().equals(other.getLastName()))
-            && (this.getLang() == null ? other.getLang() == null : this.getLang().equals(other.getLang()))
-            && (this.getIsBot() == null ? other.getIsBot() == null : this.getIsBot().equals(other.getIsBot()))
-            && (this.getIsPremium() == null ? other.getIsPremium() == null : this.getIsPremium().equals(other.getIsPremium()))
-            && (this.getPhoneNumber() == null ? other.getPhoneNumber() == null : this.getPhoneNumber().equals(other.getPhoneNumber()))
-            && (this.getEnabled() == null ? other.getEnabled() == null : this.getEnabled().equals(other.getEnabled()))
-            && (this.getBlocked() == null ? other.getBlocked() == null : this.getBlocked().equals(other.getBlocked()))
             && (this.getExt() == null ? other.getExt() == null : this.getExt().equals(other.getExt()));
     }
 
@@ -283,18 +171,11 @@ public class TgUser implements Serializable {
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getGmtCreate() == null) ? 0 : getGmtCreate().hashCode());
         result = prime * result + ((getGmtModified() == null) ? 0 : getGmtModified().hashCode());
-        result = prime * result + ((getGmtActive() == null) ? 0 : getGmtActive().hashCode());
-        result = prime * result + ((getBotId() == null) ? 0 : getBotId().hashCode());
+        result = prime * result + ((getBackendId() == null) ? 0 : getBackendId().hashCode());
         result = prime * result + ((getTgUserId() == null) ? 0 : getTgUserId().hashCode());
         result = prime * result + ((getUsername() == null) ? 0 : getUsername().hashCode());
         result = prime * result + ((getFirstName() == null) ? 0 : getFirstName().hashCode());
         result = prime * result + ((getLastName() == null) ? 0 : getLastName().hashCode());
-        result = prime * result + ((getLang() == null) ? 0 : getLang().hashCode());
-        result = prime * result + ((getIsBot() == null) ? 0 : getIsBot().hashCode());
-        result = prime * result + ((getIsPremium() == null) ? 0 : getIsPremium().hashCode());
-        result = prime * result + ((getPhoneNumber() == null) ? 0 : getPhoneNumber().hashCode());
-        result = prime * result + ((getEnabled() == null) ? 0 : getEnabled().hashCode());
-        result = prime * result + ((getBlocked() == null) ? 0 : getBlocked().hashCode());
         result = prime * result + ((getExt() == null) ? 0 : getExt().hashCode());
         return result;
     }
@@ -308,18 +189,11 @@ public class TgUser implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", gmtCreate=").append(gmtCreate);
         sb.append(", gmtModified=").append(gmtModified);
-        sb.append(", gmtActive=").append(gmtActive);
-        sb.append(", botId=").append(botId);
+        sb.append(", backendId=").append(backendId);
         sb.append(", tgUserId=").append(tgUserId);
         sb.append(", username=").append(username);
         sb.append(", firstName=").append(firstName);
         sb.append(", lastName=").append(lastName);
-        sb.append(", lang=").append(lang);
-        sb.append(", isBot=").append(isBot);
-        sb.append(", isPremium=").append(isPremium);
-        sb.append(", phoneNumber=").append(phoneNumber);
-        sb.append(", enabled=").append(enabled);
-        sb.append(", blocked=").append(blocked);
         sb.append(", ext=").append(ext);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");

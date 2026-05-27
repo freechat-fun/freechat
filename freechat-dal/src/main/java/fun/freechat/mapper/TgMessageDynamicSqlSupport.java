@@ -16,10 +16,6 @@ public final class TgMessageDynamicSqlSupport {
 
     public static final SqlColumn<String> chatId = tgMessage.chatId;
 
-    public static final SqlColumn<String> botId = tgMessage.botId;
-
-    public static final SqlColumn<Long> tgChatId = tgMessage.tgChatId;
-
     public static final SqlColumn<Long> tgMessageId = tgMessage.tgMessageId;
 
     public static final SqlColumn<Long> tgUserId = tgMessage.tgUserId;
@@ -27,10 +23,6 @@ public final class TgMessageDynamicSqlSupport {
     public static final SqlColumn<String> direction = tgMessage.direction;
 
     public static final SqlColumn<String> messageType = tgMessage.messageType;
-
-    public static final SqlColumn<Long> replyToMessageId = tgMessage.replyToMessageId;
-
-    public static final SqlColumn<Byte> enabled = tgMessage.enabled;
 
     public static final SqlColumn<String> content = tgMessage.content;
 
@@ -47,10 +39,6 @@ public final class TgMessageDynamicSqlSupport {
 
         public final SqlColumn<String> chatId = column("chat_id", JDBCType.VARCHAR).withJavaProperty("chatId");
 
-        public final SqlColumn<String> botId = column("bot_id", JDBCType.VARCHAR).withJavaProperty("botId");
-
-        public final SqlColumn<Long> tgChatId = column("tg_chat_id", JDBCType.BIGINT).withJavaProperty("tgChatId");
-
         public final SqlColumn<Long> tgMessageId = column("tg_message_id", JDBCType.BIGINT).withJavaProperty("tgMessageId");
 
         public final SqlColumn<Long> tgUserId = column("tg_user_id", JDBCType.BIGINT).withJavaProperty("tgUserId");
@@ -58,10 +46,6 @@ public final class TgMessageDynamicSqlSupport {
         public final SqlColumn<String> direction = column("direction", JDBCType.VARCHAR).withJavaProperty("direction");
 
         public final SqlColumn<String> messageType = column("message_type", JDBCType.VARCHAR).withJavaProperty("messageType");
-
-        public final SqlColumn<Long> replyToMessageId = column("reply_to_message_id", JDBCType.BIGINT).withJavaProperty("replyToMessageId");
-
-        public final SqlColumn<Byte> enabled = column("enabled", JDBCType.TINYINT).withJavaProperty("enabled");
 
         public final SqlColumn<String> content = column("content", JDBCType.LONGVARCHAR).withJavaProperty("content");
 

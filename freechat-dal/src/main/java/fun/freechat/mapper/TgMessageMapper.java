@@ -30,7 +30,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
 public interface TgMessageMapper extends CommonCountMapper, CommonDeleteMapper, CommonUpdateMapper {
-    BasicColumn[] selectList = BasicColumn.columnList(id, gmtCreate, gmtModified, chatId, botId, tgChatId, tgMessageId, tgUserId, direction, messageType, replyToMessageId, enabled, content, payload, ext);
+    BasicColumn[] selectList = BasicColumn.columnList(id, gmtCreate, gmtModified, chatId, tgMessageId, tgUserId, direction, messageType, content, payload, ext);
 
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     @SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="row.id", before=false, resultType=Long.class)
@@ -42,14 +42,10 @@ public interface TgMessageMapper extends CommonCountMapper, CommonDeleteMapper, 
         @Result(column="gmt_create", property="gmtCreate", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="gmt_modified", property="gmtModified", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="chat_id", property="chatId", jdbcType=JdbcType.VARCHAR),
-        @Result(column="bot_id", property="botId", jdbcType=JdbcType.VARCHAR),
-        @Result(column="tg_chat_id", property="tgChatId", jdbcType=JdbcType.BIGINT),
         @Result(column="tg_message_id", property="tgMessageId", jdbcType=JdbcType.BIGINT),
         @Result(column="tg_user_id", property="tgUserId", jdbcType=JdbcType.BIGINT),
         @Result(column="direction", property="direction", jdbcType=JdbcType.VARCHAR),
         @Result(column="message_type", property="messageType", jdbcType=JdbcType.VARCHAR),
-        @Result(column="reply_to_message_id", property="replyToMessageId", jdbcType=JdbcType.BIGINT),
-        @Result(column="enabled", property="enabled", jdbcType=JdbcType.TINYINT),
         @Result(column="content", property="content", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="payload", property="payload", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="ext", property="ext", jdbcType=JdbcType.LONGVARCHAR)
@@ -79,14 +75,10 @@ public interface TgMessageMapper extends CommonCountMapper, CommonDeleteMapper, 
             c.withMappedColumn(gmtCreate)
             .withMappedColumn(gmtModified)
             .withMappedColumn(chatId)
-            .withMappedColumn(botId)
-            .withMappedColumn(tgChatId)
             .withMappedColumn(tgMessageId)
             .withMappedColumn(tgUserId)
             .withMappedColumn(direction)
             .withMappedColumn(messageType)
-            .withMappedColumn(replyToMessageId)
-            .withMappedColumn(enabled)
             .withMappedColumn(content)
             .withMappedColumn(payload)
             .withMappedColumn(ext)
@@ -98,14 +90,10 @@ public interface TgMessageMapper extends CommonCountMapper, CommonDeleteMapper, 
             c.withMappedColumnWhenPresent(gmtCreate, row::getGmtCreate)
             .withMappedColumnWhenPresent(gmtModified, row::getGmtModified)
             .withMappedColumnWhenPresent(chatId, row::getChatId)
-            .withMappedColumnWhenPresent(botId, row::getBotId)
-            .withMappedColumnWhenPresent(tgChatId, row::getTgChatId)
             .withMappedColumnWhenPresent(tgMessageId, row::getTgMessageId)
             .withMappedColumnWhenPresent(tgUserId, row::getTgUserId)
             .withMappedColumnWhenPresent(direction, row::getDirection)
             .withMappedColumnWhenPresent(messageType, row::getMessageType)
-            .withMappedColumnWhenPresent(replyToMessageId, row::getReplyToMessageId)
-            .withMappedColumnWhenPresent(enabled, row::getEnabled)
             .withMappedColumnWhenPresent(content, row::getContent)
             .withMappedColumnWhenPresent(payload, row::getPayload)
             .withMappedColumnWhenPresent(ext, row::getExt)
@@ -139,14 +127,10 @@ public interface TgMessageMapper extends CommonCountMapper, CommonDeleteMapper, 
                 .set(gmtCreate).equalTo(row::getGmtCreate)
                 .set(gmtModified).equalTo(row::getGmtModified)
                 .set(chatId).equalTo(row::getChatId)
-                .set(botId).equalTo(row::getBotId)
-                .set(tgChatId).equalTo(row::getTgChatId)
                 .set(tgMessageId).equalTo(row::getTgMessageId)
                 .set(tgUserId).equalTo(row::getTgUserId)
                 .set(direction).equalTo(row::getDirection)
                 .set(messageType).equalTo(row::getMessageType)
-                .set(replyToMessageId).equalTo(row::getReplyToMessageId)
-                .set(enabled).equalTo(row::getEnabled)
                 .set(content).equalTo(row::getContent)
                 .set(payload).equalTo(row::getPayload)
                 .set(ext).equalTo(row::getExt);
@@ -157,14 +141,10 @@ public interface TgMessageMapper extends CommonCountMapper, CommonDeleteMapper, 
                 .set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
                 .set(gmtModified).equalToWhenPresent(row::getGmtModified)
                 .set(chatId).equalToWhenPresent(row::getChatId)
-                .set(botId).equalToWhenPresent(row::getBotId)
-                .set(tgChatId).equalToWhenPresent(row::getTgChatId)
                 .set(tgMessageId).equalToWhenPresent(row::getTgMessageId)
                 .set(tgUserId).equalToWhenPresent(row::getTgUserId)
                 .set(direction).equalToWhenPresent(row::getDirection)
                 .set(messageType).equalToWhenPresent(row::getMessageType)
-                .set(replyToMessageId).equalToWhenPresent(row::getReplyToMessageId)
-                .set(enabled).equalToWhenPresent(row::getEnabled)
                 .set(content).equalToWhenPresent(row::getContent)
                 .set(payload).equalToWhenPresent(row::getPayload)
                 .set(ext).equalToWhenPresent(row::getExt);
@@ -175,14 +155,10 @@ public interface TgMessageMapper extends CommonCountMapper, CommonDeleteMapper, 
             c.set(gmtCreate).equalTo(row::getGmtCreate)
             .set(gmtModified).equalTo(row::getGmtModified)
             .set(chatId).equalTo(row::getChatId)
-            .set(botId).equalTo(row::getBotId)
-            .set(tgChatId).equalTo(row::getTgChatId)
             .set(tgMessageId).equalTo(row::getTgMessageId)
             .set(tgUserId).equalTo(row::getTgUserId)
             .set(direction).equalTo(row::getDirection)
             .set(messageType).equalTo(row::getMessageType)
-            .set(replyToMessageId).equalTo(row::getReplyToMessageId)
-            .set(enabled).equalTo(row::getEnabled)
             .set(content).equalTo(row::getContent)
             .set(payload).equalTo(row::getPayload)
             .set(ext).equalTo(row::getExt)
@@ -195,14 +171,10 @@ public interface TgMessageMapper extends CommonCountMapper, CommonDeleteMapper, 
             c.set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
             .set(gmtModified).equalToWhenPresent(row::getGmtModified)
             .set(chatId).equalToWhenPresent(row::getChatId)
-            .set(botId).equalToWhenPresent(row::getBotId)
-            .set(tgChatId).equalToWhenPresent(row::getTgChatId)
             .set(tgMessageId).equalToWhenPresent(row::getTgMessageId)
             .set(tgUserId).equalToWhenPresent(row::getTgUserId)
             .set(direction).equalToWhenPresent(row::getDirection)
             .set(messageType).equalToWhenPresent(row::getMessageType)
-            .set(replyToMessageId).equalToWhenPresent(row::getReplyToMessageId)
-            .set(enabled).equalToWhenPresent(row::getEnabled)
             .set(content).equalToWhenPresent(row::getContent)
             .set(payload).equalToWhenPresent(row::getPayload)
             .set(ext).equalToWhenPresent(row::getExt)

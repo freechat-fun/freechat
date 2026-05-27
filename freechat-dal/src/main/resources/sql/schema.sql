@@ -224,7 +224,8 @@ CREATE TABLE IF NOT EXISTS `character_backend` (
   `tts_speaker_idx` varchar(32) DEFAULT NULL,
   `tts_speaker_wav` varchar(256) DEFAULT NULL,
   `tts_speaker_type` varchar(8) DEFAULT 'idx' COMMENT 'idx | wav',
-  `tg_bot_id` bigint DEFAULT NULL COMMENT 'bound telegram bot id (tg_bot.tg_bot_id)',
+  `tg_bot_id` bigint DEFAULT NULL COMMENT 'telegram-assigned bot id (parsed from token prefix)',
+  `tg_bot_token` varchar(128) DEFAULT NULL COMMENT 'telegram bot token issued by BotFather',
   PRIMARY KEY (`backend_id`),
   INDEX `idx_character` (`character_uid`),
   INDEX `idx_chat_prompt_task` (`chat_prompt_task_id`),
@@ -416,48 +417,19 @@ CREATE TABLE IF NOT EXISTS `short_link` (
 ) ENGINE=InnoDB AUTO_INCREMENT=265 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='short link info'
 ;
 
-CREATE TABLE IF NOT EXISTS `tg_bot` (
-  `bot_id` varchar(32) NOT NULL COMMENT 'immutable bot identifier',
-  `gmt_create` datetime NOT NULL,
-  `gmt_modified` datetime NOT NULL,
-  `tg_bot_id` bigint NOT NULL COMMENT 'telegram-assigned bot id',
-  `username` varchar(64) NOT NULL COMMENT 'telegram bot username (without @)',
-  `name` varchar(128) DEFAULT NULL COMMENT 'bot display name',
-  `description` text DEFAULT NULL,
-  `token` varchar(128) NOT NULL COMMENT 'bot token issued by BotFather',
-  `webhook_url` varchar(512) DEFAULT NULL,
-  `webhook_secret` varchar(128) DEFAULT NULL,
-  `allowed_updates` json DEFAULT NULL COMMENT 'list of update types to receive',
-  `commands` json DEFAULT NULL COMMENT 'bot command list',
-  `enabled` tinyint NOT NULL DEFAULT 1,
-  `ext` json DEFAULT NULL,
-  PRIMARY KEY (`bot_id`),
-  UNIQUE KEY `uk_tg_bot_id` (`tg_bot_id`),
-  UNIQUE KEY `uk_username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='telegram bot info table'
-;
-
 CREATE TABLE IF NOT EXISTS `tg_user` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `gmt_create` datetime NOT NULL,
   `gmt_modified` datetime NOT NULL,
-  `gmt_active` datetime DEFAULT NULL COMMENT 'last interaction time',
-  `bot_id` varchar(32) NOT NULL COMMENT 'related tg_bot.bot_id',
+  `backend_id` varchar(32) NOT NULL COMMENT 'related character_backend.backend_id',
   `tg_user_id` bigint NOT NULL COMMENT 'telegram user id',
   `username` varchar(64) DEFAULT NULL COMMENT 'telegram username (without @)',
   `first_name` varchar(128) DEFAULT NULL,
   `last_name` varchar(128) DEFAULT NULL,
-  `lang` varchar(16) DEFAULT NULL COMMENT 'language_code from telegram',
-  `is_bot` tinyint NOT NULL DEFAULT 0,
-  `is_premium` tinyint NOT NULL DEFAULT 0,
-  `phone_number` varchar(32) DEFAULT NULL,
-  `enabled` tinyint NOT NULL DEFAULT 1,
-  `blocked` tinyint NOT NULL DEFAULT 0 COMMENT 'whether the bot is blocked by the telegram user',
   `ext` json DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_bot_tg_user` (`bot_id`, `tg_user_id`),
-  INDEX `idx_bot` (`bot_id`),
-  INDEX `idx_tg_user` (`tg_user_id`)
+  UNIQUE KEY `uk_backend_tg_user` (`backend_id`, `tg_user_id`),
+  INDEX `idx_backend` (`backend_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=265 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='telegram user info table'
 ;
 
@@ -465,20 +437,14 @@ CREATE TABLE IF NOT EXISTS `tg_chat` (
   `chat_id` varchar(32) NOT NULL COMMENT 'immutable chat session identifier',
   `gmt_create` datetime NOT NULL,
   `gmt_modified` datetime NOT NULL,
-  `gmt_read` datetime DEFAULT NULL,
-  `bot_id` varchar(32) NOT NULL COMMENT 'related tg_bot.bot_id',
+  `backend_id` varchar(32) NOT NULL COMMENT 'related character_backend.backend_id',
   `tg_chat_id` bigint NOT NULL COMMENT 'telegram chat id',
-  `tg_user_id` bigint DEFAULT NULL COMMENT 'telegram user id (for private chat)',
-  `chat_type` varchar(16) NOT NULL DEFAULT 'private' COMMENT 'private | group | supergroup | channel',
-  `title` varchar(256) DEFAULT NULL COMMENT 'chat title for groups/channels',
-  `last_message_id` bigint DEFAULT NULL COMMENT 'last received telegram message id',
-  `message_count` bigint unsigned DEFAULT 0,
-  `enabled` tinyint NOT NULL DEFAULT 1,
+  `chat_type` varchar(16) NOT NULL DEFAULT 'private' COMMENT 'private | group | supergroup',
+  `title` varchar(256) DEFAULT NULL COMMENT 'group title, null for private chats',
   `ext` json DEFAULT NULL,
   PRIMARY KEY (`chat_id`),
-  UNIQUE KEY `uk_bot_tg_chat` (`bot_id`, `tg_chat_id`),
-  INDEX `idx_bot` (`bot_id`),
-  INDEX `idx_bot_tg_user` (`bot_id`, `tg_user_id`)
+  UNIQUE KEY `uk_backend_tg_chat` (`backend_id`, `tg_chat_id`),
+  INDEX `idx_backend` (`backend_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='telegram chat session table'
 ;
 
@@ -487,21 +453,16 @@ CREATE TABLE IF NOT EXISTS `tg_message` (
   `gmt_create` datetime NOT NULL,
   `gmt_modified` datetime NOT NULL,
   `chat_id` varchar(32) NOT NULL COMMENT 'related tg_chat.chat_id',
-  `bot_id` varchar(32) NOT NULL,
-  `tg_chat_id` bigint NOT NULL,
   `tg_message_id` bigint NOT NULL COMMENT 'telegram message id',
-  `tg_user_id` bigint DEFAULT NULL COMMENT 'sender telegram user id',
+  `tg_user_id` bigint DEFAULT NULL COMMENT 'sender telegram user id (null when direction=out)',
   `direction` varchar(8) NOT NULL DEFAULT 'in' COMMENT 'in | out',
   `message_type` varchar(16) NOT NULL DEFAULT 'text' COMMENT 'text | photo | voice | video | document | sticker | command',
   `content` text DEFAULT NULL COMMENT 'plain text content',
   `payload` json DEFAULT NULL COMMENT 'raw telegram update payload',
-  `reply_to_message_id` bigint DEFAULT NULL COMMENT 'telegram message id being replied to',
-  `enabled` tinyint NOT NULL DEFAULT 1,
   `ext` json DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_bot_tg_message` (`bot_id`, `tg_chat_id`, `tg_message_id`),
+  UNIQUE KEY `uk_chat_tg_message` (`chat_id`, `tg_message_id`),
   INDEX `idx_chat` (`chat_id`),
-  INDEX `idx_chat_enabled` (`chat_id`, `enabled`),
   INDEX `idx_tg_user` (`tg_user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=265 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='telegram message history table'
 ;
