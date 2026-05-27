@@ -187,15 +187,13 @@ CREATE TABLE IF NOT EXISTS `character_info` (
   `ext` json DEFAULT NULL,
   `draft` text DEFAULT NULL,
   `priority` int unsigned DEFAULT 1,
-  `tg_bot_id` bigint DEFAULT NULL COMMENT 'bound telegram bot id (tg_bot.tg_bot_id)',
   PRIMARY KEY (`character_id`),
   INDEX `idx_uid` (`character_uid`),
   INDEX `idx_visibility` (`visibility`),
   INDEX `idx_visibility_name` (`visibility`, `name`),
   INDEX `idx_user` (`user_id`),
   INDEX `idx_user_name` (`user_id`, `name`),
-  INDEX `idx_modified` (`gmt_modified`),
-  INDEX `idx_tg_bot` (`tg_bot_id`)
+  INDEX `idx_modified` (`gmt_modified`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='character info table'
 ;
 
@@ -226,9 +224,11 @@ CREATE TABLE IF NOT EXISTS `character_backend` (
   `tts_speaker_idx` varchar(32) DEFAULT NULL,
   `tts_speaker_wav` varchar(256) DEFAULT NULL,
   `tts_speaker_type` varchar(8) DEFAULT 'idx' COMMENT 'idx | wav',
+  `tg_bot_id` bigint DEFAULT NULL COMMENT 'bound telegram bot id (tg_bot.tg_bot_id)',
   PRIMARY KEY (`backend_id`),
   INDEX `idx_character` (`character_uid`),
-  INDEX `idx_chat_prompt_task` (`chat_prompt_task_id`)
+  INDEX `idx_chat_prompt_task` (`chat_prompt_task_id`),
+  INDEX `idx_tg_bot` (`tg_bot_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='character backend table'
 ;
 
