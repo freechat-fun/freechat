@@ -39,6 +39,7 @@
         <swagger-parser.version>2.1.43</swagger-parser.version>
         <langchain4j.version>1.15.0</langchain4j.version>
         <langchain4j-community.version>1.15.0-beta25</langchain4j-community.version>
+        <telegrambots.version>9.6.0</telegrambots.version>
 
         <!--plugin versions-->
         <buildnumber-maven-plugin.version>3.3.0</buildnumber-maven-plugin.version>
@@ -159,6 +160,25 @@
                 <version>${langchain4j-community.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!--telegrambots-->
+            <dependency>
+                <groupId>org.telegram</groupId>
+                <artifactId>telegrambots-springboot-longpolling-starter</artifactId>
+                <version>${telegrambots.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.telegram</groupId>
+                <artifactId>telegrambots-client</artifactId>
+                <version>${telegrambots.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.telegram</groupId>
+                <artifactId>telegrambots-extensions</artifactId>
+                <version>${telegrambots.version}</version>
             </dependency>
 
             <!--commons-->
