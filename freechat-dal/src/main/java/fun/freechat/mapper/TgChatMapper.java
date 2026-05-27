@@ -29,22 +29,17 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
 public interface TgChatMapper extends CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<TgChat>, CommonUpdateMapper {
-    BasicColumn[] selectList = BasicColumn.columnList(chatId, gmtCreate, gmtModified, gmtRead, botId, tgChatId, tgUserId, chatType, title, lastMessageId, messageCount, enabled, ext);
+    BasicColumn[] selectList = BasicColumn.columnList(chatId, gmtCreate, gmtModified, backendId, tgChatId, chatType, title, ext);
 
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="TgChatResult", value = {
         @Result(column="chat_id", property="chatId", jdbcType=JdbcType.VARCHAR, id=true),
         @Result(column="gmt_create", property="gmtCreate", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="gmt_modified", property="gmtModified", jdbcType=JdbcType.TIMESTAMP),
-        @Result(column="gmt_read", property="gmtRead", jdbcType=JdbcType.TIMESTAMP),
-        @Result(column="bot_id", property="botId", jdbcType=JdbcType.VARCHAR),
+        @Result(column="backend_id", property="backendId", jdbcType=JdbcType.VARCHAR),
         @Result(column="tg_chat_id", property="tgChatId", jdbcType=JdbcType.BIGINT),
-        @Result(column="tg_user_id", property="tgUserId", jdbcType=JdbcType.BIGINT),
         @Result(column="chat_type", property="chatType", jdbcType=JdbcType.VARCHAR),
         @Result(column="title", property="title", jdbcType=JdbcType.VARCHAR),
-        @Result(column="last_message_id", property="lastMessageId", jdbcType=JdbcType.BIGINT),
-        @Result(column="message_count", property="messageCount", jdbcType=JdbcType.BIGINT),
-        @Result(column="enabled", property="enabled", jdbcType=JdbcType.TINYINT),
         @Result(column="ext", property="ext", jdbcType=JdbcType.LONGVARCHAR)
     })
     List<TgChat> selectMany(SelectStatementProvider selectStatement);
@@ -72,15 +67,10 @@ public interface TgChatMapper extends CommonCountMapper, CommonDeleteMapper, Com
             c.withMappedColumn(chatId)
             .withMappedColumn(gmtCreate)
             .withMappedColumn(gmtModified)
-            .withMappedColumn(gmtRead)
-            .withMappedColumn(botId)
+            .withMappedColumn(backendId)
             .withMappedColumn(tgChatId)
-            .withMappedColumn(tgUserId)
             .withMappedColumn(chatType)
             .withMappedColumn(title)
-            .withMappedColumn(lastMessageId)
-            .withMappedColumn(messageCount)
-            .withMappedColumn(enabled)
             .withMappedColumn(ext)
         );
     }
@@ -90,15 +80,10 @@ public interface TgChatMapper extends CommonCountMapper, CommonDeleteMapper, Com
             c.withMappedColumn(chatId)
             .withMappedColumn(gmtCreate)
             .withMappedColumn(gmtModified)
-            .withMappedColumn(gmtRead)
-            .withMappedColumn(botId)
+            .withMappedColumn(backendId)
             .withMappedColumn(tgChatId)
-            .withMappedColumn(tgUserId)
             .withMappedColumn(chatType)
             .withMappedColumn(title)
-            .withMappedColumn(lastMessageId)
-            .withMappedColumn(messageCount)
-            .withMappedColumn(enabled)
             .withMappedColumn(ext)
         );
     }
@@ -108,15 +93,10 @@ public interface TgChatMapper extends CommonCountMapper, CommonDeleteMapper, Com
             c.withMappedColumnWhenPresent(chatId, row::getChatId)
             .withMappedColumnWhenPresent(gmtCreate, row::getGmtCreate)
             .withMappedColumnWhenPresent(gmtModified, row::getGmtModified)
-            .withMappedColumnWhenPresent(gmtRead, row::getGmtRead)
-            .withMappedColumnWhenPresent(botId, row::getBotId)
+            .withMappedColumnWhenPresent(backendId, row::getBackendId)
             .withMappedColumnWhenPresent(tgChatId, row::getTgChatId)
-            .withMappedColumnWhenPresent(tgUserId, row::getTgUserId)
             .withMappedColumnWhenPresent(chatType, row::getChatType)
             .withMappedColumnWhenPresent(title, row::getTitle)
-            .withMappedColumnWhenPresent(lastMessageId, row::getLastMessageId)
-            .withMappedColumnWhenPresent(messageCount, row::getMessageCount)
-            .withMappedColumnWhenPresent(enabled, row::getEnabled)
             .withMappedColumnWhenPresent(ext, row::getExt)
         );
     }
@@ -147,15 +127,10 @@ public interface TgChatMapper extends CommonCountMapper, CommonDeleteMapper, Com
         return dsl.set(chatId).equalTo(row::getChatId)
                 .set(gmtCreate).equalTo(row::getGmtCreate)
                 .set(gmtModified).equalTo(row::getGmtModified)
-                .set(gmtRead).equalTo(row::getGmtRead)
-                .set(botId).equalTo(row::getBotId)
+                .set(backendId).equalTo(row::getBackendId)
                 .set(tgChatId).equalTo(row::getTgChatId)
-                .set(tgUserId).equalTo(row::getTgUserId)
                 .set(chatType).equalTo(row::getChatType)
                 .set(title).equalTo(row::getTitle)
-                .set(lastMessageId).equalTo(row::getLastMessageId)
-                .set(messageCount).equalTo(row::getMessageCount)
-                .set(enabled).equalTo(row::getEnabled)
                 .set(ext).equalTo(row::getExt);
     }
 
@@ -163,15 +138,10 @@ public interface TgChatMapper extends CommonCountMapper, CommonDeleteMapper, Com
         return dsl.set(chatId).equalToWhenPresent(row::getChatId)
                 .set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
                 .set(gmtModified).equalToWhenPresent(row::getGmtModified)
-                .set(gmtRead).equalToWhenPresent(row::getGmtRead)
-                .set(botId).equalToWhenPresent(row::getBotId)
+                .set(backendId).equalToWhenPresent(row::getBackendId)
                 .set(tgChatId).equalToWhenPresent(row::getTgChatId)
-                .set(tgUserId).equalToWhenPresent(row::getTgUserId)
                 .set(chatType).equalToWhenPresent(row::getChatType)
                 .set(title).equalToWhenPresent(row::getTitle)
-                .set(lastMessageId).equalToWhenPresent(row::getLastMessageId)
-                .set(messageCount).equalToWhenPresent(row::getMessageCount)
-                .set(enabled).equalToWhenPresent(row::getEnabled)
                 .set(ext).equalToWhenPresent(row::getExt);
     }
 
@@ -179,15 +149,10 @@ public interface TgChatMapper extends CommonCountMapper, CommonDeleteMapper, Com
         return update(c ->
             c.set(gmtCreate).equalTo(row::getGmtCreate)
             .set(gmtModified).equalTo(row::getGmtModified)
-            .set(gmtRead).equalTo(row::getGmtRead)
-            .set(botId).equalTo(row::getBotId)
+            .set(backendId).equalTo(row::getBackendId)
             .set(tgChatId).equalTo(row::getTgChatId)
-            .set(tgUserId).equalTo(row::getTgUserId)
             .set(chatType).equalTo(row::getChatType)
             .set(title).equalTo(row::getTitle)
-            .set(lastMessageId).equalTo(row::getLastMessageId)
-            .set(messageCount).equalTo(row::getMessageCount)
-            .set(enabled).equalTo(row::getEnabled)
             .set(ext).equalTo(row::getExt)
             .where(chatId, isEqualTo(row::getChatId))
         );
@@ -197,15 +162,10 @@ public interface TgChatMapper extends CommonCountMapper, CommonDeleteMapper, Com
         return update(c ->
             c.set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
             .set(gmtModified).equalToWhenPresent(row::getGmtModified)
-            .set(gmtRead).equalToWhenPresent(row::getGmtRead)
-            .set(botId).equalToWhenPresent(row::getBotId)
+            .set(backendId).equalToWhenPresent(row::getBackendId)
             .set(tgChatId).equalToWhenPresent(row::getTgChatId)
-            .set(tgUserId).equalToWhenPresent(row::getTgUserId)
             .set(chatType).equalToWhenPresent(row::getChatType)
             .set(title).equalToWhenPresent(row::getTitle)
-            .set(lastMessageId).equalToWhenPresent(row::getLastMessageId)
-            .set(messageCount).equalToWhenPresent(row::getMessageCount)
-            .set(enabled).equalToWhenPresent(row::getEnabled)
             .set(ext).equalToWhenPresent(row::getExt)
             .where(chatId, isEqualTo(row::getChatId))
         );

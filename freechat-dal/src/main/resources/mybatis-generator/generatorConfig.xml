@@ -99,8 +99,6 @@
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 
-        <table tableName="tg_bot" />
-
         <table tableName="tg_user">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>

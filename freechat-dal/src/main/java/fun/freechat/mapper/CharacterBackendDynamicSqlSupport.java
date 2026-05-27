@@ -54,6 +54,8 @@ public final class CharacterBackendDynamicSqlSupport {
 
     public static final SqlColumn<Long> tgBotId = characterBackend.tgBotId;
 
+    public static final SqlColumn<String> tgBotToken = characterBackend.tgBotToken;
+
     public static final SqlColumn<String> moderationApiKeyValue = characterBackend.moderationApiKeyValue;
 
     public static final SqlColumn<String> moderationParams = characterBackend.moderationParams;
@@ -108,6 +110,8 @@ public final class CharacterBackendDynamicSqlSupport {
         public final SqlColumn<String> ttsSpeakerType = column("tts_speaker_type", JDBCType.VARCHAR).withJavaProperty("ttsSpeakerType");
 
         public final SqlColumn<Long> tgBotId = column("tg_bot_id", JDBCType.BIGINT).withJavaProperty("tgBotId");
+
+        public final SqlColumn<String> tgBotToken = column("tg_bot_token", JDBCType.VARCHAR).withJavaProperty("tgBotToken");
 
         public final SqlColumn<String> moderationApiKeyValue = column("moderation_api_key_value", JDBCType.LONGVARCHAR).withJavaProperty("moderationApiKeyValue");
 

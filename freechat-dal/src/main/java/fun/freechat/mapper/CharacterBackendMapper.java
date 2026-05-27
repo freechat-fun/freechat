@@ -29,7 +29,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
 public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<CharacterBackend>, CommonUpdateMapper {
-    BasicColumn[] selectList = BasicColumn.columnList(backendId, gmtCreate, gmtModified, characterUid, isDefault, chatPromptTaskId, greetingPromptTaskId, moderationModelId, moderationApiKeyName, imageModelId, imageApiKeyName, forwardToUser, messageWindowSize, longTermMemoryWindowSize, proactiveChatWaitingTime, initQuota, quotaType, enableAlbumTool, enableTts, ttsSpeakerIdx, ttsSpeakerWav, ttsSpeakerType, tgBotId, moderationApiKeyValue, moderationParams, imageApiKeyValue, imageParams);
+    BasicColumn[] selectList = BasicColumn.columnList(backendId, gmtCreate, gmtModified, characterUid, isDefault, chatPromptTaskId, greetingPromptTaskId, moderationModelId, moderationApiKeyName, imageModelId, imageApiKeyName, forwardToUser, messageWindowSize, longTermMemoryWindowSize, proactiveChatWaitingTime, initQuota, quotaType, enableAlbumTool, enableTts, ttsSpeakerIdx, ttsSpeakerWav, ttsSpeakerType, tgBotId, tgBotToken, moderationApiKeyValue, moderationParams, imageApiKeyValue, imageParams);
 
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="CharacterBackendResult", value = {
@@ -56,6 +56,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
         @Result(column="tts_speaker_wav", property="ttsSpeakerWav", jdbcType=JdbcType.VARCHAR),
         @Result(column="tts_speaker_type", property="ttsSpeakerType", jdbcType=JdbcType.VARCHAR),
         @Result(column="tg_bot_id", property="tgBotId", jdbcType=JdbcType.BIGINT),
+        @Result(column="tg_bot_token", property="tgBotToken", jdbcType=JdbcType.VARCHAR),
         @Result(column="moderation_api_key_value", property="moderationApiKeyValue", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="moderation_params", property="moderationParams", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="image_api_key_value", property="imageApiKeyValue", jdbcType=JdbcType.LONGVARCHAR),
@@ -106,6 +107,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .withMappedColumn(ttsSpeakerWav)
             .withMappedColumn(ttsSpeakerType)
             .withMappedColumn(tgBotId)
+            .withMappedColumn(tgBotToken)
             .withMappedColumn(moderationApiKeyValue)
             .withMappedColumn(moderationParams)
             .withMappedColumn(imageApiKeyValue)
@@ -138,6 +140,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .withMappedColumn(ttsSpeakerWav)
             .withMappedColumn(ttsSpeakerType)
             .withMappedColumn(tgBotId)
+            .withMappedColumn(tgBotToken)
             .withMappedColumn(moderationApiKeyValue)
             .withMappedColumn(moderationParams)
             .withMappedColumn(imageApiKeyValue)
@@ -170,6 +173,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .withMappedColumnWhenPresent(ttsSpeakerWav, row::getTtsSpeakerWav)
             .withMappedColumnWhenPresent(ttsSpeakerType, row::getTtsSpeakerType)
             .withMappedColumnWhenPresent(tgBotId, row::getTgBotId)
+            .withMappedColumnWhenPresent(tgBotToken, row::getTgBotToken)
             .withMappedColumnWhenPresent(moderationApiKeyValue, row::getModerationApiKeyValue)
             .withMappedColumnWhenPresent(moderationParams, row::getModerationParams)
             .withMappedColumnWhenPresent(imageApiKeyValue, row::getImageApiKeyValue)
@@ -223,6 +227,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
                 .set(ttsSpeakerWav).equalTo(row::getTtsSpeakerWav)
                 .set(ttsSpeakerType).equalTo(row::getTtsSpeakerType)
                 .set(tgBotId).equalTo(row::getTgBotId)
+                .set(tgBotToken).equalTo(row::getTgBotToken)
                 .set(moderationApiKeyValue).equalTo(row::getModerationApiKeyValue)
                 .set(moderationParams).equalTo(row::getModerationParams)
                 .set(imageApiKeyValue).equalTo(row::getImageApiKeyValue)
@@ -253,6 +258,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
                 .set(ttsSpeakerWav).equalToWhenPresent(row::getTtsSpeakerWav)
                 .set(ttsSpeakerType).equalToWhenPresent(row::getTtsSpeakerType)
                 .set(tgBotId).equalToWhenPresent(row::getTgBotId)
+                .set(tgBotToken).equalToWhenPresent(row::getTgBotToken)
                 .set(moderationApiKeyValue).equalToWhenPresent(row::getModerationApiKeyValue)
                 .set(moderationParams).equalToWhenPresent(row::getModerationParams)
                 .set(imageApiKeyValue).equalToWhenPresent(row::getImageApiKeyValue)
@@ -283,6 +289,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .set(ttsSpeakerWav).equalTo(row::getTtsSpeakerWav)
             .set(ttsSpeakerType).equalTo(row::getTtsSpeakerType)
             .set(tgBotId).equalTo(row::getTgBotId)
+            .set(tgBotToken).equalTo(row::getTgBotToken)
             .set(moderationApiKeyValue).equalTo(row::getModerationApiKeyValue)
             .set(moderationParams).equalTo(row::getModerationParams)
             .set(imageApiKeyValue).equalTo(row::getImageApiKeyValue)
@@ -315,6 +322,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .set(ttsSpeakerWav).equalToWhenPresent(row::getTtsSpeakerWav)
             .set(ttsSpeakerType).equalToWhenPresent(row::getTtsSpeakerType)
             .set(tgBotId).equalToWhenPresent(row::getTgBotId)
+            .set(tgBotToken).equalToWhenPresent(row::getTgBotToken)
             .set(moderationApiKeyValue).equalToWhenPresent(row::getModerationApiKeyValue)
             .set(moderationParams).equalToWhenPresent(row::getModerationParams)
             .set(imageApiKeyValue).equalToWhenPresent(row::getImageApiKeyValue)
