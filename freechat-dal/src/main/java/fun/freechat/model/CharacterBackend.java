@@ -48,6 +48,8 @@ public class CharacterBackend implements Serializable {
 
     private String ttsSpeakerType;
 
+    private Long tgBotId;
+
     private String moderationApiKeyValue;
 
     private String moderationParams;
@@ -344,6 +346,19 @@ public class CharacterBackend implements Serializable {
         this.ttsSpeakerType = ttsSpeakerType;
     }
 
+    public Long getTgBotId() {
+        return tgBotId;
+    }
+
+    public CharacterBackend withTgBotId(Long tgBotId) {
+        this.setTgBotId(tgBotId);
+        return this;
+    }
+
+    public void setTgBotId(Long tgBotId) {
+        this.tgBotId = tgBotId;
+    }
+
     public String getModerationApiKeyValue() {
         return moderationApiKeyValue;
     }
@@ -430,6 +445,7 @@ public class CharacterBackend implements Serializable {
             && (this.getTtsSpeakerIdx() == null ? other.getTtsSpeakerIdx() == null : this.getTtsSpeakerIdx().equals(other.getTtsSpeakerIdx()))
             && (this.getTtsSpeakerWav() == null ? other.getTtsSpeakerWav() == null : this.getTtsSpeakerWav().equals(other.getTtsSpeakerWav()))
             && (this.getTtsSpeakerType() == null ? other.getTtsSpeakerType() == null : this.getTtsSpeakerType().equals(other.getTtsSpeakerType()))
+            && (this.getTgBotId() == null ? other.getTgBotId() == null : this.getTgBotId().equals(other.getTgBotId()))
             && (this.getModerationApiKeyValue() == null ? other.getModerationApiKeyValue() == null : this.getModerationApiKeyValue().equals(other.getModerationApiKeyValue()))
             && (this.getModerationParams() == null ? other.getModerationParams() == null : this.getModerationParams().equals(other.getModerationParams()))
             && (this.getImageApiKeyValue() == null ? other.getImageApiKeyValue() == null : this.getImageApiKeyValue().equals(other.getImageApiKeyValue()))
@@ -462,6 +478,7 @@ public class CharacterBackend implements Serializable {
         result = prime * result + ((getTtsSpeakerIdx() == null) ? 0 : getTtsSpeakerIdx().hashCode());
         result = prime * result + ((getTtsSpeakerWav() == null) ? 0 : getTtsSpeakerWav().hashCode());
         result = prime * result + ((getTtsSpeakerType() == null) ? 0 : getTtsSpeakerType().hashCode());
+        result = prime * result + ((getTgBotId() == null) ? 0 : getTgBotId().hashCode());
         result = prime * result + ((getModerationApiKeyValue() == null) ? 0 : getModerationApiKeyValue().hashCode());
         result = prime * result + ((getModerationParams() == null) ? 0 : getModerationParams().hashCode());
         result = prime * result + ((getImageApiKeyValue() == null) ? 0 : getImageApiKeyValue().hashCode());
@@ -497,6 +514,7 @@ public class CharacterBackend implements Serializable {
         sb.append(", ttsSpeakerIdx=").append(ttsSpeakerIdx);
         sb.append(", ttsSpeakerWav=").append(ttsSpeakerWav);
         sb.append(", ttsSpeakerType=").append(ttsSpeakerType);
+        sb.append(", tgBotId=").append(tgBotId);
         sb.append(", moderationApiKeyValue=").append(moderationApiKeyValue);
         sb.append(", moderationParams=").append(moderationParams);
         sb.append(", imageApiKeyValue=").append(imageApiKeyValue);

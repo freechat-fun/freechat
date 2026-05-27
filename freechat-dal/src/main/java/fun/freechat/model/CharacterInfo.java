@@ -36,8 +36,6 @@ public class CharacterInfo implements Serializable {
 
     private Integer priority;
 
-    private Long tgBotId;
-
     private String description;
 
     private String profile;
@@ -264,19 +262,6 @@ public class CharacterInfo implements Serializable {
         this.priority = priority;
     }
 
-    public Long getTgBotId() {
-        return tgBotId;
-    }
-
-    public CharacterInfo withTgBotId(Long tgBotId) {
-        this.setTgBotId(tgBotId);
-        return this;
-    }
-
-    public void setTgBotId(Long tgBotId) {
-        this.tgBotId = tgBotId;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -409,7 +394,6 @@ public class CharacterInfo implements Serializable {
             && (this.getLang() == null ? other.getLang() == null : this.getLang().equals(other.getLang()))
             && (this.getVersion() == null ? other.getVersion() == null : this.getVersion().equals(other.getVersion()))
             && (this.getPriority() == null ? other.getPriority() == null : this.getPriority().equals(other.getPriority()))
-            && (this.getTgBotId() == null ? other.getTgBotId() == null : this.getTgBotId().equals(other.getTgBotId()))
             && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
             && (this.getProfile() == null ? other.getProfile() == null : this.getProfile().equals(other.getProfile()))
             && (this.getGreeting() == null ? other.getGreeting() == null : this.getGreeting().equals(other.getGreeting()))
@@ -440,7 +424,6 @@ public class CharacterInfo implements Serializable {
         result = prime * result + ((getLang() == null) ? 0 : getLang().hashCode());
         result = prime * result + ((getVersion() == null) ? 0 : getVersion().hashCode());
         result = prime * result + ((getPriority() == null) ? 0 : getPriority().hashCode());
-        result = prime * result + ((getTgBotId() == null) ? 0 : getTgBotId().hashCode());
         result = prime * result + ((getDescription() == null) ? 0 : getDescription().hashCode());
         result = prime * result + ((getProfile() == null) ? 0 : getProfile().hashCode());
         result = prime * result + ((getGreeting() == null) ? 0 : getGreeting().hashCode());
@@ -474,7 +457,6 @@ public class CharacterInfo implements Serializable {
         sb.append(", lang=").append(lang);
         sb.append(", version=").append(version);
         sb.append(", priority=").append(priority);
-        sb.append(", tgBotId=").append(tgBotId);
         sb.append(", description=").append(description);
         sb.append(", profile=").append(profile);
         sb.append(", greeting=").append(greeting);
