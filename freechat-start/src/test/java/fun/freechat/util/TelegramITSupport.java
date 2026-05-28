@@ -1,19 +1,15 @@
 package fun.freechat.util;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.any;
-import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.common.ConsoleNotifier;
+import org.telegram.telegrambots.meta.TelegramUrl;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import org.telegram.telegrambots.meta.TelegramUrl;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 
 /**
  * Switches the Telegram backing service for integration tests between the real
@@ -47,6 +43,7 @@ public final class TelegramITSupport {
         }
         if (LIVE) {
             telegramUrl = TelegramUrl.DEFAULT_URL;
+            System.out.println("[TelegramITSupport] Using live Telegram URL: " + telegramUrl);
             return;
         }
         mock = new WireMockServer(options().dynamicPort().notifier(new ConsoleNotifier(true)));

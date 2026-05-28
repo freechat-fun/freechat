@@ -316,6 +316,7 @@
                 <configuration combine.children="append">
                     <systemPropertyVariables>
                         <tinylog.level>info</tinylog.level>
+                        <java.net.useSystemProxies>true</java.net.useSystemProxies>
                     </systemPropertyVariables>
                 </configuration>
                 <executions>
