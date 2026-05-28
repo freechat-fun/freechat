@@ -10,6 +10,7 @@ import fun.freechat.api.dto.*;
 import fun.freechat.api.dto.conf.CharacterBackendConfigurationDTO;
 import fun.freechat.api.dto.conf.CharacterConfigurationDTO;
 import fun.freechat.api.util.*;
+import fun.freechat.channels.telegram.TelegramChannelManager;
 import fun.freechat.model.*;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.TtsService;
@@ -98,6 +99,9 @@ public class CharacterApi {
 
     @Autowired
     private CharacterService characterService;
+
+    @Autowired
+    private TelegramChannelManager telegramChannelManager;
 
     @Autowired
     private InteractiveStatsService interactiveStatsService;
@@ -644,7 +648,16 @@ public class CharacterApi {
     public CharacterBackendDetailsDTO getDefaultBackend(
             @Parameter(description = "The characterUid to be queried") @PathVariable("characterUid") @NotBlank
                     String characterUid) {
-        return CharacterBackendDetailsDTO.from(characterService.getDefaultBackend(characterUid));
+        return enrichTgFields(CharacterBackendDetailsDTO.from(characterService.getDefaultBackend(characterUid)));
+    }
+
+    private CharacterBackendDetailsDTO enrichTgFields(CharacterBackendDetailsDTO dto) {
+        if (dto == null || StringUtils.isBlank(dto.getBackendId())) {
+            return dto;
+        }
+        dto.setTgBotUsername(telegramChannelManager.getUsername(dto.getBackendId()));
+        dto.setTgBotLink(telegramChannelManager.getInviteLink(dto.getBackendId()));
+        return dto;
     }
 
     @Operation(
@@ -670,6 +683,7 @@ public class CharacterApi {
                     String characterUid) {
         return characterService.listBackends(characterUid).stream()
                 .map(CharacterBackendDetailsDTO::from)
+                .map(this::enrichTgFields)
                 .toList();
     }
 

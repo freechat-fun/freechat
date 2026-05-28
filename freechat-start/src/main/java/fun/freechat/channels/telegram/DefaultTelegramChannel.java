@@ -2,8 +2,8 @@ package fun.freechat.channels.telegram;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendAudio;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -17,53 +17,91 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 @Slf4j
 @Component
-@ConditionalOnProperty(name = "channels.telegram.enabled", havingValue = "true")
 @RequiredArgsConstructor
 public class DefaultTelegramChannel implements TelegramChannel {
 
-    private final TelegramClient telegramClient;
+    private final TelegramChannelManager manager;
 
-    @Override
-    public Message sendText(Long chatId, String text) throws TelegramApiException {
-        SendMessage request = SendMessage.builder().chatId(chatId).text(text).build();
-        return telegramClient.execute(request);
+    private TelegramClient client(String backendId) {
+        TelegramClient c = manager.getClient(backendId);
+        if (c == null) {
+            throw new IllegalStateException("No active Telegram bot for backendId=" + backendId);
+        }
+        return c;
     }
 
     @Override
-    public Message sendPhoto(Long chatId, InputFile photo, String caption) throws TelegramApiException {
-        SendPhoto request =
-                SendPhoto.builder().chatId(chatId).photo(photo).caption(caption).build();
-        return telegramClient.execute(request);
+    public Message sendText(String backendId, Long chatId, String text) throws TelegramApiException {
+        return client(backendId)
+                .execute(SendMessage.builder()
+                        .chatId(chatId)
+                        .text(text)
+                        .parseMode(ParseMode.MARKDOWN)
+                        .build());
     }
 
     @Override
-    public Message sendVoice(Long chatId, InputFile voice, String caption) throws TelegramApiException {
-        SendVoice request =
-                SendVoice.builder().chatId(chatId).voice(voice).caption(caption).build();
-        return telegramClient.execute(request);
+    public Message sendPhoto(String backendId, Long chatId, InputFile photo, String caption)
+            throws TelegramApiException {
+        return client(backendId)
+                .execute(SendPhoto.builder()
+                        .chatId(chatId)
+                        .photo(photo)
+                        .caption(caption)
+                        .build());
     }
 
     @Override
-    public Message sendVideo(Long chatId, InputFile video, String caption) throws TelegramApiException {
-        SendVideo request =
-                SendVideo.builder().chatId(chatId).video(video).caption(caption).build();
-        return telegramClient.execute(request);
+    public Message sendVoice(String backendId, Long chatId, InputFile voice, String caption)
+            throws TelegramApiException {
+        return client(backendId)
+                .execute(SendVoice.builder()
+                        .chatId(chatId)
+                        .voice(voice)
+                        .caption(caption)
+                        .build());
     }
 
     @Override
-    public Message sendAudio(Long chatId, InputFile audio, String caption) throws TelegramApiException {
-        SendAudio request =
-                SendAudio.builder().chatId(chatId).audio(audio).caption(caption).build();
-        return telegramClient.execute(request);
+    public Message sendVideo(String backendId, Long chatId, InputFile video, String caption)
+            throws TelegramApiException {
+        return client(backendId)
+                .execute(SendVideo.builder()
+                        .chatId(chatId)
+                        .video(video)
+                        .caption(caption)
+                        .build());
     }
 
     @Override
-    public Message sendDocument(Long chatId, InputFile document, String caption) throws TelegramApiException {
-        SendDocument request = SendDocument.builder()
-                .chatId(chatId)
-                .document(document)
-                .caption(caption)
-                .build();
-        return telegramClient.execute(request);
+    public Message sendAudio(String backendId, Long chatId, InputFile audio, String caption)
+            throws TelegramApiException {
+        return client(backendId)
+                .execute(SendAudio.builder()
+                        .chatId(chatId)
+                        .audio(audio)
+                        .caption(caption)
+                        .build());
+    }
+
+    @Override
+    public Message sendDocument(String backendId, Long chatId, InputFile document, String caption)
+            throws TelegramApiException {
+        return client(backendId)
+                .execute(SendDocument.builder()
+                        .chatId(chatId)
+                        .document(document)
+                        .caption(caption)
+                        .build());
+    }
+
+    @Override
+    public String getInviteLink(String backendId) {
+        return manager.getInviteLink(backendId);
+    }
+
+    @Override
+    public String getBotUsername(String backendId) {
+        return manager.getUsername(backendId);
     }
 }

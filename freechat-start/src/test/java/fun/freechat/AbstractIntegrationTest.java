@@ -7,6 +7,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.model.Image;
+import fun.freechat.util.EnvFileLoader;
 import fun.freechat.util.TestOllamaContainer;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -49,6 +50,8 @@ public class AbstractIntegrationTest {
     static boolean enableTts = "1".equals(System.getenv("ENABLE_TTS"));
 
     static {
+        EnvFileLoader.ensureLoaded();
+
         redis = new GenericContainer<>(redisImageName())
                 .withExposedPorts(6379)
                 .withEnv("REDIS_PASSWORD", "hello1234")

@@ -4,5 +4,5 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 public interface TelegramMessageHandler {
 
-    void handle(Update update);
+    void handle(String backendId, Update update);
 }

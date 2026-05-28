@@ -6,15 +6,19 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public interface TelegramChannel {
 
-    Message sendText(Long chatId, String text) throws TelegramApiException;
+    Message sendText(String backendId, Long chatId, String text) throws TelegramApiException;
 
-    Message sendPhoto(Long chatId, InputFile photo, String caption) throws TelegramApiException;
+    Message sendPhoto(String backendId, Long chatId, InputFile photo, String caption) throws TelegramApiException;
 
-    Message sendVoice(Long chatId, InputFile voice, String caption) throws TelegramApiException;
+    Message sendVoice(String backendId, Long chatId, InputFile voice, String caption) throws TelegramApiException;
 
-    Message sendVideo(Long chatId, InputFile video, String caption) throws TelegramApiException;
+    Message sendVideo(String backendId, Long chatId, InputFile video, String caption) throws TelegramApiException;
 
-    Message sendAudio(Long chatId, InputFile audio, String caption) throws TelegramApiException;
+    Message sendAudio(String backendId, Long chatId, InputFile audio, String caption) throws TelegramApiException;
 
-    Message sendDocument(Long chatId, InputFile document, String caption) throws TelegramApiException;
+    Message sendDocument(String backendId, Long chatId, InputFile document, String caption) throws TelegramApiException;
+
+    String getInviteLink(String backendId);
+
+    String getBotUsername(String backendId);
 }
