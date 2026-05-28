@@ -7,7 +7,7 @@ import fun.freechat.channels.telegram.handler.TelegramUpdateDispatcher;
 import fun.freechat.mapper.CharacterBackendDynamicSqlSupport;
 import fun.freechat.mapper.CharacterBackendMapper;
 import fun.freechat.model.CharacterBackend;
-import fun.freechat.service.character.CharacterService;
+import fun.freechat.service.common.EncryptionService;
 import jakarta.annotation.PreDestroy;
 import java.util.List;
 import java.util.Map;
@@ -36,21 +36,28 @@ public class TelegramChannelManager {
     private static final String INVITE_LINK_TEMPLATE = "https://t.me/%s";
 
     private final TelegramUrl telegramUrl;
-    private final CharacterService characterService;
     private final CharacterBackendMapper characterBackendMapper;
+    private final EncryptionService encryptionService;
     private final TelegramUpdateDispatcher updateDispatcher;
     private final TelegramBotsLongPollingApplication tgApp = new TelegramBotsLongPollingApplication();
     private final Map<String, RegisteredBot> bots = new ConcurrentHashMap<>();
 
     public TelegramChannelManager(
             TelegramUrl telegramUrl,
-            CharacterService characterService,
             CharacterBackendMapper characterBackendMapper,
+            EncryptionService encryptionService,
             @Lazy TelegramUpdateDispatcher updateDispatcher) {
         this.telegramUrl = telegramUrl;
-        this.characterService = characterService;
         this.characterBackendMapper = characterBackendMapper;
+        this.encryptionService = encryptionService;
         this.updateDispatcher = updateDispatcher;
+    }
+
+    private CharacterBackend loadBackendUncached(String backendId) {
+        return characterBackendMapper
+                .selectByPrimaryKey(backendId)
+                .map(b -> b.withTgBotToken(encryptionService.decrypt(b.getTgBotToken())))
+                .orElse(null);
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -74,7 +81,7 @@ public class TelegramChannelManager {
     }
 
     public synchronized void activate(String backendId) {
-        CharacterBackend backend = characterService.getBackend(backendId);
+        CharacterBackend backend = loadBackendUncached(backendId);
         if (backend == null || StringUtils.isBlank(backend.getTgBotToken())) {
             deactivate(backendId);
             return;
@@ -91,7 +98,7 @@ public class TelegramChannelManager {
         try {
             username = client.execute(new GetMe()).getUserName();
         } catch (TelegramApiException e) {
-            log.warn("getMe failed for backend {}: {}", backendId, e.getMessage());
+            log.warn("getMe failed for backend {}", backendId, e);
             return;
         }
 

@@ -1,5 +1,7 @@
 package fun.freechat.util;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.any;
+import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
@@ -7,6 +9,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.common.ConsoleNotifier;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -20,7 +23,18 @@ import org.telegram.telegrambots.meta.TelegramUrl;
  */
 public final class TelegramITSupport {
 
-    public static final boolean LIVE = canReach("api.telegram.org", 443, 2_000);
+    public static final boolean LIVE = computeLive();
+
+    private static boolean computeLive() {
+        String forceMock = System.getenv("TELEGRAM_FORCE_MOCK");
+        if (forceMock == null) {
+            forceMock = System.getProperty("TELEGRAM_FORCE_MOCK");
+        }
+        if ("true".equalsIgnoreCase(forceMock)) {
+            return false;
+        }
+        return canReach("api.telegram.org", 443, 2_000);
+    }
 
     private static WireMockServer mock;
     private static TelegramUrl telegramUrl;
@@ -35,8 +49,9 @@ public final class TelegramITSupport {
             telegramUrl = TelegramUrl.DEFAULT_URL;
             return;
         }
-        mock = new WireMockServer(options().dynamicPort());
+        mock = new WireMockServer(options().dynamicPort().notifier(new ConsoleNotifier(true)));
         mock.start();
+        System.out.println("[TelegramITSupport] WireMock started on port " + mock.port());
         seed(mock, botToken);
         telegramUrl = TelegramUrl.builder()
                 .schema("http")
@@ -66,21 +81,26 @@ public final class TelegramITSupport {
     }
 
     private static void seed(WireMockServer m, String botToken) {
-        m.stubFor(post(urlPathMatching("/bot" + botToken + "/getMe"))
+        // SDK sends method names lowercase in the URL path (e.g. /getme, /sendmessage).
+        // Specific stubs use priority=1 (higher) so they win against the catch-all (priority=10).
+        m.stubFor(post(urlPathMatching("(?i).*/getme"))
+                .atPriority(1)
                 .willReturn(okJson("{\"ok\":true,\"result\":"
                         + "{\"id\":12345,\"is_bot\":true,\"first_name\":\"FC Test\","
                         + "\"username\":\"fc_test_bot\",\"can_join_groups\":true,"
                         + "\"can_read_all_group_messages\":false,"
                         + "\"supports_inline_queries\":false}}")));
-        m.stubFor(post(urlPathMatching("/bot" + botToken + "/sendMessage.*"))
+        m.stubFor(post(urlPathMatching("(?i).*/sendmessage"))
+                .atPriority(1)
                 .willReturn(okJson("{\"ok\":true,\"result\":"
                         + "{\"message_id\":1,\"date\":0,"
                         + "\"chat\":{\"id\":123,\"type\":\"private\"},"
                         + "\"text\":\"\"}}")));
-        m.stubFor(post(urlPathMatching("/bot" + botToken + "/getUpdates.*"))
+        m.stubFor(post(urlPathMatching("(?i).*/getupdates"))
+                .atPriority(1)
                 .willReturn(okJson("{\"ok\":true,\"result\":[]}")));
-        m.stubFor(post(urlPathMatching("/bot" + botToken + "/close.*"))
-                .willReturn(okJson("{\"ok\":true,\"result\":true}")));
+        // Catch-all for deleteWebhook / setMyCommands / close / etc — Boolean true result
+        m.stubFor(any(anyUrl()).atPriority(10).willReturn(okJson("{\"ok\":true,\"result\":true}")));
     }
 
     private static boolean canReach(String host, int port, int timeoutMs) {

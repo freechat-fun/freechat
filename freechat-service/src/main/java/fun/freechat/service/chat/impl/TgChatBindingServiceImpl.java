@@ -4,22 +4,18 @@ import fun.freechat.model.CharacterBackend;
 import fun.freechat.model.CharacterInfo;
 import fun.freechat.model.ChatContext;
 import fun.freechat.service.character.CharacterService;
-import fun.freechat.service.chat.ChatContextService;
-import fun.freechat.service.chat.ChatSession;
-import fun.freechat.service.chat.ChatSessionService;
-import fun.freechat.service.chat.TelegramChatBindingService;
-import fun.freechat.service.chat.TgChatService;
-import fun.freechat.service.chat.TgUserService;
-import java.util.Optional;
+import fun.freechat.service.chat.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class TelegramChatBindingServiceImpl implements TelegramChatBindingService {
+public class TgChatBindingServiceImpl implements TgChatBindingService {
 
     private static final String TG_USER_PREFIX = "tg-";
 
@@ -61,9 +57,11 @@ public class TelegramChatBindingServiceImpl implements TelegramChatBindingServic
                 .map(CharacterInfo::getDefaultScene)
                 .orElse(null);
 
+        String nickname = buildNickname(firstName, lastName, username);
         ChatContext context = new ChatContext()
                 .withUserId(fcUserId)
-                .withUserNickname(buildNickname(firstName, lastName, username))
+                .withUserNickname(nickname)
+                .withUserProfile("Telegram user" + (nickname == null ? "" : " " + nickname))
                 .withBackendId(backendId)
                 .withChatType(chatType)
                 .withTgUserId(tgUserId)

@@ -1,7 +1,7 @@
 package fun.freechat.api.admin;
 
 import fun.freechat.api.dto.tg.TgMessageDTO;
-import fun.freechat.service.chat.TelegramChatBindingService;
+import fun.freechat.service.chat.TgChatBindingService;
 import fun.freechat.service.chat.TgMessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -29,7 +29,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class TelegramManagerApi {
 
     @Autowired
-    private TelegramChatBindingService telegramChatBindingService;
+    private TgChatBindingService tgChatBindingService;
 
     @Autowired
     private TgMessageService tgMessageService;
@@ -43,7 +43,7 @@ public class TelegramManagerApi {
             @Parameter(description = "Character backend identifier") @PathVariable("backendId") @NotBlank
                     String backendId,
             @Parameter(description = "Telegram chat id") @PathVariable("tgChatId") @NotNull Long tgChatId) {
-        String chatId = telegramChatBindingService.findChatId(backendId, tgChatId);
+        String chatId = tgChatBindingService.findChatId(backendId, tgChatId);
         if (StringUtils.isBlank(chatId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No telegram chat bound.");
         }

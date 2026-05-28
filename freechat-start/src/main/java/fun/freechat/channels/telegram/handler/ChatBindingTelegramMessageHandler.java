@@ -4,7 +4,7 @@ import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import fun.freechat.channels.telegram.TelegramChannel;
 import fun.freechat.service.chat.ChatService;
-import fun.freechat.service.chat.TelegramChatBindingService;
+import fun.freechat.service.chat.TgChatBindingService;
 import fun.freechat.service.chat.TgMessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ import org.telegram.telegrambots.meta.api.objects.message.Message;
 @Slf4j
 public class ChatBindingTelegramMessageHandler implements TelegramMessageHandler {
 
-    private final TelegramChatBindingService telegramChatBindingService;
+    private final TgChatBindingService tgChatBindingService;
     private final TgMessageService tgMessageService;
     private final ChatService chatService;
     private final TelegramChannel telegramChannel;
@@ -42,7 +42,7 @@ public class ChatBindingTelegramMessageHandler implements TelegramMessageHandler
         String chatType = chat.getType();
         String title = chat.getTitle();
 
-        String chatId = telegramChatBindingService.getOrCreate(
+        String chatId = tgChatBindingService.getOrCreate(
                 backendId,
                 tgChatId,
                 chatType,
