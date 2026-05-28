@@ -22,14 +22,22 @@ public final class TelegramITSupport {
     public static final boolean LIVE = computeLive();
 
     private static boolean computeLive() {
-        String forceMock = System.getenv("TELEGRAM_FORCE_MOCK");
-        if (forceMock == null) {
-            forceMock = System.getProperty("TELEGRAM_FORCE_MOCK");
+        if ("true".equalsIgnoreCase(envOrProp("TELEGRAM_FORCE_LIVE"))) {
+            return true;
         }
-        if ("true".equalsIgnoreCase(forceMock)) {
+        if ("true".equalsIgnoreCase(envOrProp("TELEGRAM_FORCE_MOCK"))) {
             return false;
         }
         return canReach("api.telegram.org", 443, 2_000);
+    }
+
+    private static String envOrProp(String key) {
+        String v = System.getenv(key);
+        if (v != null && !v.isEmpty()) {
+            return v;
+        }
+        v = System.getProperty(key);
+        return (v != null && !v.isEmpty()) ? v : null;
     }
 
     private static WireMockServer mock;
