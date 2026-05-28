@@ -506,6 +506,31 @@ public class CharacterApi {
         return characterService.publish(characterId, publishVisibility, AccountUtils.currentUser());
     }
 
+    private static final java.util.regex.Pattern TG_BOT_TOKEN_PATTERN =
+            java.util.regex.Pattern.compile("^(\\d+):[A-Za-z0-9_-]+$");
+
+    private static void normalizeTgBotFields(CharacterBackend backend) {
+        String token = backend.getTgBotToken();
+        Long suppliedBotId = backend.getTgBotId();
+        if (StringUtils.isBlank(token)) {
+            if (suppliedBotId != null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "tgBotId provided without tgBotToken");
+            }
+            return;
+        }
+        java.util.regex.Matcher m = TG_BOT_TOKEN_PATTERN.matcher(token);
+        if (!m.matches()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Invalid tgBotToken format (expected '<bot_id>:<secret>')");
+        }
+        Long derivedBotId = Long.parseLong(m.group(1));
+        if (suppliedBotId != null && !suppliedBotId.equals(derivedBotId)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "tgBotId does not match the bot id encoded in tgBotToken");
+        }
+        backend.setTgBotId(derivedBotId);
+    }
+
     @Operation(
             operationId = "addCharacterBackend",
             summary = "Add Character Backend",
@@ -523,6 +548,7 @@ public class CharacterApi {
         if (characterBackend == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid character backend");
         }
+        normalizeTgBotFields(characterBackend);
         Integer messageWindowSize = characterBackend.getMessageWindowSize();
         if (messageWindowSize == null) {
             characterBackend.setMessageWindowSize(defaultMessageWindowSize);
@@ -568,6 +594,7 @@ public class CharacterApi {
 
         CharacterBackend updatedBackend = backend.toCharacterBackend(characterBackend.getCharacterUid());
         updatedBackend.setBackendId(characterBackend.getBackendId());
+        normalizeTgBotFields(updatedBackend);
 
         Integer messageWindowSize = updatedBackend.getMessageWindowSize();
         if (messageWindowSize != null

@@ -85,6 +85,12 @@ public class CharacterBackendDTO {
     @Pattern(regexp = "idx|wav")
     private String ttsSpeakerType;
 
+    @Schema(description = "Telegram-assigned bot id (parsed from token prefix; derived server-side if omitted)")
+    private Long tgBotId;
+
+    @Schema(description = "Telegram bot token issued by BotFather (format: '<bot_id>:<secret>')")
+    private String tgBotToken;
+
     public CharacterBackend toCharacterBackend(String characterUid) {
         if (StringUtils.isBlank(characterUid)) {
             return null;
