@@ -2,35 +2,38 @@ package fun.freechat.channels.telegram.command;
 
 import fun.freechat.channels.telegram.TelegramChannel;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
-import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.chat.Chat;
+import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.meta.generics.TelegramClient;
 
-@Slf4j
 @Component
-@ConditionalOnProperty(name = "channels.telegram.enabled", havingValue = "true")
-public class HelpCommand extends BotCommand {
+@Slf4j
+public class HelpCommand implements TelegramCommandHandler {
 
     private static final String HELP_TEXT =
-            "[mock] available commands:\n/start - Start the bot\n/help  - Show this help";
+            "Available commands:\n/start - Start chatting with me\n/help  - Show this help";
 
-    private final TelegramChannel telegramChannel;
-
-    public HelpCommand(TelegramChannel telegramChannel) {
-        super("help", "Show available commands");
-        this.telegramChannel = telegramChannel;
+    @Override
+    public String name() {
+        return "help";
     }
 
     @Override
-    public void execute(TelegramClient client, User user, Chat chat, String[] arguments) {
+    public void execute(String backendId, Update update, TelegramChannel channel) {
+        if (!update.hasMessage()) {
+            return;
+        }
+        Message message = update.getMessage();
+        Chat chat = message.getChat();
+        if (chat == null) {
+            return;
+        }
         try {
-            telegramChannel.sendText(chat.getId(), HELP_TEXT);
+            channel.sendText(backendId, chat.getId(), HELP_TEXT);
         } catch (TelegramApiException e) {
-            log.warn("[mock] failed to handle /help for chatId={}", chat.getId(), e);
+            log.warn("/help reply failed for chat {}", chat.getId(), e);
         }
     }
 }

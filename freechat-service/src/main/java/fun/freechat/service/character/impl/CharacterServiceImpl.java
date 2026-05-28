@@ -933,6 +933,7 @@ public class CharacterServiceImpl implements CharacterService {
 
             if (rows > 0) {
                 ensureDefaultBackend(characterBackend, now);
+                eventPublisher.publishEvent(new CharacterBackendEvent(null, characterBackend.getBackendId()));
             } else {
                 characterBackend.setBackendId(null);
             }
@@ -959,6 +960,7 @@ public class CharacterServiceImpl implements CharacterService {
         int rows = characterBackendMapper.deleteByPrimaryKey(characterBackendId);
         if (rows > 0) {
             ensureDefaultBackend(characterUid, LocalDateTime.now());
+            eventPublisher.publishEvent(new CharacterBackendEvent(null, characterBackendId));
             return true;
         }
         return false;

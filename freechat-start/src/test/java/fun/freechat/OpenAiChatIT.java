@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import fun.freechat.api.dto.CharacterBackendDTO;
-import fun.freechat.api.dto.CharacterBackendDetailsDTO;
 import fun.freechat.api.dto.CharacterCreateDTO;
 import fun.freechat.api.dto.ChatContentDTO;
 import fun.freechat.api.dto.ChatCreateDTO;
@@ -34,9 +33,6 @@ import fun.freechat.api.dto.MemoryUsageDTO;
 import fun.freechat.api.dto.PromptCreateDTO;
 import fun.freechat.api.dto.PromptRefDTO;
 import fun.freechat.api.dto.PromptTaskDTO;
-import fun.freechat.api.dto.tg.TgMessageDTO;
-import fun.freechat.service.chat.TelegramChatBindingService;
-import fun.freechat.service.chat.TgMessageService;
 import fun.freechat.service.common.ShortLinkService;
 import fun.freechat.service.enums.GenderType;
 import fun.freechat.service.enums.ModelProvider;
@@ -44,8 +40,6 @@ import fun.freechat.service.enums.PromptFormat;
 import fun.freechat.service.enums.QuotaType;
 import fun.freechat.service.enums.TtsSpeakerType;
 import fun.freechat.service.enums.Visibility;
-import fun.freechat.util.AuthorityUtils;
-import fun.freechat.util.IdUtils;
 import fun.freechat.util.TestAccountUtils;
 import fun.freechat.util.TestAiApiKeyUtils;
 import fun.freechat.util.TestCharacterUtils;
@@ -55,7 +49,6 @@ import io.micrometer.common.util.StringUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -163,12 +156,6 @@ class OpenAiChatIT extends AbstractIntegrationTest {
 
     @Autowired
     private ShortLinkService shortLinkService;
-
-    @Autowired
-    private TelegramChatBindingService telegramChatBindingService;
-
-    @Autowired
-    private TgMessageService tgMessageService;
 
     private String developerId;
     private String developerApiKey;
@@ -1200,156 +1187,6 @@ class OpenAiChatIT extends AbstractIntegrationTest {
     private void deleteDevelop() {
         TestAiApiKeyUtils.cleanAiApiKeys(developerId);
         TestAccountUtils.deleteUserAndToken(developerId);
-    }
-
-    @Test
-    void should_pass_all_telegram_binding_tests() {
-        should_create_prompt();
-        waitAWhile();
-        should_create_prompt_task();
-        waitAWhile();
-        should_create_character();
-        waitAWhile();
-        should_publish_character();
-        waitAWhile();
-        should_create_character_backend();
-        waitAWhile();
-
-        String token = "12345:fake-telegram-bot-secret";
-        testClient
-                .put()
-                .uri("/api/v2/character/backend/" + backendId)
-                .header(AUTHORIZATION, "Bearer " + developerApiKey)
-                .bodyValue(CharacterBackendDTO.builder().tgBotToken(token).build())
-                .exchange()
-                .expectStatus()
-                .isOk();
-        waitAWhile();
-
-        CharacterBackendDetailsDTO fetched = testClient
-                .get()
-                .uri("/api/v2/character/backend/default/" + characterUid)
-                .header(AUTHORIZATION, "Bearer " + developerApiKey)
-                .exchange()
-                .expectStatus()
-                .isOk()
-                .expectBody(CharacterBackendDetailsDTO.class)
-                .returnResult()
-                .getResponseBody();
-        assertNotNull(fetched);
-        assertThat(fetched.getTgBotId()).isEqualTo(12345L);
-        assertThat(fetched.getTgBotToken()).isEqualTo(token);
-
-        String rotated = "67890:another-fake-secret";
-        testClient
-                .put()
-                .uri("/api/v2/character/backend/" + backendId)
-                .header(AUTHORIZATION, "Bearer " + developerApiKey)
-                .bodyValue(CharacterBackendDTO.builder().tgBotToken(rotated).build())
-                .exchange()
-                .expectStatus()
-                .isOk();
-        waitAWhile();
-
-        fetched = testClient
-                .get()
-                .uri("/api/v2/character/backend/default/" + characterUid)
-                .header(AUTHORIZATION, "Bearer " + developerApiKey)
-                .exchange()
-                .expectStatus()
-                .isOk()
-                .expectBody(CharacterBackendDetailsDTO.class)
-                .returnResult()
-                .getResponseBody();
-        assertNotNull(fetched);
-        assertThat(fetched.getTgBotId()).isEqualTo(67890L);
-        assertThat(fetched.getTgBotToken()).isEqualTo(rotated);
-
-        testClient
-                .put()
-                .uri("/api/v2/character/backend/" + backendId)
-                .header(AUTHORIZATION, "Bearer " + developerApiKey)
-                .bodyValue(CharacterBackendDTO.builder()
-                        .tgBotToken("not-a-valid-token")
-                        .build())
-                .exchange()
-                .expectStatus()
-                .isBadRequest();
-    }
-
-    @Test
-    void should_pass_all_telegram_chat_tests() {
-        should_create_prompt();
-        waitAWhile();
-        should_create_prompt_task();
-        waitAWhile();
-        should_create_character();
-        waitAWhile();
-        should_publish_character();
-        waitAWhile();
-        should_create_character_backend();
-        waitAWhile();
-
-        String token = "98765:fake-tg-secret";
-        testClient
-                .put()
-                .uri("/api/v2/character/backend/" + backendId)
-                .header(AUTHORIZATION, "Bearer " + developerApiKey)
-                .bodyValue(CharacterBackendDTO.builder().tgBotToken(token).build())
-                .exchange()
-                .expectStatus()
-                .isOk();
-        waitAWhile();
-
-        Pair<String, String> adminAndToken =
-                TestAccountUtils.createUserAndToken("tg-admin-" + IdUtils.newId(), Set.of(AuthorityUtils.adminRole()));
-        String adminId = adminAndToken.getLeft();
-        String adminToken = adminAndToken.getRight();
-        try {
-            String tgChatBoundId =
-                    telegramChatBindingService.getOrCreate(backendId, 999L, "private", null, 999L, null, "Alice", null);
-            assertNotNull(tgChatBoundId);
-
-            String foundId = testClient
-                    .get()
-                    .uri("/api/v2/admin/chat/tg/" + backendId + "/999")
-                    .accept(MediaType.TEXT_PLAIN)
-                    .header(AUTHORIZATION, "Bearer " + adminToken)
-                    .exchange()
-                    .expectStatus()
-                    .isOk()
-                    .expectBody(String.class)
-                    .returnResult()
-                    .getResponseBody();
-            assertThat(foundId).isEqualTo(tgChatBoundId);
-
-            Long inboundRowId = tgMessageService.record(tgChatBoundId, 1L, 999L, "in", "text", "hello bot", null);
-            assertNotNull(inboundRowId);
-
-            Long outboundRowId = tgMessageService.record(tgChatBoundId, 2L, null, "out", "text", "[mock] reply", null);
-            assertNotNull(outboundRowId);
-
-            List<TgMessageDTO> msgs = testClient
-                    .get()
-                    .uri("/api/v2/admin/chat/tg/messages/" + tgChatBoundId)
-                    .header(AUTHORIZATION, "Bearer " + adminToken)
-                    .exchange()
-                    .expectStatus()
-                    .isOk()
-                    .expectBodyList(TgMessageDTO.class)
-                    .returnResult()
-                    .getResponseBody();
-            assertNotNull(msgs);
-            assertThat(msgs).hasSize(2);
-            assertThat(msgs.get(0).getDirection()).isEqualTo("out");
-            assertThat(msgs.get(1).getDirection()).isEqualTo("in");
-
-            String tgChatBoundIdAgain =
-                    telegramChatBindingService.getOrCreate(backendId, 999L, "private", null, 999L, null, "Alice", null);
-            assertThat(tgChatBoundIdAgain).isEqualTo(tgChatBoundId);
-        } finally {
-            TestAccountUtils.deleteUserAndToken(adminId);
-        }
     }
 
     @Test

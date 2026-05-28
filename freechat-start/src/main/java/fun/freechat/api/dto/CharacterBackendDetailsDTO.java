@@ -96,6 +96,12 @@ public class CharacterBackendDetailsDTO extends TraceableDTO {
     @Schema(description = "Telegram bot token issued by BotFather")
     private String tgBotToken;
 
+    @Schema(description = "Telegram bot username resolved via getMe (null when bot not active)")
+    private String tgBotUsername;
+
+    @Schema(description = "Telegram invite link in the form https://t.me/<username> (null when bot not active)")
+    private String tgBotLink;
+
     public static CharacterBackendDetailsDTO from(CharacterBackend backend) {
         if (backend == null) {
             return null;

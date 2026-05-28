@@ -183,6 +183,12 @@
             <artifactId>testcontainers-ollama</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock-standalone</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
