@@ -1,7 +1,7 @@
 package fun.freechat.channels.telegram.command;
 
 import fun.freechat.channels.telegram.TelegramChannel;
-import fun.freechat.service.chat.TelegramChatBindingService;
+import fun.freechat.service.chat.TgChatBindingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ public class StartCommand implements TelegramCommandHandler {
 
     private static final String GREETING = "Hi! I'm ready when you are — just send a message.";
 
-    private final TelegramChatBindingService telegramChatBindingService;
+    private final TgChatBindingService tgChatBindingService;
 
     @Override
     public String name() {
@@ -39,7 +39,7 @@ public class StartCommand implements TelegramCommandHandler {
         Long tgChatId = chat.getId();
         Long tgUserId = from == null ? null : from.getId();
 
-        String chatId = telegramChatBindingService.getOrCreate(
+        String chatId = tgChatBindingService.getOrCreate(
                 backendId,
                 tgChatId,
                 chat.getType(),

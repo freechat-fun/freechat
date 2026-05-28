@@ -1,6 +1,6 @@
 package fun.freechat.service.chat;
 
-public interface TelegramChatBindingService {
+public interface TgChatBindingService {
 
     String getOrCreate(
             String backendId,
