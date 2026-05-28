@@ -921,11 +921,13 @@ public class CharacterServiceImpl implements CharacterService {
             LocalDateTime now = LocalDateTime.now();
             String plainModerationApiKey = characterBackend.getModerationApiKeyValue();
             String plainImageApiKey = characterBackend.getImageApiKeyValue();
+            String plainTgBotToken = characterBackend.getTgBotToken();
             int rows = characterBackendMapper.insertSelective(characterBackend
                     .withGmtCreate(now)
                     .withGmtModified(now)
                     .withModerationApiKeyValue(encryptionService.encrypt(plainModerationApiKey))
                     .withImageApiKeyValue(encryptionService.encrypt(plainImageApiKey))
+                    .withTgBotToken(encryptionService.encrypt(plainTgBotToken))
                     .withProactiveChatWaitingTime(getOrDefault(characterBackend.getProactiveChatWaitingTime(), 0))
                     .withBackendId(IdUtils.newId()));
 
@@ -936,6 +938,7 @@ public class CharacterServiceImpl implements CharacterService {
             }
             characterBackend.setModerationApiKeyValue(plainModerationApiKey);
             characterBackend.setImageApiKeyValue(plainImageApiKey);
+            characterBackend.setTgBotToken(plainTgBotToken);
         } catch (Exception e) {
             log.error("Failed to create character backend", e);
             characterBackend.setBackendId(null);
@@ -976,16 +979,19 @@ public class CharacterServiceImpl implements CharacterService {
             LocalDateTime now = LocalDateTime.now();
             String plainModerationApiKey = characterBackend.getModerationApiKeyValue();
             String plainImageApiKey = characterBackend.getImageApiKeyValue();
+            String plainTgBotToken = characterBackend.getTgBotToken();
             rows = characterBackendMapper.updateByPrimaryKeySelective(characterBackend
                     .withGmtModified(now)
                     .withCharacterUid(null)
                     .withModerationApiKeyValue(encryptionService.encrypt(plainModerationApiKey))
-                    .withImageApiKeyValue(encryptionService.encrypt(plainImageApiKey)));
+                    .withImageApiKeyValue(encryptionService.encrypt(plainImageApiKey))
+                    .withTgBotToken(encryptionService.encrypt(plainTgBotToken)));
 
             if (rows > 0) {
                 ensureDefaultBackend(characterBackend, now);
                 characterBackend.setModerationApiKeyValue(plainModerationApiKey);
                 characterBackend.setImageApiKeyValue(plainImageApiKey);
+                characterBackend.setTgBotToken(plainTgBotToken);
 
                 CharacterBackendEvent event = new CharacterBackendEvent(null, characterBackend.getBackendId());
                 eventPublisher.publishEvent(event);
@@ -1022,6 +1028,8 @@ public class CharacterServiceImpl implements CharacterService {
                         encryptionService.decrypt(characterBackend.getModerationApiKeyValue())))
                 .map(characterBackend -> characterBackend.withImageApiKeyValue(
                         encryptionService.decrypt(characterBackend.getImageApiKeyValue())))
+                .map(characterBackend ->
+                        characterBackend.withTgBotToken(encryptionService.decrypt(characterBackend.getTgBotToken())))
                 .orElse(null);
     }
 
@@ -1034,6 +1042,8 @@ public class CharacterServiceImpl implements CharacterService {
                         encryptionService.decrypt(characterBackend.getModerationApiKeyValue())))
                 .map(characterBackend -> characterBackend.withImageApiKeyValue(
                         encryptionService.decrypt(characterBackend.getImageApiKeyValue())))
+                .map(characterBackend ->
+                        characterBackend.withTgBotToken(encryptionService.decrypt(characterBackend.getTgBotToken())))
                 .orElse(null);
     }
 
@@ -1058,6 +1068,8 @@ public class CharacterServiceImpl implements CharacterService {
                         encryptionService.decrypt(characterBackend.getModerationApiKeyValue())))
                 .map(characterBackend -> characterBackend.withImageApiKeyValue(
                         encryptionService.decrypt(characterBackend.getImageApiKeyValue())))
+                .map(characterBackend ->
+                        characterBackend.withTgBotToken(encryptionService.decrypt(characterBackend.getTgBotToken())))
                 .toList();
     }
 

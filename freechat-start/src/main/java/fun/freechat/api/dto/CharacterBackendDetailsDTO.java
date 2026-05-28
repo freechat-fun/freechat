@@ -90,6 +90,12 @@ public class CharacterBackendDetailsDTO extends TraceableDTO {
     @Schema(description = "Character's speaker type for tts: idx | wav")
     private String ttsSpeakerType;
 
+    @Schema(description = "Telegram-assigned bot id")
+    private Long tgBotId;
+
+    @Schema(description = "Telegram bot token issued by BotFather")
+    private String tgBotToken;
+
     public static CharacterBackendDetailsDTO from(CharacterBackend backend) {
         if (backend == null) {
             return null;
