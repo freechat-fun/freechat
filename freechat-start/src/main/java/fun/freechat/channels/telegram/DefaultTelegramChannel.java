@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.send.SendVideo;
 import org.telegram.telegrambots.meta.api.methods.send.SendVoice;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -93,6 +94,19 @@ public class DefaultTelegramChannel implements TelegramChannel {
                         .document(document)
                         .caption(caption)
                         .build());
+    }
+
+    @Override
+    public void editText(String backendId, Long chatId, Long messageId, String text, String parseMode)
+            throws TelegramApiException {
+        EditMessageText.EditMessageTextBuilder<?, ?> builder = EditMessageText.builder()
+                .chatId(chatId)
+                .messageId(messageId.intValue())
+                .text(text);
+        if (parseMode != null) {
+            builder.parseMode(parseMode);
+        }
+        client(backendId).execute(builder.build());
     }
 
     @Override

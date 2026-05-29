@@ -1,15 +1,13 @@
 package fun.freechat.channels.telegram.handler;
 
 import dev.langchain4j.data.message.UserMessage;
-import dev.langchain4j.model.chat.response.ChatResponse;
+import dev.langchain4j.service.TokenStream;
 import fun.freechat.channels.telegram.TelegramChannel;
 import fun.freechat.service.chat.ChatService;
 import fun.freechat.service.chat.TgChatBindingService;
 import fun.freechat.service.chat.TgMessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -64,20 +62,41 @@ public class ChatBindingTelegramMessageHandler implements TelegramMessageHandler
             return;
         }
 
+        TelegramStreamingReplyEmitter emitter = new TelegramStreamingReplyEmitter(telegramChannel, backendId, tgChatId);
         try {
-            Pair<ChatResponse, Long> result = chatService.send(chatId, UserMessage.from(text), null);
-            if (result == null || result.getLeft() == null) {
-                log.warn("ChatService.send returned null for chat {}", chatId);
-                return;
-            }
-            String replyText = result.getLeft().aiMessage().text();
-            if (StringUtils.isBlank(replyText)) {
-                return;
-            }
-            Message sent = telegramChannel.sendText(backendId, tgChatId, replyText);
-            tgMessageService.record(chatId, sent.getMessageId().longValue(), null, "out", "text", replyText, null);
+            emitter.start();
         } catch (Exception e) {
-            log.error("Failed to handle inbound telegram message for chat {}", chatId, e);
+            log.warn("Failed to send streaming placeholder for chat {}", chatId, e);
+            return;
+        }
+
+        try {
+            TokenStream stream = chatService.streamSend(chatId, UserMessage.from(text), null);
+            if (stream == null) {
+                log.warn("ChatService.streamSend returned null for chat {}", chatId);
+                emitter.complete();
+                return;
+            }
+            stream.onPartialResponse(emitter::append)
+                    .onCompleteResponse(response -> {
+                        String finalText = emitter.complete();
+                        Long lastId = emitter.lastMessageId();
+                        if (lastId != null) {
+                            tgMessageService.record(chatId, lastId, null, "out", "text", finalText, null);
+                        }
+                    })
+                    .onError(err -> {
+                        log.warn("Streaming reply errored for chat {}", chatId, err);
+                        String partial = emitter.complete();
+                        Long lastId = emitter.lastMessageId();
+                        if (lastId != null && !partial.isBlank()) {
+                            tgMessageService.record(chatId, lastId, null, "out", "text", partial, null);
+                        }
+                    })
+                    .start();
+        } catch (Exception e) {
+            log.error("Failed to start streaming reply for chat {}", chatId, e);
+            emitter.complete();
         }
     }
 
