@@ -1,30 +1,39 @@
 package fun.freechat.channels.telegram;
 
-import fun.freechat.service.character.CharacterBackendEvent;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
+import org.redisson.api.RTopic;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
+/**
+ * Cluster-aware listener: subscribes to the Redis topic that {@link TelegramChannelEventBridge}
+ * publishes to whenever a {@code CharacterBackendEvent} fires anywhere in the cluster. Every
+ * replica receives every backend-changed message and reconciles its own outbound state +
+ * contests for polling leadership via {@link TelegramChannelManager#activate(String)}.
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class TelegramChannelEventListener {
 
     private final TelegramChannelManager manager;
+    private final RedissonClient redisson;
 
-    @EventListener
-    @Async
-    public void onBackendChanged(CharacterBackendEvent event) {
-        String backendId = event.backendId();
-        if (backendId == null) {
-            return;
-        }
-        try {
-            manager.activate(backendId);
-        } catch (Exception e) {
-            log.warn("Telegram (re)activation failed for backend {}", backendId, e);
-        }
+    @PostConstruct
+    void subscribe() {
+        RTopic topic = redisson.getTopic(TelegramChannelTopics.BACKEND_CHANGED);
+        topic.addListener(String.class, (channel, backendId) -> {
+            if (backendId == null) {
+                return;
+            }
+            try {
+                manager.activate(backendId);
+            } catch (Exception e) {
+                log.warn("Telegram (re)activation failed for backend {}", backendId, e);
+            }
+        });
+        log.info("Subscribed to telegram backend-change topic '{}'", TelegramChannelTopics.BACKEND_CHANGED);
     }
 }
