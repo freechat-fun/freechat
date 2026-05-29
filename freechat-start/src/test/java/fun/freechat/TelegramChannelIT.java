@@ -1,5 +1,15 @@
 package fun.freechat;
 
+import static fun.freechat.service.enums.ModelProvider.OPEN_AI;
+import static fun.freechat.util.TestAiApiKeyUtils.keyNameFor;
+import static fun.freechat.util.TestCharacterUtils.idToUid;
+import static fun.freechat.util.TestCommonUtils.defaultModelFor;
+import static fun.freechat.util.TestCommonUtils.parametersFor;
+import static fun.freechat.util.TestCommonUtils.waitAWhile;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 import fun.freechat.api.dto.*;
 import fun.freechat.channels.telegram.TelegramChannelManager;
 import fun.freechat.channels.telegram.handler.ChatBindingTelegramMessageHandler;
@@ -11,6 +21,7 @@ import fun.freechat.service.enums.ModelProvider;
 import fun.freechat.service.enums.PromptFormat;
 import fun.freechat.service.enums.Visibility;
 import fun.freechat.util.*;
+import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,18 +40,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.chat.Chat;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
-
-import java.util.List;
-
-import static fun.freechat.service.enums.ModelProvider.OPEN_AI;
-import static fun.freechat.util.TestAiApiKeyUtils.keyNameFor;
-import static fun.freechat.util.TestCharacterUtils.idToUid;
-import static fun.freechat.util.TestCommonUtils.defaultModelFor;
-import static fun.freechat.util.TestCommonUtils.parametersFor;
-import static fun.freechat.util.TestCommonUtils.waitAWhile;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @EnabledIf("fun.freechat.TelegramChannelIT#hasTelegramToken")
 @Import(TelegramChannelIT.TelegramITConfig.class)

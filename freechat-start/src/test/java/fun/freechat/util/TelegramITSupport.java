@@ -1,15 +1,14 @@
 package fun.freechat.util;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.common.ConsoleNotifier;
-import org.telegram.telegrambots.meta.TelegramUrl;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+import org.telegram.telegrambots.meta.TelegramUrl;
 
 /**
  * Switches the Telegram backing service for integration tests between the real
