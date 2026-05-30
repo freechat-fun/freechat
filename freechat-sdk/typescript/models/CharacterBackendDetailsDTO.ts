@@ -120,6 +120,22 @@ export class CharacterBackendDetailsDTO {
     * Character\'s speaker type for tts: idx | wav
     */
     'ttsSpeakerType'?: string;
+    /**
+    * Telegram-assigned bot id
+    */
+    'tgBotId'?: number;
+    /**
+    * Telegram bot token issued by BotFather
+    */
+    'tgBotToken'?: string;
+    /**
+    * Telegram bot username resolved via getMe (null when bot not active)
+    */
+    'tgBotUsername'?: string;
+    /**
+    * Telegram invite link in the form https://t.me/<username> (null when bot not active)
+    */
+    'tgBotLink'?: string;
 
     static readonly discriminator: string | undefined = undefined;
 
@@ -279,6 +295,30 @@ export class CharacterBackendDetailsDTO {
         {
             "name": "ttsSpeakerType",
             "baseName": "ttsSpeakerType",
+            "type": "string",
+            "format": ""
+        },
+        {
+            "name": "tgBotId",
+            "baseName": "tgBotId",
+            "type": "number",
+            "format": "int64"
+        },
+        {
+            "name": "tgBotToken",
+            "baseName": "tgBotToken",
+            "type": "string",
+            "format": ""
+        },
+        {
+            "name": "tgBotUsername",
+            "baseName": "tgBotUsername",
+            "type": "string",
+            "format": ""
+        },
+        {
+            "name": "tgBotLink",
+            "baseName": "tgBotLink",
             "type": "string",
             "format": ""
         }    ];

@@ -100,6 +100,14 @@ export class CharacterBackendDTO {
     * Character\'s speaker type for tts: idx | wav
     */
     'ttsSpeakerType'?: string;
+    /**
+    * Telegram-assigned bot id (parsed from token prefix; derived server-side if omitted)
+    */
+    'tgBotId'?: number;
+    /**
+    * Telegram bot token issued by BotFather (format: \'<bot_id>:<secret>\')
+    */
+    'tgBotToken'?: string;
 
     static readonly discriminator: string | undefined = undefined;
 
@@ -229,6 +237,18 @@ export class CharacterBackendDTO {
         {
             "name": "ttsSpeakerType",
             "baseName": "ttsSpeakerType",
+            "type": "string",
+            "format": ""
+        },
+        {
+            "name": "tgBotId",
+            "baseName": "tgBotId",
+            "type": "number",
+            "format": "int64"
+        },
+        {
+            "name": "tgBotToken",
+            "baseName": "tgBotToken",
             "type": "string",
             "format": ""
         }    ];
