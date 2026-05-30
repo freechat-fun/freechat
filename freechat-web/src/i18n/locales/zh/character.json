@@ -19,6 +19,8 @@
   "Custom Voice": "自定义语音",
   "Enable Album Tool": "启用相册工具",
   "Moderation Model": "审核模型",
+  "Telegram Bot Token": "Telegram 机器人令牌",
+  "Bind a Telegram bot to this backend. Paste the bot token issued by @BotFather; the bot id is derived from the token prefix.": "将 Telegram 机器人绑定到此后端。粘贴 @BotFather 颁发的机器人令牌；机器人 ID 将从令牌前缀中解析。",
   "Quota Limit": "配额限制",
   "Quota limit": "配额限制",
   "Preset Memory": "预设记忆",

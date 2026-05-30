@@ -396,6 +396,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
     request.ttsSpeakerIdx = backend.ttsSpeakerIdx;
     request.ttsSpeakerWav = backend.ttsSpeakerWav;
     request.ttsSpeakerType = backend.ttsSpeakerType;
+    request.tgBotToken = backend.tgBotToken;
 
     const updateBackend = (
       backendId: string | undefined,

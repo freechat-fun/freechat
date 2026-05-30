@@ -127,6 +127,10 @@ const CharacterBackendSettings = forwardRef<
   const [ttsSpeakerType, setTtsSpeakerType] = useState(
     backend?.ttsSpeakerType ?? 'idx'
   );
+  const [tgBotToken, setTgBotToken] = useState(backend?.tgBotToken ?? '');
+  const [enableTelegramBot, setEnableTelegramBot] = useState(
+    !!backend?.tgBotToken
+  );
   const [fileUploading, setFileUploading] = useState(false);
   const [fileInvalid, setFileInvalid] = useState(false);
 
@@ -190,6 +194,8 @@ const CharacterBackendSettings = forwardRef<
     setTtsSpeakerIdx(backend?.ttsSpeakerIdx);
     setTtsSpeakerWav(backend?.ttsSpeakerWav);
     setTtsSpeakerType(backend?.ttsSpeakerType ?? 'idx');
+    setTgBotToken(backend?.tgBotToken ?? '');
+    setEnableTelegramBot(!!backend?.tgBotToken);
   }, [backend, handleError, promptTaskApi]);
 
   useEffect(() => {
@@ -296,6 +302,7 @@ const CharacterBackendSettings = forwardRef<
     redirectToChatPrompt: boolean = false,
     redirectHash?: string
   ) {
+    const resolvedTgBotToken = enableTelegramBot ? tgBotToken.trim() : '';
     let editBackend;
     if (backend) {
       editBackend = {
@@ -308,6 +315,7 @@ const CharacterBackendSettings = forwardRef<
         ttsSpeakerIdx,
         ttsSpeakerWav,
         ttsSpeakerType,
+        tgBotToken: resolvedTgBotToken,
       };
     } else {
       editBackend = new CharacterBackendDetailsDTO();
@@ -319,6 +327,7 @@ const CharacterBackendSettings = forwardRef<
       editBackend.ttsSpeakerIdx = ttsSpeakerIdx;
       editBackend.ttsSpeakerWav = ttsSpeakerWav;
       editBackend.ttsSpeakerType = ttsSpeakerType;
+      editBackend.tgBotToken = resolvedTgBotToken;
     }
 
     if (enableQuota) {
@@ -800,6 +809,37 @@ const CharacterBackendSettings = forwardRef<
               </IconButton>
             </OptionTooltip>
             <Switch checked={false} disabled sx={{ ml: 'auto' }} />
+          </DynamicFlexBox>
+        </OptionCard>
+
+        <OptionCard>
+          <DynamicFlexBox>
+            <Typography variant="body2">
+              {t('Telegram Bot Token')}
+            </Typography>
+            <OptionTooltip
+              title={t(
+                'Bind a Telegram bot to this backend. Paste the bot token issued by @BotFather; the bot id is derived from the token prefix.'
+              )}
+            >
+              <HelpIcon />
+            </OptionTooltip>
+            <Switch
+              checked={enableTelegramBot}
+              sx={{ ml: 'auto' }}
+              onChange={() => setEnableTelegramBot(!enableTelegramBot)}
+            />
+          </DynamicFlexBox>
+          <DynamicFlexBox>
+            <TinyInput
+              disabled={!enableTelegramBot}
+              type="password"
+              autoComplete="off"
+              placeholder="123456789:ABCdef..."
+              value={tgBotToken}
+              onChange={(event) => setTgBotToken(event.target.value)}
+              sx={{ maxWidth: undefined, flex: 1 }}
+            />
           </DynamicFlexBox>
         </OptionCard>
 

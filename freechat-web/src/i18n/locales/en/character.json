@@ -19,6 +19,8 @@
   "Custom Voice": "Custom Voice",
   "Enable Album Tool": "Enable Album Tool",
   "Moderation Model": "Moderation Model",
+  "Telegram Bot Token": "Telegram Bot Token",
+  "Bind a Telegram bot to this backend. Paste the bot token issued by @BotFather; the bot id is derived from the token prefix.": "Bind a Telegram bot to this backend. Paste the bot token issued by @BotFather; the bot id is derived from the token prefix.",
   "Quota Limit": "Quota Limit",
   "Quota limit": "Quota limit",
   "Preset Memory": "Preset Memory",
