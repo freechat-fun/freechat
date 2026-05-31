@@ -3,8 +3,11 @@ package fun.freechat.channels.telegram.handler;
 import fun.freechat.channels.telegram.TelegramChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.ResponseParameters;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -37,16 +40,26 @@ public final class TelegramStreamingReplyEmitter {
     static final long FLUSH_INTERVAL_MS = 500L;
     private static final String PLACEHOLDER = "…";
 
+    /**
+     * Matches CommonMark image syntax {@code ![alt](url)}. The URL is captured up to the first
+     * whitespace or closing paren — sufficient for the http(s) URLs the freechat album tool
+     * emits ({@code https://freechat.fun/s/...}). Alt text may be empty.
+     */
+    private static final Pattern IMAGE_MD = Pattern.compile("!\\[([^\\]]*)\\]\\(([^)\\s]+)\\)");
+
     private final TelegramChannel channel;
     private final String backendId;
     private final Long tgChatId;
 
     private final List<Long> messageIds = new ArrayList<>();
     private final StringBuilder fullText = new StringBuilder();
+    private final List<ImageRef> pendingImages = new ArrayList<>();
     private int currentSegmentStart = 0;
     private String lastFlushed = "";
     private long nextFlushAt = 0L;
     private boolean started = false;
+
+    private record ImageRef(String url, String alt) {}
 
     public TelegramStreamingReplyEmitter(TelegramChannel channel, String backendId, Long tgChatId) {
         this.channel = channel;
@@ -72,6 +85,7 @@ public final class TelegramStreamingReplyEmitter {
             return;
         }
         fullText.append(token);
+        stripInlineImages();
         if (System.currentTimeMillis() >= nextFlushAt) {
             try {
                 flush(false);
@@ -87,11 +101,13 @@ public final class TelegramStreamingReplyEmitter {
         if (!started) {
             return fullText.toString();
         }
+        stripInlineImages();
         try {
             flush(true);
         } catch (Exception e) {
             log.warn("Telegram final flush failed for chat {}: {}", tgChatId, e.getMessage());
         }
+        sendPendingImages();
         return fullText.toString();
     }
 
@@ -152,6 +168,43 @@ public final class TelegramStreamingReplyEmitter {
             }
         }
         nextFlushAt = System.currentTimeMillis() + FLUSH_INTERVAL_MS;
+    }
+
+    /**
+     * Scans the unsent portion of {@link #fullText} for complete {@code ![alt](url)} matches.
+     * For each match: stashes the {@code (url, alt)} pair into {@link #pendingImages} and rewrites
+     * the match in-place to just the alt text (empty if alt is blank). Partial matches still being
+     * streamed (e.g. {@code ![alt](https://}) are left untouched and re-scanned on the next append.
+     */
+    private void stripInlineImages() {
+        String segment = fullText.substring(currentSegmentStart);
+        Matcher m = IMAGE_MD.matcher(segment);
+        if (!m.find()) {
+            return;
+        }
+        StringBuilder rewritten = new StringBuilder(segment.length());
+        int last = 0;
+        do {
+            rewritten.append(segment, last, m.start()).append(m.group(1));
+            pendingImages.add(new ImageRef(m.group(2), m.group(1)));
+            last = m.end();
+        } while (m.find());
+        rewritten.append(segment, last, segment.length());
+        fullText.setLength(currentSegmentStart);
+        fullText.append(rewritten);
+    }
+
+    /** Fires one {@code sendPhoto} per stashed image. Failures are logged but never thrown. */
+    private void sendPendingImages() {
+        for (ImageRef img : pendingImages) {
+            try {
+                channel.sendPhoto(
+                        backendId, tgChatId, new InputFile(img.url()), img.alt().isBlank() ? null : img.alt());
+            } catch (TelegramApiException e) {
+                log.warn("Telegram sendPhoto failed for chat {} (url={}): {}", tgChatId, img.url(), e.getMessage());
+            }
+        }
+        pendingImages.clear();
     }
 
     private boolean editWithRetry(Long messageId, String text, String parseMode) {
