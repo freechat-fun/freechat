@@ -3,8 +3,11 @@ package fun.freechat.channels.telegram.handler;
 import fun.freechat.channels.telegram.TelegramChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.ResponseParameters;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -36,6 +39,13 @@ public final class TelegramStreamingReplyEmitter {
     private static final int MAX_MESSAGE_LENGTH = 4000;
     static final long FLUSH_INTERVAL_MS = 500L;
     private static final String PLACEHOLDER = "…";
+
+    /**
+     * Matches CommonMark image syntax: {@code ![alt text](url)}. The URL is captured up to the
+     * first whitespace or closing paren — sufficient for the http(s) URLs the freechat album tool
+     * emits ({@code https://freechat.fun/s/...}). Alt text may be empty.
+     */
+    private static final Pattern IMAGE_MD = Pattern.compile("!\\[([^\\]]*)\\]\\(([^)\\s]+)\\)");
 
     private final TelegramChannel channel;
     private final String backendId;
@@ -72,6 +82,14 @@ public final class TelegramStreamingReplyEmitter {
             return;
         }
         fullText.append(token);
+        // Split on inline images BEFORE the debounced flush so a freshly-complete `![alt](url)` is
+        // freezing the current message + firing sendPhoto + opening a new placeholder
+        // synchronously — no debounce wait, the image lands at the right narrative point.
+        try {
+            splitOnInlineImages();
+        } catch (Exception e) {
+            log.warn("Inline image split failed for chat {}: {}", tgChatId, e.getMessage());
+        }
         if (System.currentTimeMillis() >= nextFlushAt) {
             try {
                 flush(false);
@@ -86,6 +104,11 @@ public final class TelegramStreamingReplyEmitter {
     public String complete() {
         if (!started) {
             return fullText.toString();
+        }
+        try {
+            splitOnInlineImages();
+        } catch (Exception e) {
+            log.warn("Final inline image split failed for chat {}: {}", tgChatId, e.getMessage());
         }
         try {
             flush(true);
@@ -152,6 +175,70 @@ public final class TelegramStreamingReplyEmitter {
             }
         }
         nextFlushAt = System.currentTimeMillis() + FLUSH_INTERVAL_MS;
+    }
+
+    /**
+     * Scans the current message segment for complete {@code ![alt](url)} matches. For each one
+     * found, freezes the current message with the preceding text (rendered as Markdown), fires a
+     * separate {@code sendPhoto} for the image, and opens a fresh placeholder for whatever text
+     * follows. Partial matches (e.g. {@code ![alt](https://} still arriving token-by-token) are
+     * left in place — the next {@code append} re-scans and catches them once complete.
+     */
+    private void splitOnInlineImages() {
+        while (true) {
+            String segment = fullText.substring(currentSegmentStart);
+            Matcher m = IMAGE_MD.matcher(segment);
+            if (!m.find()) {
+                return;
+            }
+            int matchStart = m.start();
+            int matchEnd = m.end();
+            String alt = m.group(1);
+            String url = m.group(2);
+
+            // 1. Freeze the current message with the text BEFORE the image (if any non-whitespace
+            //    content). Render as Markdown — this segment won't grow further.
+            String beforeImage = segment.substring(0, matchStart);
+            if (!beforeImage.isBlank()) {
+                String displayText = balanceMarkdown(beforeImage);
+                if (!editWithRetry(lastMessageId(), displayText, ParseMode.MARKDOWN)) {
+                    // Throttled or other failure — bail; next flush/append will retry the same
+                    // split since currentSegmentStart hasn't advanced yet.
+                    return;
+                }
+            }
+            // else: the placeholder still reads "…". Trade-off: we don't delete leading-image
+            // placeholders to keep this v1 simple. The bot's text response usually has at least a
+            // word of intro before an image, so this is a rare cosmetic issue.
+
+            // 2. Send the image as a separate Telegram message.
+            if (!sendPhotoWithRetry(url, alt)) {
+                // Failed to send the photo. Don't advance — let the next flush try again.
+                // (Acceptable to drop the image entirely if it never succeeds; the text continues.)
+                return;
+            }
+
+            // 3. Advance past the image markdown and open a fresh placeholder for text that follows.
+            currentSegmentStart += matchEnd;
+            Message next = sendPlaceholderWithRetry();
+            if (next == null) {
+                return;
+            }
+            messageIds.add(next.getMessageId().longValue());
+            lastFlushed = PLACEHOLDER;
+            nextFlushAt = System.currentTimeMillis() + FLUSH_INTERVAL_MS;
+            // Loop: there may be more images in the remainder of the segment.
+        }
+    }
+
+    private boolean sendPhotoWithRetry(String url, String alt) {
+        try {
+            channel.sendPhoto(backendId, tgChatId, new InputFile(url), alt.isBlank() ? null : alt);
+            return true;
+        } catch (TelegramApiException e) {
+            handleTelegramFailure(e, "sendPhoto (" + url + ")");
+            return false;
+        }
     }
 
     private boolean editWithRetry(Long messageId, String text, String parseMode) {

@@ -1,17 +1,11 @@
 package fun.freechat.channels.telegram;
 
-import static org.mybatis.dynamic.sql.SqlBuilder.isNotNull;
-import static org.mybatis.dynamic.sql.SqlBuilder.select;
-
 import fun.freechat.channels.telegram.handler.TelegramUpdateDispatcher;
 import fun.freechat.mapper.CharacterBackendDynamicSqlSupport;
 import fun.freechat.mapper.CharacterBackendMapper;
 import fun.freechat.model.CharacterBackend;
 import fun.freechat.service.common.EncryptionService;
 import jakarta.annotation.PreDestroy;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
@@ -31,6 +25,13 @@ import org.telegram.telegrambots.meta.TelegramUrl;
 import org.telegram.telegrambots.meta.api.methods.GetMe;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static org.mybatis.dynamic.sql.SqlBuilder.isNotNull;
+import static org.mybatis.dynamic.sql.SqlBuilder.select;
 
 /**
  * Multi-replica safe Telegram bot registry.
@@ -124,7 +125,7 @@ public class TelegramChannelManager {
         } else {
             client = new OkHttpTelegramClient(token, telegramUrl);
             try {
-                username = ((OkHttpTelegramClient) client).execute(new GetMe()).getUserName();
+                username = client.execute(new GetMe()).getUserName();
             } catch (TelegramApiException e) {
                 log.warn("getMe failed for backend {}", backendId, e);
                 return;
@@ -155,7 +156,6 @@ public class TelegramChannelManager {
                 } catch (TelegramApiException e) {
                     log.warn("registerBot failed for backend {}: {}", backendId, e.getMessage());
                     safeForceUnlock(lock);
-                    session = null;
                 }
             }
         }
