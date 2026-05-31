@@ -57,6 +57,7 @@ export * from '../models/PromptUpdateDTO.js';
 export * from '../models/RagTaskDTO.js';
 export * from '../models/RagTaskDetailsDTO.js';
 export * from '../models/SseEmitter.js';
+export * from '../models/TgMessageDTO.js';
 export * from '../models/TokenUsageDTO.js';
 export * from '../models/UserBasicInfoDTO.js';
 export * from '../models/UserDetailsDTO.js';
@@ -121,6 +122,7 @@ import { PromptUpdateDTO } from '../models/PromptUpdateDTO.js';
 import { RagTaskDTO } from '../models/RagTaskDTO.js';
 import { RagTaskDetailsDTO } from '../models/RagTaskDetailsDTO.js';
 import { SseEmitter } from '../models/SseEmitter.js';
+import { TgMessageDTO } from '../models/TgMessageDTO.js';
 import { TokenUsageDTO } from '../models/TokenUsageDTO.js';
 import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO.js';
 import { UserDetailsDTO } from '../models/UserDetailsDTO.js';
@@ -201,6 +203,7 @@ let typeMap: {[index: string]: any} = {
     "RagTaskDTO": RagTaskDTO,
     "RagTaskDetailsDTO": RagTaskDetailsDTO,
     "SseEmitter": SseEmitter,
+    "TgMessageDTO": TgMessageDTO,
     "TokenUsageDTO": TokenUsageDTO,
     "UserBasicInfoDTO": UserBasicInfoDTO,
     "UserDetailsDTO": UserDetailsDTO,

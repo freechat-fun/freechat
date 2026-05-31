@@ -29,6 +29,10 @@ Name | Type | Description | Notes
 **ttsSpeakerIdx** | **string** |  | [optional] [default to null]
 **ttsSpeakerWav** | **string** |  | [optional] [default to null]
 **ttsSpeakerType** | **string** |  | [optional] [default to null]
+**tgBotId** | **integer** |  | [optional] [default to null]
+**tgBotToken** | **string** |  | [optional] [default to null]
+**tgBotUsername** | **string** |  | [optional] [default to null]
+**tgBotLink** | **string** |  | [optional] [default to null]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

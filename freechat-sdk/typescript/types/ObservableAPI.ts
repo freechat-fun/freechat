@@ -62,6 +62,7 @@ import { PromptUpdateDTO } from '../models/PromptUpdateDTO.js';
 import { RagTaskDTO } from '../models/RagTaskDTO.js';
 import { RagTaskDetailsDTO } from '../models/RagTaskDetailsDTO.js';
 import { SseEmitter } from '../models/SseEmitter.js';
+import { TgMessageDTO } from '../models/TgMessageDTO.js';
 import { TokenUsageDTO } from '../models/TokenUsageDTO.js';
 import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO.js';
 import { UserDetailsDTO } from '../models/UserDetailsDTO.js';
@@ -7205,6 +7206,98 @@ export class ObservableTagManagerForBizAdminApi {
      */
     public deleteTag(referType: string, referId: string, tag: string, _options?: ConfigurationOptions): Observable<boolean> {
         return this.deleteTagWithHttpInfo(referType, referId, tag, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
+    }
+
+}
+
+import { TelegramManagerForAdminApiRequestFactory, TelegramManagerForAdminApiResponseProcessor} from "../apis/TelegramManagerForAdminApi.js";
+export class ObservableTelegramManagerForAdminApi {
+    private requestFactory: TelegramManagerForAdminApiRequestFactory;
+    private responseProcessor: TelegramManagerForAdminApiResponseProcessor;
+    private configuration: Configuration;
+
+    public constructor(
+        configuration: Configuration,
+        requestFactory?: TelegramManagerForAdminApiRequestFactory,
+        responseProcessor?: TelegramManagerForAdminApiResponseProcessor
+    ) {
+        this.configuration = configuration;
+        this.requestFactory = requestFactory || new TelegramManagerForAdminApiRequestFactory(configuration);
+        this.responseProcessor = responseProcessor || new TelegramManagerForAdminApiResponseProcessor();
+    }
+
+    /**
+     * Look up the FreeChat chat_id bound to a Telegram (backend, tg_chat_id) pair.
+     * Find Telegram Chat
+     * @param backendId Character backend identifier
+     * @param tgChatId Telegram chat id
+     */
+    public findTelegramChatWithHttpInfo(backendId: string, tgChatId: number, _options?: ConfigurationOptions): Observable<HttpInfo<string>> {
+        const _config = mergeConfiguration(this.configuration, _options);
+
+        const requestContextPromise = this.requestFactory.findTelegramChat(backendId, tgChatId, _config);
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of _config.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => _config.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of _config.middleware.reverse()) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.findTelegramChatWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Look up the FreeChat chat_id bound to a Telegram (backend, tg_chat_id) pair.
+     * Find Telegram Chat
+     * @param backendId Character backend identifier
+     * @param tgChatId Telegram chat id
+     */
+    public findTelegramChat(backendId: string, tgChatId: number, _options?: ConfigurationOptions): Observable<string> {
+        return this.findTelegramChatWithHttpInfo(backendId, tgChatId, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    }
+
+    /**
+     * List Telegram messages recorded against the given tg_chat.chat_id, newest first.
+     * List Telegram Messages
+     * @param chatId tg_chat.chat_id
+     * @param [limit] Max rows to return (default 100)
+     * @param [offset] Row offset (default 0)
+     */
+    public listTelegramMessagesWithHttpInfo(chatId: string, limit?: number, offset?: number, _options?: ConfigurationOptions): Observable<HttpInfo<Array<TgMessageDTO>>> {
+        const _config = mergeConfiguration(this.configuration, _options);
+
+        const requestContextPromise = this.requestFactory.listTelegramMessages(chatId, limit, offset, _config);
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of _config.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => _config.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of _config.middleware.reverse()) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listTelegramMessagesWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * List Telegram messages recorded against the given tg_chat.chat_id, newest first.
+     * List Telegram Messages
+     * @param chatId tg_chat.chat_id
+     * @param [limit] Max rows to return (default 100)
+     * @param [offset] Row offset (default 0)
+     */
+    public listTelegramMessages(chatId: string, limit?: number, offset?: number, _options?: ConfigurationOptions): Observable<Array<TgMessageDTO>> {
+        return this.listTelegramMessagesWithHttpInfo(chatId, limit, offset, _options).pipe(map((apiResponse: HttpInfo<Array<TgMessageDTO>>) => apiResponse.data));
     }
 
 }

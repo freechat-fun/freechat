@@ -61,6 +61,7 @@ import { PromptUpdateDTO } from '../models/PromptUpdateDTO.js';
 import { RagTaskDTO } from '../models/RagTaskDTO.js';
 import { RagTaskDetailsDTO } from '../models/RagTaskDetailsDTO.js';
 import { SseEmitter } from '../models/SseEmitter.js';
+import { TgMessageDTO } from '../models/TgMessageDTO.js';
 import { TokenUsageDTO } from '../models/TokenUsageDTO.js';
 import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO.js';
 import { UserDetailsDTO } from '../models/UserDetailsDTO.js';
@@ -4852,6 +4853,75 @@ export class PromiseTagManagerForBizAdminApi {
     public deleteTag(referType: string, referId: string, tag: string, _options?: PromiseConfigurationOptions): Promise<boolean> {
         const observableOptions = wrapOptions(_options);
         const result = this.api.deleteTag(referType, referId, tag, observableOptions);
+        return result.toPromise();
+    }
+
+
+}
+
+
+
+import { ObservableTelegramManagerForAdminApi } from './ObservableAPI.js';
+
+import { TelegramManagerForAdminApiRequestFactory, TelegramManagerForAdminApiResponseProcessor} from "../apis/TelegramManagerForAdminApi.js";
+export class PromiseTelegramManagerForAdminApi {
+    private api: ObservableTelegramManagerForAdminApi
+
+    public constructor(
+        configuration: Configuration,
+        requestFactory?: TelegramManagerForAdminApiRequestFactory,
+        responseProcessor?: TelegramManagerForAdminApiResponseProcessor
+    ) {
+        this.api = new ObservableTelegramManagerForAdminApi(configuration, requestFactory, responseProcessor);
+    }
+
+    /**
+     * Look up the FreeChat chat_id bound to a Telegram (backend, tg_chat_id) pair.
+     * Find Telegram Chat
+     * @param backendId Character backend identifier
+     * @param tgChatId Telegram chat id
+     */
+    public findTelegramChatWithHttpInfo(backendId: string, tgChatId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.findTelegramChatWithHttpInfo(backendId, tgChatId, observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * Look up the FreeChat chat_id bound to a Telegram (backend, tg_chat_id) pair.
+     * Find Telegram Chat
+     * @param backendId Character backend identifier
+     * @param tgChatId Telegram chat id
+     */
+    public findTelegramChat(backendId: string, tgChatId: number, _options?: PromiseConfigurationOptions): Promise<string> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.findTelegramChat(backendId, tgChatId, observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * List Telegram messages recorded against the given tg_chat.chat_id, newest first.
+     * List Telegram Messages
+     * @param chatId tg_chat.chat_id
+     * @param [limit] Max rows to return (default 100)
+     * @param [offset] Row offset (default 0)
+     */
+    public listTelegramMessagesWithHttpInfo(chatId: string, limit?: number, offset?: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<TgMessageDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listTelegramMessagesWithHttpInfo(chatId, limit, offset, observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * List Telegram messages recorded against the given tg_chat.chat_id, newest first.
+     * List Telegram Messages
+     * @param chatId tg_chat.chat_id
+     * @param [limit] Max rows to return (default 100)
+     * @param [offset] Row offset (default 0)
+     */
+    public listTelegramMessages(chatId: string, limit?: number, offset?: number, _options?: PromiseConfigurationOptions): Promise<Array<TgMessageDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listTelegramMessages(chatId, limit, offset, observableOptions);
         return result.toPromise();
     }
 

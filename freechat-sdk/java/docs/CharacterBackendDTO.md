@@ -29,6 +29,8 @@ Character backend information
 |**ttsSpeakerIdx** | **String** | Character&#39;s speaker idx for tts |  [optional] |
 |**ttsSpeakerWav** | **String** | Character&#39;s speaker sample for tts |  [optional] |
 |**ttsSpeakerType** | **String** | Character&#39;s speaker type for tts: idx | wav |  [optional] |
+|**tgBotId** | **Long** | Telegram-assigned bot id (parsed from token prefix; derived server-side if omitted) |  [optional] |
+|**tgBotToken** | **String** | Telegram bot token issued by BotFather (format: &#39;&lt;bot_id&gt;:&lt;secret&gt;&#39;) |  [optional] |
 
 
 

@@ -34,6 +34,10 @@ Character backend detailed information
 |**ttsSpeakerIdx** | **String** | Character&#39;s speaker idx for tts |  [optional] |
 |**ttsSpeakerWav** | **String** | Character&#39;s speaker sample for tts |  [optional] |
 |**ttsSpeakerType** | **String** | Character&#39;s speaker type for tts: idx | wav |  [optional] |
+|**tgBotId** | **Long** | Telegram-assigned bot id |  [optional] |
+|**tgBotToken** | **String** | Telegram bot token issued by BotFather |  [optional] |
+|**tgBotUsername** | **String** | Telegram bot username resolved via getMe (null when bot not active) |  [optional] |
+|**tgBotLink** | **String** | Telegram invite link in the form https://t.me/&lt;username&gt; (null when bot not active) |  [optional] |
 
 
 
