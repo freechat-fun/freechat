@@ -1,7 +1,7 @@
 # freechat-sdk
 
 FreeChat OpenAPI Definition
-- API version: 2.7.0
+- API version: 2.8.0
   - Generator version: 7.21.0
 
 # FreeChat: Create Friends for Yourself with AI
@@ -275,7 +275,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>2.7.0</version>
+  <version>2.8.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -291,7 +291,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:2.7.0"
+     implementation "fun.freechat:freechat-sdk:2.8.0"
   }
 ```
 
@@ -305,7 +305,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-2.7.0.jar`
+* `target/freechat-sdk-2.8.0.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -548,6 +548,8 @@ Class | Method | HTTP request | Description
 *RagApi* | [**updateRagTask**](docs/RagApi.md#updateRagTask) | **PUT** /api/v2/rag/task/{taskId} | Update RAG Task
 *TagManagerForBizAdminApi* | [**createTag**](docs/TagManagerForBizAdminApi.md#createTag) | **POST** /api/v2/biz/admin/tag/{referType}/{referId}/{tag} | Create Tag
 *TagManagerForBizAdminApi* | [**deleteTag**](docs/TagManagerForBizAdminApi.md#deleteTag) | **DELETE** /api/v2/biz/admin/tag/{referType}/{referId}/{tag} | Delete Tag
+*TelegramManagerForAdminApi* | [**findTelegramChat**](docs/TelegramManagerForAdminApi.md#findTelegramChat) | **GET** /api/v2/admin/chat/tg/{backendId}/{tgChatId} | Find Telegram Chat
+*TelegramManagerForAdminApi* | [**listTelegramMessages**](docs/TelegramManagerForAdminApi.md#listTelegramMessages) | **GET** /api/v2/admin/chat/tg/messages/{chatId} | List Telegram Messages
 *TtsServiceApi* | [**listTtsBuiltinSpeakers**](docs/TtsServiceApi.md#listTtsBuiltinSpeakers) | **GET** /api/v2/public/tts/builtin/speakers | List Builtin Speakers
 *TtsServiceApi* | [**playSample**](docs/TtsServiceApi.md#playSample) | **GET** /api/v2/public/tts/play/sample/{speakerType}/{speaker} | Play Sample Audio
 *TtsServiceApi* | [**speakMessage**](docs/TtsServiceApi.md#speakMessage) | **GET** /api/v2/tts/speak/{messageId} | Speak Message
@@ -614,6 +616,7 @@ Class | Method | HTTP request | Description
  - [RagTaskDTO](docs/RagTaskDTO.md)
  - [RagTaskDetailsDTO](docs/RagTaskDetailsDTO.md)
  - [SseEmitter](docs/SseEmitter.md)
+ - [TgMessageDTO](docs/TgMessageDTO.md)
  - [TokenUsageDTO](docs/TokenUsageDTO.md)
  - [UserBasicInfoDTO](docs/UserBasicInfoDTO.md)
  - [UserDetailsDTO](docs/UserDetailsDTO.md)

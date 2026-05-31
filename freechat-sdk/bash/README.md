@@ -300,6 +300,8 @@ Class | Method | HTTP request | Description
 *TTSServiceApi* | [**speakMessage**](docs/TTSServiceApi.md#speakmessage) | **GET** /api/v2/tts/speak/{messageId} | Speak Message
 *TagManagerForBizAdminApi* | [**createTag**](docs/TagManagerForBizAdminApi.md#createtag) | **POST** /api/v2/biz/admin/tag/{referType}/{referId}/{tag} | Create Tag
 *TagManagerForBizAdminApi* | [**deleteTag**](docs/TagManagerForBizAdminApi.md#deletetag) | **DELETE** /api/v2/biz/admin/tag/{referType}/{referId}/{tag} | Delete Tag
+*TelegramManagerForAdminApi* | [**findTelegramChat**](docs/TelegramManagerForAdminApi.md#findtelegramchat) | **GET** /api/v2/admin/chat/tg/{backendId}/{tgChatId} | Find Telegram Chat
+*TelegramManagerForAdminApi* | [**listTelegramMessages**](docs/TelegramManagerForAdminApi.md#listtelegrammessages) | **GET** /api/v2/admin/chat/tg/messages/{chatId} | List Telegram Messages
 
 
 ## Documentation For Models
@@ -363,6 +365,7 @@ Class | Method | HTTP request | Description
  - [RagTaskDTO](docs/RagTaskDTO.md)
  - [RagTaskDetailsDTO](docs/RagTaskDetailsDTO.md)
  - [SseEmitter](docs/SseEmitter.md)
+ - [TgMessageDTO](docs/TgMessageDTO.md)
  - [TokenUsageDTO](docs/TokenUsageDTO.md)
  - [UserBasicInfoDTO](docs/UserBasicInfoDTO.md)
  - [UserDetailsDTO](docs/UserDetailsDTO.md)

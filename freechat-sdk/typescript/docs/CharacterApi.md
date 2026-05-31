@@ -90,6 +90,8 @@ const request: CharacterApiAddCharacterBackendRequest = {
     ttsSpeakerIdx: "ttsSpeakerIdx_example",
     ttsSpeakerWav: "ttsSpeakerWav_example",
     ttsSpeakerType: "wav",
+    tgBotId: 1,
+    tgBotToken: "tgBotToken_example",
   },
 };
 
@@ -2180,6 +2182,8 @@ const request: CharacterApiUpdateCharacterBackendRequest = {
     ttsSpeakerIdx: "ttsSpeakerIdx_example",
     ttsSpeakerWav: "ttsSpeakerWav_example",
     ttsSpeakerType: "wav",
+    tgBotId: 1,
+    tgBotToken: "tgBotToken_example",
   },
 };
 

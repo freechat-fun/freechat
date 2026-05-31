@@ -362,6 +362,11 @@ operation_parameters_minimum_occurrences["createTag:::tag"]=1
 operation_parameters_minimum_occurrences["deleteTag:::referType"]=1
 operation_parameters_minimum_occurrences["deleteTag:::referId"]=1
 operation_parameters_minimum_occurrences["deleteTag:::tag"]=1
+operation_parameters_minimum_occurrences["findTelegramChat:::backendId"]=1
+operation_parameters_minimum_occurrences["findTelegramChat:::tgChatId"]=1
+operation_parameters_minimum_occurrences["listTelegramMessages:::chatId"]=1
+operation_parameters_minimum_occurrences["listTelegramMessages:::limit"]=0
+operation_parameters_minimum_occurrences["listTelegramMessages:::offset"]=0
 
 ##
 # This array stores the maximum number of allowed occurrences for parameter
@@ -636,6 +641,11 @@ operation_parameters_maximum_occurrences["createTag:::tag"]=0
 operation_parameters_maximum_occurrences["deleteTag:::referType"]=0
 operation_parameters_maximum_occurrences["deleteTag:::referId"]=0
 operation_parameters_maximum_occurrences["deleteTag:::tag"]=0
+operation_parameters_maximum_occurrences["findTelegramChat:::backendId"]=0
+operation_parameters_maximum_occurrences["findTelegramChat:::tgChatId"]=0
+operation_parameters_maximum_occurrences["listTelegramMessages:::chatId"]=0
+operation_parameters_maximum_occurrences["listTelegramMessages:::limit"]=0
+operation_parameters_maximum_occurrences["listTelegramMessages:::offset"]=0
 
 ##
 # The type of collection for specifying multiple values for parameter:
@@ -907,6 +917,11 @@ operation_parameters_collection_type["createTag:::tag"]=""
 operation_parameters_collection_type["deleteTag:::referType"]=""
 operation_parameters_collection_type["deleteTag:::referId"]=""
 operation_parameters_collection_type["deleteTag:::tag"]=""
+operation_parameters_collection_type["findTelegramChat:::backendId"]=""
+operation_parameters_collection_type["findTelegramChat:::tgChatId"]=""
+operation_parameters_collection_type["listTelegramMessages:::chatId"]=""
+operation_parameters_collection_type["listTelegramMessages:::limit"]=""
+operation_parameters_collection_type["listTelegramMessages:::offset"]=""
 
 
 ##
@@ -1264,7 +1279,7 @@ build_request_path() {
 print_help() {
 cat <<EOF
 
-${BOLD}${WHITE}FreeChat OpenAPI Definition command line client (API version 2.7.0)${OFF}
+${BOLD}${WHITE}FreeChat OpenAPI Definition command line client (API version 2.8.0)${OFF}
 
 ${BOLD}${WHITE}Usage${OFF}
 
@@ -1578,6 +1593,13 @@ read -r -d '' ops <<EOF
 EOF
 echo "  $ops" | column -t -s ';'
     echo ""
+    echo -e "${BOLD}${WHITE}[telegramManagerForAdmin]${OFF}"
+read -r -d '' ops <<EOF
+  ${CYAN}findTelegramChat${OFF};Find Telegram Chat (AUTH)
+  ${CYAN}listTelegramMessages${OFF};List Telegram Messages (AUTH)
+EOF
+echo "  $ops" | column -t -s ';'
+    echo ""
     echo -e "${BOLD}${WHITE}Options${OFF}"
     echo -e "  -h,--help\\t\\t\\t\\tPrint this help"
     echo -e "  -V,--version\\t\\t\\t\\tPrint API version"
@@ -1604,7 +1626,7 @@ echo -e "              \\t\\t\\t\\t(e.g. 'https://127.0.0.1')"
 ##############################################################################
 print_about() {
     echo ""
-    echo -e "${BOLD}${WHITE}FreeChat OpenAPI Definition command line client (API version 2.7.0)${OFF}"
+    echo -e "${BOLD}${WHITE}FreeChat OpenAPI Definition command line client (API version 2.8.0)${OFF}"
     echo ""
     echo -e "License: "
     echo -e "Contact: "
@@ -1858,7 +1880,7 @@ echo "$appdescription" | paste -sd' ' - | fold -sw 80
 ##############################################################################
 print_version() {
     echo ""
-    echo -e "${BOLD}FreeChat OpenAPI Definition command line client (API version 2.7.0)${OFF}"
+    echo -e "${BOLD}FreeChat OpenAPI Definition command line client (API version 2.8.0)${OFF}"
     echo ""
 }
 
@@ -5654,6 +5676,47 @@ print_deleteTag_help() {
     echo -e "  * ${GREEN}referType${OFF} ${BLUE}[string]${OFF} ${RED}(required)${OFF} ${CYAN}(default: null)${OFF} - Tag type (prompt, agent, plugin...) ${YELLOW}Specify as: referType=value${OFF}" | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
     echo -e "  * ${GREEN}referId${OFF} ${BLUE}[string]${OFF} ${RED}(required)${OFF} ${CYAN}(default: null)${OFF} - Resource identifier of the tag ${YELLOW}Specify as: referId=value${OFF}" | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
     echo -e "  * ${GREEN}tag${OFF} ${BLUE}[string]${OFF} ${RED}(required)${OFF} ${CYAN}(default: null)${OFF} - Tag content ${YELLOW}Specify as: tag=value${OFF}" | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
+    echo ""
+    echo -e "${BOLD}${WHITE}Responses${OFF}"
+    code=200
+    echo -e "${result_color_table[${code:0:1}]}  200;OK${OFF}" | paste -sd' ' - | column -t -s ';' | fold -sw 80 | sed '2,$s/^/       /'
+}
+##############################################################################
+#
+# Print help for findTelegramChat operation
+#
+##############################################################################
+print_findTelegramChat_help() {
+    echo ""
+    echo -e "${BOLD}${WHITE}findTelegramChat - Find Telegram Chat${OFF}${BLUE}(AUTH - )${OFF}" | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
+    echo -e ""
+    echo -e "Look up the FreeChat chat_id bound to a Telegram (backend, tg_chat_id) pair." | paste -sd' ' - | fold -sw 80
+    echo -e ""
+    echo -e "${BOLD}${WHITE}Parameters${OFF}"
+    echo -e "  * ${GREEN}backendId${OFF} ${BLUE}[string]${OFF} ${RED}(required)${OFF} ${CYAN}(default: null)${OFF} - Character backend identifier ${YELLOW}Specify as: backendId=value${OFF}" | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
+    echo -e "  * ${GREEN}tgChatId${OFF} ${BLUE}[integer]${OFF} ${RED}(required)${OFF} ${CYAN}(default: null)${OFF} - Telegram chat id ${YELLOW}Specify as: tgChatId=value${OFF}" | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
+    echo ""
+    echo -e "${BOLD}${WHITE}Responses${OFF}"
+    code=200
+    echo -e "${result_color_table[${code:0:1}]}  200;OK${OFF}" | paste -sd' ' - | column -t -s ';' | fold -sw 80 | sed '2,$s/^/       /'
+}
+##############################################################################
+#
+# Print help for listTelegramMessages operation
+#
+##############################################################################
+print_listTelegramMessages_help() {
+    echo ""
+    echo -e "${BOLD}${WHITE}listTelegramMessages - List Telegram Messages${OFF}${BLUE}(AUTH - )${OFF}" | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
+    echo -e ""
+    echo -e "List Telegram messages recorded against the given tg_chat.chat_id, newest first." | paste -sd' ' - | fold -sw 80
+    echo -e ""
+    echo -e "${BOLD}${WHITE}Parameters${OFF}"
+    echo -e "  * ${GREEN}chatId${OFF} ${BLUE}[string]${OFF} ${RED}(required)${OFF} ${CYAN}(default: null)${OFF} - tg_chat.chat_id ${YELLOW}Specify as: chatId=value${OFF}" | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
+    echo -e "  * ${GREEN}limit${OFF} ${BLUE}[integer]${OFF} ${CYAN}(default: null)${OFF} - Max rows to return (default 100)${YELLOW} Specify as: limit=value${OFF}" \
+        | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
+    echo -e "  * ${GREEN}offset${OFF} ${BLUE}[integer]${OFF} ${CYAN}(default: null)${OFF} - Row offset (default 0)${YELLOW} Specify as: offset=value${OFF}" \
+        | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
     echo ""
     echo -e "${BOLD}${WHITE}Responses${OFF}"
     code=200
@@ -15364,6 +15427,78 @@ call_deleteTag() {
     fi
 }
 
+##############################################################################
+#
+# Call findTelegramChat operation
+#
+##############################################################################
+call_findTelegramChat() {
+    # ignore error about 'path_parameter_names' being unused; passed by reference
+    # shellcheck disable=SC2034
+    local path_parameter_names=(backendId tgChatId)
+    # ignore error about 'query_parameter_names' being unused; passed by reference
+    # shellcheck disable=SC2034
+    local query_parameter_names=(  )
+    local path
+
+    if ! path=$(build_request_path "/api/v2/admin/chat/tg/{backendId}/{tgChatId}" path_parameter_names query_parameter_names); then
+        ERROR_MSG=$path
+        exit 1
+    fi
+    local method="GET"
+    local headers_curl
+    headers_curl=$(header_arguments_to_curl)
+    if [[ -n $header_accept ]]; then
+        headers_curl="${headers_curl} -H 'Accept: ${header_accept}'"
+    fi
+
+    local basic_auth_option=""
+    if [[ -n $basic_auth_credential ]]; then
+        basic_auth_option="-u ${basic_auth_credential}"
+    fi
+    if [[ "$print_curl" = true ]]; then
+        echo "curl -d '' ${basic_auth_option} ${curl_arguments} ${headers_curl} -X ${method} \"${host}${path}\""
+    else
+        eval "curl -d '' ${basic_auth_option} ${curl_arguments} ${headers_curl} -X ${method} \"${host}${path}\""
+    fi
+}
+
+##############################################################################
+#
+# Call listTelegramMessages operation
+#
+##############################################################################
+call_listTelegramMessages() {
+    # ignore error about 'path_parameter_names' being unused; passed by reference
+    # shellcheck disable=SC2034
+    local path_parameter_names=(chatId)
+    # ignore error about 'query_parameter_names' being unused; passed by reference
+    # shellcheck disable=SC2034
+    local query_parameter_names=(limit offset  )
+    local path
+
+    if ! path=$(build_request_path "/api/v2/admin/chat/tg/messages/{chatId}" path_parameter_names query_parameter_names); then
+        ERROR_MSG=$path
+        exit 1
+    fi
+    local method="GET"
+    local headers_curl
+    headers_curl=$(header_arguments_to_curl)
+    if [[ -n $header_accept ]]; then
+        headers_curl="${headers_curl} -H 'Accept: ${header_accept}'"
+    fi
+
+    local basic_auth_option=""
+    if [[ -n $basic_auth_credential ]]; then
+        basic_auth_option="-u ${basic_auth_credential}"
+    fi
+    if [[ "$print_curl" = true ]]; then
+        echo "curl -d '' ${basic_auth_option} ${curl_arguments} ${headers_curl} -X ${method} \"${host}${path}\""
+    else
+        eval "curl -d '' ${basic_auth_option} ${curl_arguments} ${headers_curl} -X ${method} \"${host}${path}\""
+    fi
+}
+
 
 
 ##############################################################################
@@ -16052,6 +16187,12 @@ case $key in
     deleteTag)
     operation="deleteTag"
     ;;
+    findTelegramChat)
+    operation="findTelegramChat"
+    ;;
+    listTelegramMessages)
+    operation="listTelegramMessages"
+    ;;
     *==*)
     # Parse body arguments and convert them into top level
     # JSON properties passed in the body content as strings
@@ -16729,6 +16870,12 @@ case $operation in
     ;;
     deleteTag)
     call_deleteTag
+    ;;
+    findTelegramChat)
+    call_findTelegramChat
+    ;;
+    listTelegramMessages)
+    call_listTelegramMessages
     ;;
     *)
     ERROR_MSG="ERROR: Unknown operation: $operation"

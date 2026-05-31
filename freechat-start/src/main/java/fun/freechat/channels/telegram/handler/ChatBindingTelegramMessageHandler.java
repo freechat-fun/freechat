@@ -71,6 +71,7 @@ public class ChatBindingTelegramMessageHandler implements TelegramMessageHandler
         }
 
         try {
+            assert text != null;
             TokenStream stream = chatService.streamSend(chatId, UserMessage.from(text), null);
             if (stream == null) {
                 log.warn("ChatService.streamSend returned null for chat {}", chatId);

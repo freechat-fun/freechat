@@ -27,6 +27,8 @@ Name | Type | Description | Notes
 **tts_speaker_idx** | **str** | Character&#39;s speaker idx for tts | [optional] 
 **tts_speaker_wav** | **str** | Character&#39;s speaker sample for tts | [optional] 
 **tts_speaker_type** | **str** | Character&#39;s speaker type for tts: idx | wav | [optional] 
+**tg_bot_id** | **int** | Telegram-assigned bot id (parsed from token prefix; derived server-side if omitted) | [optional] 
+**tg_bot_token** | **str** | Telegram bot token issued by BotFather (format: &#39;&lt;bot_id&gt;:&lt;secret&gt;&#39;) | [optional] 
 
 ## Example
 

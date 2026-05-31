@@ -1,6 +1,6 @@
 {
   "name": "freechat-sdk",
-  "version": "2.7.0",
+  "version": "2.8.0",
   "description": "OpenAPI client for freechat-sdk",
   "author": "dev.freechat.fun",
   "repository": {
@@ -28,7 +28,8 @@
   ],
   "typings": "./dist/index.d.ts",
   "scripts": {
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "prepare": "npm run build"
   },
   "dependencies": {
     "whatwg-fetch": "^3.0.0",

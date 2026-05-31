@@ -266,6 +266,8 @@ _freechat-cli()
     operations["speakMessage"]=1
     operations["createTag"]=1
     operations["deleteTag"]=1
+    operations["findTelegramChat"]=1
+    operations["listTelegramMessages"]=1
 
     # An associative array of operations to their parameters
     # Only include path, query and header parameters
@@ -467,6 +469,8 @@ _freechat-cli()
     operation_parameters["speakMessage"]="messageId= "
     operation_parameters["createTag"]="referType= referId= tag= "
     operation_parameters["deleteTag"]="referType= referId= tag= "
+    operation_parameters["findTelegramChat"]="backendId= tgChatId= "
+    operation_parameters["listTelegramMessages"]="chatId= limit= offset= "
 
     # An associative array of possible values for enum parameters
     declare -A operation_parameters_enum_values

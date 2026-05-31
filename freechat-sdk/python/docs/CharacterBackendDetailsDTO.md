@@ -32,6 +32,10 @@ Name | Type | Description | Notes
 **tts_speaker_idx** | **str** | Character&#39;s speaker idx for tts | [optional] 
 **tts_speaker_wav** | **str** | Character&#39;s speaker sample for tts | [optional] 
 **tts_speaker_type** | **str** | Character&#39;s speaker type for tts: idx | wav | [optional] 
+**tg_bot_id** | **int** | Telegram-assigned bot id | [optional] 
+**tg_bot_token** | **str** | Telegram bot token issued by BotFather | [optional] 
+**tg_bot_username** | **str** | Telegram bot username resolved via getMe (null when bot not active) | [optional] 
+**tg_bot_link** | **str** | Telegram invite link in the form https://t.me/&lt;username&gt; (null when bot not active) | [optional] 
 
 ## Example
 

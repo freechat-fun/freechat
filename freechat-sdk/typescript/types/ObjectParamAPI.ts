@@ -61,6 +61,7 @@ import { PromptUpdateDTO } from '../models/PromptUpdateDTO.js';
 import { RagTaskDTO } from '../models/RagTaskDTO.js';
 import { RagTaskDetailsDTO } from '../models/RagTaskDetailsDTO.js';
 import { SseEmitter } from '../models/SseEmitter.js';
+import { TgMessageDTO } from '../models/TgMessageDTO.js';
 import { TokenUsageDTO } from '../models/TokenUsageDTO.js';
 import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO.js';
 import { UserDetailsDTO } from '../models/UserDetailsDTO.js';
@@ -6244,6 +6245,95 @@ export class ObjectTagManagerForBizAdminApi {
      */
     public deleteTag(param: TagManagerForBizAdminApiDeleteTagRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.deleteTag(param.referType, param.referId, param.tag,  options).toPromise();
+    }
+
+}
+
+import { ObservableTelegramManagerForAdminApi } from "./ObservableAPI.js";
+import { TelegramManagerForAdminApiRequestFactory, TelegramManagerForAdminApiResponseProcessor} from "../apis/TelegramManagerForAdminApi.js";
+
+export interface TelegramManagerForAdminApiFindTelegramChatRequest {
+    /**
+     * Character backend identifier
+     * Defaults to: undefined
+     * @type string
+     * @memberof TelegramManagerForAdminApifindTelegramChat
+     */
+    backendId: string
+    /**
+     * Telegram chat id
+     * Defaults to: undefined
+     * @type number
+     * @memberof TelegramManagerForAdminApifindTelegramChat
+     */
+    tgChatId: number
+}
+
+export interface TelegramManagerForAdminApiListTelegramMessagesRequest {
+    /**
+     * tg_chat.chat_id
+     * Defaults to: undefined
+     * @type string
+     * @memberof TelegramManagerForAdminApilistTelegramMessages
+     */
+    chatId: string
+    /**
+     * Max rows to return (default 100)
+     * Defaults to: undefined
+     * @type number
+     * @memberof TelegramManagerForAdminApilistTelegramMessages
+     */
+    limit?: number
+    /**
+     * Row offset (default 0)
+     * Defaults to: undefined
+     * @type number
+     * @memberof TelegramManagerForAdminApilistTelegramMessages
+     */
+    offset?: number
+}
+
+export class ObjectTelegramManagerForAdminApi {
+    private api: ObservableTelegramManagerForAdminApi
+
+    public constructor(configuration: Configuration, requestFactory?: TelegramManagerForAdminApiRequestFactory, responseProcessor?: TelegramManagerForAdminApiResponseProcessor) {
+        this.api = new ObservableTelegramManagerForAdminApi(configuration, requestFactory, responseProcessor);
+    }
+
+    /**
+     * Look up the FreeChat chat_id bound to a Telegram (backend, tg_chat_id) pair.
+     * Find Telegram Chat
+     * @param param the request object
+     */
+    public findTelegramChatWithHttpInfo(param: TelegramManagerForAdminApiFindTelegramChatRequest, options?: ConfigurationOptions): Promise<HttpInfo<string>> {
+        return this.api.findTelegramChatWithHttpInfo(param.backendId, param.tgChatId,  options).toPromise();
+    }
+
+    /**
+     * Look up the FreeChat chat_id bound to a Telegram (backend, tg_chat_id) pair.
+     * Find Telegram Chat
+     * @param param the request object
+     */
+    public findTelegramChat(param: TelegramManagerForAdminApiFindTelegramChatRequest, options?: ConfigurationOptions): Promise<string> {
+        return this.api.findTelegramChat(param.backendId, param.tgChatId,  options).toPromise();
+    }
+
+    /**
+     * List Telegram messages recorded against the given tg_chat.chat_id, newest first.
+     * List Telegram Messages
+     * @param param the request object
+     */
+    public listTelegramMessagesWithHttpInfo(param: TelegramManagerForAdminApiListTelegramMessagesRequest, options?: ConfigurationOptions): Promise<HttpInfo<Array<TgMessageDTO>>> {
+        return this.api.listTelegramMessagesWithHttpInfo(param.chatId, param.limit, param.offset,  options).toPromise();
+    }
+
+    /**
+     * List Telegram messages recorded against the given tg_chat.chat_id, newest first.
+     * List Telegram Messages
+     * @param param the request object
+     */
+    public listTelegramMessages(param: TelegramManagerForAdminApiListTelegramMessagesRequest, options?: ConfigurationOptions): Promise<Array<TgMessageDTO>> {
+        return this.api.listTelegramMessages(param.chatId, param.limit, param.offset,  options).toPromise();
     }
 
 }

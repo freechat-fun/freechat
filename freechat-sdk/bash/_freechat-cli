@@ -477,7 +477,8 @@ case $state in
             "updateRagTask[Update RAG Task]"             "listTtsBuiltinSpeakers[List Builtin Speakers]" \
             "playSample[Play Sample Audio]" \
             "speakMessage[Speak Message]"             "createTag[Create Tag]" \
-            "deleteTag[Delete Tag]" \
+            "deleteTag[Delete Tag]"             "findTelegramChat[Find Telegram Chat]" \
+            "listTelegramMessages[List Telegram Messages]" \
 
     _arguments "(--help)--help[Print information about operation]"
 
@@ -1862,6 +1863,23 @@ case $state in
 "referId=:[PATH] Resource identifier of the tag"
 "tag=:[PATH] Tag content"
                     )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      findTelegramChat)
+        local -a _op_arguments
+        _op_arguments=(
+          "backendId=:[PATH] Character backend identifier"
+"tgChatId=:[PATH] Telegram chat id"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listTelegramMessages)
+        local -a _op_arguments
+        _op_arguments=(
+          "chatId=:[PATH] tg_chat.chat_id"
+          "limit=:[QUERY] Max rows to return (default 100)"
+"offset=:[QUERY] Row offset (default 0)"
+          )
         _describe -t actions 'operations' _op_arguments -S '' && ret=0
         ;;
     esac
