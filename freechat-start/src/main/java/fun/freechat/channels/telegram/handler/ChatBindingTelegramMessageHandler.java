@@ -4,6 +4,8 @@ import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.service.TokenStream;
 import fun.freechat.channels.telegram.TelegramChannel;
 import fun.freechat.service.chat.ChatService;
+import fun.freechat.service.chat.ChatSession;
+import fun.freechat.service.chat.ChatSessionService;
 import fun.freechat.service.chat.TgChatBindingService;
 import fun.freechat.service.chat.TgMessageService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ public class ChatBindingTelegramMessageHandler implements TelegramMessageHandler
     private final TgChatBindingService tgChatBindingService;
     private final TgMessageService tgMessageService;
     private final ChatService chatService;
+    private final ChatSessionService chatSessionService;
     private final TelegramChannel telegramChannel;
 
     @Override
@@ -78,20 +81,36 @@ public class ChatBindingTelegramMessageHandler implements TelegramMessageHandler
                 emitter.complete();
                 return;
             }
+            // ChatService.streamSend() called session.acquire() internally — we must release()
+            // when the stream finishes (success OR error). Mirrors ChatApi.streamSend lines 387+.
+            // Without this, the session lock stays held and every subsequent streamSend returns null.
+            ChatSession session = chatSessionService.get(chatId);
             stream.onPartialResponse(emitter::append)
                     .onCompleteResponse(response -> {
-                        String finalText = emitter.complete();
-                        Long lastId = emitter.lastMessageId();
-                        if (lastId != null) {
-                            tgMessageService.record(chatId, lastId, null, "out", "text", finalText, null);
+                        try {
+                            String finalText = emitter.complete();
+                            Long lastId = emitter.lastMessageId();
+                            if (lastId != null) {
+                                tgMessageService.record(chatId, lastId, null, "out", "text", finalText, null);
+                            }
+                        } finally {
+                            if (session != null) {
+                                session.release();
+                            }
                         }
                     })
                     .onError(err -> {
-                        log.warn("Streaming reply errored for chat {}", chatId, err);
-                        String partial = emitter.complete();
-                        Long lastId = emitter.lastMessageId();
-                        if (lastId != null && !partial.isBlank()) {
-                            tgMessageService.record(chatId, lastId, null, "out", "text", partial, null);
+                        try {
+                            log.warn("Streaming reply errored for chat {}", chatId, err);
+                            String partial = emitter.complete();
+                            Long lastId = emitter.lastMessageId();
+                            if (lastId != null && !partial.isBlank()) {
+                                tgMessageService.record(chatId, lastId, null, "out", "text", partial, null);
+                            }
+                        } finally {
+                            if (session != null) {
+                                session.release();
+                            }
                         }
                     })
                     .start();
