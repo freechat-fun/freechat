@@ -14,6 +14,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
@@ -81,7 +82,16 @@ public class TelegramChannelManager {
                 .orElse(null);
     }
 
+    /**
+     * Runs asynchronously so it doesn't block {@code ApplicationReadyEvent} dispatch — Spring
+     * Boot's {@code ApplicationAvailability} flips the readiness probe to ACCEPTING_TRAFFIC
+     * during that same event chain, and a synchronous network-bound scan would keep
+     * {@code /actuator/health/readiness} on 503 until every {@code getMe} / {@code registerBot}
+     * completed. The {@link #reconcile()} task is the safety net: any activation skipped here
+     * (token rotation race, transient getMe failure, etc.) is picked up on the next cycle.
+     */
     @EventListener(ApplicationReadyEvent.class)
+    @Async
     public synchronized void activateExisting() {
         var statement = select(CharacterBackendDynamicSqlSupport.backendId)
                 .from(CharacterBackendDynamicSqlSupport.characterBackend)
