@@ -12,8 +12,10 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Slf4j
 public class HelpCommand implements TelegramCommandHandler {
 
-    private static final String HELP_TEXT =
-            "Available commands:\n/start - Start chatting with me\n/help  - Show this help";
+    private static final String HELP_TEXT = "Available commands:\n"
+            + "/start - Start chatting with me\n"
+            + "/reset - Clear the current conversation memory\n"
+            + "/help  - Show this help";
 
     @Override
     public String name() {
