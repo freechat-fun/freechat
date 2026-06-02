@@ -1,8 +1,5 @@
 package fun.freechat.service.chat.impl;
 
-import static dev.langchain4j.internal.ValidationUtils.ensureNotNull;
-import static fun.freechat.service.util.StoreUtils.PUBLIC_DIR;
-
 import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.agent.tool.ToolMemoryId;
 import dev.langchain4j.agentic.AgenticServices;
@@ -25,23 +22,33 @@ import fun.freechat.service.chat.ChatSessionService;
 import fun.freechat.service.common.FileStore;
 import fun.freechat.service.common.ShortLinkService;
 import fun.freechat.service.util.StoreUtils;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+
+import static dev.langchain4j.internal.ValidationUtils.ensureNotNull;
+import static fun.freechat.service.util.StoreUtils.PUBLIC_DIR;
+
 @Slf4j
 public class AlbumTool {
     private static final String DESCRIPTION_EN = """
-            Retrieves real character pictures. Call this tool whenever the user wants to see a character's photo or image.
-            NOTE: If a valid image URL is returned, you must embed it in your final response using Markdown: ![img](url).
-            CRITICAL: Always use the returned URL—never fabricate, invent, or guess image URLs. To show an image, you MUST call this tool.""";
+            Fetch real-time, context-specific images of a character. This tool MUST be invoked whenever the user requests to see, generate, or obtain a photo, image, or specific scene of a character.
+            [Core Behavior Guidelines]
+            1. Dynamic Generation Principle: This tool dynamically returns a brand-new, authentic image URL that perfectly matches the specific scene, action, clothing, or mood described by the user in the current turn.
+            2. Strictly Prohibit URL Reuse: Even if an image URL for the same character was fetched previously in the conversation history, you are ABSOLUTELY FORBIDDEN from reusing that historical URL. Every single request is independent and context-dependent.
+            3. Anti-Hallucination Requirement: Never fabricate, hallucinate, guess, or piece together any image URLs. You must use the exact, real URL returned by the tool in the current invocation.
+            4. Embedding Format: If a valid image URL is returned, you must embed it into your final response using Markdown format: ![img](url).""";
     private static final String DESCRIPTION_CN = """
-            获取真实的角色的图片。当用户想要看某个角色的照片或图片时，必须调用此工具。
-            注意事项：如果返回了有效的图片 URL，您必须使用 Markdown 格式将其嵌入到最终响应中：![img](url)。
-            核心要求：绝对禁止伪造、捏造或猜测任何图片 URL。必须使用工具实际返回的真实的图片 URL。""";
+            获取角色的实时场景图片。当用户请求查看、生成或获取某个角色的照片、图片、或特定场景下的画面时，必须调用此工具。
+            【核心行为准则】
+            1. 动态生成原则：该工具会根据用户当前轮次描述的具体场景、动作、服装或情绪，动态返回一张全新的、匹配当前最新语境的真实图片 URL。
+            2. 严禁复用历史链接：即便此前在对话历史中已经获取过该角色的照片，也绝对禁止直接复用旧的图片 URL。因为每一次请求的画面内容都是完全独立且即时生成的。
+            3. 真实性要求：绝对禁止伪造、捏造、猜测或盲目拼凑任何图片 URL。必须使用工具在当前轮次实际返回的真实 URL。
+            4. 嵌入格式：如果返回了有效的图片 URL，您必须使用 Markdown 格式将其嵌入到最终响应中：![img](url)。""";
     private static final String IMAGE_EDIT_AGENT_DESCRIPTION_EN = "Generate a new image based on an input image.";
     private static final String IMAGE_EDIT_AGENT_DESCRIPTION_CN = "根据输入的图片生成一张新图片。";
     private static final String IMAGE_EDIT_AGENT_PROMPT_EN = """
