@@ -3,8 +3,10 @@ package fun.freechat.channels.telegram;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.ActionType;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendAudio;
+import org.telegram.telegrambots.meta.api.methods.send.SendChatAction;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -107,6 +109,15 @@ public class DefaultTelegramChannel implements TelegramChannel {
             builder.parseMode(parseMode);
         }
         client(backendId).execute(builder.build());
+    }
+
+    @Override
+    public void sendChatAction(String backendId, Long chatId, ActionType action) throws TelegramApiException {
+        client(backendId)
+                .execute(SendChatAction.builder()
+                        .chatId(chatId)
+                        .action(action.toString())
+                        .build());
     }
 
     @Override

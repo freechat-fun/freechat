@@ -3,9 +3,14 @@ package fun.freechat.channels.telegram.handler;
 import fun.freechat.channels.telegram.TelegramChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
+import org.telegram.telegrambots.meta.api.methods.ActionType;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.ResponseParameters;
@@ -41,11 +46,28 @@ public final class TelegramStreamingReplyEmitter {
     private static final String PLACEHOLDER = "…";
 
     /**
+     * How often to re-send the {@code TYPING} chat action. Telegram clears the indicator after
+     * ~5 seconds, so we refresh slightly faster to keep it continuously visible.
+     */
+    private static final long TYPING_REFRESH_MS = 4_000L;
+
+    /**
      * Matches CommonMark image syntax {@code ![alt](url)}. The URL is captured up to the first
      * whitespace or closing paren — sufficient for the http(s) URLs the freechat album tool
      * emits ({@code https://freechat.fun/s/...}). Alt text may be empty.
      */
     private static final Pattern IMAGE_MD = Pattern.compile("!\\[([^\\]]*)\\]\\(([^)\\s]+)\\)");
+
+    /**
+     * Shared daemon-threaded scheduler for {@code TYPING} keepalive ticks across all emitter
+     * instances. Each tick just submits a {@code sendChatAction} HTTP request (the actual I/O
+     * happens on the OkHttp pool inside the telegrambots client), so a tiny pool is enough.
+     */
+    private static final ScheduledExecutorService TYPING_SCHEDULER = Executors.newScheduledThreadPool(2, r -> {
+        Thread t = new Thread(r, "tg-typing-heartbeat");
+        t.setDaemon(true);
+        return t;
+    });
 
     private final TelegramChannel channel;
     private final String backendId;
@@ -58,6 +80,7 @@ public final class TelegramStreamingReplyEmitter {
     private String lastFlushed = "";
     private long nextFlushAt = 0L;
     private boolean started = false;
+    private ScheduledFuture<?> typingHeartbeat;
 
     private record ImageRef(String url, String alt) {}
 
@@ -77,6 +100,7 @@ public final class TelegramStreamingReplyEmitter {
         lastFlushed = PLACEHOLDER;
         nextFlushAt = System.currentTimeMillis() + FLUSH_INTERVAL_MS;
         started = true;
+        startTypingHeartbeat();
     }
 
     /** Appends a streamed token and possibly flushes (plain text) per the debounce policy. */
@@ -101,6 +125,7 @@ public final class TelegramStreamingReplyEmitter {
         if (!started) {
             return fullText.toString();
         }
+        stopTypingHeartbeat();
         stripInlineImages();
         try {
             flush(true);
@@ -192,6 +217,34 @@ public final class TelegramStreamingReplyEmitter {
         rewritten.append(segment, last, segment.length());
         fullText.setLength(currentSegmentStart);
         fullText.append(rewritten);
+    }
+
+    /**
+     * Fires {@code sendChatAction(TYPING)} immediately, then re-fires every
+     * {@link #TYPING_REFRESH_MS}ms until {@link #stopTypingHeartbeat()} cancels it. Telegram
+     * clears the indicator after ~5s, so re-firing at 4s keeps it continuously visible.
+     */
+    private void startTypingHeartbeat() {
+        sendTypingTick();
+        typingHeartbeat = TYPING_SCHEDULER.scheduleAtFixedRate(
+                this::sendTypingTick, TYPING_REFRESH_MS, TYPING_REFRESH_MS, TimeUnit.MILLISECONDS);
+    }
+
+    private void stopTypingHeartbeat() {
+        if (typingHeartbeat != null) {
+            typingHeartbeat.cancel(false);
+            typingHeartbeat = null;
+        }
+    }
+
+    private void sendTypingTick() {
+        try {
+            channel.sendChatAction(backendId, tgChatId, ActionType.TYPING);
+        } catch (Exception e) {
+            // Best-effort indicator. Log at debug to avoid spamming on transient failures or
+            // bot-blocked scenarios — the actual response still streams via editText.
+            log.debug("Telegram sendChatAction(TYPING) failed for chat {}: {}", tgChatId, e.getMessage());
+        }
     }
 
     /** Fires one {@code sendPhoto} per stashed image. Failures are logged but never thrown. */
