@@ -8,6 +8,10 @@ ARG GID=10000
 ENV APP_NAME=${APP_NAME}
 ENV APP_HOME=/home/${UNAME}/${APP_NAME}
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl procps \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN groupadd -g ${GID} -o ${UNAME}
 RUN useradd -m -u ${UID} -g ${GID} -o ${UNAME}
 
