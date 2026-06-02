@@ -75,14 +75,12 @@ public final class TelegramStreamingReplyEmitter {
 
     private final List<Long> messageIds = new ArrayList<>();
     private final StringBuilder fullText = new StringBuilder();
-    private final List<ImageRef> pendingImages = new ArrayList<>();
+    private final List<String> pendingImageUrls = new ArrayList<>();
     private int currentSegmentStart = 0;
     private String lastFlushed = "";
     private long nextFlushAt = 0L;
     private boolean started = false;
     private ScheduledFuture<?> typingHeartbeat;
-
-    private record ImageRef(String url, String alt) {}
 
     public TelegramStreamingReplyEmitter(TelegramChannel channel, String backendId, Long tgChatId) {
         this.channel = channel;
@@ -197,9 +195,11 @@ public final class TelegramStreamingReplyEmitter {
 
     /**
      * Scans the unsent portion of {@link #fullText} for complete {@code ![alt](url)} matches.
-     * For each match: stashes the {@code (url, alt)} pair into {@link #pendingImages} and rewrites
-     * the match in-place to just the alt text (empty if alt is blank). Partial matches still being
-     * streamed (e.g. {@code ![alt](https://}) are left untouched and re-scanned on the next append.
+     * For each match: stashes the URL into {@link #pendingImageUrls} and removes the whole
+     * markdown (alt included) from the displayed text. The alt is dropped because the album tool
+     * emits a literal {@code img} placeholder that would otherwise leak into the chat as inline
+     * filler and as a redundant photo caption. Partial matches still being streamed (e.g.
+     * {@code ![alt](https://}) are left untouched and re-scanned on the next append.
      */
     private void stripInlineImages() {
         String segment = fullText.substring(currentSegmentStart);
@@ -210,8 +210,8 @@ public final class TelegramStreamingReplyEmitter {
         StringBuilder rewritten = new StringBuilder(segment.length());
         int last = 0;
         do {
-            rewritten.append(segment, last, m.start()).append(m.group(1));
-            pendingImages.add(new ImageRef(m.group(2), m.group(1)));
+            rewritten.append(segment, last, m.start());
+            pendingImageUrls.add(m.group(2));
             last = m.end();
         } while (m.find());
         rewritten.append(segment, last, segment.length());
@@ -249,15 +249,14 @@ public final class TelegramStreamingReplyEmitter {
 
     /** Fires one {@code sendPhoto} per stashed image. Failures are logged but never thrown. */
     private void sendPendingImages() {
-        for (ImageRef img : pendingImages) {
+        for (String url : pendingImageUrls) {
             try {
-                channel.sendPhoto(
-                        backendId, tgChatId, new InputFile(img.url()), img.alt().isBlank() ? null : img.alt());
+                channel.sendPhoto(backendId, tgChatId, new InputFile(url), null);
             } catch (TelegramApiException e) {
-                log.warn("Telegram sendPhoto failed for chat {} (url={}): {}", tgChatId, img.url(), e.getMessage());
+                log.warn("Telegram sendPhoto failed for chat {} (url={}): {}", tgChatId, url, e.getMessage());
             }
         }
-        pendingImages.clear();
+        pendingImageUrls.clear();
     }
 
     private boolean editWithRetry(Long messageId, String text, String parseMode) {
