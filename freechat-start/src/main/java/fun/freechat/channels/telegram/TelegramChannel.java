@@ -1,5 +1,6 @@
 package fun.freechat.channels.telegram;
 
+import org.telegram.telegrambots.meta.api.methods.ActionType;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -24,6 +25,12 @@ public interface TelegramChannel {
      */
     void editText(String backendId, Long chatId, Long messageId, String text, String parseMode)
             throws TelegramApiException;
+
+    /**
+     * Sends a chat action (e.g. {@code TYPING}). Telegram displays the action for ~5 seconds, so
+     * long-running operations should re-send periodically to keep the indicator visible.
+     */
+    void sendChatAction(String backendId, Long chatId, ActionType action) throws TelegramApiException;
 
     String getInviteLink(String backendId);
 
