@@ -79,6 +79,7 @@ public class SystemAlwaysOnTopMessageWindowChatMemory implements ChatMemory {
     @Override
     public void clear() {
         store.deleteMessages(id);
+        latestSystemMessage = null;
     }
 
     private static int firstNonSystemMessageIndex(List<ChatMessage> messages) {
