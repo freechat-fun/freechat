@@ -11,7 +11,9 @@ import dev.langchain4j.agentic.observability.AgentListener;
 import dev.langchain4j.agentic.observability.AgentRequest;
 import dev.langchain4j.agentic.observability.AgentResponse;
 import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.ImageContent;
+import dev.langchain4j.data.message.TextContent;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.service.Result;
 import fun.freechat.model.CharacterInfo;
@@ -25,11 +27,7 @@ import fun.freechat.service.common.ShortLinkService;
 import fun.freechat.service.util.StoreUtils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -37,13 +35,13 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class AlbumTool {
     private static final String DESCRIPTION_EN = """
-            Retrieves real character pictures. Call this tool whenever the user wants to see a character's photo or image. Returns {url, description}.
-            NOTE: If a valid URL is returned, you must embed it in your final response using Markdown: ![img](url).
+            Retrieves real character pictures. Call this tool whenever the user wants to see a character's photo or image.
+            NOTE: If a valid image URL is returned, you must embed it in your final response using Markdown: ![img](url).
             CRITICAL: Always use the returned URL—never fabricate, invent, or guess image URLs. To show an image, you MUST call this tool.""";
     private static final String DESCRIPTION_CN = """
-            获取真实的角色的图片。当用户想要看某个角色的照片或图片时，必须调用此工具。返回格式为 {url, description}。
-            注意事项：如果返回了有效的 URL，您必须使用 Markdown 格式将其嵌入到最终响应中：![img](url)。
-            核心要求：绝对禁止伪造、捏造或猜测任何图片 URL。必须使用工具实际返回的真实 URL。""";
+            获取真实的角色的图片。当用户想要看某个角色的照片或图片时，必须调用此工具。
+            注意事项：如果返回了有效的图片 URL，您必须使用 Markdown 格式将其嵌入到最终响应中：![img](url)。
+            核心要求：绝对禁止伪造、捏造或猜测任何图片 URL。必须使用工具实际返回的真实的图片 URL。""";
     private static final String IMAGE_EDIT_AGENT_DESCRIPTION_EN = "Generate a new image based on an input image.";
     private static final String IMAGE_EDIT_AGENT_DESCRIPTION_CN = "根据输入的图片生成一张新图片。";
     private static final String IMAGE_EDIT_AGENT_PROMPT_EN = """
@@ -93,7 +91,7 @@ public class AlbumTool {
     }
 
     @Tool
-    public ImageResult findAnImage(@ToolMemoryId Object memoryId, String description) {
+    public Content findAnImage(@ToolMemoryId Object memoryId, String description) {
         String originImageUrl = loadLocalImage(memoryId);
 
         ChatModel imageChatModel = Optional.ofNullable(memoryId)
@@ -104,10 +102,10 @@ public class AlbumTool {
                 .orElse(null);
 
         if (imageChatModel == null) {
-            return ImageResult.builder().url(originImageUrl).build();
+            return TextContent.from(originImageUrl);
         }
 
-        ImageResultParser resultParser = new ImageResultParser();
+        ImageContentParser resultParser = new ImageContentParser();
 
         UntypedAgent imageCreator;
         Map<String, Object> input;
@@ -195,7 +193,7 @@ public class AlbumTool {
                     description);
         }
 
-        return (ImageResult) imageCreator.invoke(input);
+        return (Content) imageCreator.invoke(input);
     }
 
     public String description() {

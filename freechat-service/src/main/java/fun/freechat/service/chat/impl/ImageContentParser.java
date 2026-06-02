@@ -6,6 +6,8 @@ import static fun.freechat.service.util.StoreUtils.defaultFileStore;
 import dev.langchain4j.agentic.Agent;
 import dev.langchain4j.data.image.Image;
 import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.Content;
+import dev.langchain4j.data.message.TextContent;
 import dev.langchain4j.service.Result;
 import dev.langchain4j.service.V;
 import fun.freechat.service.common.FileStore;
@@ -23,29 +25,28 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ImageResultParser {
-    private static final Logger log = LoggerFactory.getLogger(ImageResultParser.class);
+public class ImageContentParser {
+    private static final Logger log = LoggerFactory.getLogger(ImageContentParser.class);
 
     private static final String IMAGE_MIME_PREFIX = "image/";
 
     @Agent(outputKey = "imageResult")
-    public ImageResult parse(
+    public Content parse(
             @V("chatId") String chatId,
             @V("homeUrl") String homeUrl,
             @V("shortLinkService") ShortLinkService shortLinkService,
             @V("generatedImage") Result<AiMessage> result) {
-        AiMessage message = result.content();
-        String url = Optional.ofNullable(message.images())
+        String url = Optional.ofNullable(result.content())
+                .map(AiMessage::images)
                 .filter(CollectionUtils::isNotEmpty)
                 .map(List::getFirst)
                 .map(Image::url)
                 .map(URI::toString)
+                .map(temporaryUrl -> transferUrl(temporaryUrl, chatId, homeUrl, shortLinkService))
                 .orElse("");
 
-        return ImageResult.builder()
-                .url(transferUrl(url, chatId, homeUrl, shortLinkService))
-                .description(message.text())
-                .build();
+        // return ImageContent.from(url);
+        return TextContent.from(url);
     }
 
     private static String transferUrl(
