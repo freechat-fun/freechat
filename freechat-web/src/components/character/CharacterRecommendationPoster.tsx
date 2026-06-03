@@ -228,8 +228,7 @@ const CharacterRecommendationPoster = forwardRef<
 
           <Stack
             direction="row"
-            alignItems="center"
-            sx={{ mt: 'auto', ml: 1, gap: 1 }}
+            sx={{ mt: 'auto', ml: 1, gap: 1, alignItems: 'center' }}
           >
             <StyledButton
               sx={{
