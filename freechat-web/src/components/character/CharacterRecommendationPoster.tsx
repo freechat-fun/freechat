@@ -195,7 +195,7 @@ const CharacterRecommendationPoster = forwardRef<
                   );
                 }}
               >
-                <Telegram sx={{ fontSize: '2rem' }} />
+                <Telegram sx={{ fontSize: '3rem', color: 'white' }} />
               </IconButton>
             )}
           </Stack>
