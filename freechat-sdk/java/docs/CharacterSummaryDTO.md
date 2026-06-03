@@ -29,6 +29,7 @@ Character summary content
 |**priority** | **Integer** | Character priority |  [optional] |
 |**username** | **String** | Character owner |  [optional] |
 |**tags** | **List&lt;String&gt;** | Tag set |  [optional] |
+|**telegramUrl** | **String** | Telegram URL |  [optional] |
 
 
 

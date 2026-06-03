@@ -29,6 +29,7 @@ Character summary content, including interactive statistical information
 |**priority** | **Integer** | Character priority |  [optional] |
 |**username** | **String** | Character owner |  [optional] |
 |**tags** | **List&lt;String&gt;** | Tag set |  [optional] |
+|**telegramUrl** | **String** | Telegram URL |  [optional] |
 |**viewCount** | **Long** | View count |  [optional] |
 |**referCount** | **Long** | Reference count |  [optional] |
 |**recommendCount** | **Long** | Recommendation count |  [optional] |

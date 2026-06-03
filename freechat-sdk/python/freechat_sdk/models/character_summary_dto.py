@@ -49,8 +49,9 @@ class CharacterSummaryDTO(BaseModel):
     priority: Optional[StrictInt] = Field(default=None, description="Character priority")
     username: Optional[StrictStr] = Field(default=None, description="Character owner")
     tags: Optional[List[StrictStr]] = Field(default=None, description="Tag set")
+    telegram_url: Optional[StrictStr] = Field(default=None, description="Telegram URL", alias="telegramUrl")
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["requestId", "characterId", "characterUid", "gmtCreate", "gmtModified", "parentUid", "visibility", "version", "name", "description", "nickname", "avatar", "picture", "video", "gender", "lang", "greeting", "defaultScene", "priority", "username", "tags"]
+    __properties: ClassVar[List[str]] = ["requestId", "characterId", "characterUid", "gmtCreate", "gmtModified", "parentUid", "visibility", "version", "name", "description", "nickname", "avatar", "picture", "video", "gender", "lang", "greeting", "defaultScene", "priority", "username", "tags", "telegramUrl"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -130,7 +131,8 @@ class CharacterSummaryDTO(BaseModel):
             "defaultScene": obj.get("defaultScene"),
             "priority": obj.get("priority"),
             "username": obj.get("username"),
-            "tags": obj.get("tags")
+            "tags": obj.get("tags"),
+            "telegramUrl": obj.get("telegramUrl")
         })
         # store additional fields in additional_properties
         for _key in obj.keys():

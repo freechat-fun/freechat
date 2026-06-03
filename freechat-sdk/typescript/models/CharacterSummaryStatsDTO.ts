@@ -101,6 +101,10 @@ export class CharacterSummaryStatsDTO {
     */
     'tags'?: Array<string>;
     /**
+    * Telegram URL
+    */
+    'telegramUrl'?: string;
+    /**
     * View count
     */
     'viewCount'?: number;
@@ -250,6 +254,12 @@ export class CharacterSummaryStatsDTO {
             "name": "tags",
             "baseName": "tags",
             "type": "Array<string>",
+            "format": ""
+        },
+        {
+            "name": "telegramUrl",
+            "baseName": "telegramUrl",
+            "type": "string",
             "format": ""
         },
         {

@@ -209,6 +209,14 @@ public class CharacterSummaryStatsDTOTest {
     }
 
     /**
+     * Test the property 'telegramUrl'
+     */
+    @Test
+    public void telegramUrlTest() {
+        // TODO: test telegramUrl
+    }
+
+    /**
      * Test the property 'viewCount'
      */
     @Test

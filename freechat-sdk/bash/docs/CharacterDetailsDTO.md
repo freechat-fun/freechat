@@ -24,6 +24,7 @@ Name | Type | Description | Notes
 **priority** | **integer** |  | [optional] [default to null]
 **username** | **string** |  | [optional] [default to null]
 **tags** | **array[string]** |  | [optional] [default to null]
+**telegramUrl** | **string** |  | [optional] [default to null]
 **profile** | **string** |  | [optional] [default to null]
 **chatStyle** | **string** |  | [optional] [default to null]
 **chatExample** | **string** |  | [optional] [default to null]

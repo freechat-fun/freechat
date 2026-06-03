@@ -159,6 +159,11 @@ public class CharacterDetailsDTO {
   @javax.annotation.Nullable
   private List<String> tags = new ArrayList<>();
 
+  public static final String SERIALIZED_NAME_TELEGRAM_URL = "telegramUrl";
+  @SerializedName(SERIALIZED_NAME_TELEGRAM_URL)
+  @javax.annotation.Nullable
+  private String telegramUrl;
+
   public static final String SERIALIZED_NAME_PROFILE = "profile";
   @SerializedName(SERIALIZED_NAME_PROFILE)
   @javax.annotation.Nullable
@@ -599,6 +604,25 @@ public class CharacterDetailsDTO {
   }
 
 
+  public CharacterDetailsDTO telegramUrl(@javax.annotation.Nullable String telegramUrl) {
+    this.telegramUrl = telegramUrl;
+    return this;
+  }
+
+  /**
+   * Telegram URL
+   * @return telegramUrl
+   */
+  @javax.annotation.Nullable
+  public String getTelegramUrl() {
+    return telegramUrl;
+  }
+
+  public void setTelegramUrl(@javax.annotation.Nullable String telegramUrl) {
+    this.telegramUrl = telegramUrl;
+  }
+
+
   public CharacterDetailsDTO profile(@javax.annotation.Nullable String profile) {
     this.profile = profile;
     return this;
@@ -796,6 +820,7 @@ public class CharacterDetailsDTO {
         Objects.equals(this.priority, characterDetailsDTO.priority) &&
         Objects.equals(this.username, characterDetailsDTO.username) &&
         Objects.equals(this.tags, characterDetailsDTO.tags) &&
+        Objects.equals(this.telegramUrl, characterDetailsDTO.telegramUrl) &&
         Objects.equals(this.profile, characterDetailsDTO.profile) &&
         Objects.equals(this.chatStyle, characterDetailsDTO.chatStyle) &&
         Objects.equals(this.chatExample, characterDetailsDTO.chatExample) &&
@@ -807,7 +832,7 @@ public class CharacterDetailsDTO {
 
   @Override
   public int hashCode() {
-    return Objects.hash(requestId, characterId, characterUid, gmtCreate, gmtModified, parentUid, visibility, version, name, description, nickname, avatar, picture, video, gender, lang, greeting, defaultScene, priority, username, tags, profile, chatStyle, chatExample, ext, draft, backends, additionalProperties);
+    return Objects.hash(requestId, characterId, characterUid, gmtCreate, gmtModified, parentUid, visibility, version, name, description, nickname, avatar, picture, video, gender, lang, greeting, defaultScene, priority, username, tags, telegramUrl, profile, chatStyle, chatExample, ext, draft, backends, additionalProperties);
   }
 
   @Override
@@ -835,6 +860,7 @@ public class CharacterDetailsDTO {
     sb.append("    priority: ").append(toIndentedString(priority)).append("\n");
     sb.append("    username: ").append(toIndentedString(username)).append("\n");
     sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
+    sb.append("    telegramUrl: ").append(toIndentedString(telegramUrl)).append("\n");
     sb.append("    profile: ").append(toIndentedString(profile)).append("\n");
     sb.append("    chatStyle: ").append(toIndentedString(chatStyle)).append("\n");
     sb.append("    chatExample: ").append(toIndentedString(chatExample)).append("\n");
@@ -860,7 +886,7 @@ public class CharacterDetailsDTO {
 
   static {
     // a set of all properties/fields (JSON key names)
-    openapiFields = new HashSet<String>(Arrays.asList("requestId", "characterId", "characterUid", "gmtCreate", "gmtModified", "parentUid", "visibility", "version", "name", "description", "nickname", "avatar", "picture", "video", "gender", "lang", "greeting", "defaultScene", "priority", "username", "tags", "profile", "chatStyle", "chatExample", "ext", "draft", "backends"));
+    openapiFields = new HashSet<String>(Arrays.asList("requestId", "characterId", "characterUid", "gmtCreate", "gmtModified", "parentUid", "visibility", "version", "name", "description", "nickname", "avatar", "picture", "video", "gender", "lang", "greeting", "defaultScene", "priority", "username", "tags", "telegramUrl", "profile", "chatStyle", "chatExample", "ext", "draft", "backends"));
 
     // a set of required properties/fields (JSON key names)
     openapiRequiredFields = new HashSet<String>(0);
@@ -927,6 +953,9 @@ public class CharacterDetailsDTO {
       // ensure the optional json data is an array if present
       if (jsonObj.get("tags") != null && !jsonObj.get("tags").isJsonNull() && !jsonObj.get("tags").isJsonArray()) {
         throw new IllegalArgumentException(String.format(java.util.Locale.ROOT, "Expected the field `tags` to be an array in the JSON string but got `%s`", jsonObj.get("tags").toString()));
+      }
+      if ((jsonObj.get("telegramUrl") != null && !jsonObj.get("telegramUrl").isJsonNull()) && !jsonObj.get("telegramUrl").isJsonPrimitive()) {
+        throw new IllegalArgumentException(String.format(java.util.Locale.ROOT, "Expected the field `telegramUrl` to be a primitive type in the JSON string but got `%s`", jsonObj.get("telegramUrl").toString()));
       }
       if ((jsonObj.get("profile") != null && !jsonObj.get("profile").isJsonNull()) && !jsonObj.get("profile").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format(java.util.Locale.ROOT, "Expected the field `profile` to be a primitive type in the JSON string but got `%s`", jsonObj.get("profile").toString()));

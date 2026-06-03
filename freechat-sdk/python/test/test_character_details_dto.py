@@ -58,6 +58,7 @@ class TestCharacterDetailsDTO(unittest.TestCase):
                 tags = [
                     ''
                     ],
+                telegram_url = '',
                 profile = '',
                 chat_style = '',
                 chat_example = '',

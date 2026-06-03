@@ -58,6 +58,7 @@ class TestCharacterSummaryStatsDTO(unittest.TestCase):
                 tags = [
                     ''
                     ],
+                telegram_url = '',
                 view_count = 56,
                 refer_count = 56,
                 recommend_count = 56,

@@ -158,6 +158,11 @@ public class CharacterSummaryDTO {
   @javax.annotation.Nullable
   private List<String> tags = new ArrayList<>();
 
+  public static final String SERIALIZED_NAME_TELEGRAM_URL = "telegramUrl";
+  @SerializedName(SERIALIZED_NAME_TELEGRAM_URL)
+  @javax.annotation.Nullable
+  private String telegramUrl;
+
   public CharacterSummaryDTO() {
   }
 
@@ -567,6 +572,25 @@ public class CharacterSummaryDTO {
     this.tags = tags;
   }
 
+
+  public CharacterSummaryDTO telegramUrl(@javax.annotation.Nullable String telegramUrl) {
+    this.telegramUrl = telegramUrl;
+    return this;
+  }
+
+  /**
+   * Telegram URL
+   * @return telegramUrl
+   */
+  @javax.annotation.Nullable
+  public String getTelegramUrl() {
+    return telegramUrl;
+  }
+
+  public void setTelegramUrl(@javax.annotation.Nullable String telegramUrl) {
+    this.telegramUrl = telegramUrl;
+  }
+
   /**
    * A container for additional, undeclared properties.
    * This is a holder for any undeclared properties as specified with
@@ -642,13 +666,14 @@ public class CharacterSummaryDTO {
         Objects.equals(this.defaultScene, characterSummaryDTO.defaultScene) &&
         Objects.equals(this.priority, characterSummaryDTO.priority) &&
         Objects.equals(this.username, characterSummaryDTO.username) &&
-        Objects.equals(this.tags, characterSummaryDTO.tags)&&
+        Objects.equals(this.tags, characterSummaryDTO.tags) &&
+        Objects.equals(this.telegramUrl, characterSummaryDTO.telegramUrl)&&
         Objects.equals(this.additionalProperties, characterSummaryDTO.additionalProperties);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(requestId, characterId, characterUid, gmtCreate, gmtModified, parentUid, visibility, version, name, description, nickname, avatar, picture, video, gender, lang, greeting, defaultScene, priority, username, tags, additionalProperties);
+    return Objects.hash(requestId, characterId, characterUid, gmtCreate, gmtModified, parentUid, visibility, version, name, description, nickname, avatar, picture, video, gender, lang, greeting, defaultScene, priority, username, tags, telegramUrl, additionalProperties);
   }
 
   @Override
@@ -676,6 +701,7 @@ public class CharacterSummaryDTO {
     sb.append("    priority: ").append(toIndentedString(priority)).append("\n");
     sb.append("    username: ").append(toIndentedString(username)).append("\n");
     sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
+    sb.append("    telegramUrl: ").append(toIndentedString(telegramUrl)).append("\n");
     sb.append("    additionalProperties: ").append(toIndentedString(additionalProperties)).append("\n");
     sb.append("}");
     return sb.toString();
@@ -695,7 +721,7 @@ public class CharacterSummaryDTO {
 
   static {
     // a set of all properties/fields (JSON key names)
-    openapiFields = new HashSet<String>(Arrays.asList("requestId", "characterId", "characterUid", "gmtCreate", "gmtModified", "parentUid", "visibility", "version", "name", "description", "nickname", "avatar", "picture", "video", "gender", "lang", "greeting", "defaultScene", "priority", "username", "tags"));
+    openapiFields = new HashSet<String>(Arrays.asList("requestId", "characterId", "characterUid", "gmtCreate", "gmtModified", "parentUid", "visibility", "version", "name", "description", "nickname", "avatar", "picture", "video", "gender", "lang", "greeting", "defaultScene", "priority", "username", "tags", "telegramUrl"));
 
     // a set of required properties/fields (JSON key names)
     openapiRequiredFields = new HashSet<String>(0);
@@ -762,6 +788,9 @@ public class CharacterSummaryDTO {
       // ensure the optional json data is an array if present
       if (jsonObj.get("tags") != null && !jsonObj.get("tags").isJsonNull() && !jsonObj.get("tags").isJsonArray()) {
         throw new IllegalArgumentException(String.format(java.util.Locale.ROOT, "Expected the field `tags` to be an array in the JSON string but got `%s`", jsonObj.get("tags").toString()));
+      }
+      if ((jsonObj.get("telegramUrl") != null && !jsonObj.get("telegramUrl").isJsonNull()) && !jsonObj.get("telegramUrl").isJsonPrimitive()) {
+        throw new IllegalArgumentException(String.format(java.util.Locale.ROOT, "Expected the field `telegramUrl` to be a primitive type in the JSON string but got `%s`", jsonObj.get("telegramUrl").toString()));
       }
   }
 

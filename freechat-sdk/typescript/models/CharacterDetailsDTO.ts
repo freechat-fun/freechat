@@ -102,6 +102,10 @@ export class CharacterDetailsDTO {
     */
     'tags'?: Array<string>;
     /**
+    * Telegram URL
+    */
+    'telegramUrl'?: string;
+    /**
     * Character profile
     */
     'profile'?: string;
@@ -255,6 +259,12 @@ export class CharacterDetailsDTO {
             "name": "tags",
             "baseName": "tags",
             "type": "Array<string>",
+            "format": ""
+        },
+        {
+            "name": "telegramUrl",
+            "baseName": "telegramUrl",
+            "type": "string",
             "format": ""
         },
         {
