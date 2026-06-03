@@ -27,6 +27,7 @@ Name | Type | Description | Notes
 **priority** | **int** | Character priority | [optional] 
 **username** | **str** | Character owner | [optional] 
 **tags** | **List[str]** | Tag set | [optional] 
+**telegram_url** | **str** | Telegram URL | [optional] 
 
 ## Example
 

@@ -210,6 +210,14 @@ public class CharacterDetailsDTOTest {
     }
 
     /**
+     * Test the property 'telegramUrl'
+     */
+    @Test
+    public void telegramUrlTest() {
+        // TODO: test telegramUrl
+    }
+
+    /**
      * Test the property 'profile'
      */
     @Test

@@ -29,6 +29,7 @@ Character detailed content
 |**priority** | **Integer** | Character priority |  [optional] |
 |**username** | **String** | Character owner |  [optional] |
 |**tags** | **List&lt;String&gt;** | Tag set |  [optional] |
+|**telegramUrl** | **String** | Telegram URL |  [optional] |
 |**profile** | **String** | Character profile |  [optional] |
 |**chatStyle** | **String** | Character chat-style |  [optional] |
 |**chatExample** | **String** | Character chat-example |  [optional] |

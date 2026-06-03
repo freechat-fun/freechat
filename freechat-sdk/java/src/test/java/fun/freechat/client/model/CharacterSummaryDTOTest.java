@@ -208,4 +208,12 @@ public class CharacterSummaryDTOTest {
         // TODO: test tags
     }
 
+    /**
+     * Test the property 'telegramUrl'
+     */
+    @Test
+    public void telegramUrlTest() {
+        // TODO: test telegramUrl
+    }
+
 }

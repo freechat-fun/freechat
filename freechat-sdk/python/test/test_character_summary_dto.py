@@ -57,7 +57,8 @@ class TestCharacterSummaryDTO(unittest.TestCase):
                 username = '',
                 tags = [
                     ''
-                    ]
+                    ],
+                telegram_url = ''
             )
         else:
             return CharacterSummaryDTO(

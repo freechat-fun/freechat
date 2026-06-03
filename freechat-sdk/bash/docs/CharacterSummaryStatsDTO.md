@@ -24,6 +24,7 @@ Name | Type | Description | Notes
 **priority** | **integer** |  | [optional] [default to null]
 **username** | **string** |  | [optional] [default to null]
 **tags** | **array[string]** |  | [optional] [default to null]
+**telegramUrl** | **string** |  | [optional] [default to null]
 **viewCount** | **integer** |  | [optional] [default to null]
 **referCount** | **integer** |  | [optional] [default to null]
 **recommendCount** | **integer** |  | [optional] [default to null]

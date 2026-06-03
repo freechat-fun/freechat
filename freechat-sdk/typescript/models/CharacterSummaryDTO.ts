@@ -100,6 +100,10 @@ export class CharacterSummaryDTO {
     * Tag set
     */
     'tags'?: Array<string>;
+    /**
+    * Telegram URL
+    */
+    'telegramUrl'?: string;
 
     static readonly discriminator: string | undefined = undefined;
 
@@ -230,6 +234,12 @@ export class CharacterSummaryDTO {
             "name": "tags",
             "baseName": "tags",
             "type": "Array<string>",
+            "format": ""
+        },
+        {
+            "name": "telegramUrl",
+            "baseName": "telegramUrl",
+            "type": "string",
             "format": ""
         }    ];
 

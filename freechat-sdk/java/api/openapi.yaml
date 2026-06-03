@@ -8008,6 +8008,7 @@ components:
         defaultScene: defaultScene
         greeting: greeting
         description: description
+        telegramUrl: telegramUrl
         avatar: avatar
         video: video
         gmtCreate: 2000-01-23T04:56:07.000+00:00
@@ -8096,6 +8097,9 @@ components:
           items:
             type: string
           type: array
+        telegramUrl:
+          description: Telegram URL
+          type: string
     PromptCreateDTO:
       description: Request data for creating new prompt information
       example:
@@ -9065,6 +9069,7 @@ components:
         visibility: visibility
         profile: profile
         chatExample: chatExample
+        telegramUrl: telegramUrl
         avatar: avatar
         gmtCreate: 2000-01-23T04:56:07.000+00:00
         priority: 1
@@ -9208,6 +9213,9 @@ components:
           items:
             type: string
           type: array
+        telegramUrl:
+          description: Telegram URL
+          type: string
         profile:
           description: Character profile
           type: string
@@ -9910,6 +9918,7 @@ components:
         characterUid: characterUid
         parentUid: parentUid
         visibility: visibility
+        telegramUrl: telegramUrl
         avatar: avatar
         gmtCreate: 2000-01-23T04:56:07.000+00:00
         priority: 1
@@ -9993,6 +10002,9 @@ components:
           items:
             type: string
           type: array
+        telegramUrl:
+          description: Telegram URL
+          type: string
         viewCount:
           description: View count
           format: int64

@@ -74,7 +74,8 @@ class TestChatSessionDTO(unittest.TestCase):
                     username = '', 
                     tags = [
                         ''
-                        ], ),
+                        ], 
+                    telegram_url = '', ),
                 provider = 'azure_open_ai',
                 latest_message_record = freechat_sdk.models.chat_message_record_dto.ChatMessageRecordDTO(
                     message = null, 

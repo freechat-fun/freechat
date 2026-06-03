@@ -49,13 +49,14 @@ class CharacterSummaryStatsDTO(BaseModel):
     priority: Optional[StrictInt] = Field(default=None, description="Character priority")
     username: Optional[StrictStr] = Field(default=None, description="Character owner")
     tags: Optional[List[StrictStr]] = Field(default=None, description="Tag set")
+    telegram_url: Optional[StrictStr] = Field(default=None, description="Telegram URL", alias="telegramUrl")
     view_count: Optional[StrictInt] = Field(default=None, description="View count", alias="viewCount")
     refer_count: Optional[StrictInt] = Field(default=None, description="Reference count", alias="referCount")
     recommend_count: Optional[StrictInt] = Field(default=None, description="Recommendation count", alias="recommendCount")
     score_count: Optional[StrictInt] = Field(default=None, description="Score count", alias="scoreCount")
     score: Optional[StrictInt] = Field(default=None, description="Average score")
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["requestId", "characterId", "characterUid", "gmtCreate", "gmtModified", "parentUid", "visibility", "version", "name", "description", "nickname", "avatar", "picture", "video", "gender", "lang", "greeting", "defaultScene", "priority", "username", "tags", "viewCount", "referCount", "recommendCount", "scoreCount", "score"]
+    __properties: ClassVar[List[str]] = ["requestId", "characterId", "characterUid", "gmtCreate", "gmtModified", "parentUid", "visibility", "version", "name", "description", "nickname", "avatar", "picture", "video", "gender", "lang", "greeting", "defaultScene", "priority", "username", "tags", "telegramUrl", "viewCount", "referCount", "recommendCount", "scoreCount", "score"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -136,6 +137,7 @@ class CharacterSummaryStatsDTO(BaseModel):
             "priority": obj.get("priority"),
             "username": obj.get("username"),
             "tags": obj.get("tags"),
+            "telegramUrl": obj.get("telegramUrl"),
             "viewCount": obj.get("viewCount"),
             "referCount": obj.get("referCount"),
             "recommendCount": obj.get("recommendCount"),

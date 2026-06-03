@@ -50,6 +50,7 @@ class CharacterDetailsDTO(BaseModel):
     priority: Optional[StrictInt] = Field(default=None, description="Character priority")
     username: Optional[StrictStr] = Field(default=None, description="Character owner")
     tags: Optional[List[StrictStr]] = Field(default=None, description="Tag set")
+    telegram_url: Optional[StrictStr] = Field(default=None, description="Telegram URL", alias="telegramUrl")
     profile: Optional[StrictStr] = Field(default=None, description="Character profile")
     chat_style: Optional[StrictStr] = Field(default=None, description="Character chat-style", alias="chatStyle")
     chat_example: Optional[StrictStr] = Field(default=None, description="Character chat-example", alias="chatExample")
@@ -57,7 +58,7 @@ class CharacterDetailsDTO(BaseModel):
     draft: Optional[StrictStr] = Field(default=None, description="Character draft information")
     backends: Optional[List[CharacterBackendDetailsDTO]] = Field(default=None, description="Character backends information")
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["requestId", "characterId", "characterUid", "gmtCreate", "gmtModified", "parentUid", "visibility", "version", "name", "description", "nickname", "avatar", "picture", "video", "gender", "lang", "greeting", "defaultScene", "priority", "username", "tags", "profile", "chatStyle", "chatExample", "ext", "draft", "backends"]
+    __properties: ClassVar[List[str]] = ["requestId", "characterId", "characterUid", "gmtCreate", "gmtModified", "parentUid", "visibility", "version", "name", "description", "nickname", "avatar", "picture", "video", "gender", "lang", "greeting", "defaultScene", "priority", "username", "tags", "telegramUrl", "profile", "chatStyle", "chatExample", "ext", "draft", "backends"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -145,6 +146,7 @@ class CharacterDetailsDTO(BaseModel):
             "priority": obj.get("priority"),
             "username": obj.get("username"),
             "tags": obj.get("tags"),
+            "telegramUrl": obj.get("telegramUrl"),
             "profile": obj.get("profile"),
             "chatStyle": obj.get("chatStyle"),
             "chatExample": obj.get("chatExample"),

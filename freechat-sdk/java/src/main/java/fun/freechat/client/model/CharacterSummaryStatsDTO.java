@@ -158,6 +158,11 @@ public class CharacterSummaryStatsDTO {
   @javax.annotation.Nullable
   private List<String> tags = new ArrayList<>();
 
+  public static final String SERIALIZED_NAME_TELEGRAM_URL = "telegramUrl";
+  @SerializedName(SERIALIZED_NAME_TELEGRAM_URL)
+  @javax.annotation.Nullable
+  private String telegramUrl;
+
   public static final String SERIALIZED_NAME_VIEW_COUNT = "viewCount";
   @SerializedName(SERIALIZED_NAME_VIEW_COUNT)
   @javax.annotation.Nullable
@@ -593,6 +598,25 @@ public class CharacterSummaryStatsDTO {
   }
 
 
+  public CharacterSummaryStatsDTO telegramUrl(@javax.annotation.Nullable String telegramUrl) {
+    this.telegramUrl = telegramUrl;
+    return this;
+  }
+
+  /**
+   * Telegram URL
+   * @return telegramUrl
+   */
+  @javax.annotation.Nullable
+  public String getTelegramUrl() {
+    return telegramUrl;
+  }
+
+  public void setTelegramUrl(@javax.annotation.Nullable String telegramUrl) {
+    this.telegramUrl = telegramUrl;
+  }
+
+
   public CharacterSummaryStatsDTO viewCount(@javax.annotation.Nullable Long viewCount) {
     this.viewCount = viewCount;
     return this;
@@ -763,6 +787,7 @@ public class CharacterSummaryStatsDTO {
         Objects.equals(this.priority, characterSummaryStatsDTO.priority) &&
         Objects.equals(this.username, characterSummaryStatsDTO.username) &&
         Objects.equals(this.tags, characterSummaryStatsDTO.tags) &&
+        Objects.equals(this.telegramUrl, characterSummaryStatsDTO.telegramUrl) &&
         Objects.equals(this.viewCount, characterSummaryStatsDTO.viewCount) &&
         Objects.equals(this.referCount, characterSummaryStatsDTO.referCount) &&
         Objects.equals(this.recommendCount, characterSummaryStatsDTO.recommendCount) &&
@@ -773,7 +798,7 @@ public class CharacterSummaryStatsDTO {
 
   @Override
   public int hashCode() {
-    return Objects.hash(requestId, characterId, characterUid, gmtCreate, gmtModified, parentUid, visibility, version, name, description, nickname, avatar, picture, video, gender, lang, greeting, defaultScene, priority, username, tags, viewCount, referCount, recommendCount, scoreCount, score, additionalProperties);
+    return Objects.hash(requestId, characterId, characterUid, gmtCreate, gmtModified, parentUid, visibility, version, name, description, nickname, avatar, picture, video, gender, lang, greeting, defaultScene, priority, username, tags, telegramUrl, viewCount, referCount, recommendCount, scoreCount, score, additionalProperties);
   }
 
   @Override
@@ -801,6 +826,7 @@ public class CharacterSummaryStatsDTO {
     sb.append("    priority: ").append(toIndentedString(priority)).append("\n");
     sb.append("    username: ").append(toIndentedString(username)).append("\n");
     sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
+    sb.append("    telegramUrl: ").append(toIndentedString(telegramUrl)).append("\n");
     sb.append("    viewCount: ").append(toIndentedString(viewCount)).append("\n");
     sb.append("    referCount: ").append(toIndentedString(referCount)).append("\n");
     sb.append("    recommendCount: ").append(toIndentedString(recommendCount)).append("\n");
@@ -825,7 +851,7 @@ public class CharacterSummaryStatsDTO {
 
   static {
     // a set of all properties/fields (JSON key names)
-    openapiFields = new HashSet<String>(Arrays.asList("requestId", "characterId", "characterUid", "gmtCreate", "gmtModified", "parentUid", "visibility", "version", "name", "description", "nickname", "avatar", "picture", "video", "gender", "lang", "greeting", "defaultScene", "priority", "username", "tags", "viewCount", "referCount", "recommendCount", "scoreCount", "score"));
+    openapiFields = new HashSet<String>(Arrays.asList("requestId", "characterId", "characterUid", "gmtCreate", "gmtModified", "parentUid", "visibility", "version", "name", "description", "nickname", "avatar", "picture", "video", "gender", "lang", "greeting", "defaultScene", "priority", "username", "tags", "telegramUrl", "viewCount", "referCount", "recommendCount", "scoreCount", "score"));
 
     // a set of required properties/fields (JSON key names)
     openapiRequiredFields = new HashSet<String>(0);
@@ -892,6 +918,9 @@ public class CharacterSummaryStatsDTO {
       // ensure the optional json data is an array if present
       if (jsonObj.get("tags") != null && !jsonObj.get("tags").isJsonNull() && !jsonObj.get("tags").isJsonArray()) {
         throw new IllegalArgumentException(String.format(java.util.Locale.ROOT, "Expected the field `tags` to be an array in the JSON string but got `%s`", jsonObj.get("tags").toString()));
+      }
+      if ((jsonObj.get("telegramUrl") != null && !jsonObj.get("telegramUrl").isJsonNull()) && !jsonObj.get("telegramUrl").isJsonPrimitive()) {
+        throw new IllegalArgumentException(String.format(java.util.Locale.ROOT, "Expected the field `telegramUrl` to be a primitive type in the JSON string but got `%s`", jsonObj.get("telegramUrl").toString()));
       }
   }
 
