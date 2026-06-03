@@ -2,29 +2,10 @@ package fun.freechat.service.character.impl;
 
 import static dev.langchain4j.internal.Utils.getOrDefault;
 import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
-import static org.mybatis.dynamic.sql.SqlBuilder.countDistinct;
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
-import static org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan;
-import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
-import static org.mybatis.dynamic.sql.SqlBuilder.isLike;
-import static org.mybatis.dynamic.sql.SqlBuilder.isNotEqualTo;
-import static org.mybatis.dynamic.sql.SqlBuilder.or;
-import static org.mybatis.dynamic.sql.SqlBuilder.select;
-import static org.mybatis.dynamic.sql.SqlBuilder.selectDistinct;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
-import fun.freechat.mapper.CharacterBackendDynamicSqlSupport;
-import fun.freechat.mapper.CharacterBackendMapper;
-import fun.freechat.mapper.CharacterInfoDynamicSqlSupport;
-import fun.freechat.mapper.CharacterInfoMapper;
-import fun.freechat.mapper.InteractiveStatsDynamicSqlSupport;
-import fun.freechat.mapper.InteractiveStatsMapper;
-import fun.freechat.mapper.TagDynamicSqlSupport;
-import fun.freechat.mapper.TagMapper;
-import fun.freechat.model.CharacterBackend;
-import fun.freechat.model.CharacterInfo;
-import fun.freechat.model.InteractiveStats;
-import fun.freechat.model.Tag;
-import fun.freechat.model.User;
+import fun.freechat.mapper.*;
+import fun.freechat.model.*;
 import fun.freechat.service.cache.LongPeriodCache;
 import fun.freechat.service.cache.LongPeriodCacheEvict;
 import fun.freechat.service.character.CharacterBackendEvent;
@@ -42,13 +23,7 @@ import fun.freechat.service.util.SortSpecificationWrapper;
 import fun.freechat.util.IdUtils;
 import fun.freechat.util.PojoUtils;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -979,6 +954,7 @@ public class CharacterServiceImpl implements CharacterService {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             LocalDateTime now = LocalDateTime.now();
+            String characterUid = characterBackend.getCharacterUid();
             String plainModerationApiKey = characterBackend.getModerationApiKeyValue();
             String plainImageApiKey = characterBackend.getImageApiKeyValue();
             String plainTgBotToken = characterBackend.getTgBotToken();
@@ -990,10 +966,11 @@ public class CharacterServiceImpl implements CharacterService {
                     .withTgBotToken(encryptionService.encrypt(plainTgBotToken)));
 
             if (rows > 0) {
-                ensureDefaultBackend(characterBackend, now);
+                characterBackend.setCharacterUid(characterUid);
                 characterBackend.setModerationApiKeyValue(plainModerationApiKey);
                 characterBackend.setImageApiKeyValue(plainImageApiKey);
                 characterBackend.setTgBotToken(plainTgBotToken);
+                ensureDefaultBackend(characterBackend, now);
 
                 CharacterBackendEvent event = new CharacterBackendEvent(null, characterBackend.getBackendId());
                 eventPublisher.publishEvent(event);
