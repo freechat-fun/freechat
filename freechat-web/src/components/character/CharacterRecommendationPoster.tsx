@@ -56,6 +56,8 @@ const StyledVideo = styled('video')({
 });
 
 const StyledButton = styled(Button)(({ theme }) => ({
+  marginTop: 'auto',
+  marginLeft: theme.spacing(1),
   display: 'flex',
   padding: theme.spacing(1.25, 2),
   border: '1px solid white',
@@ -155,32 +157,47 @@ const CharacterRecommendationPoster = forwardRef<
             height: '100%',
           }}
         >
-          <Box
-            sx={{
-              borderRadius: 3,
-              bgcolor: 'transparent',
-              backdropFilter: 'blur(3px)',
-              alignSelf: 'flex-start',
-              px: 1,
-              mr: 'auto',
-            }}
-          >
-            <Typography
-              variant="h3"
+          <Stack direction="row" sx={{ alignItems: 'center', gap: 1 }}>
+            <Box
               sx={{
-                color: 'white',
-                WebkitTextStroke: '1px gray',
-                textShadow: `
-                -1px -1px 0 gray,
-                1px -1px 0 gray,
-                -1px  1px 0 gray,
-                1px  1px 0 gray
-              `,
+                borderRadius: 3,
+                bgcolor: 'transparent',
+                backdropFilter: 'blur(3px)',
+                px: 1,
               }}
             >
-              {nickname}
-            </Typography>
-          </Box>
+              <Typography
+                variant="h3"
+                sx={{
+                  color: 'white',
+                  WebkitTextStroke: '1px gray',
+                  textShadow: `
+                  -1px -1px 0 gray,
+                  1px -1px 0 gray,
+                  -1px  1px 0 gray,
+                  1px  1px 0 gray
+                `,
+                }}
+              >
+                {nickname}
+              </Typography>
+            </Box>
+
+            {record?.telegramUrl && (
+              <IconButton
+                onClick={(event) => {
+                  event.stopPropagation();
+                  window.open(
+                    record.telegramUrl as string,
+                    '_blank',
+                    'noopener,noreferrer',
+                  );
+                }}
+              >
+                <Telegram />
+              </IconButton>
+            )}
+          </Stack>
 
           <FlexBox>
             {record?.tags &&
@@ -226,50 +243,30 @@ const CharacterRecommendationPoster = forwardRef<
             </Box>
           </Stack>
 
-          <Stack
-            direction="row"
-            sx={{ mt: 'auto', ml: 1, gap: 1, alignItems: 'center' }}
+          <StyledButton
+            sx={{
+              borderTopLeftRadius:
+                record?.greeting && !isHovered ? 0 : '16px',
+              borderTopRightRadius: '16px',
+              borderBottomLeftRadius:
+                record?.greeting && !isHovered ? '16px' : 0,
+              borderBottomRightRadius: '16px',
+              background:
+                record?.greeting && !isHovered ? '#000000C0' : '#0B6BCBC0',
+            }}
+            onClick={() => handleView(record)}
           >
-            <StyledButton
-              sx={{
-                borderTopLeftRadius:
-                  record?.greeting && !isHovered ? 0 : '16px',
-                borderTopRightRadius: '16px',
-                borderBottomLeftRadius:
-                  record?.greeting && !isHovered ? '16px' : 0,
-                borderBottomRightRadius: '16px',
-                background:
-                  record?.greeting && !isHovered ? '#000000C0' : '#0B6BCBC0',
-              }}
-              onClick={() => handleView(record)}
+            <Typography
+              variant="body1"
+              sx={{ color: 'white', whiteSpace: 'pre-wrap' }}
             >
-              <Typography
-                variant="body1"
-                sx={{ color: 'white', whiteSpace: 'pre-wrap' }}
-              >
-                {isHovered
-                  ? record?.lang === 'zh'
-                    ? '聊一聊'
-                    : 'have a chat'
-                  : record?.greeting}
-              </Typography>
-            </StyledButton>
-
-            {record?.telegramUrl && (
-              <IconButton
-                onClick={(event) => {
-                  event.stopPropagation();
-                  window.open(
-                    record.telegramUrl as string,
-                    '_blank',
-                    'noopener,noreferrer',
-                  );
-                }}
-              >
-                <Telegram />
-              </IconButton>
-            )}
-          </Stack>
+              {isHovered
+                ? record?.lang === 'zh'
+                  ? '聊一聊'
+                  : 'have a chat'
+                : record?.greeting}
+            </Typography>
+          </StyledButton>
         </Stack>
       </StyledGridBox>
     </Fragment>
