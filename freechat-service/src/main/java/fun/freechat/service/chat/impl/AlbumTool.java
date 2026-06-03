@@ -1,5 +1,8 @@
 package fun.freechat.service.chat.impl;
 
+import static dev.langchain4j.internal.ValidationUtils.ensureNotNull;
+import static fun.freechat.service.util.StoreUtils.PUBLIC_DIR;
+
 import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.agent.tool.ToolMemoryId;
 import dev.langchain4j.agentic.AgenticServices;
@@ -22,16 +25,12 @@ import fun.freechat.service.chat.ChatSessionService;
 import fun.freechat.service.common.FileStore;
 import fun.freechat.service.common.ShortLinkService;
 import fun.freechat.service.util.StoreUtils;
-import lombok.Builder;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-
-import static dev.langchain4j.internal.ValidationUtils.ensureNotNull;
-import static fun.freechat.service.util.StoreUtils.PUBLIC_DIR;
+import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
 public class AlbumTool {
