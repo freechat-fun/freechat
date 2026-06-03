@@ -56,8 +56,6 @@ const StyledVideo = styled('video')({
 });
 
 const StyledButton = styled(Button)(({ theme }) => ({
-  marginTop: 'auto',
-  marginLeft: theme.spacing(1),
   display: 'flex',
   padding: theme.spacing(1.25, 2),
   border: '1px solid white',
@@ -228,36 +226,51 @@ const CharacterRecommendationPoster = forwardRef<
             </Box>
           </Stack>
 
-          <StyledButton
-            sx={{
-              borderTopLeftRadius:
-                record?.greeting && !isHovered ? 0 : '16px',
-              borderTopRightRadius: '16px',
-              borderBottomLeftRadius:
-                record?.greeting && !isHovered ? '16px' : 0,
-              borderBottomRightRadius: '16px',
-              background:
-                record?.greeting && !isHovered ? '#000000C0' : '#0B6BCBC0',
-            }}
-            onClick={() => handleView(record)}
+          <Stack
+            direction="row"
+            alignItems="center"
+            sx={{ mt: 'auto', ml: 1, gap: 1 }}
           >
-            <Typography
-              variant="body1"
-              sx={{ color: 'white', whiteSpace: 'pre-wrap' }}
+            <StyledButton
+              sx={{
+                borderTopLeftRadius:
+                  record?.greeting && !isHovered ? 0 : '16px',
+                borderTopRightRadius: '16px',
+                borderBottomLeftRadius:
+                  record?.greeting && !isHovered ? '16px' : 0,
+                borderBottomRightRadius: '16px',
+                background:
+                  record?.greeting && !isHovered ? '#000000C0' : '#0B6BCBC0',
+              }}
+              onClick={() => handleView(record)}
             >
-              {isHovered
-                ? record?.lang === 'zh'
-                  ? '聊一聊'
-                  : 'have a chat'
-                : record?.greeting}
-            </Typography>
-          </StyledButton>
+              <Typography
+                variant="body1"
+                sx={{ color: 'white', whiteSpace: 'pre-wrap' }}
+              >
+                {isHovered
+                  ? record?.lang === 'zh'
+                    ? '聊一聊'
+                    : 'have a chat'
+                  : record?.greeting}
+              </Typography>
+            </StyledButton>
 
-          {record?.telegramUrl && (
-            <IconButton onClick={() => navigate(record.telegramUrl as string)}>
-              <Telegram />
-            </IconButton>
-          )}
+            {record?.telegramUrl && (
+              <IconButton
+                onClick={(event) => {
+                  event.stopPropagation();
+                  window.open(
+                    record.telegramUrl as string,
+                    '_blank',
+                    'noopener,noreferrer',
+                  );
+                }}
+              >
+                <Telegram />
+              </IconButton>
+            )}
+          </Stack>
         </Stack>
       </StyledGridBox>
     </Fragment>
