@@ -1,5 +1,7 @@
 package fun.freechat.api.util;
 
+import fun.freechat.channels.telegram.TelegramChannelManager;
+import fun.freechat.model.CharacterBackend;
 import fun.freechat.model.CharacterInfo;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.enums.Visibility;
@@ -14,10 +16,29 @@ import org.springframework.stereotype.Component;
 @Component
 public class CharacterUtils implements ApplicationContextAware {
     private static CharacterService characterService;
+    private static TelegramChannelManager telegramChannelManager;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         characterService = applicationContext.getBean(CharacterService.class);
+        telegramChannelManager = applicationContext.getBean(TelegramChannelManager.class);
+    }
+
+    /**
+     * Builds a {@code https://t.me/<bot-username>} link for the character's default backend, or
+     * {@code null} if the character has no default backend, the backend has no Telegram bot token
+     * configured, or the bot has not yet been registered in this replica's in-process map (the
+     * {@link TelegramChannelManager} reconcile loop will catch up shortly).
+     */
+    public static String telegramUrl(String characterUid) {
+        if (StringUtils.isBlank(characterUid)) {
+            return null;
+        }
+        CharacterBackend backend = characterService.getDefaultBackend(characterUid);
+        if (backend == null || StringUtils.isBlank(backend.getTgBotToken())) {
+            return null;
+        }
+        return telegramChannelManager.getInviteLink(backend.getBackendId());
     }
 
     private static void resetCharacterInfo(CharacterInfo info, String parentUid) {

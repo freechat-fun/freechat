@@ -1,16 +1,18 @@
 package fun.freechat.api.dto;
 
 import fun.freechat.api.util.AccountUtils;
+import fun.freechat.api.util.CharacterUtils;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.CharacterInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.time.LocalDateTime;
-import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Schema(description = "Character summary content")
 @Data
@@ -78,13 +80,18 @@ public class CharacterSummaryDTO extends TraceableDTO {
     @Schema(description = "Tag set")
     private List<String> tags;
 
+    @Schema(description = "Telegram URL")
+    private String telegramUrl;
+
     public static CharacterSummaryDTO from(Pair<CharacterInfo, List<String>> characterInfoPair) {
         if (characterInfoPair == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find character!");
         }
-        CharacterSummaryDTO dto = CommonUtils.convert(characterInfoPair.getLeft(), CharacterSummaryDTO.class);
-        dto.setUsername(AccountUtils.userIdToName(characterInfoPair.getLeft().getUserId()));
+        CharacterInfo info = characterInfoPair.getLeft();
+        CharacterSummaryDTO dto = CommonUtils.convert(info, CharacterSummaryDTO.class);
+        dto.setUsername(AccountUtils.userIdToName(info.getUserId()));
         dto.setTags(characterInfoPair.getRight());
+        dto.setTelegramUrl(CharacterUtils.telegramUrl(info.getCharacterUid()));
         return dto;
     }
 }
