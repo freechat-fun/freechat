@@ -185,6 +185,7 @@ const CharacterRecommendationPoster = forwardRef<
 
             {record?.telegramUrl && (
               <IconButton
+                size="large"
                 onClick={(event) => {
                   event.stopPropagation();
                   window.open(
@@ -194,7 +195,7 @@ const CharacterRecommendationPoster = forwardRef<
                   );
                 }}
               >
-                <Telegram />
+                <Telegram sx={{ fontSize: '2rem' }} />
               </IconButton>
             )}
           </Stack>
