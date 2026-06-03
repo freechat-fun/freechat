@@ -66,7 +66,6 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
   const { record, keyWord, sx, onClick } = props;
   const { i18n } = useTranslation();
   const { mode } = useColorScheme();
-  const navigate = useNavigate();
 
   const [tags, setTags] = useState(record?.tags ?? []);
   const [nickname, setNickname] = useState(record?.nickname ?? record?.name);
@@ -232,8 +231,17 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
               icon={<ShareRounded />}
               label={record.referCount}
             />
-            {record?.telegramUrl && (
-              <IconButton onClick={() => navigate(record.telegramUrl as string)}>
+            {record.telegramUrl && (
+              <IconButton
+                onClick={(event) => {
+                  event.stopPropagation();
+                  window.open(
+                    record.telegramUrl as string,
+                    '_blank',
+                    'noopener,noreferrer',
+                  );
+                }}
+              >
                 <Telegram />
               </IconButton>
             )}
