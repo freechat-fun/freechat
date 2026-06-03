@@ -5,14 +5,13 @@ import fun.freechat.api.util.CharacterUtils;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.CharacterInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Schema(description = "Character summary content")
 @Data
