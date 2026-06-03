@@ -43,11 +43,13 @@ import {
   SxProps,
   Theme,
   useColorScheme,
+  IconButton,
 } from '@mui/material';
 import {
   Face3Outlined,
   FaceOutlined,
   ShareRounded,
+  Telegram,
   VisibilityRounded,
 } from '@mui/icons-material';
 import { getDateLabel } from '../../libs/date_utils';
@@ -64,6 +66,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
   const { record, keyWord, sx, onClick } = props;
   const { i18n } = useTranslation();
   const { mode } = useColorScheme();
+  const navigate = useNavigate();
 
   const [tags, setTags] = useState(record?.tags ?? []);
   const [nickname, setNickname] = useState(record?.nickname ?? record?.name);
@@ -229,6 +232,11 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
               icon={<ShareRounded />}
               label={record.referCount}
             />
+            {record?.telegramUrl && (
+              <IconButton onClick={() => navigate(record.telegramUrl as string)}>
+                <Telegram />
+              </IconButton>
+            )}
           </FlexBox>
         </Box>
       </StyledStack>

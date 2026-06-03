@@ -6,6 +6,7 @@ import {
   BoxProps,
   Button,
   Chip,
+  IconButton,
   Stack,
   Typography,
   styled,
@@ -23,6 +24,7 @@ import {
   useFreeChatApiContext,
   useMetaInfoContext,
 } from '../../contexts';
+import { Telegram } from '@mui/icons-material';
 
 type CharacterRecommendationPosterProps = BoxProps & {
   record?: CharacterSummaryDTO;
@@ -250,6 +252,12 @@ const CharacterRecommendationPoster = forwardRef<
                 : record?.greeting}
             </Typography>
           </StyledButton>
+
+          {record?.telegramUrl && (
+            <IconButton onClick={() => navigate(record.telegramUrl as string)}>
+              <Telegram />
+            </IconButton>
+          )}
         </Stack>
       </StyledGridBox>
     </Fragment>
