@@ -23,6 +23,7 @@ It is recommended to run [Ollama](https://ollama.com/) + FreeChat locally to tes
 - Supports characters **importing and exporting**.
 - Supports **character-to-character chats**.
 - Supports **character voices**.
+- Supports chatting with characters via **Telegram**.
 - Supports individual **debugging and sharing prompts**.
 
 ## Snapshots
