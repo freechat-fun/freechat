@@ -144,6 +144,7 @@ const CharacterBackendSettings = forwardRef<
   const [apiKeyName, setApiKeyName] = useState('');
   const [apiKeyValue, setApiKeyValue] = useState('');
   const [apiKeyNames, setApiKeyNames] = useState<string[]>([]);
+  const [imageModelId, setImageModelId] = useState<string | undefined>(backend?.imageModelId ?? '');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [parameters, setParameters] = useState<{ [key: string]: any }>({});
 
@@ -175,13 +176,6 @@ const CharacterBackendSettings = forwardRef<
   }, [ttsServiceApi, handleError]);
 
   useEffect(() => {
-    if (backend?.chatPromptTaskId) {
-      promptTaskApi
-        ?.getPromptTask(backend?.chatPromptTaskId)
-        .then(setPromptTask)
-        .catch(handleError);
-    }
-
     setInitQuota(backend?.initQuota ?? 0);
     setQuotaType(
       backend?.quotaType === 'tokens' ? backend?.quotaType : 'messages'
@@ -196,7 +190,13 @@ const CharacterBackendSettings = forwardRef<
     setTtsSpeakerType(backend?.ttsSpeakerType ?? 'idx');
     setTgBotToken(backend?.tgBotToken ?? '');
     setEnableTelegramBot(!!backend?.tgBotToken);
-    setParameters((prev) => ({ ...prev, imageModelId: backend?.imageModelId }));
+    setImageModelId(backend?.imageModelId ?? '');
+    if (backend?.chatPromptTaskId) {
+      promptTaskApi
+        ?.getPromptTask(backend?.chatPromptTaskId)
+        .then(setPromptTask)
+        .catch(handleError);
+    }
   }, [backend, handleError, promptTaskApi]);
 
   useEffect(() => {
@@ -216,8 +216,8 @@ const CharacterBackendSettings = forwardRef<
     setProvider(extractModelProvider(promptTask?.modelId) ?? 'open_ai');
     setApiKeyName(promptTask?.apiKeyName ?? '');
     setApiKeyValue(promptTask?.apiKeyValue ?? '');
-    setParameters({ ...promptTask?.params, modelId: promptTask?.modelId });
-  }, [promptTask]);
+    setParameters({ ...promptTask?.params, modelId: promptTask?.modelId, imageModelId: imageModelId });
+  }, [promptTask, imageModelId]);
 
   function handleModelProviderSelectChange(
     _event: React.SyntheticEvent | null,
