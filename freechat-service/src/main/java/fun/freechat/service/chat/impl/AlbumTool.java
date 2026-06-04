@@ -98,8 +98,6 @@ public class AlbumTool {
 
     @Tool
     public Content findAnImage(@ToolMemoryId Object memoryId, String description) {
-        String originImageUrl = loadLocalImage(memoryId);
-
         ChatModel imageChatModel = Optional.ofNullable(memoryId)
                 .map(ChatService::asChatId)
                 .filter(StringUtils::isNotBlank)
@@ -108,13 +106,14 @@ public class AlbumTool {
                 .orElse(null);
 
         if (imageChatModel == null) {
-            return TextContent.from(originImageUrl);
+            return TextContent.from(loadLocalImage(memoryId, false));
         }
 
+        String originImageUrl = loadLocalImage(memoryId, true);
         ImageContentParser resultParser = new ImageContentParser();
-
         UntypedAgent imageCreator;
         Map<String, Object> input;
+
         if (originImageUrl == null) {
             ImageGenerateAgent generateAgent = AgenticServices.agentBuilder(ImageGenerateAgent.class)
                     .description(imageGenerateAgentDescription())
@@ -222,7 +221,7 @@ public class AlbumTool {
         return "zh".equalsIgnoreCase(lang) ? IMAGE_GENERATE_AGENT_PROMPT_CN : IMAGE_GENERATE_AGENT_PROMPT_EN;
     }
 
-    protected String loadLocalImage(Object memoryId) {
+    protected String loadLocalImage(Object memoryId, boolean forceDefault) {
         CharacterInfo characterInfo = Optional.ofNullable(memoryId)
                 .map(ChatService::asChatId)
                 .filter(StringUtils::isNotBlank)
@@ -237,6 +236,10 @@ public class AlbumTool {
 
         String characterPicture = characterInfo.getPicture();
         String characterAvatar = characterInfo.getAvatar();
+
+        if (forceDefault) {
+            return defaultPicture(characterAvatar, characterPicture);
+        }
 
         FileStore fileStore = StoreUtils.defaultFileStore();
         try {
