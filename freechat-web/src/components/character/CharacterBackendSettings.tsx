@@ -196,6 +196,7 @@ const CharacterBackendSettings = forwardRef<
     setTtsSpeakerType(backend?.ttsSpeakerType ?? 'idx');
     setTgBotToken(backend?.tgBotToken ?? '');
     setEnableTelegramBot(!!backend?.tgBotToken);
+    setParameters((prev) => ({ ...prev, imageModelId: backend?.imageModelId }));
   }, [backend, handleError, promptTaskApi]);
 
   useEffect(() => {
