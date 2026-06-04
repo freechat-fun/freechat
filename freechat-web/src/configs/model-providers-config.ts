@@ -36,7 +36,7 @@ const defaultBaseURLs = {
 };
 
 const defaultImageModels = {
-  dash_scope: '[dash_scope]qwen-image-2.0-pro|multimodal',
+  dash_scope: '[dash_scope]qwen-image-2.0|multimodal',
 };
 
 export { providers, defaultModels, defaultBaseURLs, defaultImageModels };
