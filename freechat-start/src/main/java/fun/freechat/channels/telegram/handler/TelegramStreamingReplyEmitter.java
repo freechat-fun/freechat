@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.telegram.telegrambots.meta.api.methods.ActionType;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
@@ -76,6 +77,7 @@ public final class TelegramStreamingReplyEmitter {
     private final List<Long> messageIds = new ArrayList<>();
     private final StringBuilder fullText = new StringBuilder();
     private final List<String> pendingImageUrls = new ArrayList<>();
+    private final List<Pair<Long, String>> sentImages = new ArrayList<>();
     private int currentSegmentStart = 0;
     private String lastFlushed = "";
     private long nextFlushAt = 0L;
@@ -136,12 +138,21 @@ public final class TelegramStreamingReplyEmitter {
 
     /** Telegram message id of the LAST message in the streamed sequence (used for outbound logging). */
     public Long lastMessageId() {
-        return messageIds.isEmpty() ? null : messageIds.get(messageIds.size() - 1);
+        return messageIds.isEmpty() ? null : messageIds.getLast();
     }
 
     /** All message ids in send order — useful for tests / auditing. */
     public List<Long> messageIds() {
         return List.copyOf(messageIds);
+    }
+
+    /**
+     * {@code (telegramMessageId, url)} pairs for each photo successfully delivered by
+     * {@link #sendPendingImages()}. Empty until {@link #complete()} runs. Caller-facing,
+     * used by {@code ChatBindingTelegramMessageHandler} to persist one outbound row per photo.
+     */
+    public List<Pair<Long, String>> sentImages() {
+        return List.copyOf(sentImages);
     }
 
     private void flush(boolean isFinal) {
@@ -247,11 +258,17 @@ public final class TelegramStreamingReplyEmitter {
         }
     }
 
-    /** Fires one {@code sendPhoto} per stashed image. Failures are logged but never thrown. */
+    /**
+     * Fires one {@code sendPhoto} per stashed image. Failures are logged but never thrown.
+     * Successful sends are recorded into {@link #sentImages} so callers can persist them.
+     */
     private void sendPendingImages() {
         for (String url : pendingImageUrls) {
             try {
-                channel.sendPhoto(backendId, tgChatId, new InputFile(url), null);
+                Message sent = channel.sendPhoto(backendId, tgChatId, new InputFile(url), null);
+                if (sent != null && sent.getMessageId() != null) {
+                    sentImages.add(Pair.of(sent.getMessageId().longValue(), url));
+                }
             } catch (TelegramApiException e) {
                 log.warn("Telegram sendPhoto failed for chat {} (url={}): {}", tgChatId, url, e.getMessage());
             }
@@ -324,9 +341,7 @@ public final class TelegramStreamingReplyEmitter {
         if (ticks % 2 != 0) {
             out.append('`');
         }
-        for (int i = 0; i < opens - closes; i++) {
-            out.append(']');
-        }
+        out.repeat("]", Math.max(0, opens - closes));
         return out.toString();
     }
 

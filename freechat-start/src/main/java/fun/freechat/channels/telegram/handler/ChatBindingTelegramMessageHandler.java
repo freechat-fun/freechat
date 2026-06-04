@@ -88,11 +88,8 @@ public class ChatBindingTelegramMessageHandler implements TelegramMessageHandler
             stream.onPartialResponse(emitter::append)
                     .onCompleteResponse(response -> {
                         try {
-                            String finalText = emitter.complete();
-                            Long lastId = emitter.lastMessageId();
-                            if (lastId != null) {
-                                tgMessageService.record(chatId, lastId, null, "out", "text", finalText, null);
-                            }
+                            recordOutboundText(chatId, emitter, emitter.complete());
+                            recordOutboundPhotos(chatId, emitter);
                         } finally {
                             if (session != null) {
                                 session.release();
@@ -103,10 +100,10 @@ public class ChatBindingTelegramMessageHandler implements TelegramMessageHandler
                         try {
                             log.warn("Streaming reply errored for chat {}", chatId, err);
                             String partial = emitter.complete();
-                            Long lastId = emitter.lastMessageId();
-                            if (lastId != null && !partial.isBlank()) {
-                                tgMessageService.record(chatId, lastId, null, "out", "text", partial, null);
+                            if (!partial.isBlank()) {
+                                recordOutboundText(chatId, emitter, partial);
                             }
+                            recordOutboundPhotos(chatId, emitter);
                         } finally {
                             if (session != null) {
                                 session.release();
@@ -118,6 +115,19 @@ public class ChatBindingTelegramMessageHandler implements TelegramMessageHandler
             log.error("Failed to start streaming reply for chat {}", chatId, e);
             emitter.complete();
         }
+    }
+
+    private void recordOutboundText(String chatId, TelegramStreamingReplyEmitter emitter, String text) {
+        Long lastId = emitter.lastMessageId();
+        if (lastId == null) {
+            return;
+        }
+        tgMessageService.record(chatId, lastId, null, "out", "text", text, null);
+    }
+
+    private void recordOutboundPhotos(String chatId, TelegramStreamingReplyEmitter emitter) {
+        emitter.sentImages()
+                .forEach(p -> tgMessageService.record(chatId, p.getLeft(), null, "out", "photo", p.getRight(), null));
     }
 
     private static String detectKind(Message m) {
