@@ -40,7 +40,7 @@
         <langchain4j.version>1.15.1</langchain4j.version>
         <langchain4j-community.version>1.15.0-beta25</langchain4j-community.version>
         <telegrambots.version>9.6.0</telegrambots.version>
-        <wiremock.version>3.13.1</wiremock.version>
+        <wiremock.version>3.13.2</wiremock.version>
 
         <!--plugin versions-->
         <buildnumber-maven-plugin.version>3.3.0</buildnumber-maven-plugin.version>
