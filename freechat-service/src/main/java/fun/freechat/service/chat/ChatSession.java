@@ -15,7 +15,6 @@ import fun.freechat.service.enums.PromptFormat;
 import fun.freechat.service.prompt.ChatPromptContent;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,7 +31,6 @@ public class ChatSession {
     private final PromptFormat promptFormat;
     private final Map<String, Object> variables;
     private final RetrievalAugmentor longTermMemoryRetriever;
-    private final AtomicBoolean processing = new AtomicBoolean(false);
 
     @Setter
     private MemoryUsage memoryUsage;
@@ -125,17 +123,5 @@ public class ChatSession {
         } else {
             memoryUsage = memoryUsage.add(messageUsage, tokenUsage);
         }
-    }
-
-    public boolean acquire() {
-        return !processing.compareAndExchangeAcquire(false, true);
-    }
-
-    public void release() {
-        processing.compareAndExchangeRelease(true, false);
-    }
-
-    public boolean isProcessing() {
-        return processing.get();
     }
 }

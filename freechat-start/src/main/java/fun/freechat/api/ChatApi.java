@@ -341,10 +341,6 @@ public class ChatApi {
 
         tokenStream
                 .onPartialResponse(partialResult -> {
-                    if (!session.isProcessing()) {
-                        return;
-                    }
-
                     if (!firstPackageReceived.get()) {
                         TraceUtils.putTraceAttribute("traceId", traceId);
                         TraceUtils.putTraceAttribute("username", username);
@@ -368,7 +364,6 @@ public class ChatApi {
                         sseEmitter.send(result);
                     } catch (IllegalStateException | NullPointerException | IOException e) {
                         log.warn("Error when sending message.", e);
-                        session.release();
                         sseEmitter.completeWithError(e);
                         long lastPackageReceivedTime = System.currentTimeMillis();
                         String traceInfo = new TraceUtils.TraceInfoBuilder()
@@ -385,10 +380,6 @@ public class ChatApi {
                     }
                 })
                 .onCompleteResponse(response -> {
-                    if (!session.isProcessing()) {
-                        return;
-                    }
-
                     long lastPackageReceivedTime = System.currentTimeMillis();
                     try {
                         session.addMemoryUsage(1L, response.tokenUsage());
@@ -428,15 +419,9 @@ public class ChatApi {
                                 .username(username)
                                 .build();
                         TraceUtils.getPerfLogger().trace(traceInfo);
-                    } finally {
-                        session.release();
                     }
                 })
                 .onPartialThinking(partialThinking -> {
-                    if (!session.isProcessing()) {
-                        return;
-                    }
-
                     if (!firstPackageReceived.get()) {
                         TraceUtils.putTraceAttribute("traceId", traceId);
                         TraceUtils.putTraceAttribute("username", username);
@@ -463,7 +448,6 @@ public class ChatApi {
                         sseEmitter.send(result);
                     } catch (IllegalStateException | NullPointerException | IOException e) {
                         log.warn("Error when sending message.", e);
-                        session.release();
                         sseEmitter.completeWithError(e);
                         long lastPackageReceivedTime = System.currentTimeMillis();
                         String traceInfo = new TraceUtils.TraceInfoBuilder()
@@ -480,16 +464,8 @@ public class ChatApi {
                     }
                 })
                 .onError(ex -> {
-                    if (!session.isProcessing()) {
-                        return;
-                    }
-
-                    try {
-                        log.error("SSE exception.", ex);
-                        sseEmitter.completeWithError(ex);
-                    } finally {
-                        session.release();
-                    }
+                    log.error("SSE exception.", ex);
+                    sseEmitter.completeWithError(ex);
                     long lastPackageReceivedTime = System.currentTimeMillis();
                     String traceInfo = new TraceUtils.TraceInfoBuilder()
                             .args(new String[] {characterName, characterUid})

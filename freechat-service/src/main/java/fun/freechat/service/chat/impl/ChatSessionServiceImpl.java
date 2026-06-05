@@ -170,6 +170,9 @@ public class ChatSessionServiceImpl implements ChatSessionService {
     @Qualifier("taskExecutor")
     private ThreadPoolTaskExecutor executor;
 
+    @Autowired
+    private ChatTaskQueueManager queueManager;
+
     private synchronized Lock getLock(Cache cache, String chatId) {
         if (cache == null) {
             return new ReentrantLock();
@@ -533,7 +536,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             cacheManager = IN_PROCESS_LONG_CACHE_MANAGER,
             key = CACHE_KEY_SPEL_PREFIX + "#p0")
     public void reset(String chatId) {
-        // ignored
+        queueManager.drainAndRemove(chatId, 30_000);
     }
 
     @Override
