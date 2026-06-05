@@ -37,7 +37,7 @@
         <redisson.version>4.4.0</redisson.version>
         <objenesis.version>3.5</objenesis.version>
         <swagger-parser.version>2.1.43</swagger-parser.version>
-        <langchain4j.version>1.15.1</langchain4j.version>
+        <langchain4j.version>1.16.0</langchain4j.version>
         <langchain4j-community.version>1.15.0-beta25</langchain4j-community.version>
         <telegrambots.version>10.0.0</telegrambots.version>
         <wiremock.version>3.13.2</wiremock.version>
