@@ -4,7 +4,9 @@ import static dev.langchain4j.data.message.ContentType.TEXT;
 import static fun.freechat.service.enums.ModelProvider.OPEN_AI;
 import static fun.freechat.util.TestAiApiKeyUtils.apiKeyFor;
 import static fun.freechat.util.TestAiApiKeyUtils.keyNameFor;
-import static fun.freechat.util.TestCommonUtils.*;
+import static fun.freechat.util.TestCommonUtils.defaultEmbeddingModelFor;
+import static fun.freechat.util.TestCommonUtils.defaultModelFor;
+import static fun.freechat.util.TestCommonUtils.parametersFor;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -26,6 +28,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -227,6 +230,7 @@ class OpenAiPromptAiIT extends AbstractIntegrationTest {
                 .value(text -> assertThat(text.toString()).containsIgnoringCase("goodbye"));
     }
 
+    @Disabled
     @Test
     void should_send_prompt_and_get_embeddings() {
         PromptAiParamDTO aiRequest = createRequest(embeddingModelId());

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.langchain4j.model.output.TokenUsage;
 import fun.freechat.service.ai.AiModelInfo;
+import fun.freechat.util.PojoUtils;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -94,6 +95,14 @@ public class InfoUtils {
         } catch (JsonProcessingException e) {
             log.warn("Failed to deserialize TokenUsage from {}", text, e);
             return null;
+        }
+    }
+
+    public static String toJsonString(Object object) {
+        try {
+            return InfoUtils.defaultMapper().writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            return PojoUtils.object2JsonString(object);
         }
     }
 
