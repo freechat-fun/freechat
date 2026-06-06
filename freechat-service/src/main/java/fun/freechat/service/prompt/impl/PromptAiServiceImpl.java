@@ -1,25 +1,6 @@
 package fun.freechat.service.prompt.impl;
 
-import static fun.freechat.service.ai.AiModelFactory.createAzureOpenAiChatModel;
-import static fun.freechat.service.ai.AiModelFactory.createAzureOpenAiEmbeddingModel;
-import static fun.freechat.service.ai.AiModelFactory.createAzureOpenAiLanguageModel;
-import static fun.freechat.service.ai.AiModelFactory.createAzureOpenAiStreamingChatModel;
-import static fun.freechat.service.ai.AiModelFactory.createAzureOpenAiStreamingLanguageModel;
-import static fun.freechat.service.ai.AiModelFactory.createOllamaChatModel;
-import static fun.freechat.service.ai.AiModelFactory.createOllamaEmbeddingModel;
-import static fun.freechat.service.ai.AiModelFactory.createOllamaLanguageModel;
-import static fun.freechat.service.ai.AiModelFactory.createOllamaStreamingChatModel;
-import static fun.freechat.service.ai.AiModelFactory.createOllamaStreamingLanguageModel;
-import static fun.freechat.service.ai.AiModelFactory.createOpenAiChatModel;
-import static fun.freechat.service.ai.AiModelFactory.createOpenAiEmbeddingModel;
-import static fun.freechat.service.ai.AiModelFactory.createOpenAiLanguageModel;
-import static fun.freechat.service.ai.AiModelFactory.createOpenAiStreamingChatModel;
-import static fun.freechat.service.ai.AiModelFactory.createOpenAiStreamingLanguageModel;
-import static fun.freechat.service.ai.AiModelFactory.createQwenChatModel;
-import static fun.freechat.service.ai.AiModelFactory.createQwenEmbeddingModel;
-import static fun.freechat.service.ai.AiModelFactory.createQwenLanguageModel;
-import static fun.freechat.service.ai.AiModelFactory.createQwenStreamingChatModel;
-import static fun.freechat.service.ai.AiModelFactory.createQwenStreamingLanguageModel;
+import static fun.freechat.service.ai.AiModelFactory.*;
 
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.UserMessage;
@@ -42,7 +23,6 @@ import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.prompt.PromptAiService;
 import fun.freechat.service.util.InfoUtils;
 import fun.freechat.service.util.PromptUtils;
-import fun.freechat.util.PojoUtils;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
@@ -133,8 +113,8 @@ public class PromptAiServiceImpl implements PromptAiService {
                         };
                 return Optional.ofNullable(model.embed(prompt))
                         .map(resp -> ChatResponse.builder()
-                                .aiMessage(AiMessage.from(PojoUtils.object2JsonString(
-                                        resp.content().vector())))
+                                .aiMessage(AiMessage.from(
+                                        InfoUtils.toJsonString(resp.content().vector())))
                                 .tokenUsage(resp.tokenUsage())
                                 .finishReason(resp.finishReason())
                                 .build())

@@ -20,31 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-import fun.freechat.api.dto.CharacterBackendDTO;
-import fun.freechat.api.dto.CharacterCreateDTO;
-import fun.freechat.api.dto.ChatContentDTO;
-import fun.freechat.api.dto.ChatCreateDTO;
-import fun.freechat.api.dto.ChatMessageDTO;
-import fun.freechat.api.dto.ChatMessageRecordDTO;
-import fun.freechat.api.dto.ChatPromptContentDTO;
-import fun.freechat.api.dto.ChatUpdateDTO;
-import fun.freechat.api.dto.LlmResultDTO;
-import fun.freechat.api.dto.MemoryUsageDTO;
-import fun.freechat.api.dto.PromptCreateDTO;
-import fun.freechat.api.dto.PromptRefDTO;
-import fun.freechat.api.dto.PromptTaskDTO;
+import fun.freechat.api.dto.*;
 import fun.freechat.service.common.ShortLinkService;
-import fun.freechat.service.enums.GenderType;
-import fun.freechat.service.enums.ModelProvider;
-import fun.freechat.service.enums.PromptFormat;
-import fun.freechat.service.enums.QuotaType;
-import fun.freechat.service.enums.TtsSpeakerType;
-import fun.freechat.service.enums.Visibility;
-import fun.freechat.util.TestAccountUtils;
-import fun.freechat.util.TestAiApiKeyUtils;
-import fun.freechat.util.TestCharacterUtils;
-import fun.freechat.util.TestChatUtils;
-import fun.freechat.util.TestPromptUtils;
+import fun.freechat.service.enums.*;
+import fun.freechat.util.*;
 import io.micrometer.common.util.StringUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -192,6 +171,9 @@ class OpenAiChatIT extends AbstractIntegrationTest {
 
     private String modelIdForImage() {
         ModelProvider provider = imageModelProvider();
+        if (provider == null) {
+            return null;
+        }
         return "[" + provider.text() + "]" + defaultImageModelFor(provider);
     }
 
@@ -749,7 +731,9 @@ class OpenAiChatIT extends AbstractIntegrationTest {
 
         String answer = futureAnswer.get(1, MINUTES);
         System.out.println(CHARACTER_NICKNAME + ": " + answer);
-        assertThat(answer).contains("![img](" + homeUrl + "/s/");
+        if (imageModelProvider() != null) {
+            assertThat(answer).contains("![img](" + homeUrl + "/s/");
+        }
     }
 
     private void should_failed_to_list_messages() {

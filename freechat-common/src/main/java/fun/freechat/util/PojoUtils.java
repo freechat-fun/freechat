@@ -1,6 +1,7 @@
 package fun.freechat.util;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InaccessibleObjectException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -152,6 +153,11 @@ public class PojoUtils {
         return objSimpleInfo(o);
     }
 
+    private static boolean isJdkModuleClass(Class<?> type) {
+        Module module = type.getModule();
+        return module != null && module.isNamed();
+    }
+
     private static String customObject2Json(Object obj, boolean recursive) {
         if (isTooDeep() || isRegistered(obj)) {
             return objSimpleInfo(obj);
@@ -162,6 +168,13 @@ public class PojoUtils {
 
         try {
             Class type = obj.getClass();
+
+            // JDK module classes (e.g. java.time.*) do not allow reflective field access.
+            // Fall back to toString() for these types.
+            if (isJdkModuleClass(type)) {
+                return objToString(obj);
+            }
+
             List<Field> fields = getFields(type, recursive);
             if (CollectionUtils.isEmpty(fields)) {
                 return objToString(obj);
@@ -179,7 +192,7 @@ public class PojoUtils {
                         f.setAccessible(true);
                         Object value = f.get(obj);
                         map.put(name, value);
-                    } catch (IllegalAccessException ex) {
+                    } catch (IllegalAccessException | InaccessibleObjectException ex) {
                         log.error("Failed to get {}.{}", type.getSimpleName(), name, ex);
                     }
                 } catch (InvocationTargetException | IllegalAccessException e) {

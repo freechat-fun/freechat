@@ -851,7 +851,7 @@ public class CharacterServiceImpl implements CharacterService {
             return;
         }
 
-        if (characterBackend.getIsDefault() != (byte) 1) {
+        if (characterBackend.getIsDefault() == null || characterBackend.getIsDefault() != (byte) 1) {
             ensureDefaultBackend(characterUid, now);
             return;
         }

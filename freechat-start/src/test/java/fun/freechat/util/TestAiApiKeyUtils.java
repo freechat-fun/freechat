@@ -50,7 +50,7 @@ public class TestAiApiKeyUtils implements ApplicationContextAware {
             case AZURE_OPEN_AI -> System.getenv("AZURE_OPENAI_KEY");
             case DASH_SCOPE -> System.getenv("DASHSCOPE_API_KEY");
             case OLLAMA -> "placeholder";
-            default -> null;
+            case null, default -> null;
         };
     }
 
@@ -65,7 +65,7 @@ public class TestAiApiKeyUtils implements ApplicationContextAware {
             case AZURE_OPEN_AI -> System.getenv("AZURE_OPENAI_ENDPOINT");
             case DASH_SCOPE -> System.getenv("DASHSCOPE_BASE_URL");
             case OLLAMA -> ollama().getEndpoint();
-            default -> null;
+            case null, default -> null;
         };
     }
 
