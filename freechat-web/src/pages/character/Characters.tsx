@@ -435,6 +435,7 @@ export default function Characters() {
         sx={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+          maxWidth: 1344,
           gap: 3,
         }}
       >
