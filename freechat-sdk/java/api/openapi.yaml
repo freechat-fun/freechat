@@ -22,12 +22,13 @@ info:
     \ and replies with mixed text and image messages.\n- Supports setting **quota\
     \ limits** for characters.\n- Supports characters **importing and exporting**.\n\
     - Supports **character-to-character chats**.\n- Supports **character voices**.\n\
-    - Supports individual **debugging and sharing prompts**.\n\n## Snapshots\n###\
-    \ On PC\n#### Home Page\n![Home Page Snapshot](https://freechat.fun/img/snapshot_w1.jpg)\n\
-    #### Development View\n![Development View Snapshot](https://freechat.fun/img/snapshot_w2.jpg)\n\
-    #### Chat View\n![Chat View Snapshot](https://freechat.fun/img/snapshot_w3.jpg)\n\
-    \n### On Mobile\n![Chat Snapshot 1](https://freechat.fun/img/snapshot_m1.jpg)\
-    \ ![Chat Snapshot 2](https://freechat.fun/img/snapshot_m2.jpg)<br />\n![Chat Snapshot\
+    - Supports chatting with characters via **Telegram**.\n- Supports individual **debugging\
+    \ and sharing prompts**.\n\n## Snapshots\n### On PC\n#### Home Page\n![Home Page\
+    \ Snapshot](https://freechat.fun/img/snapshot_w1.jpg)\n#### Development View\n\
+    ![Development View Snapshot](https://freechat.fun/img/snapshot_w2.jpg)\n#### Chat\
+    \ View\n![Chat View Snapshot](https://freechat.fun/img/snapshot_w3.jpg)\n\n###\
+    \ On Mobile\n![Chat Snapshot 1](https://freechat.fun/img/snapshot_m1.jpg) ![Chat\
+    \ Snapshot 2](https://freechat.fun/img/snapshot_m2.jpg)<br />\n![Chat Snapshot\
     \ 3](https://freechat.fun/img/snapshot_m3.jpg) ![Chat Snapshot 4](https://freechat.fun/img/snapshot_m4.jpg)\n\
     \n## Character Design\n```mermaid\nflowchart TD\n    A(Character) --> B(Profile)\n\
     \    A --> C(Knowledge/RAG)\n    A --> D(Album)\n    A --> E(Backend-1)\n    A\
@@ -118,9 +119,9 @@ info:
     \ | [Spring Boot](https://spring.io/projects/spring-boot/)\n| LLM Framework |\
     \ [LangChain4j](https://docs.langchain4j.dev/)\n| Model Providers | [Ollama](https://ollama.com/),\
     \ [OpenAI](https://platform.openai.com/), [Azure OpenAI](https://oai.azure.com/),\
-    \ [DashScope(Alibaba)](https://dashscope.aliyun.com/)\n| Database Systems | [MySQL](https://www.mysql.com/),\
-    \ [Redis](https://redis.io/), [Milvus](https://milvus.io/)\n| Monitoring & Alerting\
-    \ | [Kube State Metrics](https://kubernetes.io/docs/concepts/cluster-administration/kube-state-metrics/),\
+    \ [DashScope(Alibaba)](https://dashscope.aliyun.com/)\n| Channels | [Telegram](https://github.com/rubenlagus/TelegramBots)\n\
+    | Database Systems | [MySQL](https://www.mysql.com/), [Redis](https://redis.io/),\
+    \ [Milvus](https://milvus.io/)\n| Monitoring & Alerting | [Kube State Metrics](https://kubernetes.io/docs/concepts/cluster-administration/kube-state-metrics/),\
     \ [Prometheus](https://prometheus.io/), [Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/),\
     \ [Loki](https://grafana.com/oss/loki/), [Grafana](https://grafana.com/)\n| OpenAPI\
     \ Tools | [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator),\
