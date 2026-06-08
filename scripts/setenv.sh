@@ -5,10 +5,13 @@ PROJECT_PATH=$(cd $(dirname ${BASH_SOURCE[0]})/..; pwd)
 PROJECT_NAME=${PROJECT_PATH##*/}
 VERSION=$(sed -n "s#^ *<revision>\([a-zA-Z0-9.-]\{1,\}\)</revision> *\$#\1#p" ${PROJECT_PATH}/pom.xml)
 
+COMMON_MODULE=${PROJECT_NAME}-common
 DAL_MODULE=${PROJECT_NAME}-dal
 STARTER_MODULE=${PROJECT_NAME}-start
 SDK_MODULE=${PROJECT_NAME}-sdk
 WEB_MODULE=${PROJECT_NAME}-web
+SCM_URL=$(sed -n "s#^ *<url>\(.*\)</url> *\$#\1#p" ${PROJECT_PATH}/${COMMON_MODULE}/pom.xml)
+
 DOCKER_CONFIG_HOME=${PROJECT_PATH}/configs/docker
 HELM_CONFIG_HOME=${PROJECT_PATH}/configs/helm
 
