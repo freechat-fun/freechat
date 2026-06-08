@@ -4,25 +4,32 @@ import fun.freechat.service.chat.ChatTaskQueue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+/**
+ * Per-chatId FIFO queue registry. Serializes all chat operations (send, streamSend,
+ * sendAssistant, streamSendAssistant) for a given chatId so that concurrent requests
+ * queue up instead of being rejected.
+ *
+ * <p>Implements {@link SmartLifecycle} (phase MAX_VALUE-100) instead of annotation @PreDestroy
+ * to drain active queues <em>before</em> the HTTP server stops — ensuring in-flight
+ * streaming responses can finish rather than being cut mid-stream.
+ */
 @Component
 @Slf4j
 public class ChatTaskQueueManager implements SmartLifecycle {
 
     private static final long SHUTDOWN_TIMEOUT_MS = 10_000L;
+    // Queues idle longer than this are eligible for cleanup
     private static final long IDLE_TTL_MS = 3_600_000L;
 
     private final ConcurrentHashMap<String, ChatTaskQueue> queues = new ConcurrentHashMap<>();
+    // Virtual threads: each worker blocks on poll() and stream-completion latches,
+    // which is exactly the pattern virtual threads optimize for.
     private final ExecutorService workerExecutor = Executors.newVirtualThreadPerTaskExecutor();
     private volatile boolean running = false;
 
@@ -34,6 +41,11 @@ public class ChatTaskQueueManager implements SmartLifecycle {
         });
     }
 
+    /**
+     * Drains the queue for a chatId (waits for the active task, rejects remaining)
+     * then removes it from the registry. Called during session invalidation/reset
+     * to ensure the in-flight task completes before the session is evicted.
+     */
     public void drainAndRemove(String chatId, long timeoutMs) {
         ChatTaskQueue queue = queues.remove(chatId);
         if (queue != null) {
@@ -41,6 +53,8 @@ public class ChatTaskQueueManager implements SmartLifecycle {
         }
     }
 
+    // Prevents memory leaks from abandoned chats whose sessions were evicted from
+    // Caffeine but whose queues linger. Queue lifetime >= session lifetime by design.
     @Scheduled(fixedDelay = 300_000)
     public void cleanupIdleQueues() {
         long now = System.currentTimeMillis();
@@ -89,6 +103,8 @@ public class ChatTaskQueueManager implements SmartLifecycle {
 
     @Override
     public int getPhase() {
+        // Stop before the web server (Integer.MAX_VALUE) so queues drain
+        // while HTTP connections are still alive.
         return Integer.MAX_VALUE - 100;
     }
 }
