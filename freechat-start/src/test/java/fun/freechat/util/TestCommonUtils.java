@@ -19,7 +19,7 @@ public class TestCommonUtils {
     public static String defaultModelFor(ModelProvider provider) {
         return switch (provider) {
             case OPEN_AI, AZURE_OPEN_AI -> "gpt-5.4-mini";
-            case DASH_SCOPE -> "qwen3.7-plus";
+            case DASH_SCOPE -> "qwen3.7-max";
             case OLLAMA -> "llama3.2:1b|text2chat";
             default -> null;
         };
