@@ -24,6 +24,7 @@ It is recommended to run [Ollama](https://ollama.com/) + FreeChat locally to tes
 - Supports characters **importing and exporting**.
 - Supports **character-to-character chats**.
 - Supports **character voices**.
+- Supports chatting with characters via **Telegram**.
 - Supports individual **debugging and sharing prompts**.
 
 ## Snapshots
@@ -224,6 +225,7 @@ Refer to [FreeChatApiContext.tsx](https://github.com/freechat-fun/freechat/blob/
 | Application Framework | [Spring Boot](https://spring.io/projects/spring-boot/)
 | LLM Framework | [LangChain4j](https://docs.langchain4j.dev/)
 | Model Providers | [Ollama](https://ollama.com/), [OpenAI](https://platform.openai.com/), [Azure OpenAI](https://oai.azure.com/), [DashScope(Alibaba)](https://dashscope.aliyun.com/)
+| Channels | [Telegram](https://github.com/rubenlagus/TelegramBots)
 | Database Systems | [MySQL](https://www.mysql.com/), [Redis](https://redis.io/), [Milvus](https://milvus.io/)
 | Monitoring & Alerting | [Kube State Metrics](https://kubernetes.io/docs/concepts/cluster-administration/kube-state-metrics/), [Prometheus](https://prometheus.io/), [Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/), [Loki](https://grafana.com/oss/loki/), [Grafana](https://grafana.com/)
 | OpenAPI Tools | [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator), [OpenAPI Explorer](https://github.com/Authress-Engineering/openapi-explorer)
