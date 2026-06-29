@@ -49,7 +49,7 @@
         <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
         <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
         <mybatis-generator-maven-plugin.version>2.0.0</mybatis-generator-maven-plugin.version>
-        <spotless-maven-plugin.version>3.7.0</spotless-maven-plugin.version>
+        <spotless-maven-plugin.version>3.8.0</spotless-maven-plugin.version>
         <palantir-java-format.version>2.89.0</palantir-java-format.version>
     </properties>
 
