@@ -86,7 +86,7 @@ jobs:
             git branch __branch_before ${{ github.event.pull_request.base.sha }}
           fi
       - name: Set up Node.js ${{ matrix.node_version }}
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node_version }}
       - name: Install Node.js sdk dependencies
