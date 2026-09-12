@@ -43,7 +43,7 @@
         <wiremock.version>3.13.2</wiremock.version>
 
         <!--plugin versions-->
-        <buildnumber-maven-plugin.version>3.3.0</buildnumber-maven-plugin.version>
+        <buildnumber-maven-plugin.version>3.3.1</buildnumber-maven-plugin.version>
         <maven-antrun-plugin.version>3.2.0</maven-antrun-plugin.version>
         <maven-compiler-plugin.version>3.16.0</maven-compiler-plugin.version>
         <maven-failsafe-plugin.version>3.6.0</maven-failsafe-plugin.version>
