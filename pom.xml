@@ -314,6 +314,10 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>${maven-failsafe-plugin.version}</version>
                 <configuration combine.children="append">
+                    <!-- Run ITs against target/classes: spring-boot:repackage replaces the main
+                         artifact with a fat jar whose classes sit under BOOT-INF/classes/, which
+                         is invisible to a normal classpath. -->
+                    <classesDirectory>${project.build.outputDirectory}</classesDirectory>
                     <systemPropertyVariables>
                         <tinylog.level>info</tinylog.level>
                         <java.net.useSystemProxies>true</java.net.useSystemProxies>
