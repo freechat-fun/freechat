@@ -30,7 +30,7 @@ public class ChatSession {
     private final ChatPromptContent prompt;
     private final PromptFormat promptFormat;
     private final Map<String, Object> variables;
-    private final RetrievalAugmentor longTermMemoryRetriever;
+    private final String memoryFingerprint;
 
     @Setter
     private MemoryUsage memoryUsage;
@@ -45,8 +45,8 @@ public class ChatSession {
             ChatPromptContent prompt,
             PromptFormat promptFormat,
             Map<String, Object> variables,
+            String memoryFingerprint,
             RetrievalAugmentor retriever,
-            RetrievalAugmentor longTermMemoryRetriever,
             MemoryUsage memoryUsage,
             List<Object> objectsWithTools,
             Map<ToolSpecification, ToolExecutor> tools) {
@@ -56,13 +56,20 @@ public class ChatSession {
         aiServiceContext.moderationModel = moderationModel;
         aiServiceContext.retrievalAugmentor = retriever;
         aiServiceContext.initChatMemories(memoryId -> chatMemory);
+        aiServiceContext.toolService.maxToolCallingRoundTrips(10);
+        aiServiceContext.toolService.argumentsErrorHandler((error, context) -> {
+            throw new IllegalStateException("Invalid chat tool arguments");
+        });
+        aiServiceContext.toolService.executionErrorHandler((error, context) -> {
+            throw new IllegalStateException("Chat tool execution failed");
+        });
 
         this.imageChatModel = imageChatModel;
         this.prompt = prompt;
         this.promptFormat = promptFormat;
         this.variables = variables;
-        this.longTermMemoryRetriever = longTermMemoryRetriever;
         this.memoryUsage = memoryUsage;
+        this.memoryFingerprint = memoryFingerprint;
 
         if (CollectionUtils.isNotEmpty(objectsWithTools)) {
             this.tools(objectsWithTools);
@@ -70,6 +77,55 @@ public class ChatSession {
         if (MapUtils.isNotEmpty(tools)) {
             this.tools(tools);
         }
+    }
+
+    public ChatSession forInvocation(
+            ChatMemory memory,
+            StreamingChatModel streaming,
+            List<Object> recallTools,
+            int maxToolRounds,
+            Runnable guard) {
+        ChatSession invocation = ChatSession.builder()
+                .chatModel(getChatModel())
+                .streamingChatModel(streaming)
+                .imageChatModel(imageChatModel)
+                .moderationModel(getModerationModel())
+                .chatMemory(memory)
+                .prompt(prompt)
+                .promptFormat(promptFormat)
+                .variables(new java.util.HashMap<>(variables))
+                .memoryFingerprint(memoryFingerprint)
+                .retriever(getRetriever())
+                .memoryUsage(memoryUsage)
+                .build();
+        Map<ToolSpecification, ToolExecutor> all = new java.util.LinkedHashMap<>();
+        if (getToolSpecifications() != null) {
+            for (ToolSpecification specification : getToolSpecifications()) {
+                all.put(specification, getToolExecutors().get(specification.name()));
+            }
+        }
+        for (Object recall : recallTools) {
+            for (var tool : dev.langchain4j.service.tool.ToolService.findTools(recall)) {
+                if (all.keySet().stream()
+                        .anyMatch(specification -> specification.name().equals(tool.name()))) {
+                    throw new IllegalStateException("Duplicate chat tool name");
+                }
+                all.put(tool.toolSpecification(), tool.toolExecutor());
+            }
+        }
+        all.replaceAll((specification, executor) -> (request, memoryId) -> {
+            guard.run();
+            try {
+                String result = executor.execute(request, memoryId);
+                guard.run();
+                return result;
+            } catch (RuntimeException ignored) {
+                throw new IllegalStateException("Chat tool execution failed");
+            }
+        });
+        invocation.tools(all);
+        invocation.aiServiceContext.toolService.maxToolCallingRoundTrips(maxToolRounds);
+        return invocation;
     }
 
     @SuppressWarnings("unused")
@@ -103,6 +159,10 @@ public class ChatSession {
 
     public Map<String, ToolExecutor> getToolExecutors() {
         return aiServiceContext.toolService.toolExecutors();
+    }
+
+    public int getMaxToolRounds() {
+        return aiServiceContext.toolService.maxToolCallingRoundTrips();
     }
 
     public ToolArgumentsErrorHandler getToolArgumentsErrorHandler() {

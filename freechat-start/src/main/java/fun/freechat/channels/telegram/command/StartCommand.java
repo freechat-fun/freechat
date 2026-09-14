@@ -67,7 +67,7 @@ public class StartCommand implements TelegramCommandHandler {
         try {
             channel.sendText(backendId, tgChatId, greeting);
         } catch (TelegramApiException e) {
-            log.warn("/start reply failed for chat {}", tgChatId, e);
+            log.warn("/start reply failed for chat {}", tgChatId);
         }
     }
 
@@ -85,7 +85,7 @@ public class StartCommand implements TelegramCommandHandler {
             Object greeting = session.getVariables().get(ChatVar.CHARACTER_GREETING.text());
             return greeting instanceof String s ? s : null;
         } catch (Exception e) {
-            log.warn("Failed to resolve character greeting for chat {}", chatId, e);
+            log.warn("Failed to resolve character greeting for chat {}", chatId);
             return null;
         }
     }

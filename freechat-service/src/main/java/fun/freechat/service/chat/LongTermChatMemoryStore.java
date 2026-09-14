@@ -1,15 +1,18 @@
 package fun.freechat.service.chat;
 
-import dev.langchain4j.data.message.ChatMessage;
-import dev.langchain4j.data.message.UserMessage;
-import dev.langchain4j.rag.RetrievalAugmentor;
-import java.util.List;
+import fun.freechat.service.chat.memory.MemoryInvocation;
+import fun.freechat.service.chat.memory.MemoryTurnLifetime;
+import java.util.Optional;
 
 public interface LongTermChatMemoryStore {
-    List<ChatMessage> getMessages(
-            Object memoryId, UserMessage userMessage, List<ChatMessage> chatMemory, RetrievalAugmentor retriever);
+    boolean enabled(String chatId);
 
-    void updateMessages(Object memoryId, List<ChatMessageRecord> messages);
+    Optional<Binding> open(String chatId, ChatSession session);
 
-    void deleteMessages(Object memoryId);
+    record Binding(ChatSession session, MemoryInvocation memory, MemoryTurnLifetime lifetime) implements AutoCloseable {
+        @Override
+        public void close() {
+            lifetime.close();
+        }
+    }
 }

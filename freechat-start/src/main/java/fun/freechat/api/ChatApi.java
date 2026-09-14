@@ -26,6 +26,7 @@ import fun.freechat.service.chat.ChatMessageRecord;
 import fun.freechat.service.chat.ChatService;
 import fun.freechat.service.chat.ChatSession;
 import fun.freechat.service.chat.ChatSessionService;
+import fun.freechat.service.chat.QueueAwareTokenStream;
 import fun.freechat.service.enums.ChatVar;
 import fun.freechat.service.enums.ModelProvider;
 import fun.freechat.service.enums.QuotaType;
@@ -101,6 +102,16 @@ public class ChatApi {
     @Autowired
     private PromptTaskService promptTaskService;
 
+    private static void closeStream(TokenStream stream) {
+        if (stream instanceof AutoCloseable closeable) {
+            try {
+                closeable.close();
+            } catch (Exception ignored) {
+                log.warn("Chat stream cancellation failed.");
+            }
+        }
+    }
+
     private void checkQuotaValue(long usage, long limit) {
         if (usage >= limit) {
             throw new ResponseStatusException(
@@ -116,15 +127,15 @@ public class ChatApi {
             return;
         }
 
-        ChatSession session = chatSessionService.get(chatId);
+        var durableUsage = chatMemoryService.usage(chatId);
         Long limit = Utils.getOrDefault(context.getQuota(), 0L);
         QuotaType quotaType = QuotaType.of(context.getQuotaType());
         if (Objects.requireNonNull(quotaType) == QuotaType.MESSAGES) {
-            Long usage = Utils.getOrDefault(session.getMemoryUsage().messageUsage(), 0L);
-            checkQuotaValue(usage, limit);
+            checkQuotaValue(Utils.getOrDefault(durableUsage.messageUsage(), 0L), limit);
         } else if (quotaType == QuotaType.TOKENS) {
-            Integer usage =
-                    Utils.getOrDefault(session.getMemoryUsage().tokenUsage().totalTokenCount(), 0);
+            Integer usage = durableUsage.tokenUsage() == null
+                    ? 0
+                    : Utils.getOrDefault(durableUsage.tokenUsage().totalTokenCount(), 0);
             checkQuotaValue(usage.longValue(), limit);
         }
     }
@@ -331,157 +342,165 @@ public class ChatApi {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Failed to chat by " + chatId);
         }
 
-        ChatSession session = chatSessionService.get(chatId);
+        try {
+            sseEmitter.onTimeout(() -> closeStream(tokenStream));
+            sseEmitter.onError(ignored -> closeStream(tokenStream));
+            sseEmitter.onCompletion(() -> closeStream(tokenStream));
 
-        String traceId = TraceUtils.getTraceId();
-        String username = AccountUtils.currentUser().getUsername();
-        String characterUid = chatContextService.getCharacterUid(chatId);
-        String characterName = characterService.getNameByUid(characterUid);
-        AtomicBoolean firstPackageReceived = new AtomicBoolean(false);
+            String traceId = TraceUtils.getTraceId();
+            String username = AccountUtils.currentUser().getUsername();
+            String characterUid = chatContextService.getCharacterUid(chatId);
+            String characterName = characterService.getNameByUid(characterUid);
+            AtomicBoolean firstPackageReceived = new AtomicBoolean(false);
 
-        tokenStream
-                .onPartialResponse(partialResult -> {
-                    if (!firstPackageReceived.get()) {
-                        TraceUtils.putTraceAttribute("traceId", traceId);
-                        TraceUtils.putTraceAttribute("username", username);
-                        long firstPackageReceivedTime = System.currentTimeMillis();
-                        String traceInfo = new TraceUtils.TraceInfoBuilder()
-                                .args(new String[] {characterName, characterUid})
-                                .elapseTime(firstPackageReceivedTime - startTime.get())
-                                .method("ChatApi::firstPackageReceived")
-                                .response(partialResult)
-                                .status(TraceUtils.TraceStatus.SUCCESSFUL)
-                                .traceId(traceId)
-                                .username(username)
-                                .build();
-                        TraceUtils.getPerfLogger().trace(traceInfo);
-                        firstPackageReceived.set(true);
-                    }
-                    try {
-                        LlmResultDTO result = LlmResultDTO.from(
-                                partialResult, ChatMessageDTO.fromPartialResult(partialResult), null, null);
-                        result.setRequestId(null);
-                        sseEmitter.send(result);
-                    } catch (IllegalStateException | NullPointerException | IOException e) {
-                        log.warn("Error when sending message.", e);
-                        sseEmitter.completeWithError(e);
-                        long lastPackageReceivedTime = System.currentTimeMillis();
-                        String traceInfo = new TraceUtils.TraceInfoBuilder()
-                                .args(new String[] {characterName, characterUid})
-                                .elapseTime(lastPackageReceivedTime - startTime.get())
-                                .method("ChatApi::lastPackageReceived")
-                                .response(partialResult)
-                                .throwable(e)
-                                .status(TraceUtils.TraceStatus.BAD_REQUEST)
-                                .traceId(traceId)
-                                .username(username)
-                                .build();
-                        TraceUtils.getPerfLogger().trace(traceInfo);
-                    }
-                })
-                .onCompleteResponse(response -> {
-                    long lastPackageReceivedTime = System.currentTimeMillis();
-                    try {
-                        session.addMemoryUsage(1L, response.tokenUsage());
-                        Long messageId = chatMemoryService.updateChatMessageTokenUsage(
-                                chatId, response.aiMessage(), response.tokenUsage());
-                        if (response.finishReason() == null) {
-                            response = ChatResponse.builder()
-                                    .aiMessage(response.aiMessage())
-                                    .tokenUsage(response.tokenUsage())
-                                    .finishReason(FinishReason.STOP)
+            tokenStream
+                    .onPartialResponse(partialResult -> {
+                        if (!firstPackageReceived.get()) {
+                            TraceUtils.putTraceAttribute("traceId", traceId);
+                            TraceUtils.putTraceAttribute("username", username);
+                            long firstPackageReceivedTime = System.currentTimeMillis();
+                            String traceInfo = new TraceUtils.TraceInfoBuilder()
+                                    .args(new String[] {characterName, characterUid})
+                                    .elapseTime(firstPackageReceivedTime - startTime.get())
+                                    .method("ChatApi::firstPackageReceived")
+                                    .status(TraceUtils.TraceStatus.SUCCESSFUL)
+                                    .traceId(traceId)
+                                    .username(username)
                                     .build();
+                            TraceUtils.getPerfLogger().trace(traceInfo);
+                            firstPackageReceived.set(true);
                         }
-                        LlmResultDTO result = LlmResultDTO.from(response, messageId);
-                        Objects.requireNonNull(result).setText(null);
-                        result.setRequestId(null);
-                        sseEmitter.send(result);
-                        sseEmitter.complete();
-                        String traceInfo = new TraceUtils.TraceInfoBuilder()
-                                .args(new String[] {characterName, characterUid})
-                                .elapseTime(lastPackageReceivedTime - startTime.get())
-                                .method("ChatApi::lastPackageReceived")
-                                .status(TraceUtils.TraceStatus.SUCCESSFUL)
-                                .traceId(traceId)
-                                .username(username)
-                                .build();
-                        TraceUtils.getPerfLogger().trace(traceInfo);
-                    } catch (Exception e) {
-                        log.warn("Error when sending message.", e);
-                        sseEmitter.completeWithError(e);
-                        String traceInfo = new TraceUtils.TraceInfoBuilder()
-                                .args(new String[] {characterName, characterUid})
-                                .elapseTime(lastPackageReceivedTime - startTime.get())
-                                .method("ChatApi::lastPackageReceived")
-                                .throwable(e)
-                                .status(TraceUtils.TraceStatus.BAD_REQUEST)
-                                .traceId(traceId)
-                                .username(username)
-                                .build();
-                        TraceUtils.getPerfLogger().trace(traceInfo);
-                    }
-                })
-                .onPartialThinking(partialThinking -> {
-                    if (!firstPackageReceived.get()) {
-                        TraceUtils.putTraceAttribute("traceId", traceId);
-                        TraceUtils.putTraceAttribute("username", username);
-                        long firstPackageReceivedTime = System.currentTimeMillis();
-                        String traceInfo = new TraceUtils.TraceInfoBuilder()
-                                .args(new String[] {characterName, characterUid})
-                                .elapseTime(firstPackageReceivedTime - startTime.get())
-                                .method("ChatApi::firstPackageReceived")
-                                .response(partialThinking.text())
-                                .status(TraceUtils.TraceStatus.SUCCESSFUL)
-                                .traceId(traceId)
-                                .username(username)
-                                .build();
-                        TraceUtils.getPerfLogger().trace(traceInfo);
-                        firstPackageReceived.set(true);
-                    }
-                    try {
-                        LlmResultDTO result = LlmResultDTO.from(
-                                partialThinking.text(),
-                                ChatMessageDTO.fromPartialThinking(partialThinking),
-                                null,
-                                null);
-                        result.setRequestId(null);
-                        sseEmitter.send(result);
-                    } catch (IllegalStateException | NullPointerException | IOException e) {
-                        log.warn("Error when sending message.", e);
-                        sseEmitter.completeWithError(e);
+                        try {
+                            LlmResultDTO result = LlmResultDTO.from(
+                                    partialResult, ChatMessageDTO.fromPartialResult(partialResult), null, null);
+                            result.setRequestId(null);
+                            sseEmitter.send(result);
+                        } catch (IllegalStateException | NullPointerException | IOException e) {
+                            log.warn("Error when sending message.");
+                            closeStream(tokenStream);
+                            sseEmitter.completeWithError(new IllegalStateException("Chat response delivery failed"));
+                            long lastPackageReceivedTime = System.currentTimeMillis();
+                            String traceInfo = new TraceUtils.TraceInfoBuilder()
+                                    .args(new String[] {characterName, characterUid})
+                                    .elapseTime(lastPackageReceivedTime - startTime.get())
+                                    .method("ChatApi::lastPackageReceived")
+                                    .status(TraceUtils.TraceStatus.BAD_REQUEST)
+                                    .traceId(traceId)
+                                    .username(username)
+                                    .build();
+                            TraceUtils.getPerfLogger().trace(traceInfo);
+                        }
+                    })
+                    .onCompleteResponse(response -> {
+                        long lastPackageReceivedTime = System.currentTimeMillis();
+                        try {
+                            Long messageId = tokenStream instanceof QueueAwareTokenStream queued
+                                    ? queued.finalMessageId()
+                                    : null;
+                            if (messageId == null) {
+                                ChatSession session = chatSessionService.get(chatId);
+                                session.addMemoryUsage(1L, response.tokenUsage());
+                                messageId = chatMemoryService.updateChatMessageTokenUsage(
+                                        chatId, response.aiMessage(), response.tokenUsage());
+                            }
+                            if (response.finishReason() == null) {
+                                response = ChatResponse.builder()
+                                        .aiMessage(response.aiMessage())
+                                        .tokenUsage(response.tokenUsage())
+                                        .finishReason(FinishReason.STOP)
+                                        .build();
+                            }
+                            LlmResultDTO result = LlmResultDTO.from(response, messageId);
+                            Objects.requireNonNull(result).setText(null);
+                            result.setRequestId(null);
+                            sseEmitter.send(result);
+                            sseEmitter.complete();
+                            String traceInfo = new TraceUtils.TraceInfoBuilder()
+                                    .args(new String[] {characterName, characterUid})
+                                    .elapseTime(lastPackageReceivedTime - startTime.get())
+                                    .method("ChatApi::lastPackageReceived")
+                                    .status(TraceUtils.TraceStatus.SUCCESSFUL)
+                                    .traceId(traceId)
+                                    .username(username)
+                                    .build();
+                            TraceUtils.getPerfLogger().trace(traceInfo);
+                        } catch (Exception e) {
+                            log.warn("Error when sending message.");
+                            closeStream(tokenStream);
+                            sseEmitter.completeWithError(new IllegalStateException("Chat response delivery failed"));
+                            String traceInfo = new TraceUtils.TraceInfoBuilder()
+                                    .args(new String[] {characterName, characterUid})
+                                    .elapseTime(lastPackageReceivedTime - startTime.get())
+                                    .method("ChatApi::lastPackageReceived")
+                                    .status(TraceUtils.TraceStatus.BAD_REQUEST)
+                                    .traceId(traceId)
+                                    .username(username)
+                                    .build();
+                            TraceUtils.getPerfLogger().trace(traceInfo);
+                        }
+                    })
+                    .onPartialThinking(partialThinking -> {
+                        if (!firstPackageReceived.get()) {
+                            TraceUtils.putTraceAttribute("traceId", traceId);
+                            TraceUtils.putTraceAttribute("username", username);
+                            long firstPackageReceivedTime = System.currentTimeMillis();
+                            String traceInfo = new TraceUtils.TraceInfoBuilder()
+                                    .args(new String[] {characterName, characterUid})
+                                    .elapseTime(firstPackageReceivedTime - startTime.get())
+                                    .method("ChatApi::firstPackageReceived")
+                                    .status(TraceUtils.TraceStatus.SUCCESSFUL)
+                                    .traceId(traceId)
+                                    .username(username)
+                                    .build();
+                            TraceUtils.getPerfLogger().trace(traceInfo);
+                            firstPackageReceived.set(true);
+                        }
+                        try {
+                            LlmResultDTO result = LlmResultDTO.from(
+                                    partialThinking.text(),
+                                    ChatMessageDTO.fromPartialThinking(partialThinking),
+                                    null,
+                                    null);
+                            result.setRequestId(null);
+                            sseEmitter.send(result);
+                        } catch (IllegalStateException | NullPointerException | IOException e) {
+                            log.warn("Error when sending message.");
+                            closeStream(tokenStream);
+                            sseEmitter.completeWithError(new IllegalStateException("Chat response delivery failed"));
+                            long lastPackageReceivedTime = System.currentTimeMillis();
+                            String traceInfo = new TraceUtils.TraceInfoBuilder()
+                                    .args(new String[] {characterName, characterUid})
+                                    .elapseTime(lastPackageReceivedTime - startTime.get())
+                                    .method("ChatApi::lastPackageReceived")
+                                    .status(TraceUtils.TraceStatus.BAD_REQUEST)
+                                    .traceId(traceId)
+                                    .username(username)
+                                    .build();
+                            TraceUtils.getPerfLogger().trace(traceInfo);
+                        }
+                    })
+                    .onError(ex -> {
+                        log.error("SSE exception.");
+                        sseEmitter.completeWithError(new IllegalStateException("Chat stream failed"));
                         long lastPackageReceivedTime = System.currentTimeMillis();
                         String traceInfo = new TraceUtils.TraceInfoBuilder()
                                 .args(new String[] {characterName, characterUid})
                                 .elapseTime(lastPackageReceivedTime - startTime.get())
                                 .method("ChatApi::lastPackageReceived")
-                                .response(partialThinking.text())
-                                .throwable(e)
-                                .status(TraceUtils.TraceStatus.BAD_REQUEST)
+                                .status(TraceUtils.TraceStatus.FAILED)
                                 .traceId(traceId)
                                 .username(username)
                                 .build();
                         TraceUtils.getPerfLogger().trace(traceInfo);
-                    }
-                })
-                .onError(ex -> {
-                    log.error("SSE exception.", ex);
-                    sseEmitter.completeWithError(ex);
-                    long lastPackageReceivedTime = System.currentTimeMillis();
-                    String traceInfo = new TraceUtils.TraceInfoBuilder()
-                            .args(new String[] {characterName, characterUid})
-                            .elapseTime(lastPackageReceivedTime - startTime.get())
-                            .method("ChatApi::lastPackageReceived")
-                            .throwable(ex)
-                            .status(TraceUtils.TraceStatus.FAILED)
-                            .traceId(traceId)
-                            .username(username)
-                            .build();
-                    TraceUtils.getPerfLogger().trace(traceInfo);
-                })
-                .start();
+                    })
+                    .start();
 
-        servletResponse.addHeader("X-Accel-Buffering", "no");
-        return sseEmitter;
+            servletResponse.addHeader("X-Accel-Buffering", "no");
+            return sseEmitter;
+        } catch (RuntimeException failure) {
+            closeStream(tokenStream);
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Chat stream initialization failed");
+        }
     }
 
     @Operation(operationId = "listMessages", summary = "List Chat Messages", description = "List messages of a chat.")
@@ -658,100 +677,105 @@ public class ChatApi {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to send assistant to " + assistantUid);
         }
 
-        String traceId = TraceUtils.getTraceId();
-        String username = AccountUtils.currentUser().getUsername();
-        String assistantName = characterService.getNameByUid(assistantUid);
-        AtomicBoolean firstPackageReceived = new AtomicBoolean(false);
+        try {
+            sseEmitter.onTimeout(() -> closeStream(tokenStream));
+            sseEmitter.onError(ignored -> closeStream(tokenStream));
+            sseEmitter.onCompletion(() -> closeStream(tokenStream));
+            String traceId = TraceUtils.getTraceId();
+            String username = AccountUtils.currentUser().getUsername();
+            String assistantName = characterService.getNameByUid(assistantUid);
+            AtomicBoolean firstPackageReceived = new AtomicBoolean(false);
 
-        tokenStream
-                .onPartialResponse(partialResult -> {
-                    if (!firstPackageReceived.get()) {
-                        TraceUtils.putTraceAttribute("traceId", traceId);
-                        TraceUtils.putTraceAttribute("username", username);
-                        long firstPackageReceivedTime = System.currentTimeMillis();
-                        String traceInfo = new TraceUtils.TraceInfoBuilder()
-                                .args(new String[] {assistantName, assistantUid})
-                                .elapseTime(firstPackageReceivedTime - startTime.get())
-                                .method("ChatApi::assistantFirstPackageReceived")
-                                .response(partialResult)
-                                .status(TraceUtils.TraceStatus.SUCCESSFUL)
-                                .traceId(traceId)
-                                .username(username)
-                                .build();
-                        TraceUtils.getPerfLogger().trace(traceInfo);
-                        firstPackageReceived.set(true);
-                    }
-                    try {
-                        LlmResultDTO result = LlmResultDTO.from(partialResult, null, null, null);
-                        result.setRequestId(null);
-                        sseEmitter.send(result);
-                    } catch (IllegalStateException | NullPointerException | IOException e) {
-                        log.warn("Error when sending message.", e);
-                        sseEmitter.completeWithError(e);
+            tokenStream
+                    .onPartialResponse(partialResult -> {
+                        if (!firstPackageReceived.get()) {
+                            TraceUtils.putTraceAttribute("traceId", traceId);
+                            TraceUtils.putTraceAttribute("username", username);
+                            long firstPackageReceivedTime = System.currentTimeMillis();
+                            String traceInfo = new TraceUtils.TraceInfoBuilder()
+                                    .args(new String[] {assistantName, assistantUid})
+                                    .elapseTime(firstPackageReceivedTime - startTime.get())
+                                    .method("ChatApi::assistantFirstPackageReceived")
+                                    .status(TraceUtils.TraceStatus.SUCCESSFUL)
+                                    .traceId(traceId)
+                                    .username(username)
+                                    .build();
+                            TraceUtils.getPerfLogger().trace(traceInfo);
+                            firstPackageReceived.set(true);
+                        }
+                        try {
+                            LlmResultDTO result = LlmResultDTO.from(partialResult, null, null, null);
+                            result.setRequestId(null);
+                            sseEmitter.send(result);
+                        } catch (IllegalStateException | NullPointerException | IOException e) {
+                            log.warn("Error when sending message.");
+                            closeStream(tokenStream);
+                            sseEmitter.completeWithError(new IllegalStateException("Chat response delivery failed"));
+                            long lastPackageReceivedTime = System.currentTimeMillis();
+                            String traceInfo = new TraceUtils.TraceInfoBuilder()
+                                    .args(new String[] {assistantName, assistantUid})
+                                    .elapseTime(lastPackageReceivedTime - startTime.get())
+                                    .method("ChatApi::assistantLastPackageReceived")
+                                    .status(TraceUtils.TraceStatus.BAD_REQUEST)
+                                    .traceId(traceId)
+                                    .username(username)
+                                    .build();
+                            TraceUtils.getPerfLogger().trace(traceInfo);
+                        }
+                    })
+                    .onCompleteResponse(response -> {
+                        long lastPackageReceivedTime = System.currentTimeMillis();
+                        try {
+                            LlmResultDTO result = LlmResultDTO.from(response, null);
+                            Objects.requireNonNull(result).setText(null);
+                            result.setRequestId(null);
+                            sseEmitter.send(result);
+                            sseEmitter.complete();
+                            String traceInfo = new TraceUtils.TraceInfoBuilder()
+                                    .args(new String[] {assistantName, assistantUid})
+                                    .elapseTime(lastPackageReceivedTime - startTime.get())
+                                    .method("ChatApi::assistantLastPackageReceived")
+                                    .status(TraceUtils.TraceStatus.SUCCESSFUL)
+                                    .traceId(traceId)
+                                    .username(username)
+                                    .build();
+                            TraceUtils.getPerfLogger().trace(traceInfo);
+                        } catch (Exception e) {
+                            log.warn("Error when sending message.");
+                            closeStream(tokenStream);
+                            sseEmitter.completeWithError(new IllegalStateException("Chat response delivery failed"));
+                            String traceInfo = new TraceUtils.TraceInfoBuilder()
+                                    .args(new String[] {assistantName, assistantUid})
+                                    .elapseTime(lastPackageReceivedTime - startTime.get())
+                                    .method("ChatApi::assistantLastPackageReceived")
+                                    .status(TraceUtils.TraceStatus.BAD_REQUEST)
+                                    .traceId(traceId)
+                                    .username(username)
+                                    .build();
+                            TraceUtils.getPerfLogger().trace(traceInfo);
+                        }
+                    })
+                    .onError(ex -> {
+                        log.error("SSE exception.");
+                        sseEmitter.completeWithError(new IllegalStateException("Chat stream failed"));
                         long lastPackageReceivedTime = System.currentTimeMillis();
                         String traceInfo = new TraceUtils.TraceInfoBuilder()
                                 .args(new String[] {assistantName, assistantUid})
                                 .elapseTime(lastPackageReceivedTime - startTime.get())
                                 .method("ChatApi::assistantLastPackageReceived")
-                                .response(partialResult)
-                                .throwable(e)
-                                .status(TraceUtils.TraceStatus.BAD_REQUEST)
+                                .status(TraceUtils.TraceStatus.FAILED)
                                 .traceId(traceId)
                                 .username(username)
                                 .build();
                         TraceUtils.getPerfLogger().trace(traceInfo);
-                    }
-                })
-                .onCompleteResponse(response -> {
-                    long lastPackageReceivedTime = System.currentTimeMillis();
-                    try {
-                        LlmResultDTO result = LlmResultDTO.from(response, null);
-                        Objects.requireNonNull(result).setText(null);
-                        result.setRequestId(null);
-                        sseEmitter.send(result);
-                        sseEmitter.complete();
-                        String traceInfo = new TraceUtils.TraceInfoBuilder()
-                                .args(new String[] {assistantName, assistantUid})
-                                .elapseTime(lastPackageReceivedTime - startTime.get())
-                                .method("ChatApi::assistantLastPackageReceived")
-                                .status(TraceUtils.TraceStatus.SUCCESSFUL)
-                                .traceId(traceId)
-                                .username(username)
-                                .build();
-                        TraceUtils.getPerfLogger().trace(traceInfo);
-                    } catch (Exception e) {
-                        log.warn("Error when sending message.", e);
-                        sseEmitter.completeWithError(e);
-                        String traceInfo = new TraceUtils.TraceInfoBuilder()
-                                .args(new String[] {assistantName, assistantUid})
-                                .elapseTime(lastPackageReceivedTime - startTime.get())
-                                .method("ChatApi::assistantLastPackageReceived")
-                                .throwable(e)
-                                .status(TraceUtils.TraceStatus.BAD_REQUEST)
-                                .traceId(traceId)
-                                .username(username)
-                                .build();
-                        TraceUtils.getPerfLogger().trace(traceInfo);
-                    }
-                })
-                .onError(ex -> {
-                    log.error("SSE exception.", ex);
-                    sseEmitter.completeWithError(ex);
-                    long lastPackageReceivedTime = System.currentTimeMillis();
-                    String traceInfo = new TraceUtils.TraceInfoBuilder()
-                            .args(new String[] {assistantName, assistantUid})
-                            .elapseTime(lastPackageReceivedTime - startTime.get())
-                            .method("ChatApi::assistantLastPackageReceived")
-                            .throwable(ex)
-                            .status(TraceUtils.TraceStatus.FAILED)
-                            .traceId(traceId)
-                            .username(username)
-                            .build();
-                    TraceUtils.getPerfLogger().trace(traceInfo);
-                })
-                .start();
+                    })
+                    .start();
 
-        servletResponse.addHeader("X-Accel-Buffering", "no");
-        return sseEmitter;
+            servletResponse.addHeader("X-Accel-Buffering", "no");
+            return sseEmitter;
+        } catch (RuntimeException failure) {
+            closeStream(tokenStream);
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Chat stream initialization failed");
+        }
     }
 }

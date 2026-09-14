@@ -105,7 +105,7 @@ public class TelegramChannelManager {
             try {
                 activate(bid);
             } catch (Exception e) {
-                log.warn("Failed to activate telegram bot for backend {}: {}", bid, e.getMessage());
+                log.warn("Failed to activate telegram bot for backend {}", bid);
             }
         }
     }
@@ -136,7 +136,7 @@ public class TelegramChannelManager {
             try {
                 username = ((OkHttpTelegramClient) client).execute(new GetMe()).getUserName();
             } catch (TelegramApiException e) {
-                log.warn("getMe failed for backend {}", backendId, e);
+                log.warn("getMe failed for backend {}", backendId);
                 return;
             }
         }
@@ -149,7 +149,7 @@ public class TelegramChannelManager {
             try {
                 acquired = lock.tryLock();
             } catch (Exception e) {
-                log.warn("Failed to attempt polling lock for backend {}: {}", backendId, e.getMessage());
+                log.warn("Failed to attempt polling lock for backend {}", backendId);
                 acquired = false;
             }
             if (acquired) {
@@ -158,12 +158,12 @@ public class TelegramChannelManager {
                         try {
                             updateDispatcher.dispatch(backendId, u);
                         } catch (Exception ex) {
-                            log.error("Dispatch failed for backend {}", backendId, ex);
+                            log.error("Dispatch failed for backend {}", backendId);
                         }
                     });
                     session = tgApp.registerBot(token, () -> telegramUrl, new DefaultGetUpdatesGenerator(), consumer);
                 } catch (TelegramApiException e) {
-                    log.warn("registerBot failed for backend {}: {}", backendId, e.getMessage());
+                    log.warn("registerBot failed for backend {}", backendId);
                     safeForceUnlock(lock);
                     session = null;
                 }
@@ -192,7 +192,7 @@ public class TelegramChannelManager {
             try {
                 tgApp.unregisterBot(bot.token());
             } catch (TelegramApiException e) {
-                log.warn("unregisterBot failed for backend {}: {}", backendId, e.getMessage());
+                log.warn("unregisterBot failed for backend {}", backendId);
             }
             safeForceUnlock(redisson.getLock(LOCK_PREFIX + backendId));
             log.info("Deactivated telegram bot @{} for backend {} (released polling lock)", bot.username(), backendId);
@@ -219,7 +219,7 @@ public class TelegramChannelManager {
             try {
                 acquired = lock.tryLock();
             } catch (Exception e) {
-                log.debug("Polling lock probe failed for backend {}: {}", backendId, e.getMessage());
+                log.debug("Polling lock probe failed for backend {}", backendId);
                 continue;
             }
             if (!acquired) {
@@ -230,7 +230,7 @@ public class TelegramChannelManager {
                     try {
                         updateDispatcher.dispatch(backendId, u);
                     } catch (Exception ex) {
-                        log.error("Dispatch failed for backend {}", backendId, ex);
+                        log.error("Dispatch failed for backend {}", backendId);
                     }
                 });
                 BotSession session =
@@ -238,7 +238,7 @@ public class TelegramChannelManager {
                 bots.put(backendId, new RegisteredBot(bot.token(), bot.client(), bot.username(), session));
                 log.info("Took over polling for telegram bot @{} on backend {}", bot.username(), backendId);
             } catch (TelegramApiException e) {
-                log.warn("Reconcile registerBot failed for backend {}: {}", backendId, e.getMessage());
+                log.warn("Reconcile registerBot failed for backend {}", backendId);
                 safeForceUnlock(lock);
             }
         }
@@ -269,7 +269,7 @@ public class TelegramChannelManager {
             try {
                 tgApp.unregisterBot(bot.token());
             } catch (Exception e) {
-                log.warn("unregisterBot at shutdown failed for {}", entry.getKey(), e);
+                log.warn("unregisterBot at shutdown failed for {}", entry.getKey());
             }
             safeForceUnlock(redisson.getLock(LOCK_PREFIX + entry.getKey()));
         }
@@ -277,7 +277,7 @@ public class TelegramChannelManager {
         try {
             tgApp.close();
         } catch (Exception e) {
-            log.warn("Closing TelegramBotsLongPollingApplication failed", e);
+            log.warn("Closing TelegramBotsLongPollingApplication failed");
         }
     }
 

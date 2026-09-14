@@ -13,7 +13,9 @@ import fun.freechat.service.cache.LongPeriodCache;
 import fun.freechat.service.cache.LongPeriodCacheEvict;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.ChatContextService;
+import fun.freechat.service.chat.memory.MemoryLifecycleRepository;
 import fun.freechat.service.common.EncryptionService;
+import fun.freechat.service.util.CacheUtils;
 import fun.freechat.util.IdUtils;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,6 +43,12 @@ public class ChatContextServiceImpl implements ChatContextService {
 
     @Autowired
     private EncryptionService encryptionService;
+
+    @Autowired
+    private MemoryLifecycleRepository lifecycle;
+
+    @Autowired
+    private ChatTaskQueueManager queueManager;
 
     @Override
     public ChatContext create(@NonNull ChatContext context) {
@@ -72,11 +80,18 @@ public class ChatContextServiceImpl implements ChatContextService {
             key = ChatSessionServiceImpl.CACHE_KEY_SPEL_PREFIX + "#p0.chatId")
     public boolean update(ChatContext context) {
         String origApiKeyValue = context.getApiKeyValue();
-        int rows = chatContextMapper.updateByPrimaryKeySelective(
-                context.withApiKeyValue(encryptionService.encrypt(origApiKeyValue))
-                        .withGmtModified(LocalDateTime.now()));
-        context.setApiKeyValue(origApiKeyValue);
-        return rows > 0;
+        var lock = queueManager.coordinationLock(context.getChatId());
+        lock.lock(); // Watchdog lease; queued callers reenter on the owning thread. Never drain here.
+        try {
+            boolean updated =
+                    lifecycle.updateContext(context.withApiKeyValue(encryptionService.encrypt(origApiKeyValue))
+                            .withGmtModified(LocalDateTime.now()));
+            evictContextCaches(context.getChatId());
+            return updated;
+        } finally {
+            context.setApiKeyValue(origApiKeyValue);
+            lock.unlock();
+        }
     }
 
     @Override
@@ -86,11 +101,36 @@ public class ChatContextServiceImpl implements ChatContextService {
             cacheManager = IN_PROCESS_LONG_CACHE_MANAGER,
             key = ChatSessionServiceImpl.CACHE_KEY_SPEL_PREFIX + "#p0")
     public boolean delete(String chatId) {
-        return chatContextMapper.deleteByPrimaryKey(chatId) > 0;
+        var lock = queueManager.coordinationLock(chatId);
+        lock.lock();
+        try {
+            boolean deleted = lifecycle.delete(chatId);
+            evictContextCaches(chatId);
+            return deleted;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    private static void evictContextCaches(String chatId) {
+        // Annotation eviction alone runs after unlock, leaving a stale-admission window.
+        String methods = ChatContextServiceImpl.class.getName() + "::";
+        CacheUtils.longPeriodCacheEvict(List.of(
+                CACHE_KEY_PREFIX + chatId,
+                methods + "getChatOwner_" + chatId,
+                methods + "getCharacterOwner_" + chatId,
+                methods + "getCharacterUid_" + chatId,
+                "MysqlChatMemoryStoreImpl_" + chatId));
+        CacheUtils.middlePeriodCacheEvict(List.of(
+                MysqlChatMemoryStoreImpl.class.getName() + "::getLang_" + chatId,
+                MysqlChatMemoryStoreImpl.class.getName() + "::roughCount_" + chatId));
+        var sessions = CacheUtils.inProcessLongPeriodCache();
+        if (sessions != null) {
+            sessions.evict(SESSION_CACHE_KEY_PREFIX + chatId);
+        }
     }
 
     @Override
-    @LongPeriodCache(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public ChatContext get(String chatId) {
         return chatContextMapper
                 .selectByPrimaryKey(chatId)

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -32,10 +34,19 @@ public class ChatTaskQueueManager implements SmartLifecycle {
     // which is exactly the pattern virtual threads optimize for.
     private final ExecutorService workerExecutor = Executors.newVirtualThreadPerTaskExecutor();
     private volatile boolean running = false;
+    private final RedissonClient redisson;
+
+    public ChatTaskQueueManager(RedissonClient redisson) {
+        this.redisson = redisson;
+    }
+
+    public RLock coordinationLock(String chatId) {
+        return redisson.getLock("freechat:chat:coordination:v1:" + chatId);
+    }
 
     public ChatTaskQueue getOrCreateQueue(String chatId) {
         return queues.computeIfAbsent(chatId, id -> {
-            ChatTaskQueue queue = new ChatTaskQueue(id);
+            ChatTaskQueue queue = new ChatTaskQueue(id, coordinationLock(id));
             queue.startWorker(workerExecutor);
             return queue;
         });

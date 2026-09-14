@@ -29,7 +29,7 @@ public class TelegramChannelEventBridge {
         try {
             redisson.getTopic(TelegramChannelTopics.BACKEND_CHANGED).publishAsync(backendId);
         } catch (Exception e) {
-            log.warn("Failed to broadcast CharacterBackendEvent for backend {}: {}", backendId, e.getMessage());
+            log.warn("Failed to broadcast CharacterBackendEvent for backend {}", backendId);
         }
     }
 }

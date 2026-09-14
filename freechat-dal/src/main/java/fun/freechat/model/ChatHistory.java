@@ -16,9 +16,21 @@ public class ChatHistory implements Serializable {
 
     private Long tgMessageId;
 
+    private String turnId;
+
+    private String recordKind;
+
+    private String messageOrigin;
+
+    private String systemMessageRef;
+
+    private Long episode;
+
     private String message;
 
     private String ext;
+
+    private String sourceMessage;
 
     private static final long serialVersionUID = 1L;
 
@@ -100,6 +112,71 @@ public class ChatHistory implements Serializable {
         this.tgMessageId = tgMessageId;
     }
 
+    public String getTurnId() {
+        return turnId;
+    }
+
+    public ChatHistory withTurnId(String turnId) {
+        this.setTurnId(turnId);
+        return this;
+    }
+
+    public void setTurnId(String turnId) {
+        this.turnId = turnId;
+    }
+
+    public String getRecordKind() {
+        return recordKind;
+    }
+
+    public ChatHistory withRecordKind(String recordKind) {
+        this.setRecordKind(recordKind);
+        return this;
+    }
+
+    public void setRecordKind(String recordKind) {
+        this.recordKind = recordKind;
+    }
+
+    public String getMessageOrigin() {
+        return messageOrigin;
+    }
+
+    public ChatHistory withMessageOrigin(String messageOrigin) {
+        this.setMessageOrigin(messageOrigin);
+        return this;
+    }
+
+    public void setMessageOrigin(String messageOrigin) {
+        this.messageOrigin = messageOrigin;
+    }
+
+    public String getSystemMessageRef() {
+        return systemMessageRef;
+    }
+
+    public ChatHistory withSystemMessageRef(String systemMessageRef) {
+        this.setSystemMessageRef(systemMessageRef);
+        return this;
+    }
+
+    public void setSystemMessageRef(String systemMessageRef) {
+        this.systemMessageRef = systemMessageRef;
+    }
+
+    public Long getEpisode() {
+        return episode;
+    }
+
+    public ChatHistory withEpisode(Long episode) {
+        this.setEpisode(episode);
+        return this;
+    }
+
+    public void setEpisode(Long episode) {
+        this.episode = episode;
+    }
+
     public String getMessage() {
         return message;
     }
@@ -126,6 +203,19 @@ public class ChatHistory implements Serializable {
         this.ext = ext;
     }
 
+    public String getSourceMessage() {
+        return sourceMessage;
+    }
+
+    public ChatHistory withSourceMessage(String sourceMessage) {
+        this.setSourceMessage(sourceMessage);
+        return this;
+    }
+
+    public void setSourceMessage(String sourceMessage) {
+        this.sourceMessage = sourceMessage;
+    }
+
     @Override
     public boolean equals(Object that) {
         if (this == that) {
@@ -144,8 +234,14 @@ public class ChatHistory implements Serializable {
             && (this.getGmtModified() == null ? other.getGmtModified() == null : this.getGmtModified().equals(other.getGmtModified()))
             && (this.getEnabled() == null ? other.getEnabled() == null : this.getEnabled().equals(other.getEnabled()))
             && (this.getTgMessageId() == null ? other.getTgMessageId() == null : this.getTgMessageId().equals(other.getTgMessageId()))
+            && (this.getTurnId() == null ? other.getTurnId() == null : this.getTurnId().equals(other.getTurnId()))
+            && (this.getRecordKind() == null ? other.getRecordKind() == null : this.getRecordKind().equals(other.getRecordKind()))
+            && (this.getMessageOrigin() == null ? other.getMessageOrigin() == null : this.getMessageOrigin().equals(other.getMessageOrigin()))
+            && (this.getSystemMessageRef() == null ? other.getSystemMessageRef() == null : this.getSystemMessageRef().equals(other.getSystemMessageRef()))
+            && (this.getEpisode() == null ? other.getEpisode() == null : this.getEpisode().equals(other.getEpisode()))
             && (this.getMessage() == null ? other.getMessage() == null : this.getMessage().equals(other.getMessage()))
-            && (this.getExt() == null ? other.getExt() == null : this.getExt().equals(other.getExt()));
+            && (this.getExt() == null ? other.getExt() == null : this.getExt().equals(other.getExt()))
+            && (this.getSourceMessage() == null ? other.getSourceMessage() == null : this.getSourceMessage().equals(other.getSourceMessage()));
     }
 
     @Override
@@ -158,8 +254,14 @@ public class ChatHistory implements Serializable {
         result = prime * result + ((getGmtModified() == null) ? 0 : getGmtModified().hashCode());
         result = prime * result + ((getEnabled() == null) ? 0 : getEnabled().hashCode());
         result = prime * result + ((getTgMessageId() == null) ? 0 : getTgMessageId().hashCode());
+        result = prime * result + ((getTurnId() == null) ? 0 : getTurnId().hashCode());
+        result = prime * result + ((getRecordKind() == null) ? 0 : getRecordKind().hashCode());
+        result = prime * result + ((getMessageOrigin() == null) ? 0 : getMessageOrigin().hashCode());
+        result = prime * result + ((getSystemMessageRef() == null) ? 0 : getSystemMessageRef().hashCode());
+        result = prime * result + ((getEpisode() == null) ? 0 : getEpisode().hashCode());
         result = prime * result + ((getMessage() == null) ? 0 : getMessage().hashCode());
         result = prime * result + ((getExt() == null) ? 0 : getExt().hashCode());
+        result = prime * result + ((getSourceMessage() == null) ? 0 : getSourceMessage().hashCode());
         return result;
     }
 
@@ -175,8 +277,14 @@ public class ChatHistory implements Serializable {
         sb.append(", gmtModified=").append(gmtModified);
         sb.append(", enabled=").append(enabled);
         sb.append(", tgMessageId=").append(tgMessageId);
+        sb.append(", turnId=").append(turnId);
+        sb.append(", recordKind=").append(recordKind);
+        sb.append(", messageOrigin=").append(messageOrigin);
+        sb.append(", systemMessageRef=").append(systemMessageRef);
+        sb.append(", episode=").append(episode);
         sb.append(", message=").append(message);
         sb.append(", ext=").append(ext);
+        sb.append(", sourceMessage=").append(sourceMessage);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

@@ -30,7 +30,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
 public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper, CommonUpdateMapper {
-    BasicColumn[] selectList = BasicColumn.columnList(id, memoryId, gmtCreate, gmtModified, enabled, tgMessageId, message, ext);
+    BasicColumn[] selectList = BasicColumn.columnList(id, memoryId, gmtCreate, gmtModified, enabled, tgMessageId, turnId, recordKind, messageOrigin, systemMessageRef, episode, message, ext, sourceMessage);
 
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     @SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="row.id", before=false, resultType=Long.class)
@@ -44,8 +44,14 @@ public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper
         @Result(column="gmt_modified", property="gmtModified", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="enabled", property="enabled", jdbcType=JdbcType.TINYINT),
         @Result(column="tg_message_id", property="tgMessageId", jdbcType=JdbcType.BIGINT),
+        @Result(column="turn_id", property="turnId", jdbcType=JdbcType.VARCHAR),
+        @Result(column="record_kind", property="recordKind", jdbcType=JdbcType.VARCHAR),
+        @Result(column="message_origin", property="messageOrigin", jdbcType=JdbcType.VARCHAR),
+        @Result(column="system_message_ref", property="systemMessageRef", jdbcType=JdbcType.VARCHAR),
+        @Result(column="episode", property="episode", jdbcType=JdbcType.BIGINT),
         @Result(column="message", property="message", jdbcType=JdbcType.LONGVARCHAR),
-        @Result(column="ext", property="ext", jdbcType=JdbcType.LONGVARCHAR)
+        @Result(column="ext", property="ext", jdbcType=JdbcType.LONGVARCHAR),
+        @Result(column="source_message", property="sourceMessage", jdbcType=JdbcType.LONGVARCHAR)
     })
     List<ChatHistory> selectMany(SelectStatementProvider selectStatement);
 
@@ -74,8 +80,14 @@ public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper
             .withMappedColumn(gmtModified)
             .withMappedColumn(enabled)
             .withMappedColumn(tgMessageId)
+            .withMappedColumn(turnId)
+            .withMappedColumn(recordKind)
+            .withMappedColumn(messageOrigin)
+            .withMappedColumn(systemMessageRef)
+            .withMappedColumn(episode)
             .withMappedColumn(message)
             .withMappedColumn(ext)
+            .withMappedColumn(sourceMessage)
         );
     }
 
@@ -86,8 +98,14 @@ public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper
             .withMappedColumnWhenPresent(gmtModified, row::getGmtModified)
             .withMappedColumnWhenPresent(enabled, row::getEnabled)
             .withMappedColumnWhenPresent(tgMessageId, row::getTgMessageId)
+            .withMappedColumnWhenPresent(turnId, row::getTurnId)
+            .withMappedColumnWhenPresent(recordKind, row::getRecordKind)
+            .withMappedColumnWhenPresent(messageOrigin, row::getMessageOrigin)
+            .withMappedColumnWhenPresent(systemMessageRef, row::getSystemMessageRef)
+            .withMappedColumnWhenPresent(episode, row::getEpisode)
             .withMappedColumnWhenPresent(message, row::getMessage)
             .withMappedColumnWhenPresent(ext, row::getExt)
+            .withMappedColumnWhenPresent(sourceMessage, row::getSourceMessage)
         );
     }
 
@@ -120,8 +138,14 @@ public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper
                 .set(gmtModified).equalTo(row::getGmtModified)
                 .set(enabled).equalTo(row::getEnabled)
                 .set(tgMessageId).equalTo(row::getTgMessageId)
+                .set(turnId).equalTo(row::getTurnId)
+                .set(recordKind).equalTo(row::getRecordKind)
+                .set(messageOrigin).equalTo(row::getMessageOrigin)
+                .set(systemMessageRef).equalTo(row::getSystemMessageRef)
+                .set(episode).equalTo(row::getEpisode)
                 .set(message).equalTo(row::getMessage)
-                .set(ext).equalTo(row::getExt);
+                .set(ext).equalTo(row::getExt)
+                .set(sourceMessage).equalTo(row::getSourceMessage);
     }
 
     static UpdateDSL updateSelectiveColumns(ChatHistory row, UpdateDSL dsl) {
@@ -131,8 +155,14 @@ public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper
                 .set(gmtModified).equalToWhenPresent(row::getGmtModified)
                 .set(enabled).equalToWhenPresent(row::getEnabled)
                 .set(tgMessageId).equalToWhenPresent(row::getTgMessageId)
+                .set(turnId).equalToWhenPresent(row::getTurnId)
+                .set(recordKind).equalToWhenPresent(row::getRecordKind)
+                .set(messageOrigin).equalToWhenPresent(row::getMessageOrigin)
+                .set(systemMessageRef).equalToWhenPresent(row::getSystemMessageRef)
+                .set(episode).equalToWhenPresent(row::getEpisode)
                 .set(message).equalToWhenPresent(row::getMessage)
-                .set(ext).equalToWhenPresent(row::getExt);
+                .set(ext).equalToWhenPresent(row::getExt)
+                .set(sourceMessage).equalToWhenPresent(row::getSourceMessage);
     }
 
     default int updateByPrimaryKey(ChatHistory row) {
@@ -142,8 +172,14 @@ public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper
             .set(gmtModified).equalTo(row::getGmtModified)
             .set(enabled).equalTo(row::getEnabled)
             .set(tgMessageId).equalTo(row::getTgMessageId)
+            .set(turnId).equalTo(row::getTurnId)
+            .set(recordKind).equalTo(row::getRecordKind)
+            .set(messageOrigin).equalTo(row::getMessageOrigin)
+            .set(systemMessageRef).equalTo(row::getSystemMessageRef)
+            .set(episode).equalTo(row::getEpisode)
             .set(message).equalTo(row::getMessage)
             .set(ext).equalTo(row::getExt)
+            .set(sourceMessage).equalTo(row::getSourceMessage)
             .where(id, isEqualTo(row::getId))
         );
     }
@@ -155,8 +191,14 @@ public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper
             .set(gmtModified).equalToWhenPresent(row::getGmtModified)
             .set(enabled).equalToWhenPresent(row::getEnabled)
             .set(tgMessageId).equalToWhenPresent(row::getTgMessageId)
+            .set(turnId).equalToWhenPresent(row::getTurnId)
+            .set(recordKind).equalToWhenPresent(row::getRecordKind)
+            .set(messageOrigin).equalToWhenPresent(row::getMessageOrigin)
+            .set(systemMessageRef).equalToWhenPresent(row::getSystemMessageRef)
+            .set(episode).equalToWhenPresent(row::getEpisode)
             .set(message).equalToWhenPresent(row::getMessage)
             .set(ext).equalToWhenPresent(row::getExt)
+            .set(sourceMessage).equalToWhenPresent(row::getSourceMessage)
             .where(id, isEqualTo(row::getId))
         );
     }

@@ -35,7 +35,7 @@ public class HelpCommand implements TelegramCommandHandler {
         try {
             channel.sendText(backendId, chat.getId(), HELP_TEXT);
         } catch (TelegramApiException e) {
-            log.warn("/help reply failed for chat {}", chat.getId(), e);
+            log.warn("/help reply failed for chat {}", chat.getId());
         }
     }
 }

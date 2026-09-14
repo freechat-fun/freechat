@@ -61,6 +61,35 @@ chat:
     maxLongTermMemoryWindowSize: 30
     minLongTermMemoryWindowSize: 0
     defaultLongTermMemoryWindowSize: 5
+    long-term:
+      idle-timeout: PT1H
+      scan-interval: PT30S
+      workers-per-node: 2
+      dispatch-batch-size: 100
+      turn-lease: PT60S
+      lease-renew-interval: PT15S
+      turn-max-duration: PT10M
+      job-max-duration: PT10M
+      extraction-claim-lease: PT5M
+      extraction-timeout: PT60S
+      foreground-timeout: PT90S
+      max-foreground-batches: 2
+      max-attempts: 5
+      retry-initial-delay: PT30S
+      retry-max-delay: PT30M
+      extraction-max-input-tokens: 6000
+      max-input-tokens: 8192
+      response-reserve-tokens: 2048
+      summary-max-tokens: 768
+      profile-max-tokens: 512
+      profile-max-facts: 32
+      search-min-score: 0.3
+      search-query-max-chars: 2000
+      tool-result-max-tokens: 1024
+      tool-total-max-tokens: 4096
+      max-tool-rounds: 10
+      gc-grace-period: PT24H
+      token-estimator-bean: ""
   rag:
     maxMaxSegmentSize: 1000
     minMaxSegmentSize: 0

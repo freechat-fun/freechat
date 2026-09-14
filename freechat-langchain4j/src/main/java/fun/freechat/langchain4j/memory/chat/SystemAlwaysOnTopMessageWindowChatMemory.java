@@ -15,9 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class SystemAlwaysOnTopMessageWindowChatMemory implements ChatMemory {
     private final Object id;
 
@@ -92,8 +90,7 @@ public class SystemAlwaysOnTopMessageWindowChatMemory implements ChatMemory {
         }
         int firstIndex = firstNonSystemMessageIndex(messages);
         while (messages.size() > maxMessages || messages.get(firstIndex).type() != USER) {
-            ChatMessage removedMessage = messages.remove(firstIndex);
-            log.trace("Removing the following message to comply with the capacity requirements: {}", removedMessage);
+            messages.remove(firstIndex);
         }
     }
 }

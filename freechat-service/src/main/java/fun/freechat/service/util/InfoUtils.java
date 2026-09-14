@@ -93,7 +93,7 @@ public class InfoUtils {
                 default -> null;
             };
         } catch (JsonProcessingException e) {
-            log.warn("Failed to deserialize TokenUsage from {}", text, e);
+            log.warn("Failed to deserialize token usage");
             return null;
         }
     }

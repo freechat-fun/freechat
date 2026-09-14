@@ -8,7 +8,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Lock;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -19,11 +19,16 @@ public class ChatTaskQueue {
     private final String chatId;
     private final LinkedBlockingQueue<ChatTask<?>> taskQueue = new LinkedBlockingQueue<>();
     private final AtomicBoolean draining = new AtomicBoolean(false);
-    private final AtomicReference<CountDownLatch> activeLatch = new AtomicReference<>();
+    private final Object lifecycleMonitor = new Object();
+    private volatile ActiveTask activeTask;
     private final AtomicLong idleSince = new AtomicLong(System.currentTimeMillis());
+    private final Lock coordination;
 
-    public ChatTaskQueue(String chatId) {
+    private record ActiveTask(ChatTask<?> task, Thread worker, CountDownLatch done) {}
+
+    public ChatTaskQueue(String chatId, Lock coordination) {
         this.chatId = chatId;
+        this.coordination = coordination;
     }
 
     public <T> ChatTask<T> submit(ChatTask<T> task) {
@@ -32,6 +37,9 @@ public class ChatTaskQueue {
             return task;
         }
         taskQueue.add(task);
+        if (draining.get() && taskQueue.remove(task)) {
+            task.future.completeExceptionally(new ChatQueueRejectedException());
+        }
         return task;
     }
 
@@ -40,14 +48,26 @@ public class ChatTaskQueue {
     }
 
     public void drain(long timeoutMs) {
-        draining.set(true);
+        ActiveTask active;
+        synchronized (lifecycleMonitor) {
+            draining.set(true);
+            active = activeTask;
+        }
 
-        CountDownLatch latch = activeLatch.get();
-        if (latch != null) {
+        if (active != null) {
+            boolean finished = false;
             try {
-                latch.await(timeoutMs, TimeUnit.MILLISECONDS);
+                // Session reset can drain from inside the task itself. Never await our own completion.
+                if (active.worker() != Thread.currentThread()) {
+                    finished = active.done().await(Math.max(0, timeoutMs), TimeUnit.MILLISECONDS);
+                }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
+            } finally {
+                if (!finished && active.task() instanceof ChatTask.Stream stream) {
+                    // Bounded request only: the worker retains coordination until close/abort finishes.
+                    stream.cancel();
+                }
             }
         }
 
@@ -59,7 +79,7 @@ public class ChatTaskQueue {
     }
 
     public boolean isIdle() {
-        return activeLatch.get() == null && taskQueue.isEmpty();
+        return activeTask == null && taskQueue.isEmpty();
     }
 
     public long getIdleSinceMs() {
@@ -68,7 +88,7 @@ public class ChatTaskQueue {
 
     private void workerLoop() {
         Thread.currentThread().setName("chat-queue-" + chatId);
-        while (!Thread.currentThread().isInterrupted()) {
+        while (!Thread.currentThread().isInterrupted() && !draining.get()) {
             ChatTask<?> task;
             try {
                 task = taskQueue.poll(POLL_TIMEOUT_SECONDS, TimeUnit.SECONDS);
@@ -80,21 +100,48 @@ public class ChatTaskQueue {
                 idleSince.set(System.currentTimeMillis());
                 continue;
             }
-            if (draining.get()) {
+            ActiveTask active;
+            synchronized (lifecycleMonitor) {
+                active = draining.get() ? null : new ActiveTask(task, Thread.currentThread(), new CountDownLatch(1));
+                if (active != null) {
+                    activeTask = active;
+                }
+            }
+            if (active == null) {
                 task.future.completeExceptionally(new ChatQueueRejectedException());
                 continue;
             }
-            CountDownLatch latch = new CountDownLatch(1);
-            activeLatch.set(latch);
             try {
-                task.execute();
-            } catch (Throwable ex) {
+                coordination.lockInterruptibly();
+                try {
+                    if (draining.get()) {
+                        task.future.completeExceptionally(new ChatQueueRejectedException());
+                    } else {
+                        task.execute();
+                    }
+                } finally {
+                    // Stream cleanup restores interruption; Redisson's synchronous unlock needs it cleared too.
+                    boolean interrupted = Thread.interrupted();
+                    try {
+                        coordination.unlock();
+                    } finally {
+                        if (interrupted) {
+                            Thread.currentThread().interrupt();
+                        }
+                    }
+                }
+            } catch (InterruptedException ignored) {
+                Thread.currentThread().interrupt();
+                task.future.completeExceptionally(new ChatQueueRejectedException());
+            } catch (Throwable ignored) {
                 if (!task.future.isDone()) {
-                    task.future.completeExceptionally(ex);
+                    task.future.completeExceptionally(new IllegalStateException("Chat coordination failed"));
                 }
             } finally {
-                activeLatch.set(null);
-                latch.countDown();
+                synchronized (lifecycleMonitor) {
+                    activeTask = null;
+                }
+                active.done().countDown();
                 idleSince.set(System.currentTimeMillis());
             }
         }

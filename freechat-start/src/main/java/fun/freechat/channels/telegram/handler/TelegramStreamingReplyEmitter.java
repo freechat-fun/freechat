@@ -115,7 +115,7 @@ public final class TelegramStreamingReplyEmitter {
                 flush(false);
             } catch (Exception e) {
                 // Best effort: log and keep going. The next append will retry.
-                log.warn("Telegram streaming flush failed for chat {}: {}", tgChatId, e.getMessage());
+                log.warn("Telegram streaming flush failed for chat {}", tgChatId);
             }
         }
     }
@@ -130,7 +130,7 @@ public final class TelegramStreamingReplyEmitter {
         try {
             flush(true);
         } catch (Exception e) {
-            log.warn("Telegram final flush failed for chat {}: {}", tgChatId, e.getMessage());
+            log.warn("Telegram final flush failed for chat {}", tgChatId);
         }
         sendPendingImages();
         return fullText.toString();
@@ -254,7 +254,7 @@ public final class TelegramStreamingReplyEmitter {
         } catch (Exception e) {
             // Best-effort indicator. Log at debug to avoid spamming on transient failures or
             // bot-blocked scenarios — the actual response still streams via editText.
-            log.debug("Telegram sendChatAction(TYPING) failed for chat {}: {}", tgChatId, e.getMessage());
+            log.debug("Telegram sendChatAction(TYPING) failed for chat {}", tgChatId);
         }
     }
 
@@ -270,7 +270,7 @@ public final class TelegramStreamingReplyEmitter {
                     sentImages.add(Pair.of(sent.getMessageId().longValue(), url));
                 }
             } catch (TelegramApiException e) {
-                log.warn("Telegram sendPhoto failed for chat {} (url={}): {}", tgChatId, url, e.getMessage());
+                log.warn("Telegram sendPhoto failed for chat {}", tgChatId);
             }
         }
         pendingImageUrls.clear();
@@ -302,7 +302,7 @@ public final class TelegramStreamingReplyEmitter {
             nextFlushAt = Math.max(nextFlushAt, System.currentTimeMillis() + deferMs);
             log.info("Telegram throttled {} for chat {} — deferring next flush by {}ms", op, tgChatId, deferMs);
         } else {
-            log.warn("Telegram {} failed for chat {}: {}", op, tgChatId, e.getMessage());
+            log.warn("Telegram {} failed for chat {}", op, tgChatId);
         }
     }
 

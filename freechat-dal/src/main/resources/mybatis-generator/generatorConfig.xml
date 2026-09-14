@@ -67,6 +67,10 @@
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 
+        <table tableName="chat_memory_state" />
+
+        <table tableName="chat_memory_commit" />
+
         <table tableName="rag_task">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
