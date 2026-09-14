@@ -55,7 +55,7 @@ public class ResetCommand implements TelegramCommandHandler {
                 chatService.clearMemory(chatId);
                 reply = CONFIRMATION;
             } catch (Exception e) {
-                log.warn("/reset clearMemory failed for chat {}", chatId, e);
+                log.warn("/reset clearMemory failed for chat {}", chatId);
                 reply = "Sorry — couldn't reset the conversation just now. Please try again.";
             }
         }
@@ -63,7 +63,7 @@ public class ResetCommand implements TelegramCommandHandler {
         try {
             channel.sendText(backendId, tgChatId, reply);
         } catch (TelegramApiException e) {
-            log.warn("/reset reply failed for chat {}", tgChatId, e);
+            log.warn("/reset reply failed for chat {}", tgChatId);
         }
     }
 }

@@ -66,13 +66,14 @@ public class ChatBindingTelegramMessageHandler implements TelegramMessageHandler
         try {
             emitter.start();
         } catch (Exception e) {
-            log.warn("Failed to send streaming placeholder for chat {}", chatId, e);
+            log.warn("Failed to send streaming placeholder for chat {}", chatId);
             return;
         }
 
+        TokenStream stream = null;
         try {
             assert text != null;
-            TokenStream stream = chatService.streamSend(chatId, UserMessage.from(text), null);
+            stream = chatService.streamSend(chatId, UserMessage.from(text), null);
             if (stream == null) {
                 log.warn("ChatService.streamSend returned null for chat {}", chatId);
                 emitter.complete();
@@ -84,7 +85,7 @@ public class ChatBindingTelegramMessageHandler implements TelegramMessageHandler
                         recordOutboundPhotos(chatId, emitter);
                     })
                     .onError(err -> {
-                        log.warn("Streaming reply errored for chat {}", chatId, err);
+                        log.warn("Streaming reply errored for chat {}", chatId);
                         String partial = emitter.complete();
                         if (!partial.isBlank()) {
                             recordOutboundText(chatId, emitter, partial);
@@ -93,7 +94,14 @@ public class ChatBindingTelegramMessageHandler implements TelegramMessageHandler
                     })
                     .start();
         } catch (Exception e) {
-            log.error("Failed to start streaming reply for chat {}", chatId, e);
+            log.error("Failed to start streaming reply for chat {}", chatId);
+            if (stream instanceof AutoCloseable closeable) {
+                try {
+                    closeable.close();
+                } catch (Exception ignored) {
+                    log.warn("Telegram chat stream cancellation failed for chat {}", chatId);
+                }
+            }
             emitter.complete();
         }
     }

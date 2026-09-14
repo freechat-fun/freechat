@@ -200,4 +200,26 @@
     <logger name="org.redisson.cluster" level="off" additivity="false">
         <appender-ref ref="ERROR_ASYNC" />
     </logger>
+
+    <!-- HTTP/2 frame dumps expose memory bodies and credentials independently of SDK logging controls. -->
+    <logger name="io.grpc.netty.shaded.io.grpc.netty.NettyClientHandler" level="off" />
+    <!-- MyBatis parameters and results include source messages, credentials, and memory-derived replies. -->
+    <logger name="fun.freechat.mapper.ChatHistoryMapper" level="off" />
+    <logger name="fun.freechat.mapper.ChatMemoryCoordinationMapper" level="off" />
+    <logger name="fun.freechat.mapper.ChatContextMapper" level="off" />
+    <logger name="fun.freechat.mapper.TgMessageMapper" level="off" />
+    <!-- MVC DEBUG/TRACE rendering includes memory-derived response bodies. -->
+    <logger name="org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor" level="info" />
+    <!-- JDBC translation/cleanup logs run before repository sanitization and can include SQL payloads or credentials.
+         Transaction managers use their concrete class as the logger; Boot defaults to JdbcTransactionManager. -->
+    <logger name="org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator" level="off" />
+    <logger name="org.springframework.jdbc.datasource.DataSourceTransactionManager" level="off" />
+    <logger name="org.springframework.jdbc.support.JdbcTransactionManager" level="off" />
+    <logger name="org.springframework.jdbc.datasource.DataSourceUtils" level="off" />
+    <!-- Provider retries and decoder/transport callbacks log bodies independently of request/response flags. -->
+    <logger name="dev.langchain4j.internal.RetryUtils" level="off" />
+    <logger name="dev.langchain4j.http.client.sse.ServerSentEventListenerUtils" level="off" />
+    <logger name="com.alibaba.dashscope.protocol.okhttp.OkHttpHttpClient" level="off" />
+    <logger name="com.alibaba.dashscope.protocol.okhttp.OkHttpWebSocketClient" level="off" />
+    <logger name="com.azure.core.implementation.serializer.DefaultJsonSerializer" level="off" />
 </configuration>

@@ -1,7 +1,6 @@
 package fun.freechat.service.chat.impl;
 
 import static dev.langchain4j.agent.tool.ToolSpecifications.toolSpecificationFrom;
-import static dev.langchain4j.data.message.ChatMessageType.USER;
 import static dev.langchain4j.internal.Utils.getAnnotatedMethod;
 import static dev.langchain4j.internal.Utils.getOrDefault;
 import static dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey;
@@ -28,7 +27,6 @@ import static fun.freechat.service.enums.ChatVar.USER_NICKNAME;
 import static fun.freechat.service.enums.ChatVar.USER_PROFILE;
 import static fun.freechat.service.enums.EmbeddingRecordMeta.MEMORY_ID;
 import static fun.freechat.service.enums.EmbeddingStoreType.documentTypeForLang;
-import static fun.freechat.service.enums.EmbeddingStoreType.longTermMemoryTypeForLang;
 import static fun.freechat.service.util.CacheUtils.IN_PROCESS_LONG_CACHE_MANAGER;
 import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
 import static fun.freechat.util.ByteUtils.isTrue;
@@ -44,7 +42,6 @@ import dev.langchain4j.data.message.ToolExecutionResultMessage;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
-import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.input.PromptTemplate;
 import dev.langchain4j.model.moderation.Moderation;
@@ -81,6 +78,7 @@ import fun.freechat.service.chat.ChatMemoryService;
 import fun.freechat.service.chat.ChatSession;
 import fun.freechat.service.chat.ChatSessionService;
 import fun.freechat.service.chat.MemoryUsage;
+import fun.freechat.service.chat.memory.MemoryModelResolver;
 import fun.freechat.service.common.ShortLinkService;
 import fun.freechat.service.enums.ChatVar;
 import fun.freechat.service.enums.ModelProvider;
@@ -156,6 +154,9 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
     @Autowired
     private ChatMemoryService chatMemoryService;
+
+    @Autowired
+    private MemoryModelResolver memoryModels;
 
     @Autowired
     private EmbeddingStoreService<TextSegment> embeddingStoreService;
@@ -236,14 +237,6 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
         lock.lock();
         try {
-            // double-checked locking
-            if (cache != null) {
-                ChatSession session = cache.get(CACHE_KEY_PREFIX + chatId, ChatSession.class);
-                if (session != null) {
-                    return session;
-                }
-            }
-
             CharacterBackend backend = characterService.getBackend(context.getBackendId());
             String characterUid = backend.getCharacterUid();
             String ownerId = characterService.getOwnerByUid(characterUid);
@@ -252,6 +245,11 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             CharacterInfo characterInfo =
                     characterService.details(characterId, owner).getLeft();
             PromptTask promptTask = promptTaskService.get(backend.getChatPromptTaskId());
+            Long promptId = promptService.getLatestIdByUid(promptTask.getPromptUid(), owner);
+            PromptInfo promptInfo = promptService.details(promptId, owner).getLeft();
+            User user = userService.loadByUserId(context.getUserId());
+            String memoryFingerprint = memoryModels.sessionFingerprint(
+                    context, backend, ownerId, characterInfo, promptTask, promptInfo, user);
             AiModelInfo modelInfo = InfoUtils.toAiModelInfo(promptTask.getModelId());
             AiModelInfo imageModelInfo = InfoUtils.toAiModelInfo(backend.getImageModelId());
             AiModelInfo moderationModelInfo = InfoUtils.toAiModelInfo(backend.getModerationModelId());
@@ -320,8 +318,6 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                 }
             }
 
-            Long promptId = promptService.getLatestIdByUid(promptTask.getPromptUid(), owner);
-            PromptInfo promptInfo = promptService.details(promptId, owner).getLeft();
             String promptTemplate = isTrue(promptTask.getDraft()) && StringUtils.isNotBlank(promptInfo.getDraft())
                     ? PromptUtils.getDraftTemplate(promptInfo.getDraft())
                     : promptInfo.getTemplate();
@@ -332,7 +328,6 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                 characterNickname = characterInfo.getName();
             }
 
-            User user = userService.loadByUserId(context.getUserId());
             String userNickname = context.getUserNickname();
             if (StringUtils.isBlank(userNickname)) {
                 userNickname = user.getNickname();
@@ -390,19 +385,12 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     .build();
 
             PromptFormat promptFormat = PromptFormat.of(promptInfo.getFormat());
-            List<ChatMessage> messages = chatMemory.messages();
-            if (CollectionUtils.isEmpty(messages)) {
+            boolean memoryEnabled =
+                    backend.getLongTermMemoryWindowSize() != null && backend.getLongTermMemoryWindowSize() > 0;
+            if (!memoryEnabled && CollectionUtils.isEmpty(chatMemory.messages())) {
                 chatMemory.add(SystemMessage.from(promptService.apply(prompt.getSystem(), variables, promptFormat)));
-
                 if (CollectionUtils.isNotEmpty(prompt.getMessages())) {
                     prompt.getMessages().forEach(chatMemory::add);
-                }
-            } else if (messages.getLast().type() == USER) {
-                try {
-                    ChatResponse response = chatModel.chat(messages);
-                    chatMemory.addAiMessage(response.aiMessage(), response.tokenUsage());
-                } catch (Exception e) {
-                    log.error("Failed to call chatModel.chat()", e);
                 }
             }
 
@@ -445,30 +433,6 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     .contentInjector(contentInjector)
                     .executor(executor)
                     .build();
-
-            // long-term memory
-            RetrievalAugmentor longTermMemoryRetrievalAugmentor = null;
-            Integer longTermMemoryWindowSize = backend.getLongTermMemoryWindowSize();
-
-            if (longTermMemoryWindowSize != null && longTermMemoryWindowSize > 0L) {
-                EmbeddingStore<TextSegment> longTermMemoryEmbeddingStore =
-                        embeddingStoreService.of(chatId, longTermMemoryTypeForLang(lang));
-
-                ContentRetriever longTermMemoryContentRetriever = EmbeddingStoreContentRetriever.builder()
-                        .embeddingModel(embeddingModel)
-                        .embeddingStore(longTermMemoryEmbeddingStore)
-                        .maxResults(longTermMemoryWindowSize)
-                        .minScore(minScore)
-                        .filter(metadataKey(MEMORY_ID.text()).isEqualTo(chatId))
-                        .build();
-
-                longTermMemoryRetrievalAugmentor = DefaultRetrievalAugmentor.builder()
-                        .queryTransformer(delegatedQueryTransformer)
-                        .contentRetriever(longTermMemoryContentRetriever)
-                        .contentInjector(contentInjector)
-                        .executor(executor)
-                        .build();
-            }
 
             MemoryUsage memoryUsage = chatMemoryService.usage(chatId);
 
@@ -514,18 +478,18 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     .promptFormat(promptFormat)
                     .variables(variables)
                     .retriever(retrievalAugmentor)
-                    .longTermMemoryRetriever(longTermMemoryRetrievalAugmentor)
                     .memoryUsage(memoryUsage)
+                    .memoryFingerprint(memoryFingerprint)
                     .tools(tools)
                     .build();
-        } catch (NotImplementedException | NoSuchElementException | NullPointerException | IOException e) {
-            log.warn("Failed to build chat session of {}", chatId, e);
+        } catch (RuntimeException | IOException e) {
+            log.warn("Failed to build chat session of {}", chatId);
             return null;
         } finally {
             try {
                 lock.unlock();
-            } catch (Exception unlockEx) {
-                log.warn("Unlock failed!", unlockEx);
+            } catch (Exception ignored) {
+                log.warn("Chat session coordination release failed");
             }
         }
     }
@@ -752,30 +716,6 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     .executor(executor)
                     .build();
 
-            // long-term memory
-            RetrievalAugmentor longTermMemoryRetrievalAugmentor = null;
-            Integer longTermMemoryWindowSize = backend.getLongTermMemoryWindowSize();
-
-            if (longTermMemoryWindowSize != null && longTermMemoryWindowSize > 0L) {
-                EmbeddingStore<TextSegment> longTermMemoryEmbeddingStore =
-                        embeddingStoreService.of(chatId, longTermMemoryTypeForLang(lang));
-
-                ContentRetriever longTermMemoryContentRetriever = EmbeddingStoreContentRetriever.builder()
-                        .embeddingModel(embeddingModel)
-                        .embeddingStore(longTermMemoryEmbeddingStore)
-                        .maxResults(longTermMemoryWindowSize)
-                        .minScore(minScore)
-                        .filter(metadataKey(MEMORY_ID.text()).isEqualTo(chatId))
-                        .build();
-
-                longTermMemoryRetrievalAugmentor = DefaultRetrievalAugmentor.builder()
-                        .queryTransformer(delegatedQueryTransformer)
-                        .contentRetriever(longTermMemoryContentRetriever)
-                        .contentInjector(contentInjector)
-                        .executor(executor)
-                        .build();
-            }
-
             return ChatSession.builder()
                     .chatModel(chatModel)
                     .streamingChatModel(streamingChatModel)
@@ -786,10 +726,9 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     .promptFormat(promptFormat)
                     .variables(variables)
                     .retriever(retrievalAugmentor)
-                    .longTermMemoryRetriever(longTermMemoryRetrievalAugmentor)
                     .build();
         } catch (NotImplementedException | NoSuchElementException | NullPointerException | IOException e) {
-            log.warn("Failed to build chat session of {}", chatId, e);
+            log.warn("Failed to build chat session of {}", chatId);
             return null;
         }
     }

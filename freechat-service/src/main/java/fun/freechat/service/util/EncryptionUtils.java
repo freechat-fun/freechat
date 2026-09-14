@@ -35,7 +35,7 @@ public class EncryptionUtils {
             byte[] encrypted = encryptCipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8));
             return Base64.getEncoder().encodeToString(encrypted);
         } catch (IllegalBlockSizeException | BadPaddingException e) {
-            log.error("Encrypt {} failed!", plainText, e);
+            log.error("Encryption failed");
             return plainText;
         }
     }
@@ -49,7 +49,7 @@ public class EncryptionUtils {
             byte[] decrypted = decryptCipher.doFinal(encrypted);
             return new String(decrypted, StandardCharsets.UTF_8);
         } catch (IllegalBlockSizeException | BadPaddingException e) {
-            log.error("Decrypt {} failed!", cipherText, e);
+            log.error("Decryption failed");
             return cipherText;
         }
     }

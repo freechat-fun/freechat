@@ -31,7 +31,7 @@ public class TelegramChannelEventListener {
             try {
                 manager.activate(backendId);
             } catch (Exception e) {
-                log.warn("Telegram (re)activation failed for backend {}", backendId, e);
+                log.warn("Telegram (re)activation failed for backend {}", backendId);
             }
         });
         log.info("Subscribed to telegram backend-change topic '{}'", TelegramChannelTopics.BACKEND_CHANGED);

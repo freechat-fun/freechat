@@ -1,164 +1,148 @@
 package fun.freechat.service.chat.impl;
 
-import static dev.langchain4j.data.message.ChatMessageType.AI;
-import static dev.langchain4j.data.message.ChatMessageType.USER;
-import static dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey;
-import static fun.freechat.service.enums.EmbeddingRecordMeta.*;
 import static fun.freechat.service.enums.EmbeddingStoreType.longTermMemoryTypeForLang;
-import static fun.freechat.service.util.PromptUtils.toSingleText;
 
-import dev.langchain4j.data.document.Metadata;
-import dev.langchain4j.data.embedding.Embedding;
-import dev.langchain4j.data.message.*;
-import dev.langchain4j.data.segment.TextSegment;
-import dev.langchain4j.model.embedding.EmbeddingModel;
-import dev.langchain4j.rag.AugmentationRequest;
-import dev.langchain4j.rag.AugmentationResult;
-import dev.langchain4j.rag.RetrievalAugmentor;
-import dev.langchain4j.rag.content.Content;
-import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
-import dev.langchain4j.store.embedding.EmbeddingSearchResult;
-import dev.langchain4j.store.embedding.EmbeddingStore;
-import dev.langchain4j.store.embedding.filter.Filter;
-import fun.freechat.service.chat.ChatMemoryReducedEvent;
-import fun.freechat.service.chat.ChatMemoryService;
-import fun.freechat.service.chat.ChatMessageRecord;
+import dev.langchain4j.data.message.ChatMessage;
+import dev.langchain4j.data.message.SystemMessage;
+import fun.freechat.model.ChatMemoryState;
+import fun.freechat.service.character.CharacterService;
+import fun.freechat.service.chat.ChatContextService;
+import fun.freechat.service.chat.ChatSession;
 import fun.freechat.service.chat.LongTermChatMemoryStore;
-import fun.freechat.service.rag.EmbeddingModelService;
-import fun.freechat.service.rag.EmbeddingStoreService;
-import java.util.Collections;
+import fun.freechat.service.chat.memory.*;
+import fun.freechat.service.prompt.PromptService;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
+import java.util.concurrent.ScheduledExecutorService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
-@Slf4j
-@SuppressWarnings("unused")
 public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
-    private static final String LOCK_PREFIX = "LongTermChatMemoryStoreLock-";
+    private final ChatContextService contexts;
+    private final CharacterService characters;
+    private final PromptService prompts;
+    private final MemoryModelResolver models;
+    private final MemoryLifecycleRepository lifecycle;
+    private final MemoryHistoryReconciler reconciler;
+    private final MemoryTurnRepository turns;
+    private final MemorySourceReader sources;
+    private final MemoryPublicationRepository publications;
+    private final MemoryPublisher publisher;
+    private final MemoryVectorRepository vectors;
+    private final MemoryConsolidator consolidator;
+    private final MemoryBoundsFactory boundsFactory;
+    private final LongTermMemoryProperties properties;
+    private final ScheduledExecutorService renewals;
 
-    @Autowired
-    private RedissonClient redisson;
-
-    @Autowired
-    private ChatMemoryService chatMemoryService;
-
-    @Autowired
-    private EmbeddingStoreService<TextSegment> embeddingStoreService;
-
-    @Autowired
-    private EmbeddingModelService embeddingModelService;
-
-    @Override
-    public List<ChatMessage> getMessages(
-            Object memoryId, UserMessage userMessage, List<ChatMessage> chatMemory, RetrievalAugmentor retriever) {
-        dev.langchain4j.rag.query.Metadata metadata =
-                dev.langchain4j.rag.query.Metadata.from(userMessage, memoryId, chatMemory);
-
-        return Optional.ofNullable(retriever.augment(new AugmentationRequest(userMessage, metadata)))
-                .map(AugmentationResult::contents)
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(Content::textSegment)
-                .map(TextSegment::text)
-                .map(ChatMessageDeserializer::messagesFromJson)
-                .filter(messages -> messages.size() == 2
-                        && messages.getFirst().type() == USER
-                        && messages.getLast().type() == AI)
-                .flatMap(List::stream)
-                .toList();
+    public LongTermChatMemoryStoreImpl(
+            ChatContextService contexts,
+            CharacterService characters,
+            PromptService prompts,
+            MemoryModelResolver models,
+            MemoryLifecycleRepository lifecycle,
+            MemoryHistoryReconciler reconciler,
+            MemoryTurnRepository turns,
+            MemorySourceReader sources,
+            MemoryPublicationRepository publications,
+            MemoryPublisher publisher,
+            MemoryVectorRepository vectors,
+            MemoryConsolidator consolidator,
+            MemoryBoundsFactory boundsFactory,
+            LongTermMemoryProperties properties,
+            @Qualifier("memoryTurnRenewals") ScheduledExecutorService renewals) {
+        this.contexts = contexts;
+        this.characters = characters;
+        this.prompts = prompts;
+        this.models = models;
+        this.lifecycle = lifecycle;
+        this.reconciler = reconciler;
+        this.turns = turns;
+        this.sources = sources;
+        this.publications = publications;
+        this.publisher = publisher;
+        this.vectors = vectors;
+        this.consolidator = consolidator;
+        this.boundsFactory = boundsFactory;
+        this.properties = properties;
+        this.renewals = renewals;
     }
 
     @Override
-    public void updateMessages(Object memoryId, List<ChatMessageRecord> messages) {
-        RLock lock = redisson.getLock(LOCK_PREFIX + memoryId);
-        boolean locked = false;
+    public boolean enabled(String chatId) {
+        if (chatId == null || chatId.endsWith("-assist")) {
+            return false;
+        }
+        var context = contexts.get(chatId);
+        if (context == null) {
+            return false;
+        }
+        var backend = characters.getBackend(context.getBackendId());
+        return backend != null
+                && backend.getLongTermMemoryWindowSize() != null
+                && backend.getLongTermMemoryWindowSize() > 0;
+    }
 
+    @Override
+    public Optional<Binding> open(String chatId, ChatSession session) {
+        if (chatId.endsWith("-assist")) {
+            return Optional.empty();
+        }
+        var resolution = models.resolveForSession(chatId, session.getMemoryFingerprint());
+        if (resolution.isEmpty()) {
+            lifecycle.disable(chatId);
+            return Optional.empty();
+        }
+        var model = resolution.get().resolved();
+        List<ChatMessage> examples = resolution.get().configuration().examples();
+        ChatMemoryState state = lifecycle.activate(
+                new MemoryScope(
+                        chatId, model.userId(), model.characterUid(), 1, longTermMemoryTypeForLang(model.language())),
+                model.fingerprint());
+        MemoryScope scope = new MemoryScope(
+                chatId,
+                state.getUserId(),
+                state.getCharacterUid(),
+                state.getGeneration(),
+                longTermMemoryTypeForLang(model.language()));
+        turns.recoverExpired(scope);
+        var reconciliation = reconciler.reconcile(scope, model.fingerprint(), examples);
+        if (!reconciliation.complete()) {
+            throw new IllegalStateException("Chat history reconciliation is in progress; retry the request");
+        }
+        var lease = turns.begin(scope, model.fingerprint());
+        MemoryTurnLifetime lifetime = null;
         try {
-            locked = lock.tryLock(30, 60, TimeUnit.SECONDS);
-            String lang = chatMemoryService.getLang(memoryId);
-            EmbeddingModel embeddingModel = embeddingModelService.modelForLang(lang);
-            EmbeddingStore<TextSegment> embeddingStore =
-                    embeddingStoreService.of(memoryId, longTermMemoryTypeForLang(lang));
-
-            ChatMessageRecord userRecord = null;
-            for (ChatMessageRecord record : messages) {
-                ChatMessage message = record.getMessage();
-                if (message.type() == USER) {
-                    userRecord = record;
-                } else if (message.type() == AI && !((AiMessage) message).hasToolExecutionRequests()) {
-                    if (userRecord == null) {
-                        continue;
-                    }
-                    UserMessage userMessage = (UserMessage) userRecord.getMessage();
-                    AiMessage aiMessage = (AiMessage) message;
-                    String text = text(userMessage, aiMessage);
-                    Metadata metadata = new Metadata();
-                    metadata.put(USER_MESSAGE_ID.text(), userRecord.getId());
-                    metadata.put(AI_MESSAGE_ID.text(), record.getId());
-                    metadata.put(MEMORY_ID.text(), memoryId.toString());
-                    TextSegment segment = TextSegment.from(text, metadata);
-
-                    Embedding embedding = embed(embeddingModel, userMessage, aiMessage);
-                    Filter filter = metadataKey(USER_MESSAGE_ID.text())
-                            .isEqualTo(userRecord.getId())
-                            .and(metadataKey(AI_MESSAGE_ID.text()).isEqualTo(record.getId()))
-                            .and(metadataKey(MEMORY_ID.text()).isEqualTo(memoryId.toString()));
-
-                    EmbeddingSearchRequest request = EmbeddingSearchRequest.builder()
-                            .queryEmbedding(embedding)
-                            .filter(filter)
-                            .minScore(0.8)
-                            .maxResults(1)
-                            .build();
-                    EmbeddingSearchResult<TextSegment> result = embeddingStore.search(request);
-                    if (result.matches().isEmpty()) {
-                        embeddingStore.add(embedding, segment);
-                    }
-                    userRecord = null;
-                }
+            MemoryBounds bounds = boundsFactory.forLanguage(model.language());
+            MemoryInvocation memory = new MemoryInvocation(
+                    lease, model, turns, sources, publications, publisher, consolidator, bounds, properties);
+            lifetime = new MemoryTurnLifetime(turns, memory, properties, renewals);
+            var recall = new MemoryRecallTools(
+                    scope, model.recallLimit(), vectors, publisher, bounds, properties, lifetime::check);
+            var streaming = new MemoryStreamingModel(session.getStreamingChatModel(), memory, lifetime);
+            ChatSession invocation = session.forInvocation(
+                    memory, streaming, List.of(recall), properties.getMaxToolRounds(), lifetime::check);
+            memory.tools(invocation.getToolSpecifications());
+            memory.add(SystemMessage.from(prompts.apply(
+                    invocation.getPrompt().getSystem(), invocation.getVariables(), invocation.getPromptFormat())));
+            if (reconciliation.throughId() == 0) {
+                examples.forEach(memory::addExample);
             }
-            embeddingStoreService.flush(memoryId, longTermMemoryTypeForLang(lang), embeddingStore);
-        } catch (Exception ex) {
-            log.error("Failed to update long term memory for [{}]", memoryId, ex);
-        } finally {
-            if (locked) {
-                try {
-                    lock.unlock();
-                } catch (Throwable unlockEx) {
-                    log.warn("Unlock failed!", unlockEx);
+            return Optional.of(new Binding(invocation, memory, lifetime));
+        } catch (Throwable failure) {
+            try {
+                if (lifetime != null) {
+                    lifetime.close();
+                } else {
+                    turns.abort(lease);
                 }
+            } catch (Throwable ignored) {
+                // A failed close remains fenced by the durable lease and absolute deadline.
             }
+            if (failure instanceof Error) {
+                throw new Error("Chat memory initialization failed");
+            }
+            throw new IllegalStateException("Chat memory initialization failed");
         }
-    }
-
-    @Override
-    public void deleteMessages(Object memoryId) {
-        if (memoryId == null) {
-            return;
-        }
-        String lang = chatMemoryService.getLang(memoryId);
-        embeddingStoreService.delete(memoryId, longTermMemoryTypeForLang(lang));
-    }
-
-    @EventListener
-    public void onChatMemoryReduced(ChatMemoryReducedEvent event) {
-        updateMessages(event.memoryId(), event.records());
-    }
-
-    private static String text(UserMessage userMessage, AiMessage aiMessage) {
-        return ChatMessageSerializer.messagesToJson(List.of(userMessage, aiMessage));
-    }
-
-    private static Embedding embed(EmbeddingModel embeddingModel, UserMessage userMessage, AiMessage aiMessage) {
-        return embeddingModel
-                .embed(String.format("%s\n\n%s", toSingleText(userMessage), toSingleText(aiMessage)))
-                .content();
     }
 }

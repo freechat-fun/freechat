@@ -9,6 +9,7 @@ import dev.langchain4j.data.message.*;
 import dev.langchain4j.model.output.TokenUsage;
 import fun.freechat.mapper.ChatHistoryDynamicSqlSupport;
 import fun.freechat.mapper.ChatHistoryMapper;
+import fun.freechat.mapper.ChatMemoryCoordinationMapper;
 import fun.freechat.model.CharacterBackend;
 import fun.freechat.model.CharacterInfo;
 import fun.freechat.model.ChatContext;
@@ -16,11 +17,10 @@ import fun.freechat.model.ChatHistory;
 import fun.freechat.service.cache.MiddlePeriodCache;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.*;
-import fun.freechat.service.common.FileStore;
+import fun.freechat.service.chat.memory.MemoryLifecycleRepository;
 import fun.freechat.service.enums.TtsSpeakerType;
+import fun.freechat.service.util.CacheUtils;
 import fun.freechat.service.util.InfoUtils;
-import fun.freechat.service.util.StoreUtils;
-import java.io.File;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.BiFunction;
@@ -29,7 +29,10 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.dsl.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
@@ -45,7 +48,6 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
     private static final String CACHE_KEY_PREFIX = "MysqlChatMemoryStoreImpl_";
     private static final String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "' + ";
     private static final String CACHE_KEY_FOR_MESSAGE_RECORD_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "record_' + ";
-    private static final String SYSTEM_MESSAGE_HOME = "private/messages/";
 
     @Value("${chat.memory.maxMessageSize:1000}")
     private Integer maxSize;
@@ -61,6 +63,18 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
 
     @Autowired
     private ChatHistoryMapper chatHistoryMapper;
+
+    @Autowired
+    private SystemPromptSnapshotStore snapshots;
+
+    @Autowired
+    private ChatMemoryCoordinationMapper chatMemoryCoordinationMapper;
+
+    @Autowired
+    private MemoryLifecycleRepository lifecycle;
+
+    @Autowired
+    private ChatTaskQueueManager queueManager;
 
     @Autowired
     private ChatContextService chatContextService;
@@ -85,13 +99,10 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
         LinkedList<ChatMessageRecord> cachedList = getMessageRecords(memoryId);
 
         SystemMessage systemMessage = firstMessage.type() == SYSTEM ? (SystemMessage) firstMessage : null;
-        ChatHistory history = messageToHistory(memoryId, lastMessage, null);
+        ChatHistory history = messageToHistory(memoryId, lastMessage, null)
+                .withSystemMessageRef(snapshots.save((String) memoryId, systemMessage));
         chatHistoryMapper.insertSelective(history);
         if (history.getId() != null) {
-            // the system message may be too large
-            // store it as a file instead of db record
-            saveSystemMessage(memoryId, history.getId(), systemMessage);
-
             cachedList.add(ChatMessageRecord.builder()
                     .id(history.getId())
                     .message(lastMessage)
@@ -106,12 +117,15 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
 
     @Override
     public void deleteMessages(Object memoryId) {
-        chatHistoryMapper.update(c -> c.set(ChatHistoryDynamicSqlSupport.enabled)
-                .equalTo((byte) 0)
-                .where(ChatHistoryDynamicSqlSupport.memoryId, isEqualTo((String) memoryId))
-                .and(ChatHistoryDynamicSqlSupport.enabled, isEqualTo((byte) 1)));
-
-        cache().evict(CACHE_KEY_PREFIX + memoryId);
+        String chatId = (String) memoryId;
+        var lock = queueManager.coordinationLock(chatId);
+        lock.lock(); // Watchdog lease, with same-thread reentry from queue work. Never drain here.
+        try {
+            lifecycle.clear(chatId);
+            evictMemoryCaches(chatId, List.of());
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
@@ -146,12 +160,16 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
         while (it.hasNext()) {
             ChatMessageRecord messageRecord = it.next();
             if (message.equals(messageRecord.getMessage())) {
-                ChatHistory newHistory = new ChatHistory()
-                        .withId(messageRecord.getId())
-                        .withExt(InfoUtils.serialize(tokenUsage))
-                        .withGmtModified(LocalDateTime.now());
-                chatHistoryMapper.updateByPrimaryKeySelective(newHistory);
-                return newHistory.getId();
+                // Canonical invocation rows own per-call accounting. Equality is only a legacy fallback;
+                // guard in SQL as reconciliation can tag a row after this cache was populated.
+                int updated = chatHistoryMapper.update(c -> c.set(ChatHistoryDynamicSqlSupport.ext)
+                        .equalTo(InfoUtils.serialize(tokenUsage))
+                        .set(ChatHistoryDynamicSqlSupport.gmtModified)
+                        .equalTo(LocalDateTime.now())
+                        .where(ChatHistoryDynamicSqlSupport.id, isEqualTo(messageRecord.getId()))
+                        .and(ChatHistoryDynamicSqlSupport.memoryId, isEqualTo((String) memoryId))
+                        .and(ChatHistoryDynamicSqlSupport.turnId, isNull()));
+                return updated > 0 ? messageRecord.getId() : null;
             }
         }
 
@@ -168,11 +186,13 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
 
     @Override
     public ChatMessageRecord getLatestChatMessage(Object memoryId) {
-        return chatHistoryMapper
-                .selectOne(c -> c.where(ChatHistoryDynamicSqlSupport.memoryId, isEqualTo((String) memoryId))
+        return selectHistories(c -> c.where(ChatHistoryDynamicSqlSupport.memoryId, isEqualTo((String) memoryId))
                         .and(ChatHistoryDynamicSqlSupport.enabled, isEqualTo((byte) 1))
+                        .and(ChatHistoryDynamicSqlSupport.message, isNotNull())
                         .orderBy(ChatHistoryDynamicSqlSupport.id.descending())
                         .limit(1))
+                .stream()
+                .findFirst()
                 .map(this::historyToFullMessageRecord)
                 .orElse(null);
     }
@@ -183,40 +203,34 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
             return Collections.emptyList();
         }
 
-        var statement = select(ChatHistoryDynamicSqlSupport.id)
-                .from(ChatHistoryDynamicSqlSupport.chatHistory)
-                .where(ChatHistoryDynamicSqlSupport.memoryId, isEqualTo((String) memoryId))
-                .and(ChatHistoryDynamicSqlSupport.enabled, isEqualTo((byte) 1))
-                .orderBy(ChatHistoryDynamicSqlSupport.id.descending())
-                .limit(count);
-
-        List<Long> ids = chatHistoryMapper.selectMany(statement.build().render(RenderingStrategies.MYBATIS3)).stream()
-                .map(ChatHistory::getId)
-                .toList();
-
-        if (CollectionUtils.isNotEmpty(ids)) {
-            chatHistoryMapper.update(c -> c.set(ChatHistoryDynamicSqlSupport.enabled)
-                    .equalTo((byte) 0)
-                    .where(ChatHistoryDynamicSqlSupport.id, isIn(ids)));
+        String chatId = (String) memoryId;
+        var lock = queueManager.coordinationLock(chatId);
+        lock.lock();
+        try {
+            List<Long> ids = lifecycle.rollback(chatId, count);
+            evictMemoryCaches(chatId, ids);
+            return ids;
+        } finally {
+            lock.unlock();
         }
+    }
 
-        cache().evict(CACHE_KEY_PREFIX + memoryId);
-        return ids;
+    private void evictMemoryCaches(String chatId, List<Long> ids) {
+        cache().evict(CACHE_KEY_PREFIX + chatId);
+        CacheUtils.middlePeriodCacheEvict(List.of(MysqlChatMemoryStoreImpl.class.getName() + "::roughCount_" + chatId));
+        var local = CacheUtils.inProcessLongPeriodCache();
+        if (local != null) {
+            local.evict("ChatSessionService_" + chatId);
+            ids.forEach(id -> local.evict(CACHE_KEY_PREFIX + "record_" + id));
+        }
     }
 
     @Override
     public MemoryUsage usage(Object memoryId) {
-        return chatHistoryMapper
-                .select(c -> c.where(ChatHistoryDynamicSqlSupport.memoryId, isEqualTo((String) memoryId))
-                        .and(ChatHistoryDynamicSqlSupport.message, isNotNull()))
-                .stream()
-                .filter(history -> {
-                    ChatMessage message = historyToMessage(history);
-                    return message != null && message.type() == AI;
-                })
-                .map(ChatHistory::getExt)
-                .map(InfoUtils::deserialize)
-                .reduce(new MemoryUsage(null, null), (acc, tokenUsage) -> acc.add(1L, tokenUsage), MemoryUsage::add);
+        MemoryUsage[] total = {new MemoryUsage(null, null)};
+        chatMemoryCoordinationMapper.conversationUsage(
+                (String) memoryId, row -> total[0] = total[0].add(1L, InfoUtils.deserialize(row.getResultObject())));
+        return total[0];
     }
 
     @Override
@@ -255,29 +269,22 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
             key = CACHE_KEY_SPEL_PREFIX + "#p0",
             unless = "#result == null")
     public String loadSystemMessage(Long id) {
-        var statement = select(ChatHistoryDynamicSqlSupport.memoryId)
+        var statement = select(ChatHistoryDynamicSqlSupport.memoryId, ChatHistoryDynamicSqlSupport.systemMessageRef)
                 .from(ChatHistoryDynamicSqlSupport.chatHistory)
                 .where(ChatHistoryDynamicSqlSupport.id, isEqualTo(id));
 
-        String memoryId = chatHistoryMapper
+        ChatHistory history = chatHistoryMapper
                 .selectOne(statement.build().render(RenderingStrategies.MYBATIS3))
-                .map(ChatHistory::getMemoryId)
                 .orElse(null);
-
-        if (StringUtils.isBlank(memoryId)) {
+        if (history == null || history.getSystemMessageRef() == null) {
             return null;
         }
-
         try {
-            FileStore fileStore = StoreUtils.defaultFileStore();
-            if (fileStore != null) {
-                return fileStore.readString(messagePath(memoryId, id));
-            }
-        } catch (Exception e) {
-            log.warn("Failed to load system message of {}", id, e);
+            return snapshots.read(history.getMemoryId(), history.getSystemMessageRef());
+        } catch (IllegalStateException ignored) {
+            log.warn("Failed to load system prompt snapshot of {}", id);
+            return null;
         }
-
-        return null;
     }
 
     @Override
@@ -287,8 +294,8 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
             key = CACHE_KEY_FOR_MESSAGE_RECORD_SPEL_PREFIX + "#p0",
             unless = "#result == null")
     public ChatMessageRecord get(Long id) {
-        return chatHistoryMapper
-                .selectByPrimaryKey(id)
+        return selectHistories(c -> c.where(ChatHistoryDynamicSqlSupport.id, isEqualTo(id))).stream()
+                .findFirst()
                 .map(this::historyToFullMessageRecord)
                 .orElse(null);
     }
@@ -298,7 +305,18 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
             return new LinkedList<>();
         }
 
-        List<ChatMessageRecord> messageRecords = cache().get(CACHE_KEY_PREFIX + memoryId, List.class);
+        boolean canonical = !chatHistoryMapper
+                .selectMany(select(ChatHistoryDynamicSqlSupport.id)
+                        .from(ChatHistoryDynamicSqlSupport.chatHistory)
+                        .where(ChatHistoryDynamicSqlSupport.memoryId, isEqualTo((String) memoryId))
+                        .and(ChatHistoryDynamicSqlSupport.turnId, isNotNull())
+                        .limit(1)
+                        .build()
+                        .render(RenderingStrategies.MYBATIS3))
+                .isEmpty();
+        // Fenced writes and other nodes do not update the legacy transcript cache.
+        List<ChatMessageRecord> messageRecords =
+                canonical ? null : cache().get(CACHE_KEY_PREFIX + memoryId, List.class);
         LinkedList<ChatMessageRecord> filteredMessageRecords = Optional.ofNullable(messageRecords)
                 .orElseGet(() -> loadHistories(memoryId).stream()
                         .map(this::historyToBasicMessageRecord)
@@ -307,19 +325,21 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
                 .stream()
                 .reduce(new LinkedList<>(), messageRecordAccumulator(), messageRecordCombiner());
 
-        if (CollectionUtils.isEmpty(messageRecords) && CollectionUtils.isNotEmpty(filteredMessageRecords)) {
+        if (!canonical
+                && CollectionUtils.isEmpty(messageRecords)
+                && CollectionUtils.isNotEmpty(filteredMessageRecords)) {
             cache().put(CACHE_KEY_PREFIX + memoryId, filteredMessageRecords);
         }
         return filteredMessageRecords;
     }
 
     private List<ChatHistory> loadHistories(Object memoryId) {
-        List<ChatHistory> histories = chatHistoryMapper
-                .select(c -> c.where(ChatHistoryDynamicSqlSupport.memoryId, isEqualTo((String) memoryId))
-                        .and(ChatHistoryDynamicSqlSupport.enabled, isEqualTo((byte) 1))
-                        .and(ChatHistoryDynamicSqlSupport.message, isNotNull())
-                        .orderBy(ChatHistoryDynamicSqlSupport.id.descending())
-                        .limit(maxSize))
+        List<ChatHistory> histories = selectHistories(
+                        c -> c.where(ChatHistoryDynamicSqlSupport.memoryId, isEqualTo((String) memoryId))
+                                .and(ChatHistoryDynamicSqlSupport.enabled, isEqualTo((byte) 1))
+                                .and(ChatHistoryDynamicSqlSupport.message, isNotNull())
+                                .orderBy(ChatHistoryDynamicSqlSupport.id.descending())
+                                .limit(maxSize))
                 .reversed();
 
         if (histories.size() >= maxSize) {
@@ -336,12 +356,28 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
     }
 
     private ChatHistory loadSystemHistory(Object memoryId) {
-        return chatHistoryMapper
-                .selectOne(c -> c.where(ChatHistoryDynamicSqlSupport.memoryId, isEqualTo((String) memoryId))
+        return selectHistories(c -> c.where(ChatHistoryDynamicSqlSupport.memoryId, isEqualTo((String) memoryId))
                         .and(ChatHistoryDynamicSqlSupport.enabled, isEqualTo((byte) 1))
+                        .and(ChatHistoryDynamicSqlSupport.message, isNotNull())
                         .orderBy(ChatHistoryDynamicSqlSupport.id)
                         .limit(1))
+                .stream()
+                .findFirst()
                 .orElse(null);
+    }
+
+    private List<ChatHistory> selectHistories(SelectDSLCompleter selection) {
+        return MyBatis3Utils.selectList(
+                chatHistoryMapper::selectMany,
+                new BasicColumn[] {
+                    ChatHistoryDynamicSqlSupport.id,
+                    ChatHistoryDynamicSqlSupport.memoryId,
+                    ChatHistoryDynamicSqlSupport.gmtCreate,
+                    ChatHistoryDynamicSqlSupport.message,
+                    ChatHistoryDynamicSqlSupport.ext
+                },
+                ChatHistoryDynamicSqlSupport.chatHistory,
+                selection);
     }
 
     private static ChatMessage historyToMessage(ChatHistory history) {
@@ -413,33 +449,6 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
                 .withMessage(messageText)
                 .withExt(ext)
                 .withEnabled((byte) 1);
-    }
-
-    private static void saveSystemMessage(Object memoryId, Long id, SystemMessage systemMessage) {
-        if (systemMessage == null) {
-            return;
-        }
-
-        try {
-            FileStore fileStore = StoreUtils.defaultFileStore();
-            if (fileStore != null) {
-                String dir = messageDirectory((String) memoryId);
-                if (!fileStore.exists(dir)) {
-                    fileStore.createDirectories(dir);
-                }
-                fileStore.write(messagePath((String) memoryId, id), ChatMessageSerializer.messageToJson(systemMessage));
-            }
-        } catch (Exception e) {
-            log.warn("Failed to save system message of {}", id, e);
-        }
-    }
-
-    private static String messageDirectory(String memoryId) {
-        return SYSTEM_MESSAGE_HOME + File.separator + memoryId;
-    }
-
-    private static String messagePath(String memoryId, Long id) {
-        return messageDirectory(memoryId) + File.separator + id + ".json";
     }
 
     private Cache cache() {

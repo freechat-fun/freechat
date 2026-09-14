@@ -2,40 +2,30 @@ package fun.freechat.service.chat.impl;
 
 import static dev.langchain4j.data.message.ChatMessageType.SYSTEM;
 import static dev.langchain4j.data.message.ChatMessageType.USER;
-import static dev.langchain4j.data.message.ToolExecutionResultMessage.toolExecutionResultMessage;
 import static fun.freechat.service.chat.ChatService.asMemoryId;
 import static fun.freechat.service.enums.ChatVar.*;
 import static fun.freechat.service.util.PromptUtils.toSingleText;
 
-import dev.langchain4j.agent.tool.ToolExecutionRequest;
-import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.data.message.*;
 import dev.langchain4j.data.segment.TextSegment;
-import dev.langchain4j.invocation.InvocationContext;
-import dev.langchain4j.invocation.InvocationParameters;
 import dev.langchain4j.memory.ChatMemory;
-import dev.langchain4j.model.chat.ChatModel;
-import dev.langchain4j.model.chat.request.ChatRequest;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.moderation.Moderation;
-import dev.langchain4j.model.output.TokenUsage;
 import dev.langchain4j.rag.AugmentationRequest;
 import dev.langchain4j.rag.AugmentationResult;
 import dev.langchain4j.rag.RetrievalAugmentor;
 import dev.langchain4j.rag.content.Content;
 import dev.langchain4j.rag.query.Metadata;
-import dev.langchain4j.service.AiServiceTokenStream;
-import dev.langchain4j.service.AiServiceTokenStreamParameters;
 import dev.langchain4j.service.TokenStream;
-import dev.langchain4j.service.tool.ToolExecutor;
 import dev.langchain4j.store.memory.chat.InMemoryChatMemoryStore;
-import fun.freechat.langchain4j.memory.chat.SystemAlwaysOnTopMessageWindowChatMemory;
 import fun.freechat.model.CharacterBackend;
 import fun.freechat.model.CharacterInfo;
 import fun.freechat.model.ChatContext;
 import fun.freechat.model.User;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.*;
+import fun.freechat.service.chat.memory.MemoryInvocation;
+import fun.freechat.service.chat.memory.MemoryTokenStream;
 import fun.freechat.service.organization.OrgService;
 import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.prompt.PromptService;
@@ -59,8 +49,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @SuppressWarnings("unused")
 public class ChatServiceImpl implements ChatService {
-    private static final int MAX_SEQUENTIAL_TOOL_EXECUTIONS = 10;
-
     @Autowired
     private ChatContextService chatContextService;
 
@@ -190,70 +178,27 @@ public class ChatServiceImpl implements ChatService {
         ChatTask<Pair<ChatResponse, Long>> task = queueManager
                 .getOrCreateQueue(chatId)
                 .submit(new ChatTask.Sync<>(() -> {
-                    ChatSession session = chatSessionService.get(chatId);
-                    if (session == null) {
+                    ChatSession base = currentSession(chatId);
+                    if (base == null) {
                         return null;
                     }
-
-                    Object memoryId = asMemoryId(chatId);
-                    ChatMemory chatMemory = session.getChatMemory(memoryId);
-                    var messages = handleMessages(message, context, memoryId, session);
-
-                    Future<Moderation> moderationFuture = session.getModerationModel() != null
-                            ? chatSessionService.triggerModerationIfNeeded(session, messages)
-                            : null;
-
-                    ChatModel chatModel = session.getChatModel();
-                    List<ToolSpecification> toolSpecifications = session.getToolSpecifications();
-
-                    ChatResponse response = toolSpecifications != null
-                            ? chatModel.chat(ChatRequest.builder()
-                                    .messages(messages)
-                                    .toolSpecifications(toolSpecifications)
-                                    .build())
-                            : chatModel.chat(messages);
-                    TokenUsage tokenUsageAccumulator = response.tokenUsage();
-
-                    chatSessionService.verifyModerationIfNeeded(moderationFuture);
-                    Long messageId = null;
-
-                    for (int i = 0; i < MAX_SEQUENTIAL_TOOL_EXECUTIONS; ++i) {
-                        if (chatMemory instanceof SystemAlwaysOnTopMessageWindowChatMemory myMemory) {
-                            messageId = myMemory.addAiMessage(response.aiMessage(), response.tokenUsage());
-                        } else {
-                            chatMemory.add(response.aiMessage());
-                        }
-
-                        session.addMemoryUsage(1L, response.tokenUsage());
-                        AiMessage aiMessage = response.aiMessage();
-
-                        if (!aiMessage.hasToolExecutionRequests()) {
-                            break;
-                        }
-
-                        for (ToolExecutionRequest toolExecutionRequest : aiMessage.toolExecutionRequests()) {
-                            ToolExecutor toolExecutor =
-                                    session.getToolExecutors().get(toolExecutionRequest.name());
-                            String toolExecutionResult = toolExecutor.execute(toolExecutionRequest, memoryId);
-                            ToolExecutionResultMessage toolExecutionResultMessage =
-                                    toolExecutionResultMessage(toolExecutionRequest, toolExecutionResult);
-                            chatMemory.add(toolExecutionResultMessage);
-                        }
-
-                        response = chatModel.chat(ChatRequest.builder()
-                                .messages(chatMemory.messages())
-                                .toolSpecifications(toolSpecifications)
-                                .build());
-                        tokenUsageAccumulator = TokenUsage.sum(tokenUsageAccumulator, response.tokenUsage());
+                    try (LongTermChatMemoryStore.Binding binding =
+                            longTermChatMemoryStore.open(chatId, base).orElse(null)) {
+                        ChatSession session = binding == null ? base : binding.session();
+                        Object memoryId = asMemoryId(chatId);
+                        var messages = handleMessages(message, context, memoryId, session);
+                        Future<Moderation> moderation = session.getModerationModel() == null
+                                ? null
+                                : chatSessionService.triggerModerationIfNeeded(session, messages);
+                        return new ChatExecution(session, memoryId)
+                                .send(binding, () -> chatSessionService.verifyModerationIfNeeded(moderation));
+                    } catch (fun.freechat.service.chat.memory.MemoryBounds.CapacityException exhausted) {
+                        throw exhausted;
+                    } catch (Error ignored) {
+                        throw new Error("Chat invocation failed");
+                    } catch (RuntimeException ignored) {
+                        throw new IllegalStateException("Chat invocation failed");
                     }
-
-                    return Pair.of(
-                            ChatResponse.builder()
-                                    .aiMessage(response.aiMessage())
-                                    .tokenUsage(tokenUsageAccumulator)
-                                    .finishReason(response.finishReason())
-                                    .build(),
-                            messageId);
                 }));
 
         return awaitQuietly(task.future());
@@ -268,32 +213,34 @@ public class ChatServiceImpl implements ChatService {
         }
 
         ChatTask<TokenStream> task = queueManager.getOrCreateQueue(chatId).submit(new ChatTask.Stream(() -> {
-            ChatSession session = chatSessionService.get(chatId);
-            if (session == null) {
+            ChatSession base = currentSession(chatId);
+            if (base == null) {
                 return null;
             }
-
-            Object memoryId = asMemoryId(chatId);
-            var messages = handleMessages(message, context, memoryId, session);
-            InvocationContext invocationContext = InvocationContext.builder()
-                    .invocationId(UUID.randomUUID())
-                    .interfaceName("ChatService")
-                    .methodName("streamSend")
-                    .methodArguments(List.of())
-                    .chatMemoryId(memoryId)
-                    .invocationParameters(new InvocationParameters())
-                    .timestampNow()
-                    .build();
-
-            return new AiServiceTokenStream(AiServiceTokenStreamParameters.builder()
-                    .messages(messages)
-                    .toolSpecifications(session.getToolSpecifications())
-                    .toolExecutors(session.getToolExecutors())
-                    .toolArgumentsErrorHandler(session.getToolArgumentsErrorHandler())
-                    .toolExecutionErrorHandler(session.getToolExecutionErrorHandler())
-                    .context(session.getAiServiceContext())
-                    .invocationContext(invocationContext)
-                    .build());
+            LongTermChatMemoryStore.Binding binding = null;
+            try {
+                binding = longTermChatMemoryStore.open(chatId, base).orElse(null);
+                ChatSession session = binding == null ? base : binding.session();
+                Object memoryId = asMemoryId(chatId);
+                var messages = handleMessages(message, context, memoryId, session);
+                if (session.getModerationModel() != null) {
+                    chatSessionService.verifyModerationIfNeeded(
+                            chatSessionService.triggerModerationIfNeeded(session, messages));
+                }
+                TokenStream stream = new ChatExecution(session, memoryId).stream();
+                return binding == null ? stream : new MemoryTokenStream(stream, binding.memory(), binding.lifetime());
+            } catch (RuntimeException | Error failure) {
+                if (binding != null) {
+                    binding.close();
+                }
+                if (failure instanceof Error) {
+                    throw new Error("Chat stream initialization failed");
+                }
+                if (failure instanceof fun.freechat.service.chat.memory.MemoryBounds.CapacityException exhausted) {
+                    throw exhausted;
+                }
+                throw new IllegalStateException("Chat stream initialization failed");
+            }
         }));
 
         return awaitQuietly(task.future());
@@ -301,20 +248,16 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void clearMemory(String chatId) {
-        ChatSession session = chatSessionService.get(chatId);
-        if (session == null) {
-            return;
-        }
-        ChatPromptContent prompt = session.getPrompt();
-        Map<String, Object> variables = session.getVariables();
-        ChatMemory chatMemory = session.getChatMemory(chatId);
-        chatMemory.clear();
-
-        chatMemory.add(
-                SystemMessage.from(promptService.apply(prompt.getSystem(), variables, session.getPromptFormat())));
-
-        if (CollectionUtils.isNotEmpty(prompt.getMessages())) {
-            prompt.getMessages().forEach(chatMemory::add);
+        chatSessionService.reset(chatId);
+        var lock = queueManager.coordinationLock(chatId);
+        lock.lock();
+        try {
+            chatMemoryService.deleteMessages(chatId);
+            if (!longTermChatMemoryStore.enabled(chatId)) {
+                currentSession(chatId);
+            }
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -344,48 +287,9 @@ public class ChatServiceImpl implements ChatService {
                     ? chatSessionService.triggerModerationIfNeeded(assistantSession, messages)
                     : null;
 
-            ChatModel chatModel = assistantSession.getChatModel();
-            List<ToolSpecification> toolSpecifications = assistantSession.getToolSpecifications();
-
-            ChatResponse response = toolSpecifications != null
-                    ? chatModel.chat(ChatRequest.builder()
-                            .messages(messages)
-                            .toolSpecifications(toolSpecifications)
-                            .build())
-                    : chatModel.chat(messages);
-            TokenUsage tokenUsageAccumulator = response.tokenUsage();
-
-            chatSessionService.verifyModerationIfNeeded(moderationFuture);
-            ChatMemory chatMemory = assistantSession.getChatMemory(assistantChatId);
-
-            for (int i = 0; i < MAX_SEQUENTIAL_TOOL_EXECUTIONS; ++i) {
-                chatMemory.add(response.aiMessage());
-
-                AiMessage aiMessage = response.aiMessage();
-                if (!aiMessage.hasToolExecutionRequests()) {
-                    break;
-                }
-
-                for (ToolExecutionRequest toolExecutionRequest : aiMessage.toolExecutionRequests()) {
-                    ToolExecutor toolExecutor = session.getToolExecutors().get(toolExecutionRequest.name());
-                    String toolExecutionResult = toolExecutor.execute(toolExecutionRequest, assistantMemoryId);
-                    ToolExecutionResultMessage toolExecutionResultMessage =
-                            toolExecutionResultMessage(toolExecutionRequest, toolExecutionResult);
-                    chatMemory.add(toolExecutionResultMessage);
-                }
-
-                response = chatModel.chat(ChatRequest.builder()
-                        .messages(chatMemory.messages())
-                        .toolSpecifications(toolSpecifications)
-                        .build());
-                tokenUsageAccumulator = TokenUsage.sum(tokenUsageAccumulator, response.tokenUsage());
-            }
-
-            return ChatResponse.builder()
-                    .aiMessage(response.aiMessage())
-                    .tokenUsage(tokenUsageAccumulator)
-                    .finishReason(response.finishReason())
-                    .build();
+            return new ChatExecution(assistantSession, assistantMemoryId)
+                    .send(null, () -> chatSessionService.verifyModerationIfNeeded(moderationFuture))
+                    .getLeft();
         }));
 
         return awaitQuietly(task.future());
@@ -410,27 +314,8 @@ public class ChatServiceImpl implements ChatService {
 
             String assistantChatId = assistantChatId(chatId);
             Object assistantMemoryId = asMemoryId(assistantChatId);
-            var messages = handleMessages(null, null, assistantChatId, assistantSession);
-
-            InvocationContext assistantInvocationContext = InvocationContext.builder()
-                    .invocationId(UUID.randomUUID())
-                    .interfaceName("ChatService")
-                    .methodName("streamSendAssistant")
-                    .methodArguments(List.of())
-                    .chatMemoryId(assistantMemoryId)
-                    .invocationParameters(new InvocationParameters())
-                    .timestampNow()
-                    .build();
-
-            return new AiServiceTokenStream(AiServiceTokenStreamParameters.builder()
-                    .messages(messages)
-                    .toolSpecifications(assistantSession.getToolSpecifications())
-                    .toolExecutors(assistantSession.getToolExecutors())
-                    .toolArgumentsErrorHandler(session.getToolArgumentsErrorHandler())
-                    .toolExecutionErrorHandler(session.getToolExecutionErrorHandler())
-                    .context(assistantSession.getAiServiceContext())
-                    .invocationContext(assistantInvocationContext)
-                    .build());
+            handleMessages(null, null, assistantChatId, assistantSession);
+            return new ChatExecution(assistantSession, assistantMemoryId).stream();
         }));
 
         return awaitQuietly(task.future());
@@ -474,13 +359,13 @@ public class ChatServiceImpl implements ChatService {
         variables.put(
                 CURRENT_TIME.text(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
+        ChatPromptContent prompt = session.getPrompt();
+        variables.put(RELEVANT_INFORMATION.text(), "");
+        chatMemory.add(
+                SystemMessage.from(promptService.apply(prompt.getSystem(), variables, session.getPromptFormat())));
         String relevantConcatenated = null;
-        List<ChatMessage> longTermMemoryMessages = null;
         RetrievalAugmentor knowledgeRetriever = session.getRetriever();
-        RetrievalAugmentor longTermMemoryRetriever = session.getLongTermMemoryRetriever();
-        if (message != null
-                && message.type() == USER
-                && (knowledgeRetriever != null || longTermMemoryRetriever != null)) {
+        if (message != null && message.type() == USER && knowledgeRetriever != null) {
             List<ChatMessage> messages = chatMemory.messages();
             UserMessage userMessage = (UserMessage) message;
 
@@ -502,8 +387,8 @@ public class ChatServiceImpl implements ChatService {
                             .map(TextSegment::text)
                             .collect(Collectors.joining("\n\n"));
                 } catch (Exception ex) {
-                    log.warn("Failed to retrieve knowledge from {}!", memoryId, ex);
-                    throwable = ex;
+                    log.warn("Failed to retrieve chat knowledge.");
+                    throwable = new IllegalStateException("Chat knowledge retrieval failed");
                 } finally {
                     long endTime = System.currentTimeMillis();
                     TraceUtils.TraceStatus status =
@@ -520,39 +405,10 @@ public class ChatServiceImpl implements ChatService {
                     TraceUtils.getPerfLogger().trace(traceInfo);
                 }
             }
-
-            if (longTermMemoryRetriever != null
-                    && chatMemoryService.roughCount(memoryId)
-                            >= ((SystemAlwaysOnTopMessageWindowChatMemory) chatMemory).getMaxMessages()) {
-                long startTime = System.currentTimeMillis();
-                Throwable throwable = null;
-                try {
-                    longTermMemoryMessages = longTermChatMemoryStore.getMessages(
-                            memoryId, userMessage, messages, longTermMemoryRetriever);
-                } catch (Exception ex) {
-                    log.warn("Failed to retrieve long-term memory from {}!", memoryId, ex);
-                    throwable = ex;
-                } finally {
-                    long endTime = System.currentTimeMillis();
-                    TraceUtils.TraceStatus status =
-                            throwable == null ? TraceUtils.TraceStatus.SUCCESSFUL : TraceUtils.TraceStatus.FAILED;
-                    String traceInfo = new TraceUtils.TraceInfoBuilder()
-                            .args(new String[] {characterName, characterUid})
-                            .elapseTime(endTime - startTime)
-                            .method("ChatServiceImpl::retrieveLongTermMemory")
-                            .status(status)
-                            .throwable(throwable)
-                            .traceId(traceId)
-                            .username(username)
-                            .build();
-                    TraceUtils.getPerfLogger().trace(traceInfo);
-                }
-            }
         }
 
         variables.put(RELEVANT_INFORMATION.text(), getOrBlank(relevantConcatenated));
 
-        ChatPromptContent prompt = session.getPrompt();
         ChatMessage messageToSend = message;
         if (message != null && message.type() == USER && prompt.getMessageToSend() != null) {
             variables.put(INPUT.text().toLowerCase(), toSingleText(message));
@@ -565,31 +421,29 @@ public class ChatServiceImpl implements ChatService {
 
         chatMemory.add(systemMessage);
         if (messageToSend != null) {
-            chatMemory.add(messageToSend);
+            if (chatMemory instanceof MemoryInvocation invocation) {
+                invocation.addInput(message, messageToSend);
+            } else {
+                chatMemory.add(messageToSend);
+            }
         }
 
-        return mergeMessages(chatMemory.messages(), longTermMemoryMessages);
+        return chatMemory.messages();
+    }
+
+    private ChatSession currentSession(String chatId) {
+        try {
+            ChatContext current = chatContextService.get(chatId);
+            return current == null ? null : chatSessionService.get(current);
+        } catch (Error ignored) {
+            throw new Error("Chat session initialization failed");
+        } catch (RuntimeException ignored) {
+            throw new IllegalStateException("Chat session initialization failed");
+        }
     }
 
     private static String getOrBlank(String content) {
         return StringUtils.isBlank(content) ? "" : content;
-    }
-
-    private static List<ChatMessage> mergeMessages(
-            List<ChatMessage> messages, List<ChatMessage> longTermMemoryMessages) {
-        if (CollectionUtils.isEmpty(longTermMemoryMessages) || CollectionUtils.isEmpty(messages)) {
-            return messages;
-        }
-
-        List<ChatMessage> allMessages = new LinkedList<>();
-        // add the system message at first
-        allMessages.add(messages.getFirst());
-        // add the long term memory messages
-        allMessages.addAll(longTermMemoryMessages);
-        // add the rest messages
-        allMessages.addAll(messages.subList(1, messages.size()));
-
-        return allMessages;
     }
 
     private static <T> T awaitQuietly(java.util.concurrent.CompletableFuture<T> future) {

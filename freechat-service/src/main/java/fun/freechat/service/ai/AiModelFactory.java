@@ -13,9 +13,11 @@ import dev.langchain4j.model.azure.AzureOpenAiEmbeddingModel;
 import dev.langchain4j.model.azure.AzureOpenAiLanguageModel;
 import dev.langchain4j.model.azure.AzureOpenAiStreamingChatModel;
 import dev.langchain4j.model.azure.AzureOpenAiStreamingLanguageModel;
+import dev.langchain4j.model.chat.request.ChatRequest;
 import dev.langchain4j.model.chat.request.ChatRequestParameters;
 import dev.langchain4j.model.chat.request.DefaultChatRequestParameters;
 import dev.langchain4j.model.chat.request.ResponseFormat;
+import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.model.ollama.OllamaChatRequestParameters;
 import dev.langchain4j.model.ollama.OllamaEmbeddingModel;
@@ -32,6 +34,10 @@ import dev.langchain4j.model.openai.OpenAiStreamingLanguageModel;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class AiModelFactory {
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(60L);
@@ -62,6 +68,11 @@ public class AiModelFactory {
 
     public static OpenAiChatModel createOpenAiChatModel(
             String apiKey, String modelName, Map<String, Object> parameters) {
+        return createOpenAiChatModel(apiKey, modelName, parameters, DEFAULT_TIMEOUT);
+    }
+
+    public static OpenAiChatModel createOpenAiChatModel(
+            String apiKey, String modelName, Map<String, Object> parameters, Duration timeout) {
         OpenAiChatRequestParameters modelParameters = OpenAiChatRequestParameters.builder()
                 .modelName(modelName)
                 .temperature(getDouble(parameters, "temperature"))
@@ -81,7 +92,9 @@ public class AiModelFactory {
         return OpenAiChatModel.builder()
                 .apiKey(apiKey)
                 .baseUrl((String) parameters.get("baseUrl"))
-                .timeout(DEFAULT_TIMEOUT)
+                .timeout(requireTimeout(timeout))
+                .logRequests(false)
+                .logResponses(false)
                 .defaultRequestParameters(modelParameters)
                 .build();
     }
@@ -108,6 +121,8 @@ public class AiModelFactory {
                 .apiKey(apiKey)
                 .baseUrl((String) parameters.get("baseUrl"))
                 .timeout(DEFAULT_TIMEOUT)
+                .logRequests(false)
+                .logResponses(false)
                 .defaultRequestParameters(modelParameters)
                 .build();
     }
@@ -170,6 +185,11 @@ public class AiModelFactory {
 
     public static AzureOpenAiChatModel createAzureOpenAiChatModel(
             String apiKey, String modelName, Map<String, Object> parameters) {
+        return createAzureOpenAiChatModel(apiKey, modelName, parameters, DEFAULT_TIMEOUT);
+    }
+
+    public static AzureOpenAiChatModel createAzureOpenAiChatModel(
+            String apiKey, String modelName, Map<String, Object> parameters, Duration timeout) {
         ChatRequestParameters modelParameters = DefaultChatRequestParameters.builder()
                 .modelName(modelName)
                 .maxOutputTokens(getInteger(parameters, "maxTokens"))
@@ -191,7 +211,8 @@ public class AiModelFactory {
                 .user(getString(parameters, "user"))
                 .seed(getLong(parameters, "seed"))
                 .defaultRequestParameters(modelParameters)
-                .timeout(DEFAULT_TIMEOUT)
+                .timeout(requireTimeout(timeout))
+                .logRequestsAndResponses(false)
                 .build();
     }
 
@@ -219,6 +240,7 @@ public class AiModelFactory {
                 .seed(getLong(parameters, "seed"))
                 .defaultRequestParameters(modelParameters)
                 .timeout(DEFAULT_TIMEOUT)
+                .logRequestsAndResponses(false)
                 .build();
     }
 
@@ -267,6 +289,11 @@ public class AiModelFactory {
     }
 
     public static OllamaChatModel createOllamaChatModel(String modelName, Map<String, Object> parameters) {
+        return createOllamaChatModel(modelName, parameters, DEFAULT_TIMEOUT);
+    }
+
+    public static OllamaChatModel createOllamaChatModel(
+            String modelName, Map<String, Object> parameters, Duration timeout) {
         OllamaChatRequestParameters modelParameters = OllamaChatRequestParameters.builder()
                 .modelName(modelName)
                 .temperature(getDouble(parameters, "temperature"))
@@ -284,6 +311,9 @@ public class AiModelFactory {
 
         return OllamaChatModel.builder()
                 .baseUrl(getString(parameters, "baseUrl"))
+                .timeout(requireTimeout(timeout))
+                .logRequests(false)
+                .logResponses(false)
                 .defaultRequestParameters(modelParameters)
                 .build();
     }
@@ -307,6 +337,9 @@ public class AiModelFactory {
 
         return OllamaStreamingChatModel.builder()
                 .baseUrl(getString(parameters, "baseUrl"))
+                .timeout(DEFAULT_TIMEOUT)
+                .logRequests(false)
+                .logResponses(false)
                 .defaultRequestParameters(modelParameters)
                 .build();
     }
@@ -353,6 +386,11 @@ public class AiModelFactory {
     }
 
     public static QwenChatModel createQwenChatModel(String apiKey, String modelName, Map<String, Object> parameters) {
+        return createQwenChatModel(apiKey, modelName, parameters, DEFAULT_TIMEOUT);
+    }
+
+    public static QwenChatModel createQwenChatModel(
+            String apiKey, String modelName, Map<String, Object> parameters, Duration timeout) {
         QwenChatRequestParameters modelParameters = QwenChatRequestParameters.builder()
                 .modelName(modelName)
                 .topP(getDouble(parameters, "topP"))
@@ -366,12 +404,12 @@ public class AiModelFactory {
                 .enableSanitizeMessages(false)
                 .build();
 
-        return QwenChatModel.builder()
-                .apiKey(apiKey)
-                .baseUrl(getString(parameters, "baseUrl"))
-                .repetitionPenalty(getFloat(parameters, "repetitionPenalty"))
-                .defaultRequestParameters(modelParameters)
-                .build();
+        return new DeadlineQwenChatModel(
+                apiKey,
+                getString(parameters, "baseUrl"),
+                getFloat(parameters, "repetitionPenalty"),
+                modelParameters,
+                requireTimeout(timeout));
     }
 
     public static QwenStreamingChatModel createQwenStreamingChatModel(
@@ -423,6 +461,65 @@ public class AiModelFactory {
                 .baseUrl(getString(parameters, "baseUrl"))
                 .modelName(modelName)
                 .build();
+    }
+
+    private static Duration requireTimeout(Duration timeout) {
+        if (timeout == null
+                || timeout.compareTo(Duration.ofMillis(1)) < 0
+                || timeout.compareTo(Duration.ofDays(365)) > 0) {
+            throw new IllegalArgumentException("Model timeout must be between one millisecond and one year");
+        }
+        return timeout;
+    }
+
+    // Qwen lacks native timeouts; interruption bounds local waiting but cannot guarantee remote cancellation.
+    private static final class DeadlineQwenChatModel extends QwenChatModel {
+        private final Duration timeout;
+
+        private DeadlineQwenChatModel(
+                String apiKey,
+                String baseUrl,
+                Float repetitionPenalty,
+                QwenChatRequestParameters parameters,
+                Duration timeout) {
+            super(
+                    baseUrl,
+                    apiKey,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    repetitionPenalty,
+                    null,
+                    null,
+                    null,
+                    null,
+                    parameters,
+                    null);
+            this.timeout = timeout;
+        }
+
+        @Override
+        public ChatResponse doChat(ChatRequest request) {
+            FutureTask<ChatResponse> call = new FutureTask<>(() -> super.doChat(request));
+            Thread.startVirtualThread(call);
+            try {
+                return call.get(timeout.toNanos(), TimeUnit.NANOSECONDS);
+            } catch (TimeoutException ignored) {
+                throw new IllegalStateException("Chat model request timed out");
+            } catch (InterruptedException ignored) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException("Chat model request interrupted");
+            } catch (ExecutionException failure) {
+                if (failure.getCause() instanceof RuntimeException runtime) {
+                    throw runtime;
+                }
+                throw new IllegalStateException("Chat model request failed");
+            } finally {
+                call.cancel(true);
+            }
+        }
     }
 
     private static Float getFloat(Map<String, Object> parameters, String key) {
