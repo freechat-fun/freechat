@@ -1,4 +1,4 @@
-FROM eclipse-temurin:25.0.4_7-jre-jammy
+FROM eclipse-temurin:25.0.4_7-jre-noble
 
 ARG APP_NAME
 ARG UNAME=admin
