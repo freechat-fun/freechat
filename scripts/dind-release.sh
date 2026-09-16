@@ -5,6 +5,7 @@ source $(dirname ${BASH_SOURCE[0]})/setenv.sh
 set -e
 
 bash ./install-dind.sh
+sleep 10
 
 kubectl exec --kubeconfig ${KUBE_CONFIG} --namespace ${NAMESPACE} \
   -it docker -- /bin/sh -euc "\
