@@ -137,7 +137,7 @@ info:
     \ your model, please contact us. We look forward to AI technology helping people\
     \ create their own \"soul mates\" in the future.\n"
   title: FreeChat OpenAPI Definition
-  version: 2.8.0
+  version: 2.9.0
 servers:
 - url: http://127.0.0.1:8080/
 security:
