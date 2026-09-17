@@ -1,8 +1,11 @@
 package fun.freechat.service.chat.memory;
 
+import static fun.freechat.service.util.ChannelUtils.isValidChannelUser;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan;
 import static org.mybatis.dynamic.sql.SqlBuilder.isGreaterThanWhenPresent;
+import static org.mybatis.dynamic.sql.SqlBuilder.isNotNull;
+import static org.mybatis.dynamic.sql.SqlBuilder.or;
 import static org.mybatis.dynamic.sql.SqlBuilder.select;
 
 import fun.freechat.mapper.ChatContextDynamicSqlSupport;
@@ -102,7 +105,7 @@ public final class MemoryMaintenance {
                 }
                 return;
             }
-            if (!"u2c".equals(context.getChatType())) {
+            if (!"u2c".equals(context.getChatType()) && !isValidChannelUser(context)) {
                 lifecycle.disable(chatId);
                 return;
             }
@@ -150,7 +153,10 @@ public final class MemoryMaintenance {
                 .selectMany(select(ChatContextDynamicSqlSupport.chatId)
                         .from(ChatContextDynamicSqlSupport.chatContext)
                         .where(ChatContextDynamicSqlSupport.chatId, isGreaterThanWhenPresent(after))
-                        .and(ChatContextDynamicSqlSupport.chatType, isEqualTo("u2c"))
+                        .and(
+                                ChatContextDynamicSqlSupport.chatType,
+                                isEqualTo("u2c"),
+                                or(ChatContextDynamicSqlSupport.tgChatId, isNotNull()))
                         .orderBy(ChatContextDynamicSqlSupport.chatId)
                         .limit(properties.getDispatchBatchSize())
                         .build()

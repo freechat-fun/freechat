@@ -57,6 +57,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockMakers;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -239,6 +240,148 @@ class MemoryMaintenanceIT {
         assertEquals(last, claim.throughId());
         work.release(claim);
         assertEquals(0, cleanup.lookups.size(), "Legacy vector deletion must observe its grace period");
+    }
+
+    @ParameterizedTest
+    @CsvSource({"private, 42", "group, -42", "supergroup, -10042", "channel, -10043"})
+    void neverActivatedTelegramHistoryIsDiscoveredAndClaimableInTrustedScope(String chatType, long tgChatId) {
+        String userId = "tg-" + tgChatId;
+        String id = context("telegram-idle", chatType, tgChatId, userId);
+        legacyPairs(id, 1);
+        List<Map<String, Object>> source = source(id);
+        MemoryScope expected = new MemoryScope(id, userId, "character", 1, EmbeddingStoreType.EN_LONG_TERM_MEMORY);
+        assertTrue(states.selectByPrimaryKey(id).isEmpty());
+
+        maintenance.scan();
+        ChatMemoryState active = state(id);
+        assertEquals("active", active.getStatus());
+        assertEquals(expected, scope(id));
+        assertEquals("reconciled", reconciliationStatus(id));
+        assertEquals(2, annotated(id));
+        assertEquals(source, source(id));
+        assertEquals(id, cursor("contexts").get());
+        assertEquals(id, cursor("states").get());
+        assertEquals(List.of(id), work.due(null, 1));
+
+        maintenance.recover(id);
+        maintenance.scan(); // End of both bounded pages wraps their cursors.
+        assertEquals("", cursor("contexts").get());
+        assertEquals("", cursor("states").get());
+        maintenance.scan();
+        assertEquals(active, state(id), "Repeated recovery must retain active identity, generation and progress");
+        assertEquals(source, source(id));
+        assertEquals(List.of(id), work.due(null, 1));
+        var claim = work.claim(id).orElseThrow();
+        assertEquals(expected, claim.scope());
+        assertEquals(active.getLatestFinalizedId().longValue(), claim.throughId());
+        work.release(claim);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"private, 42", "group, -42", "supergroup, -10042", "channel, -10043"})
+    void existingActiveTelegramMemoryAndClaimSurviveMaintenance(String chatType, long tgChatId) {
+        String userId = "tg-" + tgChatId;
+        String id = context("telegram-active", chatType, tgChatId, userId);
+        MemoryScope expected = new MemoryScope(id, userId, "character", 1, EmbeddingStoreType.EN_LONG_TERM_MEMORY);
+        // Seed existing memory independently of the maintenance path under test.
+        lifecycle.activate(expected, FINGERPRINT);
+        legacyPairs(id, 1);
+        reconciler.reconcile(expected, FINGERPRINT, List.of());
+        var claim = work.claim(id).orElseThrow();
+        ChatMemoryState before = state(id);
+
+        maintenance.scan();
+        maintenance.recover(id);
+
+        assertEquals("active", state(id).getStatus());
+        assertEquals(before, state(id), "Maintenance must not disable/re-enable or revoke existing Telegram work");
+        assertEquals(expected, claim.scope());
+        work.check(claim);
+        work.release(claim);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "a2c, , owner",
+        "private, , tg-42",
+        "private, , tg-null",
+        "private, 42, owner",
+        "private, 42, tg-",
+        "private, 42, tg-43",
+        "private, 42, tg-42-extra",
+        "group, -42, tg-42",
+        "supergroup, -10042, tg--10043"
+    })
+    void untrustedNonU2cIdentityIsDisabledBeforeConfigurationInRecoveryAndScan(
+            String chatType, Long tgChatId, String userId) {
+        String id = context("untrusted", chatType, tgChatId, userId);
+        maintenance.recover(id);
+        maintenance.scan();
+        assertTrue(states.selectByPrimaryKey(id).isEmpty());
+        verifyNoInteractions(models);
+
+        MemoryScope existing = new MemoryScope(id, userId, "character", 1, EmbeddingStoreType.EN_LONG_TERM_MEMORY);
+        lifecycle.activate(existing, FINGERPRINT);
+        legacyPairs(id, 1);
+        reconciler.reconcile(existing, FINGERPRINT, List.of());
+        for (boolean scan : List.of(false, true)) {
+            // Seed active state directly so both recovery entry points must fence existing work.
+            lifecycle.activate(existing, FINGERPRINT);
+            var claim = work.claim(id).orElseThrow();
+            if (scan) {
+                maintenance.scan();
+            } else {
+                maintenance.recover(id);
+            }
+            ChatMemoryState disabled = state(id);
+            assertEquals("disabled", disabled.getStatus());
+            assertEquals(existing, scope(id));
+            assertNull(disabled.getDueAt());
+            assertNull(disabled.getClaimToken());
+            assertTrue(work.due(null, 1).isEmpty());
+            assertTrue(work.claim(id).isEmpty());
+            assertThrows(IllegalStateException.class, () -> work.check(claim));
+            verifyNoInteractions(models);
+        }
+    }
+
+    @Test
+    void telegramContextKeysetPagesKeepGroupedCursorBoundsAndDispatchLimit() {
+        // Insert out of order and mix ordinary contexts with every persisted Telegram chat type.
+        String channel = context("e-telegram-channel", "channel", -10044L, "tg--10044");
+        String group = context("c-telegram-group", "group", -42L, "tg--42");
+        String privateChat = context("a-telegram-private", "private", 42L, "tg-42");
+        String supergroup = context("d-telegram-supergroup", "supergroup", -10043L, "tg--10043");
+        String ordinary = context("b-ordinary");
+        List<String> expected = List.of(privateChat, ordinary, group, supergroup, channel);
+        List<String> excluded = List.of(
+                context("0-non-u2c", "a2c", null, "owner"),
+                context("bb-prefix-only", "private", null, "tg-42"),
+                context("z-non-u2c", "a2c", null, "owner"));
+        assertEquals(1, properties.getDispatchBatchSize());
+
+        for (int index = 0; index < expected.size(); index++) {
+            maintenance.scan();
+            assertEquals(expected.get(index), cursor("contexts").get());
+            assertEquals(expected.get(index), cursor("states").get());
+            assertEquals(index + 1, sql.queryForObject("SELECT COUNT(*) FROM chat_memory_state", Integer.class));
+            assertEquals("active", state(expected.get(index)).getStatus());
+            for (String pending : expected.subList(index + 1, expected.size())) {
+                assertTrue(states.selectByPrimaryKey(pending).isEmpty(), "Discovery must stay within its SQL page");
+                verify(models, never()).configuration(pending);
+            }
+        }
+        List<ChatMemoryState> before = expected.stream().map(this::state).toList();
+        maintenance.scan();
+        assertEquals("", cursor("contexts").get());
+        assertEquals("", cursor("states").get());
+        maintenance.scan();
+        assertEquals(privateChat, cursor("contexts").get());
+        assertEquals(before, expected.stream().map(this::state).toList());
+        for (String id : excluded) {
+            assertTrue(states.selectByPrimaryKey(id).isEmpty());
+            verify(models, never()).configuration(id);
+        }
     }
 
     @Test
@@ -556,16 +699,22 @@ class MemoryMaintenanceIT {
     }
 
     private String context(String id) {
+        return context(id, "u2c", null, "owner");
+    }
+
+    private String context(String id, String chatType, Long tgChatId, String userId) {
         assertEquals(
                 1,
                 contexts.insertSelective(new ChatContext()
                         .withChatId(id)
-                        .withUserId("owner")
+                        .withUserId(userId)
                         .withBackendId("backend")
-                        .withChatType("u2c")
+                        .withChatType(chatType)
+                        .withTgChatId(tgChatId)
                         .withGmtCreate(OLD)
                         .withGmtModified(OLD)));
-        configurations.put(id, configured(FINGERPRINT));
+        configurations.put(
+                id, new MemoryModelResolver.Configuration(userId, "character", "en", FINGERPRINT, List.of()));
         return id;
     }
 

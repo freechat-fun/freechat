@@ -3,6 +3,11 @@ package fun.freechat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.read.ListAppender;
 import com.alibaba.dashscope.protocol.ApiServiceOption;
 import com.azure.ai.openai.implementation.OpenAIClientImpl;
 import com.azure.core.http.policy.HttpLogDetailLevel;
@@ -49,6 +54,7 @@ import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.net.http.HttpClient;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -65,6 +71,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockMakers;
+import org.slf4j.LoggerFactory;
 
 class MemoryModelResolverTest {
     private static final ObjectMapper JSON = new ObjectMapper();
@@ -706,9 +713,14 @@ class MemoryModelResolverTest {
         user.setUsername(username);
         prompt.setTemplate(exampleTemplate(
                 List.of(UserMessage.from("{{USER_NICKNAME}}|{{CHARACTER_NICKNAME}}|{{USER_PROFILE}}"))));
+        var configuration = resolver.configuration("chat").orElseThrow();
         assertEquals(
-                List.of(UserMessage.from(expected + "|character name|default user profile")),
-                resolver.configuration("chat").orElseThrow().examples());
+                List.of(UserMessage.from(expected + "|character name|default user profile")), configuration.examples());
+        ChatSession ordinary = ordinarySessions(fake(ChatMemoryService.class)).get(context);
+        assertNotNull(ordinary);
+        assertEquals(expected, ordinary.getVariables().get("USER_NICKNAME"));
+        assertEquals("default user profile", ordinary.getVariables().get("USER_PROFILE"));
+        assertEquals(configuration.fingerprint(), ordinary.getMemoryFingerprint());
     }
 
     @ParameterizedTest
@@ -793,6 +805,234 @@ class MemoryModelResolverTest {
         }
         assertTrue(resolver.configuration(id).isEmpty());
         verifyNoInteractions(users, tasks, prompts, keys);
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {123456789L, -1001234567890L})
+    void telegramSessionsWithoutSystemUserShareBackgroundConfiguration(long tgChatId) throws Exception {
+        String scope = "tg-" + tgChatId;
+        context.setTgChatId(tgChatId);
+        context.setTgUserId(987654321L);
+        context.setChatType(tgChatId > 0 ? "private" : "group");
+        context.setUserId(scope);
+        context.setUserNickname("fake Telegram nickname");
+        context.setUserProfile("fake Telegram profile");
+        owner.setNickname("fake owner nickname");
+        owner.setProfile("fake owner profile");
+        task.setVariables("{\"USER_NICKNAME\":\"fake task nickname\",\"USER_PROFILE\":\"fake task profile\"}");
+        prompt.setTemplate(exampleTemplate(List.of(
+                UserMessage.from("{{USER_NICKNAME}}|{{USER_PROFILE}}|{{CHAT_CONTEXT}}"), AiMessage.from("{{topic}}"))));
+        String before = snapshot();
+
+        var configuration = resolver.configuration("chat").orElseThrow();
+        assertEquals(scope, configuration.userId());
+        assertEquals("character", configuration.characterUid());
+        assertEquals("en", configuration.language());
+        assertEquals(
+                List.of(
+                        UserMessage.from("fake Telegram nickname|fake Telegram profile|session context"),
+                        AiMessage.from("default")),
+                configuration.examples());
+        assertEquals(
+                configuration.fingerprint(),
+                resolver.sessionFingerprint(context, backend, "owner", character, task, prompt, null));
+        verifyNoInteractions(keys);
+
+        ChatSession session = ordinarySessions(fake(ChatMemoryService.class)).get(context);
+        assertNotNull(session);
+        assertEquals(configuration.fingerprint(), session.getMemoryFingerprint());
+        assertEquals("fake Telegram nickname", session.getVariables().get("USER_NICKNAME"));
+        assertEquals("fake Telegram profile", session.getVariables().get("USER_PROFILE"));
+        assertEquals("session context", session.getVariables().get("CHAT_CONTEXT"));
+        assertInstanceOf(OpenAiChatModel.class, session.getChatModel());
+        assertNotNull(session.getStreamingChatModel());
+        assertEquals(1, key.closes, "Ordinary sessions must not construct extraction models");
+
+        Resolved background = resolver.resolve("chat");
+        assertEquals(scope, background.userId());
+        assertEquals("character", background.characterUid());
+        assertEquals("fake Telegram profile", background.userBaseline());
+        assertEquals(session.getMemoryFingerprint(), background.fingerprint());
+        var bound = resolver.resolveForSession("chat", session.getMemoryFingerprint())
+                .orElseThrow();
+        assertEquals(configuration, bound.configuration());
+        assertEquals(scope, bound.resolved().userId());
+        assertEquals(background.fingerprint(), bound.resolved().fingerprint());
+        assertEquals(3, key.closes);
+        verify(users, times(4)).loadByUserId(scope);
+        assertEquals(before, snapshot(), "Telegram scope and context must not be replaced by owner or sender data");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"nickname", "profile", "about", "scope"})
+    void telegramContextChangesInvalidateSessionFingerprint(String change) throws Exception {
+        context.setTgChatId(-1001234567890L);
+        context.setUserId("tg--1001234567890");
+        context.setUserNickname("fake Telegram nickname");
+        context.setUserProfile("fake Telegram profile");
+        prompt.setTemplate(exampleTemplate(List.of(UserMessage.from("{{USER_NICKNAME}}|{{USER_PROFILE}}"))));
+        ChatSessionServiceImpl sessions = ordinarySessions(fake(ChatMemoryService.class));
+        ChatSession session = sessions.get(context);
+        assertNotNull(session);
+        String original = session.getMemoryFingerprint();
+        assertNotNull(original);
+        switch (change) {
+            case "nickname" -> context.setUserNickname("changed fake nickname");
+            case "profile" -> context.setUserProfile("changed fake profile");
+            case "about" -> context.setAbout("changed fake context");
+            case "scope" -> {
+                context.setTgChatId(-1009876543210L);
+                context.setUserId("tg--1009876543210");
+            }
+            default -> fail();
+        }
+        clearInvocations(keys);
+        var changed = resolver.configuration("chat").orElseThrow();
+        assertNotEquals(original, changed.fingerprint());
+        assertEquals(context.getUserId(), changed.userId());
+        unavailable(() -> resolver.resolveForSession("chat", original));
+        verifyNoInteractions(keys);
+        assertEquals(original, session.getMemoryFingerprint());
+        assertEquals("fake Telegram nickname", session.getVariables().get("USER_NICKNAME"));
+        assertEquals("fake Telegram profile", session.getVariables().get("USER_PROFILE"));
+
+        ChatSession refreshed = sessions.get(context);
+        assertNotNull(refreshed);
+        assertEquals(changed.fingerprint(), refreshed.getMemoryFingerprint());
+        assertEquals(
+                changed,
+                resolver.resolveForSession("chat", refreshed.getMemoryFingerprint())
+                        .orElseThrow()
+                        .configuration());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "50,,",
+        "50,'',''",
+        "50,' ',' '",
+        "50,,fake context profile",
+        "50,fake context nickname,",
+        "0,,",
+        "0,'',''",
+        "0,' ',' '",
+        "0,,fake context profile",
+        "0,fake context nickname,"
+    })
+    void telegramMissingUserUsesSafeDefaultsWithMemoryEnabledAndDisabled(int window, String nickname, String profile)
+            throws Exception {
+        context.setTgChatId(-1001234567890L);
+        context.setUserId("tg--1001234567890");
+        context.setUserNickname(nickname);
+        context.setUserProfile(profile);
+        owner.setNickname("fake owner nickname must not be used");
+        owner.setProfile("fake owner profile must not be used");
+        backend.setLongTermMemoryWindowSize(window);
+        task.setVariables("{\"USER_NICKNAME\":\"fake task nickname\",\"USER_PROFILE\":\"fake task profile\"}");
+        prompt.setTemplate(exampleTemplate(List.of(UserMessage.from("[{{USER_NICKNAME}}|{{USER_PROFILE}}]"))));
+        String expectedNickname = nickname == null || nickname.isBlank() ? null : nickname;
+        String expectedProfile = profile == null || profile.isBlank() ? "" : profile;
+        String fingerprint = null;
+        if (window > 0) {
+            var configuration = resolver.configuration("chat").orElseThrow();
+            fingerprint = configuration.fingerprint();
+            assertEquals("tg--1001234567890", configuration.userId());
+            assertEquals(
+                    List.of(UserMessage.from(
+                            "[" + (expectedNickname == null ? "" : expectedNickname) + "|" + expectedProfile + "]")),
+                    configuration.examples());
+            Map<String, Object> variables = renderedVariables();
+            assertTrue(variables.containsKey("USER_NICKNAME"));
+            assertEquals(expectedNickname, variables.get("USER_NICKNAME"));
+            assertEquals(expectedProfile, variables.get("USER_PROFILE"));
+        } else {
+            assertTrue(resolver.configuration("chat").isEmpty());
+        }
+        assertEquals(
+                fingerprint, resolver.sessionFingerprint(context, backend, "owner", character, task, prompt, null));
+        verifyNoInteractions(keys);
+        ChatMemoryService memories = fake(ChatMemoryService.class);
+        List<ChatMessage> stored = new ArrayList<>();
+        when(memories.getMessages("chat")).thenAnswer(call -> List.copyOf(stored));
+        doAnswer(call -> {
+                    stored.clear();
+                    stored.addAll(call.getArgument(1));
+                    return null;
+                })
+                .when(memories)
+                .updateMessages(eq("chat"), anyList());
+        ChatSession session = ordinarySessions(memories).get(context);
+        assertNotNull(session);
+        assertEquals(fingerprint, session.getMemoryFingerprint());
+        assertTrue(session.getVariables().containsKey("USER_NICKNAME"));
+        assertEquals(expectedNickname, session.getVariables().get("USER_NICKNAME"));
+        assertEquals(expectedProfile, session.getVariables().get("USER_PROFILE"));
+        assertEquals(1, key.closes);
+        var bound = resolver.resolveForSession("chat", session.getMemoryFingerprint());
+        if (window > 0) {
+            var resolution = bound.orElseThrow();
+            assertEquals(fingerprint, resolution.resolved().fingerprint());
+            assertEquals("tg--1001234567890", resolution.resolved().userId());
+            assertEquals(expectedProfile, resolution.resolved().userBaseline());
+            assertEquals(2, key.closes);
+        } else {
+            assertTrue(bound.isEmpty());
+            assertEquals(1, key.closes);
+        }
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "user,",
+        "user,123",
+        "tg-123,",
+        "tg-null,",
+        "tg-,",
+        "tg-,123",
+        "tg-124,123",
+        "tg-123,-123",
+        "tg--123,123",
+        "tg-123-sender,123",
+        "other-123,123",
+        ",123",
+        "' ',123"
+    })
+    void missingUserRequiresExactTrustedTelegramScopeBeforeCredentials(String userId, Long tgChatId) {
+        context.setUserId(userId);
+        context.setTgChatId(tgChatId);
+        context.setUserNickname("fake populated nickname");
+        context.setUserProfile("fake populated profile");
+        when(users.loadByUserId("user")).thenReturn(null);
+        unavailable(() -> resolver.configuration("chat"));
+        unavailable(() -> resolver.resolve("chat"));
+        unavailable(() -> resolver.sessionFingerprint(context, backend, "owner", character, task, prompt, null));
+        ChatMemoryService memories = fake(ChatMemoryService.class);
+        ChatSessionServiceImpl sessions = ordinarySessions(memories);
+        assertNull(sessions.get(context));
+        for (Integer window : new Integer[] {0, null}) {
+            backend.setLongTermMemoryWindowSize(window);
+            assertNull(sessions.get(context));
+        }
+        verifyNoInteractions(keys, memories);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"ownerId", "owner"})
+    void telegramMissingCharacterOwnerStillFailsBeforeCredentials(String missing) {
+        context.setTgChatId(123456789L);
+        context.setUserId("tg-123456789");
+        context.setUserNickname("fake Telegram nickname");
+        context.setUserProfile("fake Telegram profile");
+        if (missing.equals("ownerId")) {
+            when(characters.getOwnerByUid("character")).thenReturn(null);
+        } else {
+            when(users.loadByUserId("owner")).thenReturn(null);
+        }
+        unavailable(() -> resolver.configuration("chat"));
+        unavailable(() -> resolver.resolve("chat"));
+        ChatMemoryService memories = fake(ChatMemoryService.class);
+        assertNull(ordinarySessions(memories).get(context));
+        verifyNoInteractions(keys, memories);
     }
 
     @ParameterizedTest
@@ -954,6 +1194,76 @@ class MemoryModelResolverTest {
         ChatMemoryService memories = fake(ChatMemoryService.class);
         assertNull(ordinarySessions(memories).get(context));
         verifyNoInteractions(keys, memories);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"configuration", "memory-configuration"})
+    void ordinarySessionFailureDiagnosticsExposeOnlyStageAndExceptionClass(String stage) {
+        String privateMessage = "fake-private-exception-sentinel";
+        String privateCause = "fake-private-cause-sentinel";
+        String privateSuppressed = "fake-private-suppressed-sentinel";
+        String privatePrompt = "fake-private-malformed-prompt-sentinel";
+        context.setUserNickname("fake-private-nickname-sentinel");
+        context.setUserProfile("fake-private-profile-sentinel");
+        context.setAbout("fake-private-context-sentinel");
+        context.setApiKeyValue("fake-private-key-sentinel");
+        prompt.setTemplate(privatePrompt);
+        IllegalArgumentException failure =
+                new IllegalArgumentException(privateMessage, new IllegalStateException(privateCause));
+        failure.addSuppressed(new IOException(privateSuppressed));
+        if (stage.equals("configuration")) {
+            when(characters.getBackend("backend")).thenThrow(failure);
+        }
+        String error = stage.equals("configuration") ? "IllegalArgumentException" : "IllegalStateException";
+        List<String> privateValues = List.of(
+                privateMessage,
+                privateCause,
+                privateSuppressed,
+                privatePrompt,
+                context.getUserNickname(),
+                context.getUserProfile(),
+                context.getAbout(),
+                context.getApiKeyValue());
+        ChatMemoryService memories = fake(ChatMemoryService.class);
+        ChatSessionServiceImpl sessions = ordinarySessions(memories);
+        Logger logger = (Logger) LoggerFactory.getLogger(ChatSessionServiceImpl.class);
+        Level previousLevel = logger.getLevel();
+        boolean previousAdditive = logger.isAdditive();
+        List<Appender<ILoggingEvent>> previousAppenders = new ArrayList<>();
+        logger.iteratorForAppenders().forEachRemaining(previousAppenders::add);
+        ListAppender<ILoggingEvent> logs = new ListAppender<>();
+        logs.setContext(logger.getLoggerContext());
+        logs.start();
+        try {
+            previousAppenders.forEach(logger::detachAppender);
+            logger.addAppender(logs);
+            logger.setLevel(Level.WARN);
+            logger.setAdditive(false);
+            assertNull(sessions.get(context));
+            verifyNoInteractions(keys, memories);
+            assertEquals(1, logs.list.size());
+            ILoggingEvent event = logs.list.getFirst();
+            assertEquals(Level.WARN, event.getLevel());
+            assertEquals("Failed to build chat session of {} (stage={}, error={})", event.getMessage());
+            assertEquals(
+                    "Failed to build chat session of chat (stage=" + stage + ", error=" + error + ")",
+                    event.getFormattedMessage());
+            assertArrayEquals(new Object[] {"chat", stage, error}, event.getArgumentArray());
+            assertNull(event.getThrowableProxy());
+            for (String privateValue : privateValues) {
+                assertFalse(event.getFormattedMessage().contains(privateValue));
+                for (Object argument : event.getArgumentArray()) {
+                    assertInstanceOf(String.class, argument);
+                    assertFalse(argument.toString().contains(privateValue));
+                }
+            }
+        } finally {
+            logger.detachAppender(logs);
+            previousAppenders.forEach(logger::addAppender);
+            logger.setLevel(previousLevel);
+            logger.setAdditive(previousAdditive);
+            logs.stop();
+        }
     }
 
     private ChatSessionServiceImpl ordinarySessions(ChatMemoryService memories) {
