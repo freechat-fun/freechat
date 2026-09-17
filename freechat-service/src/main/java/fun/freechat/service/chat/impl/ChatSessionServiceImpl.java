@@ -29,6 +29,7 @@ import static fun.freechat.service.enums.EmbeddingRecordMeta.MEMORY_ID;
 import static fun.freechat.service.enums.EmbeddingStoreType.documentTypeForLang;
 import static fun.freechat.service.util.CacheUtils.IN_PROCESS_LONG_CACHE_MANAGER;
 import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
+import static fun.freechat.service.util.ChannelUtils.isValidChannelUser;
 import static fun.freechat.util.ByteUtils.isTrue;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -236,6 +237,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
         Lock lock = getLock(cache, chatId);
 
         lock.lock();
+        String stage = "configuration";
         try {
             CharacterBackend backend = characterService.getBackend(context.getBackendId());
             String characterUid = backend.getCharacterUid();
@@ -248,8 +250,13 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             Long promptId = promptService.getLatestIdByUid(promptTask.getPromptUid(), owner);
             PromptInfo promptInfo = promptService.details(promptId, owner).getLeft();
             User user = userService.loadByUserId(context.getUserId());
+            if (user == null && !isValidChannelUser(context)) {
+                throw new IllegalStateException("Chat user unavailable");
+            }
+            stage = "memory-configuration";
             String memoryFingerprint = memoryModels.sessionFingerprint(
                     context, backend, ownerId, characterInfo, promptTask, promptInfo, user);
+            stage = "models";
             AiModelInfo modelInfo = InfoUtils.toAiModelInfo(promptTask.getModelId());
             AiModelInfo imageModelInfo = InfoUtils.toAiModelInfo(backend.getImageModelId());
             AiModelInfo moderationModelInfo = InfoUtils.toAiModelInfo(backend.getModerationModelId());
@@ -318,6 +325,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                 }
             }
 
+            stage = "prompt";
             String promptTemplate = isTrue(promptTask.getDraft()) && StringUtils.isNotBlank(promptInfo.getDraft())
                     ? PromptUtils.getDraftTemplate(promptInfo.getDraft())
                     : promptInfo.getTemplate();
@@ -328,19 +336,19 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                 characterNickname = characterInfo.getName();
             }
 
-            String userNickname = context.getUserNickname();
-            if (StringUtils.isBlank(userNickname)) {
+            String userNickname = StringUtils.defaultIfBlank(context.getUserNickname(), null);
+            if (StringUtils.isBlank(userNickname) && user != null) {
                 userNickname = user.getNickname();
             }
-            if (StringUtils.isBlank(userNickname)) {
+            if (StringUtils.isBlank(userNickname) && user != null) {
                 userNickname = user.getPreferredUsername();
             }
-            if (StringUtils.isBlank(userNickname)) {
+            if (StringUtils.isBlank(userNickname) && user != null) {
                 userNickname = user.getUsername();
             }
 
             String userProfile = context.getUserProfile();
-            if (StringUtils.isBlank(userProfile)) {
+            if (StringUtils.isBlank(userProfile) && user != null) {
                 userProfile = user.getProfile();
             }
 
@@ -377,6 +385,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             variables.put(USER_NICKNAME.text(), userNickname);
             variables.put(CHAT_CONTEXT.text(), getOrBlank(context.getAbout()));
 
+            stage = "memory";
             Integer windowSize = backend.getMessageWindowSize();
             SystemAlwaysOnTopMessageWindowChatMemory chatMemory = SystemAlwaysOnTopMessageWindowChatMemory.builder()
                     .id(chatId)
@@ -395,6 +404,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             }
 
             // knowledge
+            stage = "retrieval";
             EmbeddingModel embeddingModel = embeddingModelService.modelForLang(lang);
             EmbeddingStore<TextSegment> embeddingStore =
                     embeddingStoreService.of(characterUid, documentTypeForLang(lang));
@@ -434,9 +444,11 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     .executor(executor)
                     .build();
 
+            stage = "usage";
             MemoryUsage memoryUsage = chatMemoryService.usage(chatId);
 
             // tools
+            stage = "tools";
             Map<ToolSpecification, ToolExecutor> tools = HashMap.newHashMap(1);
             if (isTrue(backend.getEnableAlbumTool())) {
                 AlbumTool albumTool = AlbumTool.builder()
@@ -483,7 +495,11 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     .tools(tools)
                     .build();
         } catch (RuntimeException | IOException e) {
-            log.warn("Failed to build chat session of {}", chatId);
+            log.warn(
+                    "Failed to build chat session of {} (stage={}, error={})",
+                    chatId,
+                    stage,
+                    e.getClass().getSimpleName());
             return null;
         } finally {
             try {

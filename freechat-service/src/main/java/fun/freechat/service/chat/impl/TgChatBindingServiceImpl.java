@@ -1,5 +1,7 @@
 package fun.freechat.service.chat.impl;
 
+import static fun.freechat.service.util.ChannelUtils.telegramUserId;
+
 import fun.freechat.model.CharacterBackend;
 import fun.freechat.model.CharacterInfo;
 import fun.freechat.model.ChatContext;
@@ -15,8 +17,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class TgChatBindingServiceImpl implements TgChatBindingService {
-
-    private static final String TG_USER_PREFIX = "tg-";
 
     private final TgUserService tgUserService;
     private final TgChatService tgChatService;
@@ -39,7 +39,7 @@ public class TgChatBindingServiceImpl implements TgChatBindingService {
         }
         tgChatService.getOrCreate(backendId, tgChatId, chatType, title);
 
-        String fcUserId = TG_USER_PREFIX + tgChatId;
+        String fcUserId = telegramUserId(tgChatId);
         String existing = chatContextService.getChatIdByBackend(fcUserId, backendId);
         if (StringUtils.isNotBlank(existing)) {
             return existing;
@@ -84,7 +84,7 @@ public class TgChatBindingServiceImpl implements TgChatBindingService {
 
     @Override
     public String findChatId(String backendId, Long tgChatId) {
-        String fcUserId = TG_USER_PREFIX + tgChatId;
+        String fcUserId = telegramUserId(tgChatId);
         return chatContextService.getChatIdByBackend(fcUserId, backendId);
     }
 

@@ -5,6 +5,7 @@ import static fun.freechat.service.ai.AiModelFactory.createOllamaChatModel;
 import static fun.freechat.service.ai.AiModelFactory.createOpenAiChatModel;
 import static fun.freechat.service.ai.AiModelFactory.createQwenChatModel;
 import static fun.freechat.service.enums.ChatVar.*;
+import static fun.freechat.service.util.ChannelUtils.isValidChannelUser;
 import static fun.freechat.util.ByteUtils.isTrue;
 
 import com.fasterxml.jackson.core.JsonFactory;
@@ -242,7 +243,8 @@ public class MemoryModelResolver {
         require(StringUtils.isNotBlank(characterUid) && StringUtils.isNotBlank(backend.getChatPromptTaskId()));
         require(character != null && StringUtils.isNotBlank(character.getLang()));
         require(task != null && StringUtils.isNotBlank(task.getPromptUid()));
-        require(prompt != null && user != null);
+        require(prompt != null);
+        require(user != null || isValidChannelUser(context));
         properties.afterPropertiesSet();
         AiModelInfo model = InfoUtils.toAiModelInfo(task.getModelId());
         require(model != null && StringUtils.isNotBlank(model.getName()));
@@ -263,7 +265,7 @@ public class MemoryModelResolver {
                             <= contextLimit);
         }
 
-        String userBaseline = fallback(context.getUserProfile(), user.getProfile());
+        String userBaseline = fallback(context.getUserProfile(), user == null ? null : user.getProfile());
         Map<String, Object> inputs = object(prompt.getInputs());
         Map<String, Object> taskVariables = object(task.getVariables());
         Map<String, Object> variables = variables(context, character, user, inputs, taskVariables);
@@ -422,14 +424,17 @@ public class MemoryModelResolver {
         variables.put(
                 USER_PROFILE.text(),
                 StringUtils.defaultIfBlank(
-                        StringUtils.defaultIfBlank(context.getUserProfile(), user.getProfile()), ""));
+                        StringUtils.defaultIfBlank(context.getUserProfile(), user == null ? null : user.getProfile()),
+                        ""));
         variables.put(
                 USER_NICKNAME.text(),
                 StringUtils.defaultIfBlank(
                         context.getUserNickname(),
-                        StringUtils.defaultIfBlank(
-                                user.getNickname(),
-                                StringUtils.defaultIfBlank(user.getPreferredUsername(), user.getUsername()))));
+                        user == null
+                                ? null
+                                : StringUtils.defaultIfBlank(
+                                        user.getNickname(),
+                                        StringUtils.defaultIfBlank(user.getPreferredUsername(), user.getUsername()))));
         variables.put(CHAT_CONTEXT.text(), StringUtils.defaultIfBlank(context.getAbout(), ""));
         return variables;
     }
