@@ -33,6 +33,8 @@ public interface ChatService {
 
     TokenStream streamSend(String chatId, ChatMessage message, String context);
 
+    ChatStreamHandle streamSendManaged(String chatId, ChatMessage message, String context);
+
     static Object asMemoryId(String chatId) {
         return chatId;
     }

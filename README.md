@@ -26,6 +26,8 @@ It is recommended to run [Ollama](https://ollama.com/) + FreeChat locally to tes
 - Supports chatting with characters via **Telegram**.
 - Supports individual **debugging and sharing prompts**.
 
+To connect another messaging service, see the [channel plugin developer guide](docs/channel-plugins.md).
+
 ## Snapshots
 ### On PC
 #### Home Page

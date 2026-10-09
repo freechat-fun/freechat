@@ -97,7 +97,7 @@ public final class TelegramITSupport {
         m.stubFor(post(urlPathMatching("(?i).*/sendmessage"))
                 .atPriority(1)
                 .willReturn(okJson("{\"ok\":true,\"result\":"
-                        + "{\"message_id\":1,\"date\":0,"
+                        + "{\"message_id\":1,\"date\":1,"
                         + "\"chat\":{\"id\":123,\"type\":\"private\"},"
                         + "\"text\":\"\"}}")));
         m.stubFor(post(urlPathMatching("(?i).*/getupdates"))

@@ -12,26 +12,42 @@ import dev.langchain4j.service.TokenStream;
 import dev.langchain4j.service.tool.BeforeToolExecution;
 import dev.langchain4j.service.tool.ToolExecution;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
 public final class QueueAwareTokenStream implements TokenStream, AutoCloseable {
     private final TokenStream delegate;
-    private final CountDownLatch completionLatch;
-    private final AtomicBoolean started = new AtomicBoolean();
+    private final CountDownLatch cleanupRequested;
+    private final BooleanSupplier cancelled;
+    private final CompletableFuture<Void> delegateDone = new CompletableFuture<>();
+    private final CompletableFuture<Void> startDone = new CompletableFuture<>();
+    private final CompletableFuture<Void> closeDone = new CompletableFuture<>();
     private final Object monitor = new Object();
+    private boolean started;
+    private boolean closing;
+    private Thread startThread;
+    private Thread closeThread;
     private Consumer<ChatResponse> userOnComplete;
     private Consumer<Throwable> userOnError;
     private ChatResponse response;
     private Throwable error;
     private boolean terminal;
     private boolean delivered;
+    private boolean closed;
+    private Thread callbackThread;
+    private CompletableFuture<Void> callbackDone = CompletableFuture.completedFuture(null);
 
-    QueueAwareTokenStream(TokenStream delegate, CountDownLatch completionLatch) {
+    QueueAwareTokenStream(TokenStream delegate, CountDownLatch cleanupRequested) {
+        this(delegate, cleanupRequested, () -> false);
+    }
+
+    QueueAwareTokenStream(TokenStream delegate, CountDownLatch cleanupRequested, BooleanSupplier cancelled) {
         this.delegate = delegate;
-        this.completionLatch = completionLatch;
+        this.cleanupRequested = cleanupRequested;
+        this.cancelled = cancelled;
         // An admitted turn can expire before the caller registers callbacks or starts streaming.
         delegate.onCompleteResponse(value -> terminate(value, null));
         delegate.onError(failure -> terminate(null, failure));
@@ -129,13 +145,23 @@ public final class QueueAwareTokenStream implements TokenStream, AutoCloseable {
     @Override
     public void start() {
         synchronized (monitor) {
-            if (terminal || !started.compareAndSet(false, true)) {
+            if (terminal || closed || cancelled.getAsBoolean() || started) {
                 throw new IllegalStateException("Chat stream is no longer available");
             }
+            started = true;
+            startThread = Thread.currentThread();
         }
         try {
-            delegate.start();
+            try {
+                delegate.start();
+            } finally {
+                synchronized (monitor) {
+                    startThread = null;
+                }
+                startDone.complete(null);
+            }
         } catch (RuntimeException | Error failure) {
+            // A throwing start can already have dispatched provider work.
             close();
             throw failure;
         }
@@ -153,7 +179,8 @@ public final class QueueAwareTokenStream implements TokenStream, AutoCloseable {
         try {
             deliver();
         } finally {
-            completionLatch.countDown();
+            delegateDone.complete(null);
+            cleanupRequested.countDown();
         }
     }
 
@@ -181,8 +208,34 @@ public final class QueueAwareTokenStream implements TokenStream, AutoCloseable {
             delivered = true;
             response = null;
             error = null;
+            callbackThread = Thread.currentThread();
+            callbackDone = new CompletableFuture<>();
         }
-        callback.run();
+        try {
+            callback.run();
+        } finally {
+            synchronized (monitor) {
+                callbackThread = null;
+            }
+            callbackDone.complete(null);
+        }
+    }
+
+    void awaitTermination() {
+        // Cancellation wakes the owner, but only delegate termination permits coordination release.
+        delegateDone.join();
+        awaitCallback();
+    }
+
+    private void awaitCallback() {
+        CompletableFuture<Void> done;
+        synchronized (monitor) {
+            if (callbackThread == Thread.currentThread()) {
+                return;
+            }
+            done = callbackDone;
+        }
+        done.join();
     }
 
     public Long finalMessageId() {
@@ -193,14 +246,64 @@ public final class QueueAwareTokenStream implements TokenStream, AutoCloseable {
 
     @Override
     public void close() {
+        boolean waitForStart;
+        synchronized (monitor) {
+            closed = true;
+            cleanupRequested.countDown();
+            if (callbackThread == Thread.currentThread()
+                    || startThread == Thread.currentThread()
+                    || closeThread == Thread.currentThread()) {
+                return;
+            }
+            waitForStart = started;
+        }
+        boolean interrupted = Thread.interrupted();
         try {
+            if (waitForStart) {
+                startDone.join();
+            }
+            interrupted |= Thread.interrupted();
+            closeDelegate();
+        } finally {
+            awaitCallback();
+            if (interrupted) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
+    private void closeDelegate() {
+        boolean ownsClose;
+        synchronized (monitor) {
+            ownsClose = !closing;
+            if (ownsClose) {
+                closing = true;
+                closeThread = Thread.currentThread();
+            }
+        }
+        if (!ownsClose) {
+            closeDone.join();
+            return;
+        }
+        try {
+            boolean stopped;
+            synchronized (monitor) {
+                stopped = !started;
+            }
             if (delegate instanceof AutoCloseable closeable) {
                 closeable.close();
+                stopped = true;
+            }
+            if (stopped) {
+                terminate(null, new IllegalStateException("Chat stream was cancelled"));
             }
         } catch (Exception ignored) {
             throw new IllegalStateException("Chat stream cancellation failed");
         } finally {
-            terminate(null, new IllegalStateException("Chat stream was cancelled"));
+            synchronized (monitor) {
+                closeThread = null;
+            }
+            closeDone.complete(null);
         }
     }
 }

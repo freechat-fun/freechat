@@ -334,22 +334,101 @@ class ChatTaskQueueCoordinationIT {
     }
 
     @Test
-    void throwingStreamStartReleasesLockForOtherClient() throws Exception {
+    void throwingNoncancellableStartCannotProveProviderWorkHasStopped() throws Exception {
         String id = chatId();
         Worker first = worker(firstClient, id);
         Worker second = worker(secondClient, id);
         ControlledStream raw = new ControlledStream();
         IllegalStateException failure = new IllegalStateException("synthetic start failure");
         doThrow(failure).when(raw.stream).start();
-        TokenStream stream =
-                get(first.queue.submit(new ChatTask.Stream(() -> raw.stream)).future());
+        ChatTask.Stream task = new ChatTask.Stream(() -> raw.stream);
+        TokenStream stream = get(first.queue.submit(task).future());
         ChatTask.Sync<String> next = new ChatTask.Sync<>(() -> "after start failure");
         second.queue.submit(next);
-        await(second.lock.attempted);
-        assertBlocked(next.future());
-        assertSame(failure, assertThrows(IllegalStateException.class, stream::start));
-        assertEquals("after start failure", get(next.future()));
-        assertWorkerUnlocked(first);
+        try {
+            await(second.lock.attempted);
+            assertSame(failure, assertThrows(IllegalStateException.class, stream::start));
+            assertBlocked(next.future());
+            assertBlocked(task.settled());
+            raw.terminate("error");
+            get(task.settled());
+            assertEquals("after start failure", get(next.future()));
+            assertWorkerUnlocked(first);
+        } finally {
+            raw.terminate("error");
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"cancel-complete", "cancel-error", "close", "interrupt", "drain"})
+    void noncancellableStreamKeepsRedisUntilDelayedNaturalTerminationAndCallbackCleanup(String mode) throws Exception {
+        String id = chatId();
+        Worker first = worker(firstClient, id);
+        Worker second = worker(secondClient, id);
+        ControlledStream raw = new ControlledStream();
+        assertFalse(raw.stream instanceof AutoCloseable);
+        ChatTask.Stream task = new ChatTask.Stream(() -> raw.stream);
+        TokenStream stream = get(first.queue.submit(task).future());
+        CountDownLatch callbackEntered = new CountDownLatch(1);
+        CountDownLatch finishCallback = new CountDownLatch(1);
+        AtomicInteger callbacks = new AtomicInteger();
+        AtomicInteger cleanups = new AtomicInteger();
+        Consumer<Object> cleanup = ignored -> {
+            callbacks.incrementAndGet();
+            callbackEntered.countDown();
+            awaitGate(finishCallback);
+            cleanups.incrementAndGet();
+        };
+        stream.onCompleteResponse(cleanup::accept).onError(cleanup::accept).start();
+        await(raw.started);
+        ChatTask<String> next = second.queue.submit(new ChatTask.Sync<>(() -> {
+            assertEquals(1, cleanups.get());
+            return "after physical completion";
+        }));
+        try {
+            await(second.lock.attempted);
+            switch (mode) {
+                case "close" -> ((AutoCloseable) stream).close();
+                case "interrupt" -> first.executor.shutdownNow();
+                case "drain" -> first.queue.drain(0);
+                default -> task.cancel();
+            }
+            task.ready().cancel(false);
+            task.settled().cancel(false);
+            if (mode.equals("interrupt")) {
+                assertThrows(
+                        TimeoutException.class, () -> next.future().get(WATCHDOG_MS + 1_000, TimeUnit.MILLISECONDS));
+            } else {
+                assertBlocked(next.future());
+            }
+            assertBlocked(task.settled());
+            assertFalse(first.queue.isIdle());
+            assertEquals(0, first.lock.unlockCalls.get());
+            assertEquals(0, callbacks.get());
+            assertTrue(
+                    first.lock.delegate.isHeldByThread(get(first.lock.acquired).threadId()));
+            Future<?> terminal =
+                    executor().submit(() -> raw.terminate(mode.equals("cancel-error") ? "error" : "complete"));
+            await(callbackEntered);
+            task.cancel();
+            assertBlocked(task.settled());
+            assertBlocked(next.future());
+            assertEquals(0, first.lock.unlockCalls.get());
+            finishCallback.countDown();
+            get(terminal);
+            get(task.settled());
+            assertEquals("after physical completion", get(next.future()));
+            assertWorkerUnlocked(first);
+            raw.terminate("complete");
+            raw.terminate("error");
+            assertEquals(1, callbacks.get());
+            if (mode.equals("interrupt")) {
+                assertTrue(first.executor.awaitTermination(WAIT_SECONDS, TimeUnit.SECONDS));
+            }
+        } finally {
+            finishCallback.countDown();
+            raw.terminate("complete");
+        }
     }
 
     @Test
@@ -378,6 +457,32 @@ class ChatTaskQueueCoordinationIT {
         } finally {
             owner.unlock();
         }
+    }
+
+    @Test
+    void managedCancellationOfRedisWaiterSettlesAfterUnlockWithoutCancellingItsSuccessor() throws Exception {
+        String id = chatId();
+        RLock owner = firstClient.getLock(PREFIX + id);
+        Worker waiter = worker(secondClient, id);
+        ChatTask.Stream task = new ChatTask.Stream(() -> fail("Cancelled builder ran"));
+        owner.lockInterruptibly();
+        try {
+            waiter.queue.submit(task);
+            await(waiter.lock.attempted);
+            task.cancel();
+            assertFalse(task.settled().isDone());
+            assertEquals(0, waiter.lock.unlockCalls.get());
+            assertTrue(owner.isHeldByCurrentThread());
+        } finally {
+            owner.unlock();
+        }
+        rejected(task);
+        get(task.settled());
+        assertTrue(waiter.lock.unlocked.isDone());
+        assertWorkerUnlocked(waiter);
+        assertEquals(
+                "successor",
+                get(waiter.queue.submit(new ChatTask.Sync<>(() -> "successor")).future()));
     }
 
     @Test
@@ -611,7 +716,7 @@ class ChatTaskQueueCoordinationIT {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"interrupt", "drain", "interrupted-drainer"})
+    @ValueSource(strings = {"interrupt", "drain", "interrupted-drainer", "managed-cancel"})
     void activeMemoryStreamIsCancelledBeforeUnlockAndPendingWorkCannotOvertakeCleanup(String shutdown)
             throws Exception {
         String id = chatId().replace("-", "");
@@ -619,7 +724,8 @@ class ChatTaskQueueCoordinationIT {
         Worker second = worker(secondClient, id);
         try (var f = memoryFixture(first.queue)) {
             AtomicInteger errors = new AtomicInteger();
-            TokenStream stream = f.service.streamSend(f.id, ChatServiceMemoryTest.ORIGINAL, null);
+            var managed = f.service.streamSendManaged(f.id, ChatServiceMemoryTest.ORIGINAL, null);
+            TokenStream stream = get(managed.ready());
             stream.onError(error -> errors.incrementAndGet()).start();
             AtomicInteger cancellations = new AtomicInteger();
             var handle = new dev.langchain4j.model.chat.response.StreamingHandle() {
@@ -658,6 +764,8 @@ class ChatTaskQueueCoordinationIT {
                 Future<Boolean> drain = null;
                 if (shutdown.equals("interrupt")) {
                     get(first.lock.acquired).interrupt();
+                } else if (shutdown.equals("managed-cancel")) {
+                    managed.cancel();
                 } else {
                     // Draining a stream whose caller disappeared must request cleanup, not wait for abort IO.
                     drain = executor().submit(() -> {
@@ -674,9 +782,13 @@ class ChatTaskQueueCoordinationIT {
                     assertEquals(shutdown.equals("interrupted-drainer"), get(drain));
                 }
                 get(executor().submit(() -> first.queue.drain(0))); // Still bounded while abort is blocked.
+                managed.cancel(); // Repeated handle cancellation cannot interrupt cleanup either.
                 assertBlocked(remote.future());
+                assertFalse(managed.settled().isDone(), "SQL abort is still executing");
                 assertEquals(0, first.lock.unlockCalls.get());
                 releaseAbort.countDown();
+                get(managed.settled());
+                assertTrue(first.lock.unlocked.isDone(), "Settlement must follow Redis unlock");
                 assertEquals("after cleanup", get(remote.future()));
                 rejected(pending);
                 assertWorkerUnlocked(first);
@@ -976,6 +1088,7 @@ class ChatTaskQueueCoordinationIT {
     private static void rejected(ChatTask<?> task) {
         ExecutionException failure = assertThrows(ExecutionException.class, () -> get(task.future()));
         assertInstanceOf(ChatQueueRejectedException.class, failure.getCause());
+        assertDoesNotThrow(() -> get(task.settled()), "Rejected work must also settle");
     }
 
     private static void assertWorkerUnlocked(Worker worker) throws Exception {

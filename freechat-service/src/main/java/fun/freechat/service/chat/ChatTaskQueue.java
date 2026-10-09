@@ -32,15 +32,35 @@ public class ChatTaskQueue {
     }
 
     public <T> ChatTask<T> submit(ChatTask<T> task) {
-        if (draining.get()) {
-            task.future.completeExceptionally(new ChatQueueRejectedException());
+        if (task instanceof ChatTask.Stream stream) {
+            stream.queuedIn(this);
+        }
+        if (draining.get() || isCancelled(task)) {
+            reject(task);
             return task;
         }
         taskQueue.add(task);
-        if (draining.get() && taskQueue.remove(task)) {
-            task.future.completeExceptionally(new ChatQueueRejectedException());
+        if ((draining.get() || isCancelled(task)) && taskQueue.remove(task)) {
+            reject(task);
         }
         return task;
+    }
+
+    void cancel(ChatTask.Stream task) {
+        task.requestCancellation();
+        if (taskQueue.remove(task)) {
+            reject(task);
+        }
+        // Dequeued/active tasks belong to the worker, even while it is waiting for coordination.
+    }
+
+    private static boolean isCancelled(ChatTask<?> task) {
+        return task instanceof ChatTask.Stream stream && stream.isCancelled();
+    }
+
+    private static void reject(ChatTask<?> task) {
+        task.future.completeExceptionally(new ChatQueueRejectedException());
+        task.settlement.complete(null);
     }
 
     public void startWorker(ExecutorService executor) {
@@ -74,7 +94,7 @@ public class ChatTaskQueue {
         List<ChatTask<?>> remaining = new ArrayList<>();
         taskQueue.drainTo(remaining);
         for (ChatTask<?> task : remaining) {
-            task.future.completeExceptionally(new ChatQueueRejectedException());
+            reject(task);
         }
     }
 
@@ -102,19 +122,22 @@ public class ChatTaskQueue {
             }
             ActiveTask active;
             synchronized (lifecycleMonitor) {
-                active = draining.get() ? null : new ActiveTask(task, Thread.currentThread(), new CountDownLatch(1));
+                active = draining.get() || isCancelled(task)
+                        ? null
+                        : new ActiveTask(task, Thread.currentThread(), new CountDownLatch(1));
                 if (active != null) {
                     activeTask = active;
                 }
             }
             if (active == null) {
-                task.future.completeExceptionally(new ChatQueueRejectedException());
+                reject(task);
                 continue;
             }
+            Throwable coordinationFailure = null;
             try {
                 coordination.lockInterruptibly();
                 try {
-                    if (draining.get()) {
+                    if (draining.get() || isCancelled(task)) {
                         task.future.completeExceptionally(new ChatQueueRejectedException());
                     } else {
                         task.execute();
@@ -134,22 +157,28 @@ public class ChatTaskQueue {
                 Thread.currentThread().interrupt();
                 task.future.completeExceptionally(new ChatQueueRejectedException());
             } catch (Throwable ignored) {
-                if (!task.future.isDone()) {
-                    task.future.completeExceptionally(new IllegalStateException("Chat coordination failed"));
-                }
+                coordinationFailure = new IllegalStateException("Chat coordination failed");
+                task.future.completeExceptionally(coordinationFailure);
             } finally {
                 synchronized (lifecycleMonitor) {
                     activeTask = null;
                 }
-                active.done().countDown();
                 idleSince.set(System.currentTimeMillis());
+                active.done().countDown();
+                // Neither readiness nor a terminal model callback proves cleanup/unlock has finished.
+                if (coordinationFailure == null) {
+                    task.settlement.complete(null);
+                } else {
+                    task.settlement.completeExceptionally(coordinationFailure);
+                }
             }
         }
 
+        draining.set(true);
         List<ChatTask<?>> remaining = new ArrayList<>();
         taskQueue.drainTo(remaining);
         for (ChatTask<?> task : remaining) {
-            task.future.completeExceptionally(new ChatQueueRejectedException());
+            reject(task);
         }
     }
 }

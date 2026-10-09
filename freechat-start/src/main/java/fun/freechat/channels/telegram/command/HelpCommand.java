@@ -1,12 +1,14 @@
 package fun.freechat.channels.telegram.command;
 
-import fun.freechat.channels.telegram.TelegramChannel;
+import fun.freechat.channels.spi.ChannelText;
+import fun.freechat.channels.spi.ChannelTurnContext;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.chat.Chat;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
 @Slf4j
@@ -23,19 +25,22 @@ public class HelpCommand implements TelegramCommandHandler {
     }
 
     @Override
-    public void execute(String backendId, Update update, TelegramChannel channel) {
+    public CompletionStage<Void> execute(String backendId, Update update, ChannelTurnContext turn) {
         if (!update.hasMessage()) {
-            return;
+            return CompletableFuture.completedFuture(null);
         }
         Message message = update.getMessage();
         Chat chat = message.getChat();
         if (chat == null) {
-            return;
+            return CompletableFuture.completedFuture(null);
         }
-        try {
-            channel.sendText(backendId, chat.getId(), HELP_TEXT);
-        } catch (TelegramApiException e) {
-            log.warn("/help reply failed for chat {}", chat.getId());
-        }
+        return turn.outbound()
+                .sendText(ChannelText.plain(HELP_TEXT))
+                .<Void>thenApply(receipt -> null)
+                .whenComplete((ignored, failure) -> {
+                    if (failure != null) {
+                        log.warn("/help reply failed for chat {}", chat.getId());
+                    }
+                });
     }
 }

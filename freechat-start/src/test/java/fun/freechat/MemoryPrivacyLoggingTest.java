@@ -1,5 +1,6 @@
 package fun.freechat;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -20,10 +21,8 @@ import com.azure.core.implementation.serializer.DefaultJsonSerializer;
 import com.azure.core.util.serializer.TypeReference;
 import dev.langchain4j.http.client.sse.ServerSentEventListenerUtils;
 import dev.langchain4j.internal.RetryUtils;
-import dev.langchain4j.service.TokenStream;
-import fun.freechat.channels.telegram.TelegramChannel;
-import fun.freechat.channels.telegram.TelegramChannelEventBridge;
-import fun.freechat.channels.telegram.TelegramChannelEventListener;
+import fun.freechat.channels.spi.*;
+import fun.freechat.channels.telegram.DefaultTelegramChannel;
 import fun.freechat.channels.telegram.TelegramChannelManager;
 import fun.freechat.channels.telegram.command.HelpCommand;
 import fun.freechat.channels.telegram.command.ResetCommand;
@@ -31,17 +30,20 @@ import fun.freechat.channels.telegram.command.StartCommand;
 import fun.freechat.channels.telegram.handler.ChatBindingTelegramMessageHandler;
 import fun.freechat.channels.telegram.handler.TelegramStreamingReplyEmitter;
 import fun.freechat.channels.telegram.handler.TelegramUpdateDispatcher;
-import fun.freechat.mapper.CharacterBackendMapper;
 import fun.freechat.mapper.ChatContextMapper;
 import fun.freechat.mapper.ChatHistoryMapper;
 import fun.freechat.mapper.ChatMemoryCommitMapper;
 import fun.freechat.mapper.ChatMemoryCoordinationMapper;
 import fun.freechat.mapper.ChatMemoryStateMapper;
 import fun.freechat.model.CharacterBackend;
+import fun.freechat.service.channel.ChannelBackendEvents;
+import fun.freechat.service.channel.ChannelRegistry;
+import fun.freechat.service.channel.ChannelRuntime;
 import fun.freechat.service.character.CharacterBackendEvent;
 import fun.freechat.service.chat.ChatService;
 import fun.freechat.service.chat.ChatSession;
 import fun.freechat.service.chat.ChatSessionService;
+import fun.freechat.service.chat.ChatStreamHandle;
 import fun.freechat.service.chat.TgChatBindingService;
 import fun.freechat.service.chat.TgMessageService;
 import fun.freechat.service.chat.memory.LongTermMemoryProperties;
@@ -49,7 +51,6 @@ import fun.freechat.service.chat.memory.MemoryLifecycleRepository;
 import fun.freechat.service.chat.memory.MemoryPublicationRepository;
 import fun.freechat.service.chat.memory.MemoryTurnRepository;
 import fun.freechat.service.chat.memory.MemoryWorkRepository;
-import fun.freechat.service.common.EncryptionService;
 import fun.freechat.service.enums.ChatVar;
 import fun.freechat.service.util.EncryptionUtils;
 import fun.freechat.service.util.InfoUtils;
@@ -62,16 +63,21 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import javax.crypto.Cipher;
@@ -99,7 +105,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.MockMakers;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.spring.MyBatisExceptionTranslator;
-import org.redisson.api.RLock;
 import org.redisson.api.RTopic;
 import org.redisson.api.RedissonClient;
 import org.redisson.api.listener.MessageListener;
@@ -109,17 +114,15 @@ import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
 import org.springframework.jdbc.support.SQLErrorCodes;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.SimpleTransactionStatus;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.telegram.telegrambots.longpolling.BotSession;
-import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
-import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsumer;
-import org.telegram.telegrambots.meta.TelegramUrl;
-import org.telegram.telegrambots.meta.api.methods.ActionType;
+import org.telegram.telegrambots.meta.api.methods.send.SendChatAction;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.ResponseParameters;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -133,7 +136,6 @@ import org.w3c.dom.Element;
 /** No network, database, real credentials, Spring application, or production file appenders. */
 class MemoryPrivacyLoggingTest {
     private static final String PAYLOAD = "FABRICATED_PRIVATE_MEMORY_CREDENTIAL_SENTINEL";
-    private static final String TELEGRAM_BACKEND_TOPIC = "freechat:channels:telegram:backend-changed";
     private final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
     private final Map<Logger, SavedLogger> saved = new HashMap<>();
     private final ListAppender<ILoggingEvent> events = new ListAppender<>();
@@ -518,203 +520,176 @@ class MemoryPrivacyLoggingTest {
     @ParameterizedTest
     @EnumSource(TelegramFailure.class)
     void telegramDeliveryFailuresNeverLogReplyBodiesOrCredentials(TelegramFailure phase) throws Exception {
-        TelegramChannel channel = mock(TelegramChannel.class, withSettings().mockMaker(MockMakers.SUBCLASS));
-        Message placeholder = new Message();
-        placeholder.setMessageId(42);
-        when(channel.sendText(anyString(), anyLong(), anyString())).thenReturn(placeholder);
-        var checked = new TelegramApiException(PAYLOAD, new IOException(PAYLOAD));
+        var turn = new TelegramTurn();
         switch (phase) {
             case PARTIAL, FINAL ->
-                doThrow(new IllegalStateException(PAYLOAD))
-                        .when(channel)
-                        .editText(anyString(), anyLong(), anyLong(), anyString(), nullable(String.class));
-            case EDIT ->
-                doThrow(checked)
-                        .when(channel)
-                        .editText(anyString(), anyLong(), anyLong(), anyString(), nullable(String.class));
+                when(turn.client.execute(any(EditMessageText.class)))
+                        .thenThrow(new IllegalStateException(PAYLOAD, telegramApiFailure()));
+            case EDIT -> when(turn.client.execute(any(EditMessageText.class))).thenThrow(telegramApiFailure());
             case SPLIT_PLACEHOLDER ->
-                when(channel.sendText(anyString(), anyLong(), anyString()))
-                        .thenReturn(placeholder)
-                        .thenThrow(checked);
-            case PHOTO ->
-                when(channel.sendPhoto(anyString(), anyLong(), any(), isNull())).thenThrow(checked);
-            case TYPING -> doThrow(checked).when(channel).sendChatAction(anyString(), anyLong(), any());
+                when(turn.client.execute(any(SendMessage.class)))
+                        .thenReturn(turn.placeholder)
+                        .thenThrow(telegramApiFailure());
+            case PHOTO -> when(turn.client.execute(any(SendPhoto.class))).thenThrow(telegramApiFailure());
+            case TYPING -> when(turn.client.execute(any(SendChatAction.class))).thenThrow(telegramApiFailure());
         }
-        var emitter = new TelegramStreamingReplyEmitter(channel, "backend", 7L);
-        var deadline = TelegramStreamingReplyEmitter.class.getDeclaredField("nextFlushAt");
-        deadline.setAccessible(true);
-        var heartbeat = TelegramStreamingReplyEmitter.class.getDeclaredField("typingHeartbeat");
-        heartbeat.setAccessible(true);
-        emitter.start();
-        ScheduledFuture<?> scheduled = (ScheduledFuture<?>) heartbeat.get(emitter);
-        try {
-            deadline.setLong(emitter, phase == TelegramFailure.FINAL ? Long.MAX_VALUE : 0L);
-            emitter.append(
-                    switch (phase) {
-                        case SPLIT_PLACEHOLDER -> "x".repeat(4001);
-                        case PHOTO -> "reply ![img](https://unused.invalid/" + PAYLOAD + ")";
-                        default -> PAYLOAD;
-                    });
-        } finally {
-            emitter.complete();
+        var emitter = new TelegramStreamingReplyEmitter(turn);
+        emitter.start().get(5, TimeUnit.SECONDS);
+        emitter.append(
+                switch (phase) {
+                    case SPLIT_PLACEHOLDER -> PAYLOAD + "x".repeat(4001);
+                    case PHOTO -> PAYLOAD + "![img](https://unused.invalid/" + PAYLOAD + ")";
+                    default -> PAYLOAD;
+                });
+        if (phase == TelegramFailure.PARTIAL || phase == TelegramFailure.EDIT) {
+            turn.flush();
         }
-        assertTrue(scheduled.isCancelled());
-        assertNull(heartbeat.get(emitter));
-        assertTrue(events.list.stream()
-                .anyMatch(event -> event.getLoggerName().equals(TelegramStreamingReplyEmitter.class.getName())));
-        assertNoPayload();
+        var completion = emitter.complete();
+        if (phase == TelegramFailure.TYPING) {
+            assertEquals(PAYLOAD, completion.get(5, TimeUnit.SECONDS).text());
+            verify(turn.client).execute(any(SendChatAction.class));
+        } else {
+            assertSafeChannelFailure(completion);
+        }
+        assertEquals(1, turn.typingClosed.get());
+        if (phase == TelegramFailure.FINAL
+                || phase == TelegramFailure.PHOTO
+                || phase == TelegramFailure.SPLIT_PLACEHOLDER) {
+            verify(turn.timer).cancel(false);
+        }
         if (phase == TelegramFailure.PHOTO) {
-            verify(channel).sendPhoto(eq("backend"), eq(7L), any(), isNull());
-            assertTrue(emitter.sentImages().isEmpty());
+            verify(turn.client).execute(any(SendPhoto.class));
+            assertTrue(emitter.confirmedReply().images().isEmpty());
+            assertEquals(PAYLOAD, emitter.confirmedReply().text());
         }
+        if (phase == TelegramFailure.SPLIT_PLACEHOLDER) {
+            verify(turn.client, times(2)).execute(any(SendMessage.class));
+            verify(turn.client, times(1)).execute(any(EditMessageText.class));
+        }
+        assertTelegramDiagnosticsSafe();
     }
 
     @Test
     void telegramThrottlingKeepsRetryDelayWithoutLoggingProviderError() throws Exception {
-        TelegramChannel channel = mock(TelegramChannel.class, withSettings().mockMaker(MockMakers.SUBCLASS));
-        Message placeholder = new Message();
-        placeholder.setMessageId(42);
-        when(channel.sendText(anyString(), anyLong(), anyString())).thenReturn(placeholder);
-        TelegramApiRequestException failure =
-                mock(TelegramApiRequestException.class, withSettings().mockMaker(MockMakers.SUBCLASS));
+        var turn = new TelegramTurn();
+        TelegramApiRequestException failure = subclassMock(TelegramApiRequestException.class);
         var parameters = new ResponseParameters();
         parameters.setRetryAfter(60);
         when(failure.getParameters()).thenReturn(parameters);
         when(failure.getMessage()).thenReturn(PAYLOAD);
-        doThrow(failure).when(channel).editText(anyString(), anyLong(), anyLong(), anyString(), nullable(String.class));
-        var emitter = new TelegramStreamingReplyEmitter(channel, "backend", 7L);
-        var deadline = TelegramStreamingReplyEmitter.class.getDeclaredField("nextFlushAt");
-        deadline.setAccessible(true);
-        emitter.start();
-        try {
-            deadline.setLong(emitter, 0L);
-            long before = System.currentTimeMillis();
-            emitter.append(PAYLOAD);
-            assertTrue(deadline.getLong(emitter) >= before + 60_000L);
-            emitter.append(" more");
-            verify(channel, times(1)).editText(anyString(), anyLong(), anyLong(), anyString(), nullable(String.class));
-        } finally {
-            emitter.complete();
-        }
-        assertTrue(events.list.stream()
-                .anyMatch(event ->
-                        event.getLevel() == Level.INFO && event.getMessage().startsWith("Telegram throttled")));
-        assertNoPayload();
+        when(failure.getApiResponse()).thenReturn(PAYLOAD);
+        when(turn.client.execute(any(EditMessageText.class))).thenThrow(failure);
+        var emitter = new TelegramStreamingReplyEmitter(turn);
+        emitter.start().get(5, TimeUnit.SECONDS);
+        emitter.append(PAYLOAD);
+        // The runtime, not emitter-private deadlines, now owns retry scheduling.
+        ChannelFailure safe = assertSafeChannelFailure(emitter.complete());
+        assertEquals(ChannelFailure.Kind.RATE_LIMITED, safe.kind());
+        assertEquals(Duration.ofSeconds(60), safe.retryAfter());
+        assertEquals(1, turn.typingClosed.get());
+        assertTelegramDiagnosticsSafe();
     }
 
     enum TelegramSetupFailure {
         PLACEHOLDER,
         ACQUIRE,
+        READY,
         REGISTER,
         START,
         ASYNC_ERROR,
-        CLOSE,
+        CANCEL,
+        CANCEL_FAILURE,
+        SETTLEMENT,
         SUCCESS
     }
 
     @ParameterizedTest
     @EnumSource(TelegramSetupFailure.class)
     void telegramHandlerSanitizesErrorsAndClosesAdmittedStreams(TelegramSetupFailure phase) throws Exception {
-        TelegramChannel channel = mock(TelegramChannel.class, withSettings().mockMaker(MockMakers.SUBCLASS));
-        ChatService chats = mock(ChatService.class, withSettings().mockMaker(MockMakers.SUBCLASS));
-        TgChatBindingService bindings =
-                mock(TgChatBindingService.class, withSettings().mockMaker(MockMakers.SUBCLASS));
-        TgMessageService messages = mock(TgMessageService.class, withSettings().mockMaker(MockMakers.SUBCLASS));
-        when(bindings.getOrCreate(
-                        eq("backend"), eq(7L), eq("private"), isNull(), isNull(), isNull(), isNull(), isNull()))
-                .thenReturn("chat");
-        Message placeholder = new Message();
-        placeholder.setMessageId(42);
-        when(channel.sendText(anyString(), anyLong(), anyString())).thenReturn(placeholder);
-        TokenStream stream = mock(
-                TokenStream.class,
-                withSettings()
-                        .mockMaker(MockMakers.SUBCLASS)
-                        .extraInterfaces(AutoCloseable.class)
-                        .defaultAnswer(RETURNS_SELF));
-        when(chats.streamSend(eq("chat"), any(), isNull())).thenReturn(stream);
-        AtomicReference<Consumer<Throwable>> onError = new AtomicReference<>();
-        AtomicReference<Consumer<String>> onPartial = new AtomicReference<>();
-        AtomicReference<Consumer<dev.langchain4j.model.chat.response.ChatResponse>> onComplete =
-                new AtomicReference<>();
-        doAnswer(call -> {
-                    onError.set(call.getArgument(0));
-                    return stream;
-                })
-                .when(stream)
-                .onError(any());
-        doAnswer(call -> {
-                    onPartial.set(call.getArgument(0));
-                    return stream;
-                })
-                .when(stream)
-                .onPartialResponse(any());
-        doAnswer(call -> {
-                    onComplete.set(call.getArgument(0));
-                    return stream;
-                })
-                .when(stream)
-                .onCompleteResponse(any());
+        var fixture = new TelegramDispatchFixture();
+        var managed = new TelegramChannelPipelineTest.ManagedStream();
+        when(fixture.chats.streamSendManaged(eq("chat"), any(), isNull())).thenReturn(managed);
         switch (phase) {
             case PLACEHOLDER ->
-                when(channel.sendText(anyString(), anyLong(), anyString()))
-                        .thenThrow(new TelegramApiException(PAYLOAD));
+                when(fixture.turn.client.execute(any(SendMessage.class))).thenThrow(telegramApiFailure());
             case ACQUIRE ->
-                when(chats.streamSend(eq("chat"), any(), isNull())).thenThrow(new IllegalStateException(PAYLOAD));
+                when(fixture.chats.streamSendManaged(eq("chat"), any(), isNull()))
+                        .thenThrow(FailureKind.RUNTIME.create());
+            case READY -> {
+                ChatStreamHandle handle = subclassMock(ChatStreamHandle.class);
+                when(handle.ready()).thenReturn(CompletableFuture.failedFuture(FailureKind.RUNTIME.create()));
+                when(handle.settled()).thenReturn(managed.settlement);
+                doAnswer(call -> {
+                            managed.cancel();
+                            return null;
+                        })
+                        .when(handle)
+                        .cancel();
+                when(fixture.chats.streamSendManaged(eq("chat"), any(), isNull()))
+                        .thenReturn(handle);
+            }
             case REGISTER ->
-                doThrow(new IllegalStateException(PAYLOAD)).when(stream).onPartialResponse(any());
-            case START, CLOSE ->
-                doThrow(new IllegalStateException(PAYLOAD)).when(stream).start();
-            case ASYNC_ERROR, SUCCESS -> {}
+                doThrow(FailureKind.RUNTIME.create()).when(managed.stream).onPartialResponse(any());
+            case START ->
+                doThrow(FailureKind.RUNTIME.create()).when(managed.stream).start();
+            case CANCEL_FAILURE ->
+                managed.cancellationFailure = new IllegalStateException(PAYLOAD, telegramApiFailure());
+            default -> {}
         }
-        if (phase == TelegramSetupFailure.CLOSE) {
-            doThrow(new IOException(PAYLOAD)).when((AutoCloseable) stream).close();
+        CompletableFuture<Void> result = fixture.dispatcher
+                .handle(new ChannelEnvelope<>(fixture.turn.address(), "1", telegramUpdate(1, PAYLOAD)), fixture.turn)
+                .toCompletableFuture();
+        switch (phase) {
+            case ASYNC_ERROR -> managed.error.accept(FailureKind.RUNTIME.create());
+            case CANCEL, CANCEL_FAILURE -> fixture.turn.cancel();
+            case SUCCESS -> {
+                managed.partial.accept(PAYLOAD + "![img](https://unused.invalid/" + PAYLOAD + ")");
+                managed.complete();
+                managed.complete();
+            }
+            case SETTLEMENT -> managed.complete();
+            default -> {}
         }
-        Chat chat = InfoUtils.defaultMapper().readValue("{\"id\":7,\"type\":\"private\"}", Chat.class);
-        Message incoming = new Message();
-        incoming.setChat(chat);
-        incoming.setMessageId(1);
-        incoming.setText(PAYLOAD);
-        Update update = new Update();
-        update.setMessage(incoming);
-        var handler = new ChatBindingTelegramMessageHandler(bindings, messages, chats, channel);
-        assertDoesNotThrow(() -> handler.handle("backend", update));
-        if (phase == TelegramSetupFailure.ASYNC_ERROR) {
-            assertNotNull(onError.get());
-            assertDoesNotThrow(() -> onError.get().accept(new IllegalStateException(PAYLOAD)));
-        } else if (phase == TelegramSetupFailure.SUCCESS) {
-            Message photo = new Message();
-            photo.setMessageId(43);
-            String url = "https://unused.invalid/" + PAYLOAD;
-            when(channel.sendPhoto(eq("backend"), eq(7L), any(), isNull())).thenReturn(photo);
-            onPartial.get().accept(PAYLOAD + "![img](" + url + ")");
-            onComplete
-                    .get()
-                    .accept(dev.langchain4j.model.chat.response.ChatResponse.builder()
-                            .aiMessage(dev.langchain4j.data.message.AiMessage.from(PAYLOAD))
-                            .build());
-            verify(messages).record("chat", 42L, null, "out", "text", PAYLOAD, null);
-            verify(messages).record("chat", 43L, null, "out", "photo", url, null);
-            verify(stream).start();
+        boolean admitted = phase != TelegramSetupFailure.PLACEHOLDER && phase != TelegramSetupFailure.ACQUIRE;
+        if (admitted) {
+            assertFalse(result.isDone(), "Neither terminal delivery nor cancellation may fake service settlement");
+            if (phase == TelegramSetupFailure.SETTLEMENT) {
+                managed.settlement.completeExceptionally(FailureKind.RUNTIME.create());
+            } else {
+                managed.settlement.complete(null);
+            }
         }
-        if (phase == TelegramSetupFailure.REGISTER
-                || phase == TelegramSetupFailure.START
-                || phase == TelegramSetupFailure.CLOSE) {
-            verify((AutoCloseable) stream).close();
+        if (phase == TelegramSetupFailure.SUCCESS || phase == TelegramSetupFailure.ASYNC_ERROR) {
+            result.get(5, TimeUnit.SECONDS);
+            assertEquals(0, managed.cancelled.get());
         } else {
-            verify((AutoCloseable) stream, never()).close();
+            assertSafeChannelFailure(result);
+        }
+        if (List.of(
+                        TelegramSetupFailure.READY,
+                        TelegramSetupFailure.REGISTER,
+                        TelegramSetupFailure.START,
+                        TelegramSetupFailure.CANCEL,
+                        TelegramSetupFailure.CANCEL_FAILURE)
+                .contains(phase)) {
+            assertTrue(managed.cancelled.get() > 0, "Managed cancellation owns stream cleanup");
         }
         if (phase == TelegramSetupFailure.PLACEHOLDER) {
-            verify(chats, never()).streamSend(anyString(), any(), any());
-        } else {
-            verify(channel).sendChatAction("backend", 7L, ActionType.TYPING);
+            verify(fixture.chats, never()).streamSendManaged(anyString(), any(), any());
         }
-        if (phase != TelegramSetupFailure.SUCCESS) {
+        if (phase == TelegramSetupFailure.SUCCESS) {
+            verify(fixture.messages).record("chat", 42L, null, "out", "text", PAYLOAD, null);
+            verify(fixture.messages)
+                    .record("chat", 43L, null, "out", "photo", "https://unused.invalid/" + PAYLOAD, null);
+            verify(managed.stream).start();
+        }
+        assertEquals(1, fixture.turn.typingClosed.get());
+        if (phase == TelegramSetupFailure.CANCEL_FAILURE) {
             assertTrue(events.list.stream()
-                    .anyMatch(
-                            event -> event.getLoggerName().equals(ChatBindingTelegramMessageHandler.class.getName())));
+                    .anyMatch(event ->
+                            "Telegram chat stream cancellation failed for chat {}".equals(event.getMessage())));
         }
-        assertNoPayload();
+        assertTelegramDiagnosticsSafe();
     }
 
     enum TelegramCommandFailure {
@@ -750,36 +725,41 @@ class MemoryPrivacyLoggingTest {
                 doThrow(FailureKind.RUNTIME.create()).when(fixture.chats).clearMemory("chat");
             case RESET_SEND, HELP_SEND -> {}
         }
-        if (phase == TelegramCommandFailure.START_SEND
+        boolean sendFails = phase == TelegramCommandFailure.START_SEND
                 || phase == TelegramCommandFailure.RESET_SEND
-                || phase == TelegramCommandFailure.HELP_SEND) {
-            when(fixture.channel.sendText(eq("backend"), eq(7L), anyString())).thenThrow(telegramApiFailure());
+                || phase == TelegramCommandFailure.HELP_SEND;
+        if (sendFails) {
+            when(fixture.turn.client.execute(any(SendMessage.class))).thenThrow(telegramApiFailure());
         }
-        Update update = telegramUpdate(1, "/" + phase.command + " " + PAYLOAD);
-        assertDoesNotThrow(() -> fixture.dispatcher.dispatch("backend", update));
-        ArgumentCaptor<String> reply = ArgumentCaptor.forClass(String.class);
-        verify(fixture.channel).sendText(eq("backend"), eq(7L), reply.capture());
+        Update update = telegramUpdate(1, "/" + phase.command + "@safe_bot " + PAYLOAD);
+        var result = fixture.dispatcher
+                .handle(new ChannelEnvelope<>(fixture.turn.address(), "1", update), fixture.turn)
+                .toCompletableFuture();
+        if (sendFails) assertSafeChannelFailure(result);
+        else result.get(5, TimeUnit.SECONDS);
+        ArgumentCaptor<SendMessage> sent = ArgumentCaptor.forClass(SendMessage.class);
+        verify(fixture.turn.client).execute(sent.capture());
+        String reply = sent.getValue().getText();
         switch (phase) {
             case START_GREETING -> {
                 verify(fixture.sessions).get("chat");
-                assertTrue("Hi! I'm ready when you are — just send a message.".equals(reply.getValue()));
+                assertTrue("Hi! I'm ready when you are — just send a message.".equals(reply));
             }
             case START_SEND -> {
                 verify(fixture.sessions).get("chat");
-                assertTrue(PAYLOAD.equals(reply.getValue()), "Private greeting must still be delivered, not logged");
+                assertTrue(PAYLOAD.equals(reply), "Private greeting must still be delivered, not logged");
             }
             case RESET_CLEAR -> {
                 verify(fixture.bindings).findChatId("backend", 7L);
                 verify(fixture.chats).clearMemory("chat");
-                assertTrue(
-                        "Sorry — couldn't reset the conversation just now. Please try again.".equals(reply.getValue()));
+                assertTrue("Sorry — couldn't reset the conversation just now. Please try again.".equals(reply));
             }
             case RESET_SEND -> {
                 verify(fixture.bindings).findChatId("backend", 7L);
                 verify(fixture.chats).clearMemory("chat");
-                assertTrue("Memory cleared. Say something to start fresh.".equals(reply.getValue()));
+                assertTrue("Memory cleared. Say something to start fresh.".equals(reply));
             }
-            case HELP_SEND -> assertTrue(reply.getValue().startsWith("Available commands:\n"));
+            case HELP_SEND -> assertTrue(reply.startsWith("Available commands:\n"));
         }
         verifyNoInteractions(fixture.messages);
         assertTelegramLog(phase.logger, Level.WARN, phase.logMessage);
@@ -789,69 +769,63 @@ class MemoryPrivacyLoggingTest {
     enum TelegramEventFailure {
         TOPIC_LOOKUP,
         PUBLICATION,
+        ASYNC_PUBLICATION,
         ACTIVATION
     }
 
     @ParameterizedTest
     @EnumSource(TelegramEventFailure.class)
-    void telegramEventCallbacksNeverLogPrivateFailures(TelegramEventFailure phase) {
+    void telegramEventCallbacksNeverLogPrivateFailures(TelegramEventFailure phase) throws Exception {
         RedissonClient redisson = subclassMock(RedissonClient.class);
         RTopic topic = subclassMock(RTopic.class);
-        when(redisson.getTopic(TELEGRAM_BACKEND_TOPIC)).thenReturn(topic);
+        when(redisson.getTopic(ChannelBackendEvents.TOPIC)).thenReturn(topic);
+        TelegramChannelManager manager = subclassMock(TelegramChannelManager.class);
+        var dispatch = new TelegramDispatchFixture();
+        var plugin = new fun.freechat.channels.telegram.TelegramChannelPlugin(
+                manager, new DefaultTelegramChannel(manager), dispatch.dispatcher);
+        var runtime = new ChannelRuntime(new ChannelRegistry(List.of(plugin)));
+        var bridge = new ChannelBackendEvents(redisson, runtime);
+        try {
+            runtime.start();
+            await().atMost(Duration.ofSeconds(5))
+                    .untilAsserted(() -> verify(manager).start(any()));
+            if (phase == TelegramEventFailure.ACTIVATION) {
+                AtomicReference<MessageListener<String>> callback = new AtomicReference<>();
+                doAnswer(call -> {
+                            callback.set(call.getArgument(1));
+                            return 19;
+                        })
+                        .when(topic)
+                        .addListener(eq(String.class), any());
+                doThrow(FailureKind.RUNTIME.create()).doNothing().when(manager).activate("backend");
+                bridge.subscribe();
+                callback.get().onMessage(ChannelBackendEvents.TOPIC, null);
+                callback.get().onMessage(ChannelBackendEvents.TOPIC, "backend");
+                callback.get().onMessage(ChannelBackendEvents.TOPIC, "backend");
+                await().atMost(Duration.ofSeconds(5))
+                        .untilAsserted(() -> verify(manager, times(2)).activate("backend"));
+            } else {
+                if (phase == TelegramEventFailure.TOPIC_LOOKUP) {
+                    when(redisson.getTopic(ChannelBackendEvents.TOPIC)).thenThrow(FailureKind.RUNTIME.create());
+                } else if (phase == TelegramEventFailure.PUBLICATION) {
+                    when(topic.publishAsync("backend")).thenThrow(FailureKind.RUNTIME.create());
+                } else {
+                    when(topic.publishAsync("backend"))
+                            .thenReturn(new org.redisson.misc.CompletableFutureWrapper<>(
+                                    CompletableFuture.<Long>failedFuture(FailureKind.RUNTIME.create())));
+                }
+                assertDoesNotThrow(() -> bridge.onBackendChanged(new CharacterBackendEvent(PAYLOAD, "backend")));
+                assertTelegramLog(ChannelBackendEvents.class, Level.WARN, "Channel backend event publication deferred");
+            }
+        } finally {
+            bridge.unsubscribe();
+            runtime.stop();
+        }
         if (phase == TelegramEventFailure.ACTIVATION) {
-            TelegramChannelManager manager = subclassMock(TelegramChannelManager.class);
-            AtomicReference<MessageListener<String>> callback = new AtomicReference<>();
-            doAnswer(call -> {
-                        callback.set(call.getArgument(1));
-                        return 1;
-                    })
-                    .when(topic)
-                    .addListener(eq(String.class), any());
-            doThrow(FailureKind.RUNTIME.create()).doNothing().when(manager).activate("backend");
-            var listener = new TelegramChannelEventListener(manager, redisson);
-            ReflectionTestUtils.invokeMethod(listener, "subscribe");
-            verify(topic).addListener(eq(String.class), any());
-            assertNotNull(callback.get());
-            assertDoesNotThrow(() -> callback.get().onMessage(TELEGRAM_BACKEND_TOPIC, null));
-            assertDoesNotThrow(() -> callback.get().onMessage(TELEGRAM_BACKEND_TOPIC, "backend"));
-            assertDoesNotThrow(() -> callback.get().onMessage(TELEGRAM_BACKEND_TOPIC, "backend"));
-            verify(manager, times(2)).activate("backend");
-            verifyNoMoreInteractions(manager);
-            assertTelegramLog(
-                    TelegramChannelEventListener.class, Level.WARN, "Telegram (re)activation failed for backend {}");
-        } else {
-            if (phase == TelegramEventFailure.TOPIC_LOOKUP) {
-                when(redisson.getTopic(TELEGRAM_BACKEND_TOPIC)).thenThrow(FailureKind.RUNTIME.create());
-            } else {
-                when(topic.publishAsync("backend")).thenThrow(FailureKind.RUNTIME.create());
-            }
-            var bridge = new TelegramChannelEventBridge(redisson);
-            assertDoesNotThrow(() -> bridge.onBackendChanged(new CharacterBackendEvent("user", "backend")));
-            verify(redisson).getTopic(TELEGRAM_BACKEND_TOPIC);
-            if (phase == TelegramEventFailure.PUBLICATION) {
-                verify(topic).publishAsync("backend");
-            } else {
-                verifyNoInteractions(topic);
-            }
-            assertTelegramLog(
-                    TelegramChannelEventBridge.class,
-                    Level.WARN,
-                    "Failed to broadcast CharacterBackendEvent for backend {}");
+            verify(topic).removeListener(19);
+            assertTelegramLog(ChannelRuntime.class, Level.WARN, "Channel {} backend refresh deferred");
         }
-        assertNoPayload();
-    }
-
-    enum TelegramPollingEntry {
-        ACTIVATE,
-        RECONCILE;
-
-        void invoke(TelegramChannelManager manager) {
-            if (this == ACTIVATE) {
-                manager.activate("backend");
-            } else {
-                manager.reconcile();
-            }
-        }
+        assertTelegramDiagnosticsSafe();
     }
 
     enum TelegramDispatchFailure {
@@ -861,15 +835,10 @@ class MemoryPrivacyLoggingTest {
         RESET_LOOKUP
     }
 
-    static Stream<Arguments> telegramDispatchFailures() {
-        return Stream.of(TelegramPollingEntry.values())
-                .flatMap(entry -> Stream.of(TelegramDispatchFailure.values()).map(phase -> Arguments.of(entry, phase)));
-    }
-
     @ParameterizedTest
-    @MethodSource("telegramDispatchFailures")
-    void telegramPollingConsumersSanitizeEscapingFailuresAndContinueTheBatch(
-            TelegramPollingEntry entry, TelegramDispatchFailure phase) throws Exception {
+    @EnumSource(TelegramDispatchFailure.class)
+    void telegramPollingConsumersSanitizeEscapingFailuresAndContinueTheBatch(TelegramDispatchFailure phase)
+            throws Exception {
         var dispatch = new TelegramDispatchFixture();
         switch (phase) {
             case BINDING, START_LOOKUP ->
@@ -889,123 +858,115 @@ class MemoryPrivacyLoggingTest {
                     case RESET_LOOKUP -> "/reset " + PAYLOAD;
                     default -> PAYLOAD;
                 };
-        Update failing = telegramUpdate(1, text);
-        // A non-text follow-up reaches real incoming persistence without starting a streaming heartbeat.
-        Update following = telegramUpdate(2, null);
-        try (var polling = new TelegramManagerFixture(dispatch.dispatcher)) {
-            assertDoesNotThrow(() -> entry.invoke(polling.manager));
-            ArgumentCaptor<LongPollingUpdateConsumer> consumer =
-                    ArgumentCaptor.forClass(LongPollingUpdateConsumer.class);
-            verify(polling.application).registerBot(eq(TelegramManagerFixture.TOKEN), any(), any(), consumer.capture());
-            assertNotNull(consumer.getValue());
-            assertDoesNotThrow(() -> consumer.getValue().consume(List.of(failing, following)));
-            verify(dispatch.messages).record("chat", 2L, null, "in", "unsupported", null, null);
-            verify(dispatch.bindings, times(phase == TelegramDispatchFailure.RESET_LOOKUP ? 1 : 2))
-                    .getOrCreate(
-                            eq("backend"), eq(7L), eq("private"), isNull(), isNull(), isNull(), isNull(), isNull());
-            if (phase == TelegramDispatchFailure.INCOMING_PERSISTENCE) {
-                verify(dispatch.messages).record("chat", 1L, null, "in", "text", PAYLOAD, null);
-            } else {
-                verify(dispatch.messages, never()).record(eq("chat"), eq(1L), any(), any(), any(), any(), any());
+        try (var polling = new TelegramChannelManagerTest.Fixture()) {
+            var plugin = new fun.freechat.channels.telegram.TelegramChannelPlugin(
+                    polling.manager, new DefaultTelegramChannel(polling.manager), dispatch.dispatcher);
+            var runtime = new ChannelRuntime(new ChannelRegistry(List.of(plugin)));
+            try {
+                runtime.start();
+                var consumer = polling.registration().consumer();
+                assertDoesNotThrow(() -> consumer.accept(List.of(telegramUpdate(1, text), telegramUpdate(2, null))));
+                await().atMost(Duration.ofSeconds(5))
+                        .untilAsserted(() ->
+                                verify(dispatch.messages).record("chat", 2L, null, "in", "unsupported", null, null));
+                await().atMost(Duration.ofSeconds(5)).until(() -> runtime.pendingReceives("telegram") == 0);
+                verify(dispatch.bindings, times(phase == TelegramDispatchFailure.RESET_LOOKUP ? 1 : 2))
+                        .getOrCreate(
+                                eq("backend"), eq(7L), eq("private"), isNull(), isNull(), isNull(), isNull(), isNull());
+                if (phase == TelegramDispatchFailure.INCOMING_PERSISTENCE) {
+                    verify(dispatch.messages).record("chat", 1L, null, "in", "text", PAYLOAD, null);
+                } else {
+                    verify(dispatch.messages, never()).record(eq("chat"), eq(1L), any(), any(), any(), any(), any());
+                }
+                verifyNoInteractions(dispatch.chats, dispatch.sessions);
+                verify(polling.client, never()).execute(any(SendMessage.class));
+            } finally {
+                runtime.stop();
             }
-            if (phase == TelegramDispatchFailure.RESET_LOOKUP) {
-                verify(dispatch.bindings).findChatId("backend", 7L);
-            }
-            verifyNoInteractions(dispatch.channel, dispatch.chats, dispatch.sessions, polling.client);
-            assertTelegramLog(TelegramChannelManager.class, Level.ERROR, "Dispatch failed for backend {}");
+            assertTrue(events.list.stream()
+                    .anyMatch(event -> "Channel {} receive operation ended with {}".equals(event.getMessage())));
         }
-        assertNoPayload();
+        assertTelegramDiagnosticsSafe();
     }
 
     enum TelegramManagerFailure {
-        STARTUP_LOOKUP("Failed to activate telegram bot for backend {}"),
-        ACTIVATE_LOCK("Failed to attempt polling lock for backend {}"),
-        RECONCILE_LOCK("Polling lock probe failed for backend {}"),
-        ACTIVATE_REGISTER("registerBot failed for backend {}"),
-        RECONCILE_REGISTER("Reconcile registerBot failed for backend {}"),
-        DEACTIVATE("unregisterBot failed for backend {}"),
-        SHUTDOWN_UNREGISTER("unregisterBot at shutdown failed for {}"),
-        SHUTDOWN_CLOSE("Closing TelegramBotsLongPollingApplication failed");
-
-        final String logMessage;
-
-        TelegramManagerFailure(String logMessage) {
-            this.logMessage = logMessage;
-        }
+        STARTUP_LOOKUP,
+        ACCOUNT_LOOKUP,
+        LOCK,
+        REGISTER,
+        DEACTIVATE,
+        SHUTDOWN_API_CLOSE,
+        SHUTDOWN_CLOSE,
+        ADMISSION
     }
 
     @ParameterizedTest
     @EnumSource(TelegramManagerFailure.class)
     void telegramLifecycleFailuresKeepSafeDiagnosticsAndCleanup(TelegramManagerFailure phase) throws Exception {
-        var dispatch = new TelegramDispatchFixture();
-        try (var fixture = new TelegramManagerFixture(dispatch.dispatcher)) {
+        try (var fixture = new TelegramChannelManagerTest.Fixture()) {
             switch (phase) {
                 case STARTUP_LOOKUP -> {
                     when(fixture.backends.selectMany(any(SelectStatementProvider.class)))
                             .thenReturn(List.of(
                                     new CharacterBackend().withBackendId("backend"),
-                                    new CharacterBackend().withBackendId("next-backend")));
+                                    new CharacterBackend().withBackendId("next")));
                     when(fixture.backends.selectByPrimaryKey("backend")).thenThrow(FailureKind.RUNTIME.create());
-                    when(fixture.backends.selectByPrimaryKey("next-backend")).thenReturn(Optional.empty());
-                    assertDoesNotThrow(fixture.manager::activateExisting);
-                    verify(fixture.backends).selectByPrimaryKey("backend");
-                    verify(fixture.backends).selectByPrimaryKey("next-backend");
-                    verifyNoInteractions(fixture.application, fixture.lock);
+                    when(fixture.backends.selectByPrimaryKey("next")).thenReturn(Optional.empty());
                 }
-                case ACTIVATE_LOCK, RECONCILE_LOCK -> {
-                    when(fixture.lock.tryLock()).thenThrow(FailureKind.RUNTIME.create());
-                    TelegramPollingEntry entry = phase == TelegramManagerFailure.ACTIVATE_LOCK
-                            ? TelegramPollingEntry.ACTIVATE
-                            : TelegramPollingEntry.RECONCILE;
-                    assertDoesNotThrow(() -> entry.invoke(fixture.manager));
-                    verify(fixture.lock).tryLock();
-                    verify(fixture.lock, never()).forceUnlock();
-                    verifyNoInteractions(fixture.application);
-                    assertSame(fixture.client, fixture.manager.getClient("backend"));
-                }
-                case ACTIVATE_REGISTER, RECONCILE_REGISTER -> {
-                    when(fixture.application.registerBot(eq(TelegramManagerFixture.TOKEN), any(), any(), any()))
+                case ACCOUNT_LOOKUP ->
+                    when(fixture.client.execute(any(org.telegram.telegrambots.meta.api.methods.GetMe.class)))
                             .thenThrow(telegramApiFailure());
-                    TelegramPollingEntry entry = phase == TelegramManagerFailure.ACTIVATE_REGISTER
-                            ? TelegramPollingEntry.ACTIVATE
-                            : TelegramPollingEntry.RECONCILE;
-                    assertDoesNotThrow(() -> entry.invoke(fixture.manager));
-                    verify(fixture.application).registerBot(eq(TelegramManagerFixture.TOKEN), any(), any(), any());
-                    verify(fixture.lock).tryLock();
-                    verify(fixture.lock).forceUnlock();
-                    assertSame(fixture.client, fixture.manager.getClient("backend"));
+                case LOCK ->
+                    when(fixture.lock.tryLock()).thenAnswer(call -> {
+                        fixture.owner.set(Thread.currentThread());
+                        throw new IllegalStateException(PAYLOAD, telegramApiFailure());
+                    });
+                case REGISTER -> when(fixture.polling.start(anyString(), any())).thenThrow(telegramApiFailure());
+                case DEACTIVATE, SHUTDOWN_API_CLOSE ->
+                    doThrow(telegramApiFailure()).when(fixture.session).close();
+                case SHUTDOWN_CLOSE ->
+                    doThrow(FailureKind.RUNTIME.create()).when(fixture.session).close();
+                default -> {}
+            }
+            fixture.start();
+            if (phase == TelegramManagerFailure.STARTUP_LOOKUP) {
+                verify(fixture.backends).selectByPrimaryKey("next");
+                verifyNoInteractions(fixture.lock);
+            } else if (phase == TelegramManagerFailure.ACCOUNT_LOOKUP) {
+                assertNull(fixture.manager.getClient("backend"));
+                verifyNoInteractions(fixture.lock);
+            } else if (phase == TelegramManagerFailure.LOCK || phase == TelegramManagerFailure.REGISTER) {
+                fixture.awaitOwnerExit();
+                if (phase == TelegramManagerFailure.REGISTER) {
+                    assertFalse(fixture.instances.getFirst().isActive());
+                    verify(fixture.lock).unlock();
                 }
-                case DEACTIVATE, SHUTDOWN_UNREGISTER, SHUTDOWN_CLOSE -> {
-                    fixture.cacheBot(true);
-                    if (phase == TelegramManagerFailure.SHUTDOWN_CLOSE) {
-                        doThrow(FailureKind.RUNTIME.create())
-                                .when(fixture.application)
-                                .close();
-                    } else {
-                        doThrow(telegramApiFailure())
-                                .when(fixture.application)
-                                .unregisterBot(TelegramManagerFixture.TOKEN);
-                    }
-                    if (phase == TelegramManagerFailure.DEACTIVATE) {
-                        assertDoesNotThrow(() -> fixture.manager.deactivate("backend"));
-                        verify(fixture.application, never()).close();
-                    } else {
-                        assertDoesNotThrow(fixture.manager::shutdown);
-                        verify(fixture.application).close();
-                    }
-                    verify(fixture.application).unregisterBot(TelegramManagerFixture.TOKEN);
-                    verify(fixture.lock).forceUnlock();
+                assertSame(fixture.client, fixture.manager.getClient("backend"));
+            } else {
+                var registration = fixture.registration();
+                if (phase == TelegramManagerFailure.ADMISSION) {
+                    registration.instance().admissionFailure = new IllegalStateException(PAYLOAD, telegramApiFailure());
+                    registration.instance().failNext.set(true);
+                    registration.consumer().accept(List.of(telegramUpdate(1, PAYLOAD), telegramUpdate(2, null)));
+                    assertEquals(1, registration.instance().received.size());
+                } else if (phase == TelegramManagerFailure.DEACTIVATE) {
+                    fixture.manager.deactivate("backend");
+                    fixture.awaitOwnerExit();
+                    assertFalse(registration.instance().isActive());
                     assertNull(fixture.manager.getClient("backend"));
-                    assertTrue(fixture.bots.isEmpty());
+                } else {
+                    fixture.manager.shutdown();
+                    fixture.awaitOwnerExit();
+                    assertFalse(registration.instance().isActive());
+                    assertNull(fixture.manager.getClient("backend"));
                 }
             }
-            verifyNoInteractions(fixture.client);
-            assertTelegramLog(
-                    TelegramChannelManager.class,
-                    phase == TelegramManagerFailure.RECONCILE_LOCK ? Level.DEBUG : Level.WARN,
-                    phase.logMessage);
+            verify(fixture.lock, never()).forceUnlock();
+            assertTrue(events.list.stream()
+                    .anyMatch(event -> TelegramChannelManager.class.getName().equals(event.getLoggerName())
+                            && event.getLevel() == Level.WARN));
         }
-        assertNoPayload();
+        assertTelegramDiagnosticsSafe();
     }
 
     private static <T> T subclassMock(Class<T> type) {
@@ -1050,7 +1011,7 @@ class MemoryPrivacyLoggingTest {
     }
 
     private static final class TelegramDispatchFixture {
-        final TelegramChannel channel = subclassMock(TelegramChannel.class);
+        final TelegramTurn turn;
         final TgChatBindingService bindings = subclassMock(TgChatBindingService.class);
         final TgMessageService messages = subclassMock(TgMessageService.class);
         final ChatService chats = subclassMock(ChatService.class);
@@ -1058,63 +1019,142 @@ class MemoryPrivacyLoggingTest {
         final TelegramUpdateDispatcher dispatcher;
 
         TelegramDispatchFixture() throws TelegramApiException {
+            turn = new TelegramTurn();
             when(bindings.getOrCreate(
                             eq("backend"), eq(7L), eq("private"), isNull(), isNull(), isNull(), isNull(), isNull()))
                     .thenReturn("chat");
             when(bindings.findChatId("backend", 7L)).thenReturn("chat");
-            Message placeholder = new Message();
-            placeholder.setMessageId(42);
-            when(channel.sendText(eq("backend"), eq(7L), anyString())).thenReturn(placeholder);
             dispatcher = new TelegramUpdateDispatcher(
                     List.of(new StartCommand(bindings, sessions), new ResetCommand(bindings, chats), new HelpCommand()),
-                    new ChatBindingTelegramMessageHandler(bindings, messages, chats, channel),
-                    channel);
+                    new ChatBindingTelegramMessageHandler(bindings, messages, chats));
         }
     }
 
-    private static final class TelegramManagerFixture implements AutoCloseable {
-        static final String TOKEN = "123456:" + PAYLOAD;
-        final CharacterBackendMapper backends = subclassMock(CharacterBackendMapper.class);
-        final EncryptionService encryption = subclassMock(EncryptionService.class);
-        final RedissonClient redisson = subclassMock(RedissonClient.class);
-        final RLock lock = subclassMock(RLock.class);
-        final TelegramBotsLongPollingApplication application = subclassMock(TelegramBotsLongPollingApplication.class);
+    /** Controlled public SPI: no access to emitter, manager or scheduler private state. */
+    private static final class TelegramTurn implements ChannelTurnContext, ChannelOutbound {
         final TelegramClient client = subclassMock(TelegramClient.class);
-        final BotSession session = subclassMock(BotSession.class);
-        final TelegramChannelManager manager;
-        final Map<String, Object> bots;
+        final DefaultTelegramChannel transport;
+        final Message placeholder = new Message();
+        final ScheduledFuture<?> timer = subclassMock(ScheduledFuture.class);
+        final AtomicInteger typingClosed = new AtomicInteger();
+        final List<Runnable> cancellations = new CopyOnWriteArrayList<>();
+        Runnable scheduled;
+        boolean cancelled;
 
-        @SuppressWarnings("unchecked")
-        TelegramManagerFixture(TelegramUpdateDispatcher dispatcher) throws Exception {
-            manager = new TelegramChannelManager(TelegramUrl.DEFAULT_URL, backends, encryption, redisson, dispatcher);
-            var unused = (TelegramBotsLongPollingApplication) ReflectionTestUtils.getField(manager, "tgApp");
-            assertNotNull(unused);
-            // The constructor's empty application has no registrations; close it before replacing it.
-            unused.close();
-            ReflectionTestUtils.setField(manager, "tgApp", application);
-            bots = (Map<String, Object>) ReflectionTestUtils.getField(manager, "bots");
-            assertNotNull(bots);
-            when(backends.selectByPrimaryKey("backend"))
-                    .thenReturn(Optional.of(
-                            new CharacterBackend().withBackendId("backend").withTgBotToken(TOKEN)));
-            when(encryption.decrypt(TOKEN)).thenReturn(TOKEN);
-            when(redisson.getLock("freechat:channels:telegram:polling:backend")).thenReturn(lock);
-            when(lock.tryLock()).thenReturn(true);
-            when(application.registerBot(eq(TOKEN), any(), any(), any())).thenReturn(session);
-            cacheBot(false);
+        TelegramTurn() throws TelegramApiException {
+            var manager = subclassMock(TelegramChannelManager.class);
+            when(manager.getClient("backend")).thenReturn(client);
+            transport = new DefaultTelegramChannel(manager);
+            placeholder.setMessageId(42);
+            Message photo = new Message();
+            photo.setMessageId(43);
+            when(client.execute(any(SendMessage.class))).thenReturn(placeholder);
+            when(client.execute(any(SendPhoto.class))).thenReturn(photo);
+            when(client.execute(any(EditMessageText.class))).thenReturn(Boolean.TRUE);
+            when(client.execute(any(SendChatAction.class))).thenReturn(Boolean.TRUE);
         }
 
-        void cacheBot(boolean polling) throws ReflectiveOperationException {
-            // Same-token cached outbound state avoids new OkHttpTelegramClient and getMe entirely.
-            var constructor = Class.forName(TelegramChannelManager.class.getName() + "$RegisteredBot")
-                    .getDeclaredConstructor(String.class, TelegramClient.class, String.class, BotSession.class);
-            constructor.setAccessible(true);
-            bots.put("backend", constructor.newInstance(TOKEN, client, "safe_bot", polling ? session : null));
+        public ChannelAddress address() {
+            return new ChannelAddress("telegram", "backend", "7");
         }
 
-        @Override
-        public void close() {
-            manager.shutdown();
+        public ChannelOutbound outbound() {
+            return this;
+        }
+
+        public Instant deadline() {
+            return Instant.now().plusSeconds(60);
+        }
+
+        public boolean isCancelled() {
+            return cancelled;
+        }
+
+        public void onCancel(Runnable action) {
+            cancellations.add(action);
+        }
+
+        public ScheduledFuture<?> schedule(Runnable action, Duration delay) {
+            assertEquals(Duration.ofMillis(500), delay);
+            scheduled = action;
+            return timer;
+        }
+
+        public AutoCloseable typing(Duration interval) {
+            assertEquals(Duration.ofSeconds(4), interval);
+            sendTyping(() -> true);
+            return () -> typingClosed.incrementAndGet();
+        }
+
+        public boolean supports(Class<?> capability) {
+            return capability.isInstance(transport);
+        }
+
+        public CompletableFuture<ChannelReceipt> sendText(ChannelText text) {
+            return attempt(() -> transport.sendText(address(), text));
+        }
+
+        public CompletableFuture<ChannelReceipt> sendMedia(ChannelMedia media) {
+            return attempt(() -> transport.sendMedia(address(), media));
+        }
+
+        public CompletableFuture<Void> editText(String id, ChannelText text) {
+            return attempt(() -> {
+                transport.editText(address(), id, text);
+                return null;
+            });
+        }
+
+        public CompletableFuture<Void> sendTyping(BooleanSupplier needed) {
+            return attempt(() -> {
+                if (needed.getAsBoolean()) transport.sendTyping(address());
+                return null;
+            });
+        }
+
+        void flush() {
+            assertNotNull(scheduled);
+            Runnable action = scheduled;
+            scheduled = null;
+            action.run();
+        }
+
+        void cancel() {
+            cancelled = true;
+            List.copyOf(cancellations).forEach(Runnable::run);
+        }
+
+        private <T> CompletableFuture<T> attempt(Supplier<T> call) {
+            try {
+                return CompletableFuture.completedFuture(call.get());
+            } catch (RuntimeException failure) {
+                return CompletableFuture.failedFuture(failure);
+            }
+        }
+    }
+
+    private ChannelFailure assertSafeChannelFailure(CompletableFuture<?> result) {
+        var failure =
+                assertThrows(java.util.concurrent.ExecutionException.class, () -> result.get(5, TimeUnit.SECONDS));
+        ChannelFailure safe = assertInstanceOf(ChannelFailure.class, failure.getCause());
+        assertNull(safe.getCause());
+        assertEquals(0, safe.getSuppressed().length);
+        assertFalse(safe.getMessage().contains(PAYLOAD));
+        return safe;
+    }
+
+    private void assertTelegramDiagnosticsSafe() {
+        assertNoPayload();
+        for (ILoggingEvent event : events.list) {
+            if (event.getLoggerName().startsWith("fun.freechat.channels.")
+                    || event.getLoggerName().startsWith("fun.freechat.service.channel.")) {
+                assertNull(event.getThrowableProxy(), "Channel diagnostics must not attach exceptions");
+                if (event.getArgumentArray() != null) {
+                    for (Object argument : event.getArgumentArray()) {
+                        assertFalse(argument instanceof Throwable);
+                    }
+                }
+            }
         }
     }
 
