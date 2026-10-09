@@ -1,9 +1,13 @@
 package fun.freechat.channels.telegram.handler;
 
-import fun.freechat.channels.telegram.TelegramChannel;
+import fun.freechat.channels.spi.ChannelEnvelope;
+import fun.freechat.channels.spi.ChannelInboundHandler;
+import fun.freechat.channels.spi.ChannelTurnContext;
 import fun.freechat.channels.telegram.command.TelegramCommandHandler;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -12,26 +16,25 @@ import org.telegram.telegrambots.meta.api.objects.message.Message;
 
 @Component
 @Slf4j
-public class TelegramUpdateDispatcher {
+public class TelegramUpdateDispatcher implements ChannelInboundHandler<Update> {
 
     private final Map<String, TelegramCommandHandler> commandsByName;
     private final TelegramMessageHandler messageHandler;
-    private final TelegramChannel channel;
 
     public TelegramUpdateDispatcher(
-            List<TelegramCommandHandler> commandHandlers,
-            TelegramMessageHandler messageHandler,
-            TelegramChannel channel) {
+            List<TelegramCommandHandler> commandHandlers, TelegramMessageHandler messageHandler) {
         this.commandsByName =
                 commandHandlers.stream().collect(Collectors.toMap(TelegramCommandHandler::name, h -> h, (a, b) -> a));
         this.messageHandler = messageHandler;
-        this.channel = channel;
         log.info("Telegram dispatcher initialized with commands: {}", commandsByName.keySet());
     }
 
-    public void dispatch(String backendId, Update update) {
-        if (!update.hasMessage()) {
-            return;
+    @Override
+    public CompletionStage<Void> handle(ChannelEnvelope<Update> envelope, ChannelTurnContext turn) {
+        Update update = envelope.payload();
+        String backendId = envelope.address().instanceId();
+        if (!update.hasMessage() || turn.isCancelled()) {
+            return CompletableFuture.completedFuture(null);
         }
         Message message = update.getMessage();
         if (message.isCommand()) {
@@ -39,12 +42,11 @@ public class TelegramUpdateDispatcher {
             if (cmd != null) {
                 TelegramCommandHandler handler = commandsByName.get(cmd);
                 if (handler != null) {
-                    handler.execute(backendId, update, channel);
-                    return;
+                    return handler.execute(backendId, update, turn);
                 }
             }
         }
-        messageHandler.handle(backendId, update);
+        return messageHandler.handle(backendId, update, turn);
     }
 
     private static String parseCommand(String text) {

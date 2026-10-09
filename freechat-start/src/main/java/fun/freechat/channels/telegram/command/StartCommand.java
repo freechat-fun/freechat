@@ -1,10 +1,13 @@
 package fun.freechat.channels.telegram.command;
 
-import fun.freechat.channels.telegram.TelegramChannel;
+import fun.freechat.channels.spi.ChannelText;
+import fun.freechat.channels.spi.ChannelTurnContext;
 import fun.freechat.service.chat.ChatSession;
 import fun.freechat.service.chat.ChatSessionService;
 import fun.freechat.service.chat.TgChatBindingService;
 import fun.freechat.service.enums.ChatVar;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -13,7 +16,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.chat.Chat;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
 @RequiredArgsConstructor
@@ -32,14 +34,14 @@ public class StartCommand implements TelegramCommandHandler {
     }
 
     @Override
-    public void execute(String backendId, Update update, TelegramChannel channel) {
+    public CompletionStage<Void> execute(String backendId, Update update, ChannelTurnContext turn) {
         if (!update.hasMessage()) {
-            return;
+            return CompletableFuture.completedFuture(null);
         }
         Message message = update.getMessage();
         Chat chat = message.getChat();
         if (chat == null) {
-            return;
+            return CompletableFuture.completedFuture(null);
         }
         User from = message.getFrom();
         Long tgChatId = chat.getId();
@@ -56,7 +58,7 @@ public class StartCommand implements TelegramCommandHandler {
                 from == null ? null : from.getLastName());
         if (chatId == null) {
             log.warn("/start could not bind chat for backend={} tgChatId={}", backendId, tgChatId);
-            return;
+            return CompletableFuture.completedFuture(null);
         }
 
         String greeting = resolveCharacterGreeting(chatId);
@@ -64,11 +66,14 @@ public class StartCommand implements TelegramCommandHandler {
             greeting = FALLBACK_GREETING;
         }
 
-        try {
-            channel.sendText(backendId, tgChatId, greeting);
-        } catch (TelegramApiException e) {
-            log.warn("/start reply failed for chat {}", tgChatId);
-        }
+        return turn.outbound()
+                .sendText(new ChannelText(greeting, ChannelText.Format.MARKDOWN))
+                .<Void>thenApply(receipt -> null)
+                .whenComplete((ignored, failure) -> {
+                    if (failure != null) {
+                        log.warn("/start reply failed for chat {}", tgChatId);
+                    }
+                });
     }
 
     /**

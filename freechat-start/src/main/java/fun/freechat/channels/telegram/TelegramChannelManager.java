@@ -3,291 +3,301 @@ package fun.freechat.channels.telegram;
 import static org.mybatis.dynamic.sql.SqlBuilder.isNotNull;
 import static org.mybatis.dynamic.sql.SqlBuilder.select;
 
-import fun.freechat.channels.telegram.handler.TelegramUpdateDispatcher;
+import fun.freechat.channels.spi.ChannelFailure;
+import fun.freechat.channels.spi.ChannelInstance;
+import fun.freechat.channels.spi.ChannelPolicy;
+import fun.freechat.channels.spi.ChannelRuntimeContext;
+import fun.freechat.channels.spi.ChannelText;
 import fun.freechat.mapper.CharacterBackendDynamicSqlSupport;
 import fun.freechat.mapper.CharacterBackendMapper;
 import fun.freechat.model.CharacterBackend;
+import fun.freechat.service.channel.ChannelPollingLease;
+import fun.freechat.service.channel.ChannelTaskScheduler;
 import fun.freechat.service.common.EncryptionService;
-import jakarta.annotation.PreDestroy;
+import java.time.Duration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.OkHttpClient;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
-import org.telegram.telegrambots.longpolling.BotSession;
-import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
-import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsumer;
-import org.telegram.telegrambots.longpolling.util.DefaultGetUpdatesGenerator;
 import org.telegram.telegrambots.meta.TelegramUrl;
 import org.telegram.telegrambots.meta.api.methods.GetMe;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
-/**
- * Multi-replica safe Telegram bot registry.
- *
- * <p>Outbound state (TelegramClient + cached username) is replicated across every replica so any
- * instance can send messages or render invite links. Inbound long polling is owned by exactly one
- * replica per bot, elected via a Redisson distributed lock per {@code backendId}; non-leaders skip
- * {@link TelegramBotsLongPollingApplication#registerBot} but otherwise behave identically.
- *
- * <p>Leadership transitions: the leader's lock is auto-renewed by Redisson's watchdog while the JVM
- * lives. If the leader dies, the lock auto-expires after the default lease (~30s) and the periodic
- * {@link #reconcile()} task lets any other replica pick polling up.
- */
 @Component
 @Slf4j
 public class TelegramChannelManager {
-
-    private static final String INVITE_LINK_TEMPLATE = "https://t.me/%s";
     private static final String LOCK_PREFIX = "freechat:channels:telegram:polling:";
-    private static final long RECONCILE_FIXED_DELAY_MS = 15_000L;
-
-    private final TelegramUrl telegramUrl;
-    private final CharacterBackendMapper characterBackendMapper;
-    private final EncryptionService encryptionService;
+    private final CharacterBackendMapper backends;
+    private final EncryptionService encryption;
     private final RedissonClient redisson;
-    private final TelegramUpdateDispatcher updateDispatcher;
-    private final TelegramBotsLongPollingApplication tgApp = new TelegramBotsLongPollingApplication();
-    private final Map<String, RegisteredBot> bots = new ConcurrentHashMap<>();
+    private final TelegramPollingSession.Factory polling;
+    private final Function<String, TelegramClient> clients;
+    private final OkHttpClient http;
+    private final Map<String, Bot> bots = new ConcurrentHashMap<>();
+    private final Map<String, CompletableFuture<Void>> retiring = new ConcurrentHashMap<>();
+    private ChannelRuntimeContext<Update> runtime;
+    private volatile boolean stopped;
+
+    @Autowired
+    public TelegramChannelManager(
+            TelegramUrl url, CharacterBackendMapper backends, EncryptionService encryption, RedissonClient redisson) {
+        this(url, backends, encryption, redisson, null, null);
+    }
 
     public TelegramChannelManager(
-            TelegramUrl telegramUrl,
-            CharacterBackendMapper characterBackendMapper,
-            EncryptionService encryptionService,
+            TelegramUrl url,
+            CharacterBackendMapper backends,
+            EncryptionService encryption,
             RedissonClient redisson,
-            @Lazy TelegramUpdateDispatcher updateDispatcher) {
-        this.telegramUrl = telegramUrl;
-        this.characterBackendMapper = characterBackendMapper;
-        this.encryptionService = encryptionService;
+            TelegramPollingSession.Factory polling,
+            Function<String, TelegramClient> clients) {
+        this.backends = backends;
+        this.encryption = encryption;
         this.redisson = redisson;
-        this.updateDispatcher = updateDispatcher;
+        this.polling =
+                polling == null ? (token, updates) -> TelegramPollingSession.start(url, token, updates) : polling;
+        this.http = clients == null ? TelegramHttpClient.create(Duration.ofSeconds(30)) : null;
+        this.clients = clients == null ? token -> new OkHttpTelegramClient(http, token, url) : clients;
     }
 
-    private CharacterBackend loadBackendUncached(String backendId) {
-        return characterBackendMapper
-                .selectByPrimaryKey(backendId)
-                .map(b -> b.withTgBotToken(encryptionService.decrypt(b.getTgBotToken())))
-                .orElse(null);
+    public synchronized void start(ChannelRuntimeContext<Update> runtime) {
+        this.runtime = runtime;
+        stopped = false;
+        activateExisting();
     }
 
-    /**
-     * Runs asynchronously so it doesn't block {@code ApplicationReadyEvent} dispatch — Spring
-     * Boot's {@code ApplicationAvailability} flips the readiness probe to ACCEPTING_TRAFFIC
-     * during that same event chain, and a synchronous network-bound scan would keep
-     * {@code /actuator/health/readiness} on 503 until every {@code getMe} / {@code registerBot}
-     * completed. The {@link #reconcile()} task is the safety net: any activation skipped here
-     * (token rotation race, transient getMe failure, etc.) is picked up on the next cycle.
-     */
-    @EventListener(ApplicationReadyEvent.class)
-    @Async
     public synchronized void activateExisting() {
+        if (stopped || runtime == null) {
+            return;
+        }
         var statement = select(CharacterBackendDynamicSqlSupport.backendId)
                 .from(CharacterBackendDynamicSqlSupport.characterBackend)
                 .where(CharacterBackendDynamicSqlSupport.tgBotToken, isNotNull())
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        List<String> backendIds = characterBackendMapper.selectMany(statement).stream()
+        List<String> desired = backends.selectMany(statement).stream()
                 .map(CharacterBackend::getBackendId)
                 .toList();
-        log.info("Activating {} telegram-bound character backends on startup", backendIds.size());
-        for (String bid : backendIds) {
+        for (String backendId : desired) {
             try {
-                activate(bid);
-            } catch (Exception e) {
-                log.warn("Failed to activate telegram bot for backend {}", bid);
+                activate(backendId);
+            } catch (Exception ignored) {
+                log.warn("Telegram backend activation deferred for {}", backendId);
             }
         }
+        var desiredIds = new HashSet<>(desired);
+        List.copyOf(bots.keySet()).stream()
+                .filter(id -> !desiredIds.contains(id))
+                .forEach(this::deactivate);
     }
 
     public synchronized void activate(String backendId) {
-        CharacterBackend backend = loadBackendUncached(backendId);
-        if (backend == null || StringUtils.isBlank(backend.getTgBotToken())) {
+        if (stopped || runtime == null) {
+            return;
+        }
+        CharacterBackend backend = backends.selectByPrimaryKey(backendId).orElse(null);
+        String token = backend == null ? null : encryption.decrypt(backend.getTgBotToken());
+        if (StringUtils.isBlank(token)) {
             deactivate(backendId);
             return;
         }
-        String token = backend.getTgBotToken();
-        RegisteredBot existing = bots.get(backendId);
-        boolean tokenChanged = existing != null && !token.equals(existing.token());
-        if (tokenChanged) {
-            // Token rotated — drop the old binding entirely (release lock + unregister polling).
+        Bot existing = bots.get(backendId);
+        if (existing != null && !token.equals(existing.token)) {
             deactivate(backendId);
             existing = null;
         }
-
-        // 1. Outbound state — every replica caches this.
-        TelegramClient client;
-        String username;
-        if (existing != null) {
-            client = existing.client();
-            username = existing.username();
-        } else {
-            client = new OkHttpTelegramClient(token, telegramUrl);
-            try {
-                username = ((OkHttpTelegramClient) client).execute(new GetMe()).getUserName();
-            } catch (TelegramApiException e) {
-                log.warn("getMe failed for backend {}", backendId);
+        if (retiring.containsKey(backendId)) {
+            return;
+        }
+        if (existing == null) {
+            if (bots.size() + retiring.size() >= ChannelPolicy.defaults().maxInstances()) {
+                log.warn("Telegram account capacity reached");
                 return;
             }
-        }
-
-        // 2. Polling leadership — at most one replica registers and polls.
-        BotSession session = existing == null ? null : existing.session();
-        if (session == null) {
-            RLock lock = redisson.getLock(LOCK_PREFIX + backendId);
-            boolean acquired;
+            TelegramClient client = clients.apply(token);
+            String username;
             try {
-                acquired = lock.tryLock();
-            } catch (Exception e) {
-                log.warn("Failed to attempt polling lock for backend {}", backendId);
-                acquired = false;
+                username = client.execute(new GetMe()).getUserName();
+            } catch (Exception ignored) {
+                log.warn("Telegram account lookup deferred for {}", backendId);
+                return;
             }
-            if (acquired) {
-                try {
-                    LongPollingUpdateConsumer consumer = updates -> updates.forEach(u -> {
-                        try {
-                            updateDispatcher.dispatch(backendId, u);
-                        } catch (Exception ex) {
-                            log.error("Dispatch failed for backend {}", backendId);
-                        }
-                    });
-                    session = tgApp.registerBot(token, () -> telegramUrl, new DefaultGetUpdatesGenerator(), consumer);
-                } catch (TelegramApiException e) {
-                    log.warn("registerBot failed for backend {}", backendId);
-                    safeForceUnlock(lock);
-                    session = null;
-                }
-            }
+            existing = new Bot(token, client, username);
+            bots.put(backendId, existing);
         }
+        if (existing.lease == null
+                || existing.lease.settled().toCompletableFuture().isDone()) {
+            startPolling(backendId, existing);
+        }
+    }
 
-        bots.put(backendId, new RegisteredBot(token, client, username, session));
-        if (existing == null && session != null) {
-            log.info("Activated telegram bot @{} for backend {} (POLLING LEADER)", username, backendId);
-        } else if (existing == null) {
-            log.info(
-                    "Activated telegram bot @{} for backend {} (FOLLOWER, polling held by another replica)",
-                    username,
-                    backendId);
-        } else if (session != null && existing.session() == null) {
-            log.info("Took over polling for telegram bot @{} on backend {}", username, backendId);
+    private void startPolling(String backendId, Bot bot) {
+        AtomicReference<ChannelInstance<Update>> generation = new AtomicReference<>();
+        bot.lease = ChannelPollingLease.start(
+                redisson,
+                LOCK_PREFIX + backendId,
+                () -> {
+                    if (stopped || bots.get(backendId) != bot) {
+                        throw new ChannelFailure(ChannelFailure.Kind.CANCELLED);
+                    }
+                    ChannelInstance<Update> instance = runtime.openInstance(backendId);
+                    generation.set(instance);
+                    bot.inbound = instance;
+                    AutoCloseable session;
+                    try {
+                        if (stopped || bots.get(backendId) != bot || !instance.isActive()) {
+                            throw new ChannelFailure(ChannelFailure.Kind.CANCELLED);
+                        }
+                        session = polling.start(bot.token, updates -> {
+                            if (!stopped && bots.get(backendId) == bot) {
+                                receive(instance, updates);
+                            }
+                        });
+                    } catch (Exception ignored) {
+                        instance.close();
+                        throw new IllegalStateException("Telegram polling registration failed");
+                    }
+                    return () -> {
+                        try {
+                            instance.close();
+                        } finally {
+                            session.close();
+                        }
+                    };
+                },
+                () -> {
+                    ChannelInstance<Update> instance = generation.get();
+                    if (instance != null) {
+                        instance.close();
+                    }
+                },
+                Duration.ofSeconds(1));
+        bot.lease.settled().whenComplete((ignored, error) -> {
+            if (error != null) {
+                log.warn("Telegram polling ownership ended for {}", backendId);
+            }
+        });
+    }
+
+    private void receive(ChannelInstance<Update> instance, List<Update> updates) {
+        for (Update update : updates) {
+            if (!instance.isActive()) {
+                return;
+            }
+            if (update == null
+                    || !update.hasMessage()
+                    || update.getMessage().getChat() == null
+                    || update.getMessage().getChat().getId() == null) {
+                continue;
+            }
+            String conversation = update.getMessage().getChatId().toString();
+            try {
+                instance.receive(
+                                conversation,
+                                update.getUpdateId() == null
+                                        ? null
+                                        : update.getUpdateId().toString(),
+                                update)
+                        .whenComplete((ignored, error) -> {
+                            if (error != null
+                                    && instance.isActive()
+                                    && ChannelTaskScheduler.failure(error).kind() == ChannelFailure.Kind.REJECTED) {
+                                instance.outbound(conversation)
+                                        .sendText(ChannelText.plain(
+                                                "I'm handling too many messages right now. Please try again shortly."));
+                            }
+                        });
+            } catch (Exception ignored) {
+                log.warn("Telegram update admission failed for {}", instance.id());
+            }
         }
     }
 
     public synchronized void deactivate(String backendId) {
-        RegisteredBot bot = bots.remove(backendId);
+        Bot bot = bots.remove(backendId);
         if (bot == null) {
             return;
         }
-        if (bot.session() != null) {
-            try {
-                tgApp.unregisterBot(bot.token());
-            } catch (TelegramApiException e) {
-                log.warn("unregisterBot failed for backend {}", backendId);
-            }
-            safeForceUnlock(redisson.getLock(LOCK_PREFIX + backendId));
-            log.info("Deactivated telegram bot @{} for backend {} (released polling lock)", bot.username(), backendId);
-        } else {
-            log.info("Deactivated telegram bot @{} for backend {} (was follower)", bot.username(), backendId);
+        if (bot.inbound != null) {
+            bot.inbound.close();
+        }
+        if (bot.lease != null) {
+            CompletableFuture<Void> settlement = bot.lease.settled().toCompletableFuture();
+            retiring.put(backendId, settlement);
+            bot.lease.close();
+            settlement.whenComplete((ignored, error) -> retiring.remove(backendId, settlement));
         }
     }
 
-    /**
-     * Periodic reconciliation: for any bot we hold outbound state for but don't currently lead
-     * polling, try to acquire the polling lock. This lets a replica take over polling within ~one
-     * cycle after the previous leader's lock auto-expires (Redisson default lease ~30s).
-     */
-    @Scheduled(fixedDelay = RECONCILE_FIXED_DELAY_MS, initialDelay = RECONCILE_FIXED_DELAY_MS)
-    public synchronized void reconcile() {
-        for (Map.Entry<String, RegisteredBot> entry : bots.entrySet()) {
-            String backendId = entry.getKey();
-            RegisteredBot bot = entry.getValue();
-            if (bot.session() != null) {
-                continue;
-            }
-            RLock lock = redisson.getLock(LOCK_PREFIX + backendId);
-            boolean acquired;
-            try {
-                acquired = lock.tryLock();
-            } catch (Exception e) {
-                log.debug("Polling lock probe failed for backend {}", backendId);
-                continue;
-            }
-            if (!acquired) {
-                continue;
-            }
-            try {
-                LongPollingUpdateConsumer consumer = updates -> updates.forEach(u -> {
-                    try {
-                        updateDispatcher.dispatch(backendId, u);
-                    } catch (Exception ex) {
-                        log.error("Dispatch failed for backend {}", backendId);
-                    }
-                });
-                BotSession session =
-                        tgApp.registerBot(bot.token(), () -> telegramUrl, new DefaultGetUpdatesGenerator(), consumer);
-                bots.put(backendId, new RegisteredBot(bot.token(), bot.client(), bot.username(), session));
-                log.info("Took over polling for telegram bot @{} on backend {}", bot.username(), backendId);
-            } catch (TelegramApiException e) {
-                log.warn("Reconcile registerBot failed for backend {}", backendId);
-                safeForceUnlock(lock);
-            }
-        }
+    public void reconcile() {
+        activateExisting();
     }
 
     public TelegramClient getClient(String backendId) {
-        RegisteredBot bot = bots.get(backendId);
-        return bot == null ? null : bot.client();
+        Bot bot = bots.get(backendId);
+        return bot == null ? null : bot.client;
     }
 
     public String getUsername(String backendId) {
-        RegisteredBot bot = bots.get(backendId);
-        return bot == null ? null : bot.username();
+        Bot bot = bots.get(backendId);
+        return bot == null ? null : bot.username;
     }
 
     public String getInviteLink(String backendId) {
         String username = getUsername(backendId);
-        return username == null ? null : INVITE_LINK_TEMPLATE.formatted(username);
+        return username == null ? null : "https://t.me/" + username;
     }
 
-    @PreDestroy
+    public synchronized void stopReceiving() {
+        stopped = true;
+        for (Bot bot : bots.values()) {
+            if (bot.inbound != null) {
+                bot.inbound.close();
+            }
+            if (bot.lease != null) {
+                bot.lease.close();
+            }
+        }
+    }
+
     public synchronized void shutdown() {
-        for (Map.Entry<String, RegisteredBot> entry : bots.entrySet()) {
-            RegisteredBot bot = entry.getValue();
-            if (bot.session() == null) {
-                continue;
-            }
-            try {
-                tgApp.unregisterBot(bot.token());
-            } catch (Exception e) {
-                log.warn("unregisterBot at shutdown failed for {}", entry.getKey());
-            }
-            safeForceUnlock(redisson.getLock(LOCK_PREFIX + entry.getKey()));
-        }
-        bots.clear();
+        stopReceiving();
+        List.copyOf(bots.keySet()).forEach(this::deactivate);
         try {
-            tgApp.close();
-        } catch (Exception e) {
-            log.warn("Closing TelegramBotsLongPollingApplication failed");
+            CompletableFuture.allOf(retiring.values().toArray(new CompletableFuture[0]))
+                    .get(10, TimeUnit.SECONDS);
+        } catch (Exception ignored) {
+            log.warn("Telegram polling cleanup did not settle before its deadline");
+        }
+        if (http != null) {
+            TelegramHttpClient.closeOwned(http);
         }
     }
 
-    private static void safeForceUnlock(RLock lock) {
-        try {
-            lock.forceUnlock();
-        } catch (Exception e) {
-            // best-effort — lock may have already auto-expired
+    private static final class Bot {
+        final String token;
+        final TelegramClient client;
+        final String username;
+        volatile ChannelPollingLease lease;
+        volatile ChannelInstance<Update> inbound;
+
+        Bot(String token, TelegramClient client, String username) {
+            this.token = token;
+            this.client = client;
+            this.username = username;
         }
     }
-
-    private record RegisteredBot(String token, TelegramClient client, String username, BotSession session) {}
 }

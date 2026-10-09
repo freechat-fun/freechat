@@ -1,8 +1,11 @@
 package fun.freechat.channels.telegram.command;
 
-import fun.freechat.channels.telegram.TelegramChannel;
+import fun.freechat.channels.spi.ChannelText;
+import fun.freechat.channels.spi.ChannelTurnContext;
 import fun.freechat.service.chat.ChatService;
 import fun.freechat.service.chat.TgChatBindingService;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -10,7 +13,6 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.chat.Chat;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 /**
  * /reset — clears the conversation memory for the bound FreeChat chat session, mirroring
@@ -35,14 +37,14 @@ public class ResetCommand implements TelegramCommandHandler {
     }
 
     @Override
-    public void execute(String backendId, Update update, TelegramChannel channel) {
+    public CompletionStage<Void> execute(String backendId, Update update, ChannelTurnContext turn) {
         if (!update.hasMessage()) {
-            return;
+            return CompletableFuture.completedFuture(null);
         }
         Message message = update.getMessage();
         Chat chat = message.getChat();
         if (chat == null) {
-            return;
+            return CompletableFuture.completedFuture(null);
         }
         Long tgChatId = chat.getId();
 
@@ -60,10 +62,13 @@ public class ResetCommand implements TelegramCommandHandler {
             }
         }
 
-        try {
-            channel.sendText(backendId, tgChatId, reply);
-        } catch (TelegramApiException e) {
-            log.warn("/reset reply failed for chat {}", tgChatId);
-        }
+        return turn.outbound()
+                .sendText(ChannelText.plain(reply))
+                .<Void>thenApply(receipt -> null)
+                .whenComplete((ignored, failure) -> {
+                    if (failure != null) {
+                        log.warn("/reset reply failed for chat {}", tgChatId);
+                    }
+                });
     }
 }

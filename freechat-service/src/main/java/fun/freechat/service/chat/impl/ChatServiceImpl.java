@@ -208,11 +208,18 @@ public class ChatServiceImpl implements ChatService {
     // @Trace(ignoreArgs = true, extInfo = "'chat:' + #p0 + ',role:' + #p1.type().name() + ',message:' + #p1.text() +
     // ',context:' + #p2")
     public TokenStream streamSend(String chatId, ChatMessage message, String context) {
+        ChatStreamHandle handle = streamSendManaged(chatId, message, context);
+        return awaitQuietly(handle.ready(), handle::cancel);
+    }
+
+    @Override
+    public ChatStreamHandle streamSendManaged(String chatId, ChatMessage message, String context) {
         if (message == null) {
-            return null;
+            return ChatStreamHandle.empty();
         }
 
-        ChatTask<TokenStream> task = queueManager.getOrCreateQueue(chatId).submit(new ChatTask.Stream(() -> {
+        ChatTaskQueue queue = queueManager.getOrCreateQueue(chatId);
+        ChatTask.Stream task = new ChatTask.Stream(() -> {
             ChatSession base = currentSession(chatId);
             if (base == null) {
                 return null;
@@ -241,9 +248,9 @@ public class ChatServiceImpl implements ChatService {
                 }
                 throw new IllegalStateException("Chat stream initialization failed");
             }
-        }));
-
-        return awaitQuietly(task.future());
+        });
+        queue.submit(task);
+        return task;
     }
 
     @Override
@@ -447,6 +454,10 @@ public class ChatServiceImpl implements ChatService {
     }
 
     private static <T> T awaitQuietly(java.util.concurrent.CompletableFuture<T> future) {
+        return awaitQuietly(future, () -> {});
+    }
+
+    private static <T> T awaitQuietly(java.util.concurrent.CompletableFuture<T> future, Runnable onInterrupted) {
         try {
             return future.get();
         } catch (ExecutionException e) {
@@ -459,6 +470,7 @@ public class ChatServiceImpl implements ChatService {
             throw new RuntimeException(e.getCause());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            onInterrupted.run();
             return null;
         }
     }

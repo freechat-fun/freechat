@@ -1,357 +1,502 @@
 package fun.freechat.channels.telegram.handler;
 
-import fun.freechat.channels.telegram.TelegramChannel;
+import fun.freechat.channels.spi.ChannelFailure;
+import fun.freechat.channels.spi.ChannelMedia;
+import fun.freechat.channels.spi.ChannelReceipt;
+import fun.freechat.channels.spi.ChannelText;
+import fun.freechat.channels.spi.ChannelTurnContext;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
-import org.telegram.telegrambots.meta.api.methods.ActionType;
-import org.telegram.telegrambots.meta.api.methods.ParseMode;
-import org.telegram.telegrambots.meta.api.objects.InputFile;
-import org.telegram.telegrambots.meta.api.objects.ResponseParameters;
-import org.telegram.telegrambots.meta.api.objects.message.Message;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
-/**
- * Streams an LLM reply into Telegram by editing a placeholder message in place.
- *
- * <p>Behaviour:
- *
- * <ul>
- *   <li>{@link #start()} — sends an initial placeholder message and records its id.
- *   <li>{@link #append(String)} — accumulates a streamed token. Flushes (calls {@code editText})
- *       at most once per {@link #FLUSH_INTERVAL_MS}, in plain text.
- *   <li>{@link #complete()} — final flush of the accumulated text, with Markdown parse mode applied
- *       to the most recent (still-active) message. Earlier messages frozen by length splitting
- *       remain plain text.
- *   <li>If accumulated text for the current message exceeds {@link #MAX_MESSAGE_LENGTH}, the
- *       current message is frozen with the partial content and a fresh placeholder is sent;
- *       further appends edit the new message.
- * </ul>
- *
- * <p>Single-threaded: instances are not safe for concurrent use; rely on the langchain4j
- * {@code TokenStream} contract that callbacks are delivered sequentially per stream.
- */
-@Slf4j
+/** Telegram presentation only: the runtime owns all delivery, retries and timers. */
 public final class TelegramStreamingReplyEmitter {
+    private enum State {
+        NEW,
+        STREAMING,
+        FINALIZING,
+        TERMINAL
+    }
 
-    private static final int MAX_MESSAGE_LENGTH = 4000;
+    private enum Kind {
+        PLACEHOLDER,
+        REPLACEMENT,
+        FREEZE,
+        PARTIAL,
+        FINAL,
+        IMAGE
+    }
+
+    private record Operation(Kind kind, String messageId, ChannelText text, int splitAt, String url) {}
+
+    public record ImageReceipt(String messageId, String url) {}
+
+    public record Reply(String text, String lastMessageId, List<ImageReceipt> images) {
+        public Reply {
+            images = List.copyOf(images);
+        }
+    }
+
+    static final int MAX_MESSAGE_LENGTH = 4000;
+    static final int MAX_BUFFER_LENGTH = 128_000;
+    static final int MAX_IMAGES = 32;
     static final long FLUSH_INTERVAL_MS = 500L;
     private static final String PLACEHOLDER = "…";
-
-    /**
-     * How often to re-send the {@code TYPING} chat action. Telegram clears the indicator after
-     * ~5 seconds, so we refresh slightly faster to keep it continuously visible.
-     */
-    private static final long TYPING_REFRESH_MS = 4_000L;
-
-    /**
-     * Matches CommonMark image syntax {@code ![alt](url)}. The URL is captured up to the first
-     * whitespace or closing paren — sufficient for the http(s) URLs the freechat album tool
-     * emits ({@code https://freechat.fun/s/...}). Alt text may be empty.
-     */
     private static final Pattern IMAGE_MD = Pattern.compile("!\\[([^\\]]*)\\]\\(([^)\\s]+)\\)");
+    private static final Pattern INCOMPLETE_IMAGE = Pattern.compile("!\\[[^\\]]*(?:\\](?:\\([^)]*)?)?$");
 
-    /**
-     * Shared daemon-threaded scheduler for {@code TYPING} keepalive ticks across all emitter
-     * instances. Each tick just submits a {@code sendChatAction} HTTP request (the actual I/O
-     * happens on the OkHttp pool inside the telegrambots client), so a tiny pool is enough.
-     */
-    private static final ScheduledExecutorService TYPING_SCHEDULER = Executors.newScheduledThreadPool(2, r -> {
-        Thread t = new Thread(r, "tg-typing-heartbeat");
-        t.setDaemon(true);
-        return t;
-    });
-
-    private final TelegramChannel channel;
-    private final String backendId;
-    private final Long tgChatId;
-
-    private final List<Long> messageIds = new ArrayList<>();
+    private final Object monitor = new Object();
+    private final ChannelTurnContext turn;
+    private final CompletableFuture<Void> started = new CompletableFuture<>();
+    private final CompletableFuture<Reply> completion = new CompletableFuture<>();
     private final StringBuilder fullText = new StringBuilder();
-    private final List<String> pendingImageUrls = new ArrayList<>();
-    private final List<Pair<Long, String>> sentImages = new ArrayList<>();
-    private int currentSegmentStart = 0;
+    private final List<String> images = new ArrayList<>();
+    private final List<ImageReceipt> sentImages = new ArrayList<>();
+    private State state = State.NEW;
+    private ChannelFailure failure;
+    private ChannelFailure textFailure;
+    private ChannelFailure imageFailure;
+    private boolean initialRequested;
+    private boolean inFlight;
+    private boolean partialReady;
+    private boolean timerArmed;
+    private long timerVersion;
+    private ScheduledFuture<?> timer;
+    private AutoCloseable typing;
+    private int receivedLength;
+    private int segmentStart;
+    private int pendingSplitAt = -1;
+    private int imageIndex;
+    private String messageId;
     private String lastFlushed = "";
-    private long nextFlushAt = 0L;
-    private boolean started = false;
-    private ScheduledFuture<?> typingHeartbeat;
+    private int confirmedTextEnd;
+    private String confirmedTextMessageId;
+    private boolean finalTextConfirmed;
 
-    public TelegramStreamingReplyEmitter(TelegramChannel channel, String backendId, Long tgChatId) {
-        this.channel = channel;
-        this.backendId = backendId;
-        this.tgChatId = tgChatId;
+    public TelegramStreamingReplyEmitter(ChannelTurnContext turn) {
+        this.turn = turn;
+        turn.onCancel(() -> fail(new ChannelFailure(ChannelFailure.Kind.CANCELLED)));
     }
 
-    /** Sends the initial placeholder. Must be called once before {@link #append(String)}. */
-    public void start() throws TelegramApiException {
-        if (started) {
-            return;
-        }
-        Message placeholder = channel.sendText(backendId, tgChatId, PLACEHOLDER);
-        messageIds.add(placeholder.getMessageId().longValue());
-        lastFlushed = PLACEHOLDER;
-        nextFlushAt = System.currentTimeMillis() + FLUSH_INTERVAL_MS;
-        started = true;
-        startTypingHeartbeat();
-    }
-
-    /** Appends a streamed token and possibly flushes (plain text) per the debounce policy. */
-    public void append(String token) {
-        if (!started || token == null || token.isEmpty()) {
-            return;
-        }
-        fullText.append(token);
-        stripInlineImages();
-        if (System.currentTimeMillis() >= nextFlushAt) {
-            try {
-                flush(false);
-            } catch (Exception e) {
-                // Best effort: log and keep going. The next append will retry.
-                log.warn("Telegram streaming flush failed for chat {}", tgChatId);
+    public CompletableFuture<Void> start() {
+        synchronized (monitor) {
+            if (state != State.NEW) {
+                return started;
             }
+            state = State.STREAMING;
+            initialRequested = true;
         }
-    }
-
-    /** Final flush. The most recent message is rendered with {@link ParseMode#MARKDOWN}. */
-    public String complete() {
-        if (!started) {
-            return fullText.toString();
-        }
-        stopTypingHeartbeat();
-        stripInlineImages();
         try {
-            flush(true);
-        } catch (Exception e) {
-            log.warn("Telegram final flush failed for chat {}", tgChatId);
-        }
-        sendPendingImages();
-        return fullText.toString();
-    }
-
-    /** Telegram message id of the LAST message in the streamed sequence (used for outbound logging). */
-    public Long lastMessageId() {
-        return messageIds.isEmpty() ? null : messageIds.getLast();
-    }
-
-    /** All message ids in send order — useful for tests / auditing. */
-    public List<Long> messageIds() {
-        return List.copyOf(messageIds);
-    }
-
-    /**
-     * {@code (telegramMessageId, url)} pairs for each photo successfully delivered by
-     * {@link #sendPendingImages()}. Empty until {@link #complete()} runs. Caller-facing,
-     * used by {@code ChatBindingTelegramMessageHandler} to persist one outbound row per photo.
-     */
-    public List<Pair<Long, String>> sentImages() {
-        return List.copyOf(sentImages);
-    }
-
-    private void flush(boolean isFinal) {
-        // First handle length splitting: if the in-progress segment exceeded the limit,
-        // freeze the current message with as much as fits and start a new placeholder.
-        while (fullText.length() - currentSegmentStart > MAX_MESSAGE_LENGTH) {
-            int splitAt = currentSegmentStart + MAX_MESSAGE_LENGTH;
-            int lastSpace = fullText.lastIndexOf(" ", splitAt);
-            if (lastSpace > currentSegmentStart + (MAX_MESSAGE_LENGTH * 3 / 4)) {
-                splitAt = lastSpace;
-            }
-            String frozen = fullText.substring(currentSegmentStart, splitAt);
-            if (!editWithRetry(lastMessageId(), frozen, null)) {
-                // Rate-limited or other failure mid-split — bail; next flush will retry.
-                return;
-            }
-            currentSegmentStart = splitAt;
-
-            Message next = sendPlaceholderWithRetry();
-            if (next == null) {
-                return;
-            }
-            messageIds.add(next.getMessageId().longValue());
-            lastFlushed = PLACEHOLDER;
-        }
-
-        String currentSegment = fullText.substring(currentSegmentStart);
-        if (currentSegment.isEmpty()) {
-            // nothing to render yet (e.g. final flush right after a length split)
-            nextFlushAt = System.currentTimeMillis() + FLUSH_INTERVAL_MS;
-            return;
-        }
-
-        String parseMode = null;
-        String displayText = currentSegment;
-        if (isFinal) {
-            // Final flush: render as Markdown, balancing any unclosed delimiters mid-stream cuts may have left open.
-            displayText = balanceMarkdown(currentSegment);
-            parseMode = ParseMode.MARKDOWN;
-        }
-        if (!displayText.equals(lastFlushed)) {
-            if (editWithRetry(lastMessageId(), displayText, parseMode)) {
-                lastFlushed = displayText;
-            } else {
-                // Edit failed/throttled — leave nextFlushAt as set by the helper and exit.
-                return;
-            }
-        }
-        nextFlushAt = System.currentTimeMillis() + FLUSH_INTERVAL_MS;
-    }
-
-    /**
-     * Scans the unsent portion of {@link #fullText} for complete {@code ![alt](url)} matches.
-     * For each match: stashes the URL into {@link #pendingImageUrls} and removes the whole
-     * markdown (alt included) from the displayed text. The alt is dropped because the album tool
-     * emits a literal {@code img} placeholder that would otherwise leak into the chat as inline
-     * filler and as a redundant photo caption. Partial matches still being streamed (e.g.
-     * {@code ![alt](https://}) are left untouched and re-scanned on the next append.
-     */
-    private void stripInlineImages() {
-        String segment = fullText.substring(currentSegmentStart);
-        Matcher m = IMAGE_MD.matcher(segment);
-        if (!m.find()) {
-            return;
-        }
-        StringBuilder rewritten = new StringBuilder(segment.length());
-        int last = 0;
-        do {
-            rewritten.append(segment, last, m.start());
-            pendingImageUrls.add(m.group(2));
-            last = m.end();
-        } while (m.find());
-        rewritten.append(segment, last, segment.length());
-        fullText.setLength(currentSegmentStart);
-        fullText.append(rewritten);
-    }
-
-    /**
-     * Fires {@code sendChatAction(TYPING)} immediately, then re-fires every
-     * {@link #TYPING_REFRESH_MS}ms until {@link #stopTypingHeartbeat()} cancels it. Telegram
-     * clears the indicator after ~5s, so re-firing at 4s keeps it continuously visible.
-     */
-    private void startTypingHeartbeat() {
-        sendTypingTick();
-        typingHeartbeat = TYPING_SCHEDULER.scheduleAtFixedRate(
-                this::sendTypingTick, TYPING_REFRESH_MS, TYPING_REFRESH_MS, TimeUnit.MILLISECONDS);
-    }
-
-    private void stopTypingHeartbeat() {
-        if (typingHeartbeat != null) {
-            typingHeartbeat.cancel(false);
-            typingHeartbeat = null;
-        }
-    }
-
-    private void sendTypingTick() {
-        try {
-            channel.sendChatAction(backendId, tgChatId, ActionType.TYPING);
-        } catch (Exception e) {
-            // Best-effort indicator. Log at debug to avoid spamming on transient failures or
-            // bot-blocked scenarios — the actual response still streams via editText.
-            log.debug("Telegram sendChatAction(TYPING) failed for chat {}", tgChatId);
-        }
-    }
-
-    /**
-     * Fires one {@code sendPhoto} per stashed image. Failures are logged but never thrown.
-     * Successful sends are recorded into {@link #sentImages} so callers can persist them.
-     */
-    private void sendPendingImages() {
-        for (String url : pendingImageUrls) {
-            try {
-                Message sent = channel.sendPhoto(backendId, tgChatId, new InputFile(url), null);
-                if (sent != null && sent.getMessageId() != null) {
-                    sentImages.add(Pair.of(sent.getMessageId().longValue(), url));
+            AutoCloseable heartbeat = turn.typing(Duration.ofSeconds(4));
+            boolean keep;
+            synchronized (monitor) {
+                keep = state == State.STREAMING;
+                if (keep) {
+                    typing = heartbeat;
                 }
-            } catch (TelegramApiException e) {
-                log.warn("Telegram sendPhoto failed for chat {}", tgChatId);
+            }
+            if (!keep) {
+                close(heartbeat);
+            }
+        } catch (Exception ignored) {
+            // Typing is optional and best effort, never a reason to lose a reply.
+        }
+        drive();
+        return started;
+    }
+
+    /** Token callbacks only mutate a bounded buffer and enqueue coalesced work. */
+    public void append(String token) {
+        if (token == null || token.isEmpty()) {
+            return;
+        }
+        boolean overflow;
+        synchronized (monitor) {
+            if (state != State.STREAMING) {
+                return;
+            }
+            overflow = token.length() > MAX_BUFFER_LENGTH - receivedLength;
+            if (!overflow) {
+                receivedLength += token.length();
+                fullText.append(token);
+                overflow = !stripInlineImages();
             }
         }
-        pendingImageUrls.clear();
-    }
-
-    private boolean editWithRetry(Long messageId, String text, String parseMode) {
-        try {
-            channel.editText(backendId, tgChatId, messageId, text, parseMode);
-            return true;
-        } catch (TelegramApiException e) {
-            handleTelegramFailure(e, "editText");
-            return false;
+        if (overflow) {
+            fail(new ChannelFailure(ChannelFailure.Kind.REJECTED));
+        } else {
+            drive();
         }
     }
 
-    private Message sendPlaceholderWithRetry() {
-        try {
-            return channel.sendText(backendId, tgChatId, PLACEHOLDER);
-        } catch (TelegramApiException e) {
-            handleTelegramFailure(e, "sendText (placeholder for length-split)");
+    /** Idempotent: freezes the plan, including image order, and always returns the same future. */
+    public CompletableFuture<Reply> complete() {
+        synchronized (monitor) {
+            if (state == State.TERMINAL || state == State.FINALIZING) {
+                return completion;
+            }
+            state = State.FINALIZING;
+        }
+        stopTimers();
+        drive();
+        return completion;
+    }
+
+    /** Observe delivery without requesting finalization. */
+    public CompletableFuture<Reply> completion() {
+        return completion;
+    }
+
+    /** Abort setup/delivery without exposing a provider exception or its cause. */
+    public CompletableFuture<Reply> fail(Throwable cause) {
+        synchronized (monitor) {
+            if (state == State.TERMINAL) {
+                return completion;
+            }
+            if (failure == null) {
+                while (cause instanceof CompletionException && cause.getCause() != null) {
+                    cause = cause.getCause();
+                }
+                failure = cause instanceof ChannelFailure safe
+                        ? new ChannelFailure(safe.kind(), safe.retryAfter())
+                        : new ChannelFailure(ChannelFailure.Kind.FAILED);
+            }
+            state = State.FINALIZING;
+        }
+        stopTimers();
+        drive();
+        return completion;
+    }
+
+    /** Confirmed deliveries remain recordable even if a later photo or edit fails. */
+    public Reply confirmedReply() {
+        synchronized (monitor) {
+            return snapshot();
+        }
+    }
+
+    private Reply snapshot() {
+        return new Reply(fullText.substring(0, confirmedTextEnd), confirmedTextMessageId, sentImages);
+    }
+
+    // Reserve a single operation under the monitor; invoke all external code outside it.
+    private void drive() {
+        Operation operation;
+        long scheduleVersion = -1;
+        boolean finish = false;
+        synchronized (monitor) {
+            if (state == State.NEW || state == State.TERMINAL || inFlight) {
+                return;
+            }
+            operation = failure == null ? nextOperation() : null;
+            if (operation != null) {
+                inFlight = true;
+            } else if (state == State.FINALIZING) {
+                state = State.TERMINAL;
+                finish = true;
+            } else if (!timerArmed
+                    && textFailure == null
+                    && visibleEnd() > segmentStart
+                    && !fullText.substring(segmentStart, visibleEnd()).equals(lastFlushed)) {
+                timerArmed = true;
+                scheduleVersion = ++timerVersion;
+            }
+        }
+        if (finish) {
+            stopTimers();
+            ChannelFailure terminalFailure;
+            Reply reply;
+            synchronized (monitor) {
+                terminalFailure = failure != null ? failure : textFailure != null ? textFailure : imageFailure;
+                reply = snapshot();
+            }
+            if (terminalFailure == null) {
+                started.complete(null);
+                completion.complete(reply);
+            } else {
+                started.completeExceptionally(terminalFailure);
+                completion.completeExceptionally(terminalFailure);
+            }
+        } else if (operation != null) {
+            submit(operation);
+        } else if (scheduleVersion >= 0) {
+            schedulePartial(scheduleVersion);
+        }
+    }
+
+    // Called only under monitor. Offsets change in accepted(), never when a send is merely queued.
+    private Operation nextOperation() {
+        if (textFailure != null) {
+            return state == State.FINALIZING && imageIndex < images.size()
+                    ? new Operation(Kind.IMAGE, null, null, -1, images.get(imageIndex))
+                    : null;
+        }
+        if (messageId == null && initialRequested) {
+            return new Operation(Kind.PLACEHOLDER, null, ChannelText.plain(PLACEHOLDER), -1, null);
+        }
+        if (pendingSplitAt >= 0) {
+            return new Operation(Kind.REPLACEMENT, null, ChannelText.plain(PLACEHOLDER), pendingSplitAt, null);
+        }
+        boolean isFinal = state == State.FINALIZING;
+        if (!isFinal && !partialReady) {
             return null;
         }
-    }
-
-    private void handleTelegramFailure(TelegramApiException e, String op) {
-        long deferMs = retryAfterMillis(e);
-        if (deferMs > 0) {
-            // Defer the next flush attempt by at least retry_after; never pull it earlier.
-            nextFlushAt = Math.max(nextFlushAt, System.currentTimeMillis() + deferMs);
-            log.info("Telegram throttled {} for chat {} — deferring next flush by {}ms", op, tgChatId, deferMs);
-        } else {
-            log.warn("Telegram {} failed for chat {}", op, tgChatId);
+        int end = isFinal ? fullText.length() : visibleEnd();
+        int remaining = end - segmentStart;
+        if (remaining > MAX_MESSAGE_LENGTH) {
+            int splitAt = segmentStart + MAX_MESSAGE_LENGTH;
+            int space = fullText.lastIndexOf(" ", splitAt);
+            if (space > segmentStart + MAX_MESSAGE_LENGTH * 3 / 4) {
+                splitAt = space;
+            }
+            if (Character.isHighSurrogate(fullText.charAt(splitAt - 1))) {
+                splitAt--;
+            }
+            return freeze(splitAt);
         }
-    }
-
-    private static long retryAfterMillis(TelegramApiException e) {
-        if (e instanceof TelegramApiRequestException req) {
-            ResponseParameters params = req.getParameters();
-            if (params != null && params.getRetryAfter() != null && params.getRetryAfter() > 0) {
-                return params.getRetryAfter() * 1000L;
+        String segment = fullText.substring(segmentStart, end);
+        if (isFinal && !finalTextConfirmed) {
+            if (segment.isEmpty()) {
+                finalTextConfirmed = true;
+            } else {
+                String markdown = balanceMarkdown(segment);
+                if (markdown.length() > MAX_MESSAGE_LENGTH) {
+                    return freeze(segmentStart + Math.max(1, remaining / 2));
+                }
+                // Formatting itself is part of the final plan, even if the visible text is unchanged.
+                return new Operation(
+                        Kind.FINAL, messageId, new ChannelText(markdown, ChannelText.Format.MARKDOWN), -1, null);
             }
         }
-        return 0L;
+        if (isFinal) {
+            return imageIndex < images.size()
+                    ? new Operation(Kind.IMAGE, null, null, -1, images.get(imageIndex))
+                    : null;
+        }
+        if (!segment.isEmpty() && !segment.equals(lastFlushed)) {
+            return new Operation(Kind.PARTIAL, messageId, ChannelText.plain(segment), -1, null);
+        }
+        partialReady = false;
+        return null;
     }
 
-    /**
-     * Best-effort balancer for Telegram legacy Markdown delimiters: closes any unclosed
-     * single-char emphasis ({@code *}, {@code _}, {@code `}) and unmatched {@code [...]} brackets
-     * by appending the missing closer. Doesn't handle escaped delimiters (rare in LLM output) or
-     * triple-backtick code fences (those are uncommon mid-cut and Telegram tolerates them).
-     */
-    static String balanceMarkdown(String s) {
-        int stars = count(s, '*');
-        int unders = count(s, '_');
-        int ticks = count(s, '`');
-        int opens = count(s, '[');
-        int closes = count(s, ']');
-        if ((stars % 2 == 0) && (unders % 2 == 0) && (ticks % 2 == 0) && opens == closes) {
-            return s;
+    private Operation freeze(int splitAt) {
+        if (splitAt > segmentStart + 1 && Character.isHighSurrogate(fullText.charAt(splitAt - 1))) {
+            splitAt--;
         }
-        StringBuilder out = new StringBuilder(s.length() + 8).append(s);
-        if (stars % 2 != 0) {
-            out.append('*');
+        return new Operation(
+                Kind.FREEZE, messageId, ChannelText.plain(fullText.substring(segmentStart, splitAt)), splitAt, null);
+    }
+
+    private void submit(Operation operation) {
+        try {
+            CompletableFuture<?> delivery =
+                    switch (operation.kind()) {
+                        case PLACEHOLDER, REPLACEMENT -> turn.outbound().sendText(operation.text());
+                        case FREEZE, PARTIAL, FINAL ->
+                            turn.outbound().editText(operation.messageId(), operation.text());
+                        case IMAGE ->
+                            turn.outbound()
+                                    .sendMedia(ChannelMedia.reference(ChannelMedia.Kind.IMAGE, operation.url(), null));
+                    };
+            delivery.whenComplete((receipt, error) -> {
+                ChannelFailure currentFailure;
+                boolean continueReply = false;
+                synchronized (monitor) {
+                    if (error == null) {
+                        accepted(operation, (receipt instanceof ChannelReceipt r) ? r : null);
+                    } else if (operation.kind() != Kind.PLACEHOLDER && failure == null && !turn.isCancelled()) {
+                        Throwable unwrapped = error;
+                        while (unwrapped instanceof CompletionException && unwrapped.getCause() != null) {
+                            unwrapped = unwrapped.getCause();
+                        }
+                        ChannelFailure safe = unwrapped instanceof ChannelFailure value
+                                ? new ChannelFailure(value.kind(), value.retryAfter())
+                                : new ChannelFailure(ChannelFailure.Kind.FAILED);
+                        if (safe.kind() != ChannelFailure.Kind.CANCELLED) {
+                            if (operation.kind() == Kind.IMAGE) {
+                                imageFailure = imageFailure == null ? safe : imageFailure;
+                                imageIndex++;
+                            } else if (operation.kind() == Kind.PARTIAL
+                                    || (operation.kind() == Kind.FREEZE && state == State.STREAMING)) {
+                                partialReady = false;
+                            } else {
+                                textFailure = textFailure == null ? safe : textFailure;
+                            }
+                            continueReply = true;
+                        }
+                    }
+                    inFlight = false;
+                    currentFailure = failure;
+                }
+                if (continueReply) {
+                    drive();
+                } else if (error != null || currentFailure != null) {
+                    fail(error != null ? error : currentFailure);
+                } else {
+                    if (operation.kind() == Kind.PLACEHOLDER) {
+                        started.complete(null);
+                    }
+                    drive();
+                }
+            });
+        } catch (Exception error) {
+            synchronized (monitor) {
+                inFlight = false;
+            }
+            fail(error);
         }
-        if (unders % 2 != 0) {
-            out.append('_');
+    }
+
+    private void accepted(Operation operation, ChannelReceipt receipt) {
+        switch (operation.kind()) {
+            case PLACEHOLDER, REPLACEMENT -> {
+                if (receipt == null) {
+                    failure = new ChannelFailure(ChannelFailure.Kind.AMBIGUOUS);
+                    state = State.FINALIZING;
+                    return;
+                }
+                messageId = receipt.messageId();
+                lastFlushed = PLACEHOLDER;
+                if (operation.kind() == Kind.REPLACEMENT) {
+                    segmentStart = operation.splitAt();
+                    pendingSplitAt = -1;
+                }
+            }
+            case FREEZE -> {
+                lastFlushed = operation.text().text();
+                pendingSplitAt = operation.splitAt();
+                confirmedTextEnd = operation.splitAt();
+                confirmedTextMessageId = operation.messageId();
+            }
+            case PARTIAL -> {
+                lastFlushed = operation.text().text();
+                partialReady = false;
+                confirmedTextEnd = segmentStart + operation.text().text().length();
+                confirmedTextMessageId = operation.messageId();
+            }
+            case FINAL -> {
+                finalTextConfirmed = true;
+                confirmedTextEnd = fullText.length();
+                confirmedTextMessageId = operation.messageId();
+            }
+            case IMAGE -> {
+                if (receipt == null) {
+                    failure = new ChannelFailure(ChannelFailure.Kind.AMBIGUOUS);
+                    state = State.FINALIZING;
+                    return;
+                }
+                sentImages.add(new ImageReceipt(receipt.messageId(), operation.url()));
+                imageIndex++;
+            }
         }
-        if (ticks % 2 != 0) {
-            out.append('`');
+    }
+
+    private void schedulePartial(long version) {
+        try {
+            ScheduledFuture<?> scheduled = turn.schedule(
+                    () -> {
+                        synchronized (monitor) {
+                            if (state != State.STREAMING || !timerArmed || version != timerVersion) {
+                                return;
+                            }
+                            timerArmed = false;
+                            timer = null;
+                            partialReady = true;
+                        }
+                        drive();
+                    },
+                    Duration.ofMillis(FLUSH_INTERVAL_MS));
+            boolean keep;
+            synchronized (monitor) {
+                keep = state == State.STREAMING && timerArmed && version == timerVersion;
+                if (keep) {
+                    timer = scheduled;
+                }
+            }
+            if (!keep) {
+                scheduled.cancel(false);
+            }
+        } catch (Exception error) {
+            fail(error);
         }
-        out.repeat("]", Math.max(0, opens - closes));
+    }
+
+    private void stopTimers() {
+        ScheduledFuture<?> oldTimer;
+        AutoCloseable oldTyping;
+        synchronized (monitor) {
+            timerArmed = false;
+            timerVersion++;
+            oldTimer = timer;
+            timer = null;
+            oldTyping = typing;
+            typing = null;
+        }
+        if (oldTimer != null) {
+            oldTimer.cancel(false);
+        }
+        close(oldTyping);
+    }
+
+    private static void close(AutoCloseable resource) {
+        if (resource != null) {
+            try {
+                resource.close();
+            } catch (Exception ignored) {
+                // Status cleanup is best effort; never expose provider diagnostics.
+            }
+        }
+    }
+
+    private boolean stripInlineImages() {
+        Matcher matcher = IMAGE_MD.matcher(fullText);
+        int scanFrom = segmentStart;
+        while (matcher.find(scanFrom)) {
+            if (images.size() == MAX_IMAGES) {
+                return false;
+            }
+            images.add(matcher.group(2));
+            scanFrom = matcher.start();
+            fullText.delete(matcher.start(), matcher.end());
+            matcher.reset(fullText);
+        }
+        return true;
+    }
+
+    // Do not freeze a possible image prefix; it may become a photo when the next token arrives.
+    private int visibleEnd() {
+        Matcher incomplete = INCOMPLETE_IMAGE.matcher(fullText);
+        if (incomplete.find(segmentStart)) {
+            return incomplete.start();
+        }
+        int length = fullText.length();
+        return length > segmentStart && fullText.charAt(length - 1) == '!' ? length - 1 : length;
+    }
+
+    static String balanceMarkdown(String text) {
+        StringBuilder out = new StringBuilder(text);
+        for (char delimiter : new char[] {'*', '_', '`'}) {
+            if (count(text, delimiter) % 2 != 0) {
+                out.append(delimiter);
+            }
+        }
+        out.repeat("]", Math.max(0, count(text, '[') - count(text, ']')));
         return out.toString();
     }
 
-    private static int count(CharSequence s, char c) {
-        int n = 0;
-        for (int i = 0; i < s.length(); i++) {
-            if (s.charAt(i) == c) {
-                n++;
+    private static int count(String text, char character) {
+        int count = 0;
+        for (int i = 0; i < text.length(); i++) {
+            if (text.charAt(i) == character) {
+                count++;
             }
         }
-        return n;
+        return count;
     }
 }

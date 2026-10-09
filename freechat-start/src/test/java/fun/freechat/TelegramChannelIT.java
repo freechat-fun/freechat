@@ -11,17 +11,23 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import fun.freechat.api.dto.*;
+import fun.freechat.channels.spi.*;
+import fun.freechat.channels.telegram.DefaultTelegramChannel;
 import fun.freechat.channels.telegram.TelegramChannelManager;
 import fun.freechat.channels.telegram.handler.ChatBindingTelegramMessageHandler;
 import fun.freechat.mapper.ChatContextDynamicSqlSupport;
 import fun.freechat.mapper.ChatContextMapper;
 import fun.freechat.model.ChatContext;
+import fun.freechat.service.channel.ChannelRegistry;
+import fun.freechat.service.channel.ChannelRuntime;
 import fun.freechat.service.chat.TgMessageService;
 import fun.freechat.service.enums.ModelProvider;
 import fun.freechat.service.enums.PromptFormat;
 import fun.freechat.service.enums.Visibility;
 import fun.freechat.util.*;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -95,6 +101,8 @@ class TelegramChannelIT extends AbstractIntegrationTest {
     private String promptTaskId;
     private String characterUid;
     private String backendId;
+    private ChannelRuntime inboundRuntime;
+    private ChannelInstance<Update> inbound;
 
     private ModelProvider modelProvider() {
         return OPEN_AI;
@@ -116,6 +124,9 @@ class TelegramChannelIT extends AbstractIntegrationTest {
 
     @AfterEach
     void tearDown() {
+        if (inboundRuntime != null) {
+            inboundRuntime.stop();
+        }
         if (backendId != null) {
             deleteTelegramChatContexts();
             telegramChannelManager.deactivate(backendId);
@@ -157,7 +168,7 @@ class TelegramChannelIT extends AbstractIntegrationTest {
         bindTelegramTokenAndAwaitActivation(token);
 
         Update update = buildUpdate(101, 999L, 999L, "Alice", "hello bot");
-        chatBindingTelegramMessageHandler.handle(backendId, update);
+        receive(update);
         waitAWhile();
 
         ChatContext bound = chatContextMapper
@@ -182,9 +193,9 @@ class TelegramChannelIT extends AbstractIntegrationTest {
 
         Update first = buildUpdate(201, 888L, 888L, "Bob", "ping");
         Update second = buildUpdate(202, 888L, 888L, "Bob", "again");
-        chatBindingTelegramMessageHandler.handle(backendId, first);
+        receive(first);
         waitAWhile();
-        chatBindingTelegramMessageHandler.handle(backendId, second);
+        receive(second);
         waitAWhile();
 
         List<ChatContext> contexts = chatContextMapper.select(
@@ -193,6 +204,44 @@ class TelegramChannelIT extends AbstractIntegrationTest {
         assertThat(contexts).hasSize(1);
         assertThat(tgMessageService.listByChat(contexts.getFirst().getChatId(), null, null))
                 .hasSizeGreaterThanOrEqualTo(2);
+    }
+
+    private void receive(Update update) {
+        if (inbound == null) {
+            CompletableFuture<ChannelInstance<Update>> opened = new CompletableFuture<>();
+            ChannelPlugin<Update> ingress = new ChannelPlugin<>() {
+                public String id() {
+                    return "telegram-it";
+                }
+
+                public ChannelTransport transport() {
+                    return new DefaultTelegramChannel(telegramChannelManager);
+                }
+
+                public ChannelInboundHandler<Update> inboundHandler() {
+                    return (envelope, turn) ->
+                            chatBindingTelegramMessageHandler.handle(backendId, envelope.payload(), turn);
+                }
+
+                public void start(ChannelRuntimeContext<Update> context) {
+                    opened.complete(context.openInstance(backendId));
+                }
+
+                public void stopReceiving() {
+                    if (opened.isDone()) opened.join().close();
+                }
+
+                public void close() {}
+            };
+            inboundRuntime = new ChannelRuntime(new ChannelRegistry(List.of(ingress)));
+            inboundRuntime.start();
+            try {
+                inbound = opened.get(5, TimeUnit.SECONDS);
+            } catch (Exception ignored) {
+                throw new AssertionError("Telegram test ingress did not start");
+            }
+        }
+        inbound.receive(update.getMessage().getChatId().toString(), null, update);
     }
 
     private void bindTelegramTokenAndAwaitActivation(String token) {
