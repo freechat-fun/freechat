@@ -3,6 +3,7 @@ package fun.freechat.service.chat.impl;
 import static dev.langchain4j.internal.ValidationUtils.ensureNotNull;
 import static fun.freechat.service.util.StoreUtils.PUBLIC_DIR;
 
+import com.alibaba.dashscope.exception.ApiException;
 import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.agent.tool.ToolMemoryId;
 import dev.langchain4j.agentic.AgenticServices;
@@ -10,12 +11,11 @@ import dev.langchain4j.agentic.UntypedAgent;
 import dev.langchain4j.agentic.observability.AgentListener;
 import dev.langchain4j.agentic.observability.AgentRequest;
 import dev.langchain4j.agentic.observability.AgentResponse;
-import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.TextContent;
+import dev.langchain4j.exception.HttpException;
 import dev.langchain4j.model.chat.ChatModel;
-import dev.langchain4j.service.Result;
 import fun.freechat.model.CharacterInfo;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.ChatContextService;
@@ -28,6 +28,7 @@ import fun.freechat.service.util.StoreUtils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -113,29 +114,26 @@ public class AlbumTool {
         ImageContentParser resultParser = new ImageContentParser();
         UntypedAgent imageCreator;
         Map<String, Object> input;
+        AtomicBoolean generated = new AtomicBoolean();
+        AgentListener listener = new AgentListener() {
+            @Override
+            public void beforeAgentInvocation(AgentRequest request) {
+                log.info("Generating character image for chat {}", memoryId);
+            }
+
+            @Override
+            public void afterAgentInvocation(AgentResponse response) {
+                generated.set(true);
+                log.info("Character image model completed for chat {}", memoryId);
+            }
+        };
 
         if (originImageUrl == null) {
             ImageGenerateAgent generateAgent = AgenticServices.agentBuilder(ImageGenerateAgent.class)
                     .description(imageGenerateAgentDescription())
                     .chatModel(imageChatModel)
                     .outputKey("generatedImage")
-                    .listener(new AgentListener() {
-                        @Override
-                        public void beforeAgentInvocation(AgentRequest request) {
-                            log.info("[Input Description]: {}", request.inputs().get("description"));
-                        }
-
-                        @Override
-                        public void afterAgentInvocation(AgentResponse response) {
-                            if (response.output() instanceof Result<?> result
-                                    && result.content() instanceof AiMessage message) {
-                                log.info(
-                                        "[Output Description {}]: {}",
-                                        result.finalResponse().metadata().id(),
-                                        message.text());
-                            }
-                        }
-                    })
+                    .listener(listener)
                     .build();
 
             imageCreator = AgenticServices.sequenceBuilder()
@@ -159,23 +157,7 @@ public class AlbumTool {
                     .description(imageEditAgentDescription())
                     .chatModel(imageChatModel)
                     .outputKey("generatedImage")
-                    .listener(new AgentListener() {
-                        @Override
-                        public void beforeAgentInvocation(AgentRequest request) {
-                            log.info("[Input Description]: {}", request.inputs().get("description"));
-                        }
-
-                        @Override
-                        public void afterAgentInvocation(AgentResponse response) {
-                            if (response.output() instanceof Result<?> result
-                                    && result.content() instanceof AiMessage message) {
-                                log.info(
-                                        "[Output Description {}]: {}",
-                                        result.finalResponse().metadata().id(),
-                                        message.text());
-                            }
-                        }
-                    })
+                    .listener(listener)
                     .build();
 
             imageCreator = AgenticServices.sequenceBuilder()
@@ -198,7 +180,54 @@ public class AlbumTool {
                     description);
         }
 
-        return (Content) imageCreator.invoke(input);
+        try {
+            Content image = (Content) imageCreator.invoke(input);
+            if (image instanceof TextContent text && text.text().isBlank()) {
+                log.warn("Character image result contained no image URL for chat {}", memoryId);
+            }
+            return image;
+        } catch (RuntimeException failure) {
+            logImageFailure(memoryId, generated.get() ? "transfer" : "generation", failure);
+            throw failure;
+        }
+    }
+
+    private static void logImageFailure(Object memoryId, String phase, Throwable failure) {
+        Throwable root = failure;
+        int status = 0;
+        String code = "unavailable";
+        for (int depth = 0; depth < 8; depth++) {
+            if (root instanceof ApiException api && api.getStatus() != null) {
+                status = api.getStatus().getStatusCode();
+                code = switch (Objects.toString(api.getStatus().getCode(), "")) {
+                    case "DataInspectionFailed",
+                            "InvalidParameter",
+                            "InvalidApiKey",
+                            "AccessDenied",
+                            "Throttling",
+                            "Throttling.RateQuota",
+                            "Throttling.AllocationQuota",
+                            "ModelNotFound",
+                            "InternalError",
+                            "ServiceUnavailable" -> api.getStatus().getCode();
+                    default -> "other";
+                };
+            } else if (root instanceof HttpException http) {
+                status = http.statusCode();
+            }
+            if (root.getCause() == null || root.getCause() == root) {
+                break;
+            }
+            root = root.getCause();
+        }
+        log.warn(
+                "Character image failed for chat {} (phase={}, type={}, rootType={}, status={}, code={})",
+                memoryId,
+                phase,
+                failure.getClass().getName(),
+                root.getClass().getName(),
+                status >= 100 && status <= 599 ? status : 0,
+                code);
     }
 
     public String description() {
