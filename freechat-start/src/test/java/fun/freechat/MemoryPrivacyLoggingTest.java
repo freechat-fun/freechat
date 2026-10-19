@@ -590,6 +590,107 @@ class MemoryPrivacyLoggingTest {
         assertTelegramDiagnosticsSafe();
     }
 
+    @ParameterizedTest
+    @org.junit.jupiter.params.provider.CsvSource({"false, true", "true, true", "false, false", "true, false"})
+    void imageToolReportsProviderFailureBeforeSanitizationWithoutPrivateContent(boolean editing, boolean knownCode) {
+        var failure = new com.alibaba.dashscope.exception.ApiException(
+                com.alibaba.dashscope.common.Status.builder()
+                        .statusCode(400)
+                        .code(knownCode ? "DataInspectionFailed" : PAYLOAD)
+                        .message(PAYLOAD)
+                        .requestId(PAYLOAD)
+                        .build(),
+                new IOException(PAYLOAD));
+        dev.langchain4j.model.chat.ChatModel model = new dev.langchain4j.model.chat.ChatModel() {
+            @Override
+            public dev.langchain4j.model.chat.response.ChatResponse doChat(
+                    dev.langchain4j.model.chat.request.ChatRequest request) {
+                throw new IllegalStateException(PAYLOAD, failure);
+            }
+        };
+        var tool = imageTool(model, editing);
+        assertThrows(RuntimeException.class, () -> tool.findAnImage("image-chat", PAYLOAD));
+        var diagnostic = events.list.stream()
+                .filter(event -> event.getMessage().startsWith("Character image failed for chat {}"))
+                .findFirst()
+                .orElseThrow();
+        assertEquals("generation", diagnostic.getArgumentArray()[1]);
+        assertEquals(IOException.class.getName(), diagnostic.getArgumentArray()[3]);
+        assertEquals(400, diagnostic.getArgumentArray()[4]);
+        assertEquals(knownCode ? "DataInspectionFailed" : "other", diagnostic.getArgumentArray()[5]);
+        assertNull(diagnostic.getThrowableProxy());
+        assertNoPayload();
+    }
+
+    @Test
+    void imageToolReportsMissingImageInsteadOfLoggingModelOutput() {
+        dev.langchain4j.model.chat.ChatModel model = new dev.langchain4j.model.chat.ChatModel() {
+            @Override
+            public dev.langchain4j.model.chat.response.ChatResponse doChat(
+                    dev.langchain4j.model.chat.request.ChatRequest request) {
+                return dev.langchain4j.model.chat.response.ChatResponse.builder()
+                        .aiMessage(dev.langchain4j.data.message.AiMessage.from(PAYLOAD))
+                        .build();
+            }
+        };
+        assertEquals(
+                dev.langchain4j.data.message.TextContent.from(""),
+                imageTool(model, false).findAnImage("image-chat", PAYLOAD));
+        assertTrue(events.list.stream()
+                .anyMatch(event ->
+                        "Character image result contained no image URL for chat {}".equals(event.getMessage())));
+        assertNoPayload();
+    }
+
+    @Test
+    void imageToolDistinguishesTransferFailureWithoutLoggingTheGeneratedUrl() {
+        dev.langchain4j.model.chat.ChatModel model = new dev.langchain4j.model.chat.ChatModel() {
+            @Override
+            public dev.langchain4j.model.chat.response.ChatResponse doChat(
+                    dev.langchain4j.model.chat.request.ChatRequest request) {
+                return dev.langchain4j.model.chat.response.ChatResponse.builder()
+                        .aiMessage(dev.langchain4j.data.message.AiMessage.builder()
+                                .text(PAYLOAD)
+                                .attributes(Map.of(
+                                        dev.langchain4j.data.message.AiMessage.GENERATED_IMAGES_KEY,
+                                        List.of(dev.langchain4j.data.image.Image.builder()
+                                                .url("unsupported://unused.invalid/" + PAYLOAD)
+                                                .build())))
+                                .build())
+                        .build();
+            }
+        };
+        assertThrows(RuntimeException.class, () -> imageTool(model, false).findAnImage("image-chat", PAYLOAD));
+        var diagnostic = events.list.stream()
+                .filter(event -> event.getMessage().startsWith("Character image failed for chat {}"))
+                .findFirst()
+                .orElseThrow();
+        assertEquals("transfer", diagnostic.getArgumentArray()[1]);
+        assertEquals(0, diagnostic.getArgumentArray()[4]);
+        assertEquals("unavailable", diagnostic.getArgumentArray()[5]);
+        assertNull(diagnostic.getThrowableProxy());
+        assertNoPayload();
+    }
+
+    private static fun.freechat.service.chat.impl.AlbumTool imageTool(
+            dev.langchain4j.model.chat.ChatModel model, boolean editing) {
+        ChatSessionService sessions = subclassMock(ChatSessionService.class);
+        when(sessions.get("image-chat"))
+                .thenReturn(ChatSession.builder().imageChatModel(model).build());
+        return new fun.freechat.service.chat.impl.AlbumTool(
+                "https://unused.invalid",
+                subclassMock(fun.freechat.service.character.CharacterService.class),
+                subclassMock(fun.freechat.service.chat.ChatContextService.class),
+                subclassMock(fun.freechat.service.common.ShortLinkService.class),
+                sessions,
+                "en") {
+            @Override
+            protected String loadLocalImage(Object memoryId, boolean forceDefault) {
+                return editing ? "https://unused.invalid/" + PAYLOAD : null;
+            }
+        };
+    }
+
     enum TelegramSetupFailure {
         PLACEHOLDER,
         ACQUIRE,
@@ -688,6 +789,17 @@ class MemoryPrivacyLoggingTest {
             assertTrue(events.list.stream()
                     .anyMatch(event ->
                             "Telegram chat stream cancellation failed for chat {}".equals(event.getMessage())));
+        }
+        if (phase == TelegramSetupFailure.ASYNC_ERROR) {
+            var diagnostic = events.list.stream()
+                    .filter(event ->
+                            "Streaming reply errored for chat {} (type={}, causeType={})".equals(event.getMessage()))
+                    .findFirst()
+                    .orElseThrow();
+            assertEquals(
+                    FailureKind.RUNTIME.create().getClass().getName(),
+                    diagnostic.getArgumentArray()[1]);
+            assertNull(diagnostic.getThrowableProxy());
         }
         assertTelegramDiagnosticsSafe();
     }

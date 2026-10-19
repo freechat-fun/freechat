@@ -160,7 +160,13 @@ public class ChatBindingTelegramMessageHandler implements TelegramMessageHandler
                     })
                     .onError(error -> {
                         if (terminal.compareAndSet(false, true)) {
-                            log.warn("Streaming reply errored for chat {}", chatId);
+                            log.warn(
+                                    "Streaming reply errored for chat {} (type={}, causeType={})",
+                                    chatId,
+                                    error.getClass().getName(),
+                                    error.getCause() == null
+                                            ? "none"
+                                            : error.getCause().getClass().getName());
                             emitter.complete();
                         }
                     });
