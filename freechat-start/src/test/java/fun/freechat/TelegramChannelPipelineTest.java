@@ -82,6 +82,8 @@ class TelegramChannelPipelineTest {
     @Test
     void finalRateLimitRetriesAfterProviderDelayWithoutAnotherTokenOrDuplicatePhoto() throws Exception {
         try (var fixture = new Pipeline()) {
+            // Startup calls getMe on the same mock; finish it before replacing the edit answer.
+            var consumer = fixture.manager.registration().consumer();
             AtomicInteger attempts = new AtomicInteger();
             List<Long> times = new CopyOnWriteArrayList<>();
             TelegramApiRequestException limit = TelegramChannelManagerTest.stub(TelegramApiRequestException.class);
@@ -100,7 +102,7 @@ class TelegramChannelPipelineTest {
                 fixture.operations.add("final");
                 return Boolean.TRUE;
             });
-            fixture.manager.registration().consumer().accept(List.of(TelegramChannelManagerTest.update(1, "question")));
+            consumer.accept(List.of(TelegramChannelManagerTest.update(1, "question")));
             assertTrue(fixture.stream.started.await(5, TimeUnit.SECONDS));
             fixture.stream.partial.accept("answer ![image](https://unused.invalid/photo)");
             fixture.stream.complete();
