@@ -68,6 +68,58 @@ class MemoryExtractorTest {
     }
 
     @Test
+    void offersOptionalNonExhaustiveProfileThemesOnInitialAndRepairRequests() {
+        FakeModel model = new FakeModel(PRIVATE, VALID);
+        MemoryExtractor.Output output =
+                extractor.extract(model, null, input(MemoryPublicationRepository.Operation.IDLE), budget(2));
+        assertEquals("drink", output.userFacts().getFirst().key());
+        assertEquals(2, model.requests.size());
+        for (ChatRequest request : model.requests) {
+            String system = ((SystemMessage) request.messages().getFirst()).text();
+            assertTrue(system.contains("For IDLE userFacts"));
+            assertTrue(system.contains("when supported by explicit user statements"));
+            assertTrue(system.contains("Interests and preferences"));
+            assertTrue(system.contains("Goals and aspirations"));
+            assertTrue(system.contains("Habits and routines"));
+            assertTrue(system.contains("Personal background and life context"));
+            assertTrue(system.contains("Knowledge and skills"));
+            assertTrue(system.contains("These themes are illustrative, not exhaustive"));
+            assertTrue(system.contains("do not define required categories or fact keys"));
+            assertTrue(system.contains(
+                    "Extract useful, explicitly supported user information whether or not it fits these themes"));
+            assertTrue(system.contains("No theme is mandatory"));
+            assertTrue(system.contains("Do not invent information merely to cover a theme"));
+            assertTrue(system.contains("An empty userFacts array is valid"));
+            assertTrue(system.contains("Retain the same evidence, privacy, and fiction rules"));
+            assertTrue(system.contains(
+                    "Never infer sensitive traits; never retain passwords, keys, tokens or credentials"));
+        }
+    }
+
+    @Test
+    void idleWithoutProfileFactsDoesNotRequireAnyTheme() {
+        MemoryExtractor.Input input = new MemoryExtractor.Input(
+                SCOPE,
+                HASH,
+                MemoryPublicationRepository.Operation.IDLE,
+                "",
+                "",
+                "",
+                List.of(),
+                List.of(),
+                List.of(new MemorySourceReader.Evidence(
+                        2, MemoryTurnRepository.Origin.USER_INPUT.text(), true, OBSERVED, 0, "Hello.")),
+                OBSERVED);
+        FakeModel model = new FakeModel(
+                "{\"summary\":\"The user greeted the assistant.\",\"userFacts\":[],\"characterDeltas\":[]}");
+        MemoryExtractor.Output output = extractor.extract(model, null, input, budget(1));
+        assertEquals("The user greeted the assistant.", output.summary());
+        assertTrue(output.userFacts().isEmpty());
+        assertTrue(output.characterDeltas().isEmpty());
+        assertEquals(1, model.requests.size());
+    }
+
+    @Test
     void repairsOnceWithoutEchoingTheInvalidResponseAndAccountsBothCalls() {
         FakeModel model = new FakeModel(PRIVATE, VALID);
         extractor.extract(model, null, input(MemoryPublicationRepository.Operation.IDLE), budget(2));

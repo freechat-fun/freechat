@@ -61,6 +61,17 @@ public final class MemoryExtractor {
             For OVERFLOW, summary combines previousSummary and evidence; userFacts and characterDeltas MUST both be empty.
             For REVALIDATE, remove unsupported/redundant previous facts against the new baselines; summary MUST be empty.
             For IDLE, summarize evidence and update both profile arrays using the previous facts and baselines.
+            For IDLE userFacts, give attention to these common themes when supported by explicit user statements:
+            - Interests and preferences: hobbies, likes/dislikes, and communication preferences.
+            - Goals and aspirations: stated plans, needs, and desired outcomes.
+            - Habits and routines: self-reported recurring activities and practices.
+            - Personal background and life context: preferred name, occupation, and relevant life circumstances.
+            - Knowledge and skills: education, expertise, and learning experience.
+
+            These themes are illustrative, not exhaustive, and do not define required categories or fact keys.
+            Extract useful, explicitly supported user information whether or not it fits these themes.
+            No theme is mandatory. Do not invent information merely to cover a theme.
+            An empty userFacts array is valid. Retain the same evidence, privacy, and fiction rules.
             """;
     private final LongTermMemoryProperties properties;
     private final MemoryBounds bounds;
