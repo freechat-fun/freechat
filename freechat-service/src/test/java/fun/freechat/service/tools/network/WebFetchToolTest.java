@@ -5,20 +5,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import fun.freechat.service.tools.ToolArguments;
 import fun.freechat.service.tools.ToolDefinition;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
-import okhttp3.MediaType;
-import okhttp3.ResponseBody;
-import okio.Buffer;
-import okio.Okio;
-import okio.Source;
-import okio.Timeout;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -41,16 +38,14 @@ class WebFetchToolTest {
 
     @Test
     void extractsTextWithoutScriptsResourcesCredentialsOrTenantIdentifiers() throws Exception {
-        Calls calls = new Calls(request -> response(request, 200, "text/html; charset=UTF-8", """
+        Calls calls = new Calls(request ->
+                response(request, 200, "text/html; charset=UTF-8", """
                 <html><head><style>hidden-css</style><script>hidden-script</script></head>
                 <body><h1>Actual title</h1><p>Hello <b>world</b>.</p>
                 <iframe src="https://internal.local/">hidden-frame</iframe>
                 <img src="https://evil.com/track"><a href="javascript:steal()">A reference</a>
                 <svg><text>hidden-svg</text></svg><template>hidden-template</template></body></html>
-                """)
-                .newBuilder()
-                .header("Set-Cookie", "tenant=secret")
-                .build());
+                """).withHeader("Set-Cookie", "tenant=secret"));
         WebFetchTool tool = new WebFetchTool(HOSTS, calls);
         var result = args(tool.execute(args(ARGUMENTS), context()));
         assertEquals("https://example.com/page?q=1", result.path("url").asText());
@@ -59,13 +54,16 @@ class WebFetchToolTest {
         assertTrue(result.path("untrusted").asBoolean());
         assertFalse(result.path("truncated").asBoolean());
         assertEquals("GET", calls.request.method());
-        assertEquals("identity", calls.request.header("Accept-Encoding"));
-        assertNull(calls.request.header("Authorization"));
-        assertNull(calls.request.header("Cookie"));
+        assertEquals(
+                "identity",
+                calls.request.headers().firstValue("Accept-Encoding").orElseThrow());
+        assertTrue(calls.request.headers().firstValue("Authorization").isEmpty());
+        assertTrue(calls.request.headers().firstValue("Cookie").isEmpty());
+        assertTrue(calls.request.timeout().orElseThrow().compareTo(Duration.ofSeconds(10)) <= 0);
         assertFalse(calls.request.toString().contains("chat-secret"));
         tool.execute(args(ARGUMENTS), context());
         assertEquals(2, calls.count.get());
-        assertNull(calls.request.header("Cookie"));
+        assertTrue(calls.request.headers().firstValue("Cookie").isEmpty());
     }
 
     @ParameterizedTest
@@ -81,7 +79,7 @@ class WebFetchToolTest {
                 "{\"url\":\"https://example.com\",\"credentials\":\"secret\"}",
                 "{\"url\":\"https://not-allowed.com\"}"
             })
-    void malformedArgumentsNeverReachTransport(String json) throws Exception {
+    void malformedArgumentsNeverReachTransport(String json) {
         Calls calls = new Calls(request -> {
             throw new AssertionError("Must not call HTTP");
         });
@@ -106,12 +104,10 @@ class WebFetchToolTest {
 
     @ParameterizedTest
     @ValueSource(ints = {201, 204, 206, 301, 302, 303, 307, 308, 401, 407, 408, 429, 503})
-    void rejectsRedirectsAndErrorsWithoutFollowupOrErrorBodyDisclosure(int status) throws Exception {
+    void rejectsRedirectsAndErrorsWithoutFollowupOrErrorBodyDisclosure(int status) {
         Calls calls = new Calls(request -> response(request, status, "text/plain", "secret provider error")
-                .newBuilder()
-                .header("Location", "https://169.254.169.254/latest/meta-data/")
-                .header("Retry-After", "0")
-                .build());
+                .withHeader("Location", "https://169.254.169.254/latest/meta-data/")
+                .withHeader("Retry-After", "0"));
         Exception error = assertThrows(
                 IOException.class, () -> new WebFetchTool(HOSTS, calls).execute(args(ARGUMENTS), context()));
         assertEquals(1, calls.count.get());
@@ -128,7 +124,8 @@ class WebFetchToolTest {
                 "application/xhtml+xml",
                 "text/event-stream",
                 "text/plain; charset=ISO-8859-1",
-                "text/html; charset=unknown"
+                "text/html; charset=unknown",
+                "invalid-content-type"
             })
     void rejectsNontextAndNonUtf8Content(String type) {
         Calls calls = new Calls(request -> response(request, 200, type, "provider-content"));
@@ -137,103 +134,57 @@ class WebFetchToolTest {
 
     @Test
     void rejectsCompressionInvalidUtf8AndAmbiguousHeaders() {
-        for (String encoding : new String[] {"gzip", "br", "deflate", "gzip, identity"}) {
-            Calls calls = new Calls(request -> response(request, 200, "text/plain", "compressed")
-                    .newBuilder()
-                    .header("Content-Encoding", encoding)
-                    .build());
+        for (String encoding : List.of("gzip", "br", "deflate", "gzip, identity")) {
+            Calls calls = new Calls(request ->
+                    response(request, 200, "text/plain", "compressed").withHeader("Content-Encoding", encoding));
             assertThrows(IOException.class, () -> new WebFetchTool(HOSTS, calls).execute(args(ARGUMENTS), context()));
         }
         Calls utf8 = new Calls(request -> response(request, 200, "text/plain", "")
-                .newBuilder()
-                .body(ResponseBody.create(new byte[] {(byte) 0xc0, (byte) 0xaf}, MediaType.get("text/plain")))
-                .build());
+                .withHeader("Content-Length", "2")
+                .withBody(new ByteArrayInputStream(new byte[] {(byte) 0xc0, (byte) 0xaf})));
         assertThrows(IOException.class, () -> new WebFetchTool(HOSTS, utf8).execute(args(ARGUMENTS), context()));
-        Calls ambiguous = new Calls(request -> response(request, 200, "text/plain", "text")
-                .newBuilder()
-                .addHeader("Content-Type", "image/png")
-                .build());
+        Calls ambiguous = new Calls(
+                request -> response(request, 200, "text/plain", "text").addHeader("Content-Type", "image/png"));
         assertThrows(IOException.class, () -> new WebFetchTool(HOSTS, ambiguous).execute(args(ARGUMENTS), context()));
-        Calls length = new Calls(request -> response(request, 200, "text/plain", "text")
-                .newBuilder()
-                .header("Content-Length", "99999999")
-                .build());
-        assertThrows(IOException.class, () -> new WebFetchTool(HOSTS, length).execute(args(ARGUMENTS), context()));
-        Calls mismatch = new Calls(request -> response(request, 200, "text/plain", "text")
-                .newBuilder()
-                .header("Content-Length", "1")
-                .build());
-        assertThrows(IOException.class, () -> new WebFetchTool(HOSTS, mismatch).execute(args(ARGUMENTS), context()));
+        for (String length : List.of("99999999", "1", "5", "-1", "x", "1, 2")) {
+            Calls calls = new Calls(
+                    request -> response(request, 200, "text/plain", "text").withHeader("Content-Length", length));
+            assertThrows(IOException.class, () -> new WebFetchTool(HOSTS, calls).execute(args(ARGUMENTS), context()));
+        }
     }
 
     @Test
-    void rejectsChunkedFramingBeforeReadingAndCancelsBeforeClose() throws Exception {
-        for (boolean interceptor : new boolean[] {false, true}) {
-            AtomicLong reads = new AtomicLong();
-            AtomicBoolean cancelledBeforeClose = new AtomicBoolean();
-            var holder = new java.util.concurrent.atomic.AtomicReference<Calls>();
-            Source source = new Source() {
-                public long read(Buffer buffer, long count) {
-                    reads.incrementAndGet();
-                    return -1;
-                }
-
-                public Timeout timeout() {
-                    return Timeout.NONE;
-                }
-
-                public void close() {
-                    cancelledBeforeClose.set(holder.get().lastCall.isCanceled());
-                }
-            };
-            Calls calls = new Calls(request -> response(request, 200, "text/plain", "")
-                    .newBuilder()
-                    .header("Transfer-Encoding", "chunked")
-                    .body(ResponseBody.create(Okio.buffer(source), MediaType.get("text/plain"), -1))
-                    .build());
-            holder.set(calls);
-            if (interceptor) {
-                var request = new okhttp3.Request.Builder()
-                        .url("https://example.com/page")
-                        .build();
-                var call = calls.newCall(request);
-                var response = call.execute();
-                var chain = (okhttp3.Interceptor.Chain) java.lang.reflect.Proxy.newProxyInstance(
-                        getClass().getClassLoader(),
-                        new Class<?>[] {okhttp3.Interceptor.Chain.class},
-                        (proxy, method, arguments) -> switch (method.getName()) {
-                            case "request" -> request;
-                            case "call" -> call;
-                            case "proceed" -> response;
-                            default -> throw new AssertionError(method.getName());
-                        });
-                var client = NetworkHttp.client(new NetworkPolicy(HOSTS), new NetworkHttp.Deadline(context()));
-                assertThrows(
-                        IOException.class,
-                        () -> client.networkInterceptors().getFirst().intercept(chain));
-            } else {
-                assertThrows(
-                        IOException.class, () -> new WebFetchTool(HOSTS, calls).execute(args(ARGUMENTS), context()));
+    void rejectedHeadersCloseBodyWithoutConsumingIt() {
+        AtomicLong reads = new AtomicLong();
+        AtomicBoolean closed = new AtomicBoolean();
+        InputStream input = new InputStream() {
+            public int read() {
+                reads.incrementAndGet();
+                return -1;
             }
-            assertEquals(0, reads.get());
-            assertTrue(cancelledBeforeClose.get());
-        }
+
+            public void close() {
+                closed.set(true);
+            }
+        };
+        Calls calls = new Calls(request -> response(request, 200, "text/plain", "")
+                .withHeader("Transfer-Encoding", "chunked")
+                .withBody(input));
+        assertThrows(IOException.class, () -> new WebFetchTool(HOSTS, calls).execute(args(ARGUMENTS), context()));
+        assertEquals(0, reads.get());
+        assertTrue(closed.get());
     }
 
     @Test
     void boundsHeaderCountHeaderBytesAndHtmlNodeCount() {
         Calls headerCount = new Calls(request -> {
-            var builder = response(request, 200, "text/plain", "text").newBuilder();
-            for (int i = 0; i < 65; i++) {
-                builder.header("X-Fixture-" + i, "value");
-            }
-            return builder.build();
+            Response response = response(request, 200, "text/plain", "text");
+            for (int i = 0; i < 65; i++) response = response.withHeader("X-Fixture-" + i, "value");
+            return response;
         });
         assertThrows(IOException.class, () -> new WebFetchTool(HOSTS, headerCount).execute(args(ARGUMENTS), context()));
-        Calls headerBytes = new Calls(request -> response(request, 200, "text/plain", "text")
-                .newBuilder()
-                .header("X-Fixture", "x".repeat(16_385))
-                .build());
+        Calls headerBytes = new Calls(
+                request -> response(request, 200, "text/plain", "text").withHeader("X-Fixture", "x".repeat(16_385)));
         assertThrows(IOException.class, () -> new WebFetchTool(HOSTS, headerBytes).execute(args(ARGUMENTS), context()));
         Calls html = new Calls(request -> response(request, 200, "text/html", "<i>x</i>".repeat(20_000)));
         assertThrows(IOException.class, () -> new WebFetchTool(HOSTS, html).execute(args(ARGUMENTS), context()));
@@ -245,32 +196,22 @@ class WebFetchToolTest {
         assertThrows(IOException.class, () -> new WebFetchTool(HOSTS, declared).execute(args(ARGUMENTS), context()));
         AtomicLong read = new AtomicLong();
         AtomicBoolean closed = new AtomicBoolean();
-        Source source = new Source() {
-            @Override
-            public long read(Buffer sink, long byteCount) {
-                long count = Math.min(byteCount, 8192);
-                sink.write(new byte[(int) count]);
-                read.addAndGet(count);
-                return count;
+        InputStream input = new InputStream() {
+            public int read() {
+                read.incrementAndGet();
+                return 'a';
             }
 
-            @Override
-            public Timeout timeout() {
-                return Timeout.NONE;
-            }
-
-            @Override
             public void close() {
                 closed.set(true);
             }
         };
         Calls unknown = new Calls(request -> response(request, 200, "text/plain", "")
-                .newBuilder()
-                .body(ResponseBody.create(Okio.buffer(source), MediaType.get("text/plain"), -1))
-                .build());
+                .withHeader("Content-Length", null)
+                .withBody(input));
         assertThrows(IOException.class, () -> new WebFetchTool(HOSTS, unknown).execute(args(ARGUMENTS), context()));
         assertTrue(closed.get());
-        assertTrue(read.get() <= 262_144 + 8192, "Only one bounded Okio buffer beyond the cap");
+        assertEquals(262_145, read.get());
     }
 
     @Test
@@ -289,39 +230,33 @@ class WebFetchToolTest {
     }
 
     @Test
-    void totalDeadlineCancelsStalledTransportAndDoesNotWaitForDnsOrHeaders() {
-        CountDownLatch released = new CountDownLatch(1);
+    void totalDeadlineInterruptsStalledTransport() throws Exception {
+        CountDownLatch interrupted = new CountDownLatch(1);
         Calls calls = new Calls(request -> {
             try {
-                released.await();
-                return response(request, 200, "text/plain", "too late");
-            } catch (InterruptedException ignored) {
-                Thread.currentThread().interrupt();
-                throw new IOException("Interrupted fixture");
+                new CountDownLatch(1).await();
+                throw new AssertionError("Must be interrupted");
+            } catch (InterruptedException failure) {
+                interrupted.countDown();
+                throw failure;
             }
         });
-        try {
-            assertTimeoutPreemptively(
-                    Duration.ofSeconds(2),
-                    () -> assertThrows(
-                            IOException.class,
-                            () -> new WebFetchTool(HOSTS, calls)
-                                    .execute(args(ARGUMENTS), context(Duration.ofMillis(100)))));
-            assertTrue(calls.lastCall.isCanceled());
-        } finally {
-            released.countDown();
-        }
+        assertTimeoutPreemptively(
+                Duration.ofSeconds(2),
+                () -> assertThrows(
+                        IOException.class,
+                        () -> new WebFetchTool(HOSTS, calls)
+                                .execute(args(ARGUMENTS), context(Duration.ofMillis(100)))));
+        assertTrue(interrupted.await(1, TimeUnit.SECONDS));
     }
 
     @Test
-    void totalDeadlineAlsoCancelsSlowBodyAndClosesIt() throws Exception {
+    void totalDeadlineAlsoInterruptsSlowBodyAndClosesIt() throws Exception {
         CountDownLatch closed = new CountDownLatch(1);
-        CountDownLatch released = new CountDownLatch(1);
-        Source source = new Source() {
-            @Override
-            public long read(Buffer sink, long byteCount) throws IOException {
+        InputStream input = new InputStream() {
+            public int read() throws IOException {
                 try {
-                    released.await();
+                    new CountDownLatch(1).await();
                     return -1;
                 } catch (InterruptedException ignored) {
                     Thread.currentThread().interrupt();
@@ -329,31 +264,102 @@ class WebFetchToolTest {
                 }
             }
 
-            @Override
-            public Timeout timeout() {
-                return Timeout.NONE;
-            }
-
-            @Override
             public void close() {
                 closed.countDown();
             }
         };
         Calls calls = new Calls(request -> response(request, 200, "text/plain", "")
-                .newBuilder()
-                .body(ResponseBody.create(Okio.buffer(source), MediaType.get("text/plain"), -1))
-                .build());
-        try {
+                .withHeader("Content-Length", null)
+                .withBody(input));
+        assertTimeoutPreemptively(
+                Duration.ofSeconds(2),
+                () -> assertThrows(
+                        IOException.class,
+                        () -> new WebFetchTool(HOSTS, calls)
+                                .execute(args(ARGUMENTS), context(Duration.ofMillis(100)))));
+        assertTrue(closed.await(1, TimeUnit.SECONDS));
+    }
+
+    @Test
+    void realJdkTransportSendsHeadersAndDoesNotFollowRedirects() throws Exception {
+        var server = com.sun.net.httpserver.HttpServer.create(new java.net.InetSocketAddress("127.0.0.1", 0), 0);
+        var hits = new java.util.concurrent.atomic.AtomicInteger();
+        var seenEncoding = new java.util.concurrent.atomic.AtomicReference<String>();
+        server.createContext("/page", exchange -> {
+            hits.incrementAndGet();
+            seenEncoding.set(exchange.getRequestHeaders().getFirst("Accept-Encoding"));
+            byte[] text = "Local JDK response".getBytes(StandardCharsets.UTF_8);
+            exchange.getResponseHeaders().set("Content-Type", "text/plain; charset=utf-8");
+            exchange.sendResponseHeaders(200, text.length);
+            try (var output = exchange.getResponseBody()) {
+                output.write(text);
+            }
+        });
+        server.createContext("/redirect", exchange -> {
+            exchange.getResponseHeaders().set("Location", "/page");
+            exchange.sendResponseHeaders(302, -1);
+            exchange.close();
+        });
+        server.start();
+        try (var client = NetworkHttp.client()) {
+            NetworkHttp.Transport local = request -> {
+                var builder = java.net.http.HttpRequest.newBuilder(java.net.URI.create("http://127.0.0.1:"
+                                + server.getAddress().getPort() + request.uri().getRawPath()))
+                        .timeout(request.timeout().orElseThrow());
+                request.headers().map().forEach((name, values) -> values.forEach(value -> builder.header(name, value)));
+                return client.send(builder.build(), java.net.http.HttpResponse.BodyHandlers.ofInputStream());
+            };
+            WebFetchTool tool = new WebFetchTool(HOSTS, local);
+            assertEquals(
+                    "Local JDK response",
+                    args(tool.execute(args(ARGUMENTS), context())).path("text").asText());
+            assertEquals("identity", seenEncoding.get());
+            assertThrows(
+                    IOException.class,
+                    () -> tool.execute(args("{\"url\":\"https://example.com/redirect\"}"), context()));
+            assertEquals(1, hits.get());
+        } finally {
+            server.stop(0);
+        }
+    }
+
+    @Test
+    void realJdkResponseBodyIsCancelledAtTheInvocationDeadline() throws Exception {
+        CountDownLatch release = new CountDownLatch(1);
+        var server = com.sun.net.httpserver.HttpServer.create(new java.net.InetSocketAddress("127.0.0.1", 0), 0);
+        server.createContext("/slow", exchange -> {
+            exchange.getResponseHeaders().set("Content-Type", "text/plain");
+            exchange.sendResponseHeaders(200, 100);
+            try (var output = exchange.getResponseBody()) {
+                output.write('a');
+                output.flush();
+                try {
+                    release.await();
+                } catch (InterruptedException ignored) {
+                    Thread.currentThread().interrupt();
+                }
+            } catch (IOException ignored) {
+            } finally {
+                exchange.close();
+            }
+        });
+        server.start();
+        try (var client = NetworkHttp.client()) {
+            NetworkHttp.Transport local = request -> client.send(
+                    java.net.http.HttpRequest.newBuilder(java.net.URI.create(
+                                    "http://127.0.0.1:" + server.getAddress().getPort() + "/slow"))
+                            .timeout(request.timeout().orElseThrow())
+                            .build(),
+                    java.net.http.HttpResponse.BodyHandlers.ofInputStream());
             assertTimeoutPreemptively(
                     Duration.ofSeconds(2),
                     () -> assertThrows(
                             IOException.class,
-                            () -> new WebFetchTool(HOSTS, calls)
-                                    .execute(args(ARGUMENTS), context(Duration.ofMillis(100)))));
-            assertTrue(closed.await(1, TimeUnit.SECONDS));
-            assertTrue(calls.lastCall.isCanceled());
+                            () -> new WebFetchTool(HOSTS, local)
+                                    .execute(args(ARGUMENTS), context(Duration.ofMillis(200)))));
         } finally {
-            released.countDown();
+            release.countDown();
+            server.stop(0);
         }
     }
 

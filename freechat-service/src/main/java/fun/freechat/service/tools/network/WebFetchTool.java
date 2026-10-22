@@ -33,9 +33,9 @@ public final class WebFetchTool implements BuiltinTool {
         this(allowedHosts, null);
     }
 
-    WebFetchTool(Set<String> allowedHosts, okhttp3.Call.Factory scriptedCalls) {
+    WebFetchTool(Set<String> allowedHosts, NetworkHttp.Transport transport) {
         policy = new NetworkPolicy(allowedHosts);
-        http = new NetworkHttp(policy, scriptedCalls);
+        http = new NetworkHttp(policy, transport);
     }
 
     public boolean configured() {

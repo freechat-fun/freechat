@@ -41,6 +41,8 @@
         <langchain4j-community.version>1.22.0-beta32</langchain4j-community.version>
         <telegrambots.version>10.3.0</telegrambots.version>
         <wiremock.version>3.13.2</wiremock.version>
+        <re2j.version>1.8</re2j.version>
+        <jsoup.version>1.23.2</jsoup.version>
 
         <!--plugin versions-->
         <buildnumber-maven-plugin.version>3.3.1</buildnumber-maven-plugin.version>
@@ -218,6 +220,18 @@
                 <groupId>org.objenesis</groupId>
                 <artifactId>objenesis</artifactId>
                 <version>${objenesis.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.re2j</groupId>
+                <artifactId>re2j</artifactId>
+                <version>${re2j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>${jsoup.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
