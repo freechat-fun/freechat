@@ -563,11 +563,11 @@ class MemoryRecallToolsTest {
         var schemas = ToolSpecifications.toolSpecificationsFrom(tools);
         assertEquals(2, schemas.size());
         var search = schemas.stream()
-                .filter(schema -> schema.name().equals("searchMemory"))
+                .filter(schema -> schema.name().equals("search_memory"))
                 .findFirst()
                 .orElseThrow();
         var read = schemas.stream()
-                .filter(schema -> schema.name().equals("readMemory"))
+                .filter(schema -> schema.name().equals("read_memory"))
                 .findFirst()
                 .orElseThrow();
         assertEquals(

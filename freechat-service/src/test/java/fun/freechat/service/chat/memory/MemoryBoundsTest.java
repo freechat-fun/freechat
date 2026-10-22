@@ -44,7 +44,7 @@ class MemoryBoundsTest {
     void countsToolSchemasAndMessagesBeforeEveryRequest() {
         List<ChatMessage> messages = List.of(SystemMessage.from("system"), UserMessage.from("question"));
         List<ToolSpecification> tools = List.of(ToolSpecification.builder()
-                .name("searchMemory")
+                .name("search_memory")
                 .description("Search remembered conversations")
                 .build());
         int messageTokens = estimator(String::length).estimateTokenCountInMessages(messages);

@@ -35,20 +35,6 @@ import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
 public class AlbumTool {
-    private static final String DESCRIPTION_EN = """
-            Fetch real-time, context-specific images of a character. This tool MUST be invoked whenever the user requests to see, generate, or obtain a photo, image, or specific scene of a character.
-            [Core Behavior Guidelines]
-            1. Dynamic Generation Principle: This tool dynamically returns a brand-new, authentic image URL that perfectly matches the specific scene, action, clothing, or mood described by the user in the current turn.
-            2. Strictly Prohibit URL Reuse: Even if an image URL for the same character was fetched previously in the conversation history, you are ABSOLUTELY FORBIDDEN from reusing that historical URL. Every single request is independent and context-dependent.
-            3. Anti-Hallucination Requirement: Never fabricate, hallucinate, guess, or piece together any image URLs. You must use the exact, real URL returned by the tool in the current invocation.
-            4. Embedding Format: If a valid image URL is returned, you must embed it into your final response using Markdown format: ![img](url).""";
-    private static final String DESCRIPTION_CN = """
-            获取角色的实时场景图片。当用户请求查看、生成或获取某个角色的照片、图片、或特定场景下的画面时，必须调用此工具。
-            【核心行为准则】
-            1. 动态生成原则：该工具会根据用户当前轮次描述的具体场景、动作、服装或情绪，动态返回一张全新的、匹配当前最新语境的真实图片 URL。
-            2. 严禁复用历史链接：即便此前在对话历史中已经获取过该角色的照片，也绝对禁止直接复用旧的图片 URL。因为每一次请求的画面内容都是完全独立且即时生成的。
-            3. 真实性要求：绝对禁止伪造、捏造、猜测或盲目拼凑任何图片 URL。必须使用工具在当前轮次实际返回的真实 URL。
-            4. 嵌入格式：如果返回了有效的图片 URL，您必须使用 Markdown 格式将其嵌入到最终响应中：![img](url)。""";
     private static final String IMAGE_EDIT_AGENT_DESCRIPTION_EN = "Generate a new image based on an input image.";
     private static final String IMAGE_EDIT_AGENT_DESCRIPTION_CN = "根据输入的图片生成一张新图片。";
     private static final String IMAGE_EDIT_AGENT_PROMPT_EN = """
@@ -97,7 +83,13 @@ public class AlbumTool {
         this.lang = ensureNotNull(lang, "lang");
     }
 
-    @Tool
+    @Tool(name = "find_image", value = """
+            Fetch real-time, context-specific images of a character. This tool MUST be invoked whenever the user requests to see, generate, or obtain a photo, image, or specific scene of a character.
+            [Core Behavior Guidelines]
+            1. Dynamic Generation Principle: This tool dynamically returns a brand-new, authentic image URL that perfectly matches the specific scene, action, clothing, or mood described by the user in the current turn.
+            2. Strictly Prohibit URL Reuse: Even if an image URL for the same character was fetched previously in the conversation history, you are ABSOLUTELY FORBIDDEN from reusing that historical URL. Every single request is independent and context-dependent.
+            3. Anti-Hallucination Requirement: Never fabricate, hallucinate, guess, or piece together any image URLs. You must use the exact, real URL returned by the tool in the current invocation.
+            4. Embedding Format: If a valid image URL is returned, you must embed it into your final response using Markdown format: ![img](url).""")
     public Content findAnImage(@ToolMemoryId Object memoryId, String description) {
         ChatModel imageChatModel = Optional.ofNullable(memoryId)
                 .map(ChatService::asChatId)
@@ -228,10 +220,6 @@ public class AlbumTool {
                 root.getClass().getName(),
                 status >= 100 && status <= 599 ? status : 0,
                 code);
-    }
-
-    public String description() {
-        return "zh".equalsIgnoreCase(lang) ? DESCRIPTION_CN : DESCRIPTION_EN;
     }
 
     private String imageEditAgentDescription() {

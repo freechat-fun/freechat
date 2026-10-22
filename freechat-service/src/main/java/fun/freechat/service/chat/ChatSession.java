@@ -13,6 +13,7 @@ import dev.langchain4j.service.tool.ToolExecutionErrorHandler;
 import dev.langchain4j.service.tool.ToolExecutor;
 import fun.freechat.service.enums.PromptFormat;
 import fun.freechat.service.prompt.ChatPromptContent;
+import fun.freechat.service.tools.ToolBinder;
 import java.util.List;
 import java.util.Map;
 import lombok.Builder;
@@ -31,6 +32,7 @@ public class ChatSession {
     private final PromptFormat promptFormat;
     private final Map<String, Object> variables;
     private final String memoryFingerprint;
+    private final ToolBinder toolBinder;
 
     @Setter
     private MemoryUsage memoryUsage;
@@ -49,7 +51,8 @@ public class ChatSession {
             RetrievalAugmentor retriever,
             MemoryUsage memoryUsage,
             List<Object> objectsWithTools,
-            Map<ToolSpecification, ToolExecutor> tools) {
+            Map<ToolSpecification, ToolExecutor> tools,
+            ToolBinder toolBinder) {
         aiServiceContext = AiServiceContext.create(ChatService.class);
         aiServiceContext.chatModel = chatModel;
         aiServiceContext.streamingChatModel = streamingChatModel;
@@ -70,6 +73,7 @@ public class ChatSession {
         this.variables = variables;
         this.memoryUsage = memoryUsage;
         this.memoryFingerprint = memoryFingerprint;
+        this.toolBinder = toolBinder;
 
         if (CollectionUtils.isNotEmpty(objectsWithTools)) {
             this.tools(objectsWithTools);
@@ -113,6 +117,9 @@ public class ChatSession {
                 all.put(tool.toolSpecification(), tool.toolExecutor());
             }
         }
+        if (toolBinder != null) {
+            all = new java.util.LinkedHashMap<>(toolBinder.bind(all));
+        }
         all.replaceAll((specification, executor) -> (request, memoryId) -> {
             guard.run();
             try {
@@ -126,6 +133,16 @@ public class ChatSession {
         invocation.tools(all);
         invocation.aiServiceContext.toolService.maxToolCallingRoundTrips(maxToolRounds);
         return invocation;
+    }
+
+    public Map<ToolSpecification, ToolExecutor> bindToolsForInvocation() {
+        Map<ToolSpecification, ToolExecutor> candidates = new java.util.LinkedHashMap<>();
+        if (getToolSpecifications() != null) {
+            for (ToolSpecification specification : getToolSpecifications()) {
+                candidates.put(specification, getToolExecutors().get(specification.name()));
+            }
+        }
+        return toolBinder == null ? candidates : toolBinder.bind(candidates);
     }
 
     @SuppressWarnings("unused")

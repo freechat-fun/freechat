@@ -17,7 +17,6 @@ import dev.langchain4j.service.Result;
 import dev.langchain4j.service.TokenStream;
 import dev.langchain4j.service.tool.ToolExecutor;
 import fun.freechat.langchain4j.memory.chat.SystemAlwaysOnTopMessageWindowChatMemory;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,6 +27,7 @@ public final class ChatExecution {
     private final ChatSession session;
     private final Object memoryId;
     private final ChatMemory memory;
+    private final Map<ToolSpecification, ToolExecutor> tools;
     private ChatResponse pending;
     private Long messageId;
 
@@ -35,6 +35,7 @@ public final class ChatExecution {
         this.session = session;
         this.memoryId = memoryId;
         this.memory = session.getChatMemory(memoryId);
+        this.tools = session.bindToolsForInvocation();
     }
 
     public Pair<ChatResponse, Long> send(LongTermChatMemoryStore.Binding binding, Runnable verifyModeration) {
@@ -145,12 +146,6 @@ public final class ChatExecution {
                 throw new UnsupportedOperationException("Execution cannot clear chat history");
             }
         };
-        Map<ToolSpecification, ToolExecutor> tools = new LinkedHashMap<>();
-        if (session.getToolSpecifications() != null) {
-            for (ToolSpecification specification : session.getToolSpecifications()) {
-                tools.put(specification, session.getToolExecutors().get(specification.name()));
-            }
-        }
         return AiServices.builder(type)
                 .chatMemoryProvider(ignored -> executionMemory)
                 .userMessageProvider(ignored -> "Continue the prepared conversation")

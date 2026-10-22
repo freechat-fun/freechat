@@ -1,7 +1,5 @@
 package fun.freechat.service.chat.impl;
 
-import static dev.langchain4j.agent.tool.ToolSpecifications.toolSpecificationFrom;
-import static dev.langchain4j.internal.Utils.getAnnotatedMethod;
 import static dev.langchain4j.internal.Utils.getOrDefault;
 import static dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey;
 import static fun.freechat.service.ai.AiModelFactory.createAzureOpenAiChatModel;
@@ -33,8 +31,6 @@ import static fun.freechat.service.util.ChannelUtils.isValidChannelUser;
 import static fun.freechat.util.ByteUtils.isTrue;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import dev.langchain4j.agent.tool.Tool;
-import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.community.model.dashscope.QwenChatModel;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
@@ -56,8 +52,6 @@ import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
 import dev.langchain4j.rag.query.Query;
 import dev.langchain4j.rag.query.transformer.QueryTransformer;
 import dev.langchain4j.service.ModerationException;
-import dev.langchain4j.service.tool.DefaultToolExecutor;
-import dev.langchain4j.service.tool.ToolExecutor;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import fun.freechat.langchain4j.memory.chat.SystemAlwaysOnTopMessageWindowChatMemory;
@@ -89,12 +83,12 @@ import fun.freechat.service.prompt.PromptService;
 import fun.freechat.service.prompt.PromptTaskService;
 import fun.freechat.service.rag.EmbeddingModelService;
 import fun.freechat.service.rag.EmbeddingStoreService;
+import fun.freechat.service.tools.ToolRuntimeBroker;
 import fun.freechat.service.util.CacheUtils;
 import fun.freechat.service.util.InfoUtils;
 import fun.freechat.service.util.PromptUtils;
 import fun.freechat.util.LangUtils;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -174,6 +168,9 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
     @Autowired
     private ChatTaskQueueManager queueManager;
+
+    @Autowired
+    private ToolRuntimeBroker toolRuntimeBroker;
 
     private synchronized Lock getLock(Cache cache, String chatId) {
         if (cache == null) {
@@ -449,36 +446,14 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
             // tools
             stage = "tools";
-            Map<ToolSpecification, ToolExecutor> tools = HashMap.newHashMap(1);
-            if (isTrue(backend.getEnableAlbumTool())) {
-                AlbumTool albumTool = AlbumTool.builder()
-                        .homeUrl(homeUrl)
-                        .characterService(characterService)
-                        .chatContextService(chatContextService)
-                        .chatSessionService(this)
-                        .shortLinkService(shortLinkService)
-                        .lang(lang)
-                        .build();
-                for (Method method : albumTool.getClass().getDeclaredMethods()) {
-                    getAnnotatedMethod(method, Tool.class).ifPresent(toolMethod -> {
-                        ToolSpecification defaultToolSpecification = toolSpecificationFrom(toolMethod);
-                        tools.put(
-                                ToolSpecification.builder()
-                                        .name(defaultToolSpecification.name())
-                                        .parameters(defaultToolSpecification.parameters())
-                                        .metadata(defaultToolSpecification.metadata())
-                                        .description(albumTool.description()) // localized description
-                                        .build(),
-                                DefaultToolExecutor.builder()
-                                        .object(albumTool)
-                                        .originalMethod(method)
-                                        .methodToInvoke(method)
-                                        .wrapToolArgumentsExceptions(true)
-                                        .propagateToolExecutionExceptions(true)
-                                        .build());
-                    });
-                }
-            }
+            AlbumTool albumTool = AlbumTool.builder()
+                    .homeUrl(homeUrl)
+                    .characterService(characterService)
+                    .chatContextService(chatContextService)
+                    .chatSessionService(this)
+                    .shortLinkService(shortLinkService)
+                    .lang(lang)
+                    .build();
 
             return ChatSession.builder()
                     .chatModel(chatModel)
@@ -492,7 +467,9 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     .retriever(retrievalAugmentor)
                     .memoryUsage(memoryUsage)
                     .memoryFingerprint(memoryFingerprint)
-                    .tools(tools)
+                    .objectsWithTools(List.of(albumTool))
+                    .toolBinder(
+                            toolRuntimeBroker.binder(chatId, context.getUserId(), characterUid, backend.getBackendId()))
                     .build();
         } catch (RuntimeException | IOException e) {
             log.warn(

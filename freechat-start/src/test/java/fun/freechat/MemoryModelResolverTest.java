@@ -1275,6 +1275,21 @@ class MemoryModelResolverTest {
         org.springframework.test.util.ReflectionTestUtils.setField(sessions, "aiApiKeyService", keys);
         org.springframework.test.util.ReflectionTestUtils.setField(sessions, "memoryModels", resolver);
         org.springframework.test.util.ReflectionTestUtils.setField(sessions, "chatMemoryService", memories);
+        org.springframework.test.util.ReflectionTestUtils.setField(sessions, "homeUrl", "https://example.test");
+        org.springframework.test.util.ReflectionTestUtils.setField(
+                sessions, "chatContextService", fake(fun.freechat.service.chat.ChatContextService.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(
+                sessions, "shortLinkService", fake(fun.freechat.service.common.ShortLinkService.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(
+                sessions,
+                "toolRuntimeBroker",
+                new fun.freechat.service.tools.ToolRuntimeBroker(
+                        new fun.freechat.service.tools.ToolRegistry(List.of()),
+                        ignored -> {
+                            throw new IllegalStateException("No tools in this fixture");
+                        },
+                        List.of(),
+                        java.util.Set.of()));
         EmbeddingModelService embeddings = fake(EmbeddingModelService.class);
         when(embeddings.modelForLang("en")).thenReturn(fake(dev.langchain4j.model.embedding.EmbeddingModel.class));
         EmbeddingStoreService<?> stores = fake(EmbeddingStoreService.class);

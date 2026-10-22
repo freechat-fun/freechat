@@ -53,6 +53,14 @@ auth:
   aiApiKey:
     limits: 3
 chat:
+  tools:
+    allowed: get_current_time,calculate,roll_dice,search_memory,read_memory,find_image,read_file,write_file,edit,list_directory,glob,grep_search,run_shell_command,web_fetch,web_search
+    web-fetch:
+      allowed-hosts: ""
+    web-search:
+      endpoint: ""
+      api-key: ""
+      model: ""
   memory:
     maxMessageSize: 1000
     maxMessageWindowSize: 500

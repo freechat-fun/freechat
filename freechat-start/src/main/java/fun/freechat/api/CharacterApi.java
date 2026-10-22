@@ -24,6 +24,7 @@ import fun.freechat.service.prompt.PromptService;
 import fun.freechat.service.prompt.PromptTaskService;
 import fun.freechat.service.rag.RagTaskService;
 import fun.freechat.service.stats.InteractiveStatsService;
+import fun.freechat.service.tools.ToolRegistry;
 import fun.freechat.service.util.StoreUtils;
 import fun.freechat.util.AppMetaUtils;
 import fun.freechat.util.TarUtils;
@@ -120,6 +121,17 @@ public class CharacterApi {
 
     @Autowired
     private TtsService ttsService;
+
+    @Autowired
+    private ToolRegistry toolRegistry;
+
+    private void validateCharacterTools(String ext) {
+        try {
+            toolRegistry.validateConfiguration(ext);
+        } catch (IllegalArgumentException ignored) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid character tool configuration");
+        }
+    }
 
     private void increaseReferCount(String characterUid) {
         interactiveStatsService.add(
@@ -330,6 +342,7 @@ public class CharacterApi {
                     @RequestBody
                     @NotNull
                     CharacterCreateDTO character) {
+        validateCharacterTools(character.getExt());
         var characterInfo = character.toCharacterInfo();
         if (!characterService.create(characterInfo)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create character.");
@@ -364,6 +377,7 @@ public class CharacterApi {
                     @RequestBody
                     @NotNull
                     CharacterUpdateDTO character) {
+        validateCharacterTools(character.getExt());
         var characterInfo = character.toCharacterInfo(characterId);
         characterInfo.getLeft().setCharacterUid(characterService.getUid(characterId));
         return characterService.update(characterInfo);
@@ -1363,6 +1377,7 @@ public class CharacterApi {
 
         // create character
         CharacterCreateDTO characterCreateDTO = characterConf.getCharacter();
+        validateCharacterTools(characterCreateDTO.getExt());
         var characterPair = characterCreateDTO.toCharacterInfo();
         CharacterUtils.resetCharacterInfoPair(characterPair, null);
         if (!characterService.create(characterPair)) {
