@@ -32,43 +32,6 @@ services:
       timeout: 20s
       retries: 3
 
-  etcd:
-    container_name: ${ETCD_NAME}
-    image: quay.io/coreos/etcd:${ETCD_TAG}
-    environment:
-      - ETCD_AUTO_COMPACTION_MODE=revision
-      - ETCD_AUTO_COMPACTION_RETENTION=1000
-      - ETCD_QUOTA_BACKEND_BYTES=4294967296
-      - ETCD_SNAPSHOT_COUNT=50000
-    ports:
-      - ${ETCD_HOST_PORT}:${ETCD_PORT}
-    volumes:
-      - etcd_data:/etcd
-    command: [ "etcd", "-advertise-client-urls=http://127.0.0.1:${ETCD_PORT}", "-listen-client-urls=http://0.0.0.0:${ETCD_PORT}", "--data-dir=/etcd" ]
-    healthcheck:
-      test: ["CMD", "etcdctl", "endpoint", "health"]
-      interval: 30s
-      timeout: 20s
-      retries: 3
-
-  minio:
-    image: minio/minio:${MINIO_TAG}
-    ports:
-      - ${MINIO_HOST_PORT}:${MINIO_PORT}
-      - ${MINIO_CONTROL_HOST_PORT}:${MINIO_CONTROL_PORT}
-    container_name: ${MINIO_NAME}
-    environment:
-      MINIO_ACCESS_KEY: minioadmin
-      MINIO_SECRET_KEY: minioadmin
-    volumes:
-      - minio_data:/minio_data
-    command: [ "minio", "server", "/minio_data", "--console-address", ":${MINIO_CONTROL_PORT}" ]
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${MINIO_PORT}/minio/health/live"]
-      interval: 30s
-      timeout: 20s
-      retries: 3
-
   milvus:
     image: milvusdb/milvus:${MILVUS_TAG}
     ports:
@@ -78,8 +41,9 @@ services:
     volumes:
       - milvus_data:/var/lib/milvus
     environment:
-      - ETCD_ENDPOINTS=etcd:${ETCD_PORT}
-      - MINIO_ADDRESS=minio:${MINIO_PORT}
+      - ETCD_USE_EMBED=true
+      - ETCD_DATA_DIR=/var/lib/milvus/etcd
+      - COMMON_STORAGETYPE=local
     entrypoint: ["milvus", "run", "standalone"]
     security_opt:
       - seccomp:unconfined
@@ -87,10 +51,8 @@ services:
       test: [ "CMD", "curl", "--silent", "--fail", "http://localhost:${MILVUS_CONTROL_PORT}/healthz" ]
       interval: 10s
       timeout: 20s
+      start_period: 90s
       retries: 6
-    depends_on:
-      - "etcd"
-      - "minio"
 
   tts:
     image: freechatfun/freechat-tts:${TTS_TAG}
@@ -112,7 +74,5 @@ services:
 volumes:
   mysql_data:
   redis_data:
-  etcd_data:
-  minio_data:
   milvus_data:
   tts_data:
