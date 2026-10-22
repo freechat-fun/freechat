@@ -76,10 +76,10 @@ class ChatServiceMemoryTest {
     void albumAndScopedRecallSurviveRealRegistrationAndContinuations(boolean streaming) throws Exception {
         try (Fixture f = new Fixture()) {
             ChatResponse tools = response(AiMessage.from(
-                    call("album", "findAnImage", "{\"description\":\"current scene\"}"),
-                    call("search", "searchMemory", "{\"query\":\"prior event\"}")));
+                    call("album", "find_image", "{\"description\":\"current scene\"}"),
+                    call("search", "search_memory", "{\"query\":\"prior event\"}")));
             ChatResponse read = response(AiMessage.from(
-                    call("read", "readMemory", "{\"recordId\":\"" + f.document.id() + "\",\"offset\":256}")));
+                    call("read", "read_memory", "{\"recordId\":\"" + f.document.id() + "\",\"offset\":256}")));
             ChatResponse answer = response(AiMessage.from("answer"));
             ChatResponse result;
             if (streaming) {
@@ -147,7 +147,7 @@ class ChatServiceMemoryTest {
                     f.writes.stream().filter(write -> write.original() != null).count());
             assertEquals(Origin.ASSISTANT_OUTPUT, f.writes.getLast().origin());
             assertEquals(
-                    List.of("findAnImage", "searchMemory", "readMemory"),
+                    List.of("find_image", "search_memory", "read_memory"),
                     toolResults(f.provider.requests.get(2)).stream()
                             .map(ToolExecutionResultMessage::toolName)
                             .toList());
@@ -164,12 +164,12 @@ class ChatServiceMemoryTest {
             assertTrue(page.path("nextOffset").isNull());
             for (ChatRequest request : f.provider.requests) {
                 assertEquals(
-                        Set.of("findAnImage", "searchMemory", "readMemory"),
+                        Set.of("find_image", "search_memory", "read_memory"),
                         request.toolSpecifications().stream()
                                 .map(ToolSpecification::name)
                                 .collect(java.util.stream.Collectors.toSet()));
                 assertEquals(3, request.toolSpecifications().size(), "No duplicated registrations");
-                assertTrue(request.toolSpecifications().contains(f.albumSpec), "Localized album schema must survive");
+                assertTrue(request.toolSpecifications().contains(f.albumSpec), "Annotated album schema must survive");
                 assertEquals(
                         1,
                         request.messages().stream()
@@ -250,9 +250,9 @@ class ChatServiceMemoryTest {
             ChatResponse result = f.run(
                     streaming,
                     List.of(
-                            response(AiMessage.from(call("search", "searchMemory", "{\"query\":\"prior event\"}"))),
+                            response(AiMessage.from(call("search", "search_memory", "{\"query\":\"prior event\"}"))),
                             response(AiMessage.from(
-                                    call("read", "readMemory", "{\"recordId\":\"" + f.document.id() + "\"}"))),
+                                    call("read", "read_memory", "{\"recordId\":\"" + f.document.id() + "\"}"))),
                             response(AiMessage.from("final with memory"))));
             assertEquals("final with memory", result.aiMessage().text());
             assertEquals(1, retrievals.get());
@@ -301,7 +301,7 @@ class ChatServiceMemoryTest {
         try (Fixture f = new Fixture()) {
             for (int invocation = 0; invocation < 2; invocation++) {
                 f.provider.script.add(response(
-                        AiMessage.from(call("search-" + invocation, "searchMemory", "{\"query\":\"prior event\"}"))));
+                        AiMessage.from(call("search-" + invocation, "search_memory", "{\"query\":\"prior event\"}"))));
                 f.provider.script.add(response(AiMessage.from("done")));
                 assertNotNull(f.service.send(f.id, ORIGINAL, null));
                 f.idle();
@@ -487,7 +487,7 @@ class ChatServiceMemoryTest {
 
     static ChatResponse albumResponse() {
         return response(AiMessage.from(
-                call(UUID.randomUUID().toString(), "findAnImage", "{\"description\":\"current scene\"}")));
+                call(UUID.randomUUID().toString(), "find_image", "{\"description\":\"current scene\"}")));
     }
 
     static ToolExecutionRequest call(String id, String name, String arguments) {
@@ -630,14 +630,8 @@ class ChatServiceMemoryTest {
             ChatPromptContent prompt = new ChatPromptContent();
             prompt.setSystem("policy template");
             prompt.setMessageToSend(UserMessage.from("input template"));
-            ToolSpecification originalSpec = ToolSpecifications.toolSpecificationFrom(
+            albumSpec = ToolSpecifications.toolSpecificationFrom(
                     AlbumTool.class.getMethod("findAnImage", Object.class, String.class));
-            albumSpec = ToolSpecification.builder()
-                    .name(originalSpec.name())
-                    .parameters(originalSpec.parameters())
-                    .metadata(originalSpec.metadata())
-                    .description("Localized album description")
-                    .build();
             base = ChatSession.builder()
                     .chatModel(provider.sync)
                     .streamingChatModel(provider)

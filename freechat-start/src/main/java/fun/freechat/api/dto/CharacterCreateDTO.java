@@ -73,7 +73,9 @@ public class CharacterCreateDTO {
     @Schema(description = "Character language: en (default) | zh | ...")
     private String lang;
 
-    @Schema(description = "Additional information, JSON format")
+    @Schema(
+            description =
+                    "Additional JSON information. tools.enabled is an exact tool-name allowlist; missing or null inherits get_current_time, calculate, roll_dice, search_memory, read_memory and find_image, subject to feature prerequisites. An empty list disables all tools.")
     private String ext;
 
     @Schema(description = "Character draft information")

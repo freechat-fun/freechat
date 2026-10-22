@@ -16,6 +16,7 @@ import fun.freechat.service.enums.InfoType;
 import fun.freechat.service.enums.StatsType;
 import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.organization.OrgService;
+import fun.freechat.service.tools.ToolRegistry;
 import fun.freechat.service.util.CacheUtils;
 import fun.freechat.service.util.CharacterUtils;
 import fun.freechat.service.util.InfoUtils;
@@ -82,6 +83,9 @@ public class CharacterServiceImpl implements CharacterService {
 
     @Autowired
     private EncryptionService encryptionService;
+
+    @Autowired
+    private ToolRegistry toolRegistry;
 
     private QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder wrapQueryExpression(
             QueryExpressionDSL<SelectModel> c, String currentUserId) {
@@ -178,6 +182,7 @@ public class CharacterServiceImpl implements CharacterService {
 
     private void doCreate(Pair<CharacterInfo, List<String>> infoPair) {
         CharacterInfo info = infoPair.getLeft();
+        toolRegistry.validateConfiguration(info.getExt());
         LocalDateTime now = LocalDateTime.now();
         int rows = characterInfoMapper.insertSelective(info.withGmtCreate(now).withGmtModified(now));
         if (rows <= 0) {
@@ -400,6 +405,9 @@ public class CharacterServiceImpl implements CharacterService {
     @Override
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0.getLeft().characterId")
     public boolean update(Pair<CharacterInfo, List<String>> infoPair) {
+        if (infoPair.getLeft().getExt() != null) {
+            toolRegistry.validateConfiguration(infoPair.getLeft().getExt());
+        }
         SqlSession session = sqlSessionFactory.openSession();
         try {
             LocalDateTime now = LocalDateTime.now();
