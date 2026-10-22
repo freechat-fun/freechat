@@ -118,7 +118,7 @@ final class DashScopeSearchResponse {
         }
         try {
             var url = NetworkPolicy.httpsUrl(value.textValue());
-            String host = url.host();
+            String host = url.getHost();
             if (host.endsWith(".localhost")
                     || host.endsWith(".local")
                     || host.endsWith(".internal")

@@ -7,10 +7,10 @@ import fun.freechat.service.tools.BuiltinTool;
 import fun.freechat.service.tools.ToolArguments;
 import fun.freechat.service.tools.ToolContext;
 import fun.freechat.service.tools.ToolDefinition;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import okhttp3.HttpUrl;
 
 /** Explicit, one-shot DashScope Responses search; never derives credentials from another model. */
 public final class WebSearchTool implements BuiltinTool {
@@ -36,7 +36,7 @@ public final class WebSearchTool implements BuiltinTool {
             Set.of("network", "web", "read"),
             ToolDefinition.Boundary.NETWORK,
             false);
-    private final HttpUrl endpoint;
+    private final URI endpoint;
     private final String apiKey;
     private final String model;
     private final NetworkHttp http;
@@ -46,11 +46,11 @@ public final class WebSearchTool implements BuiltinTool {
         this(endpoint, apiKey, model, null);
     }
 
-    WebSearchTool(String endpoint, String apiKey, String model, okhttp3.Call.Factory scriptedCalls) {
+    WebSearchTool(String endpoint, String apiKey, String model, NetworkHttp.Transport transport) {
         this.endpoint = endpoint(endpoint);
         this.apiKey = apiKey;
         this.model = model;
-        http = new NetworkHttp(POLICY, scriptedCalls);
+        http = new NetworkHttp(POLICY, transport);
     }
 
     public boolean configured() {
@@ -61,13 +61,13 @@ public final class WebSearchTool implements BuiltinTool {
                 && model.matches("[A-Za-z0-9][A-Za-z0-9._:/-]{0,127}");
     }
 
-    private static HttpUrl endpoint(String value) {
+    private static URI endpoint(String value) {
         try {
-            HttpUrl url = POLICY.url(value);
-            if (url.query() != null) {
+            URI url = POLICY.url(value);
+            if (url.getRawQuery() != null) {
                 return null;
             }
-            String path = url.encodedPath();
+            String path = url.getRawPath();
             if (path.endsWith("/")) {
                 path = path.substring(0, path.length() - 1);
             }
@@ -78,7 +78,7 @@ public final class WebSearchTool implements BuiltinTool {
                     && !path.equals("/api/v2/apps/protocols/compatible-mode/v1/responses")) {
                 return null;
             }
-            return url.newBuilder().encodedPath(path).build();
+            return URI.create("https://" + url.getHost() + path);
         } catch (IllegalArgumentException ignored) {
             return null;
         }

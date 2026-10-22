@@ -3,11 +3,15 @@ package fun.freechat.service.tools.network;
 import fun.freechat.service.tools.ToolContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.Proxy;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.ByteBuffer;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
+import java.time.Duration;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -16,23 +20,13 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import okhttp3.Authenticator;
-import okhttp3.Call;
-import okhttp3.ConnectionPool;
-import okhttp3.CookieJar;
-import okhttp3.Dns;
-import okhttp3.HttpUrl;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Protocol;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import java.util.concurrent.atomic.AtomicReference;
+import org.springframework.util.MimeType;
+import org.springframework.util.MimeTypeUtils;
 
-/** One exchange, no ambient credentials/proxy/cache, bounded even when platform DNS stalls. */
 final class NetworkHttp {
-    private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-    // No queue: stuck native resolvers cannot create unbounded work across tenants.
+    private static final HttpClient CLIENT = client();
+    // A blocked resolver or server must not create unbounded work across sessions.
     private static final ThreadPoolExecutor WORKERS =
             new ThreadPoolExecutor(0, 16, 30, TimeUnit.SECONDS, new SynchronousQueue<>(), runnable -> {
                 Thread thread = new Thread(runnable, "builtin-network");
@@ -40,16 +34,18 @@ final class NetworkHttp {
                 return thread;
             });
     private final NetworkPolicy policy;
-    private final Call.Factory scriptedCalls;
+    private final Transport transport;
 
-    NetworkHttp(NetworkPolicy policy) {
-        this(policy, null);
+    @FunctionalInterface
+    interface Transport {
+        HttpResponse<InputStream> send(HttpRequest request) throws IOException, InterruptedException;
     }
 
-    /** Package-only HTTP boundary for offline tests; public tools always use the production client. */
-    NetworkHttp(NetworkPolicy policy, Call.Factory scriptedCalls) {
+    NetworkHttp(NetworkPolicy policy, Transport transport) {
         this.policy = policy;
-        this.scriptedCalls = scriptedCalls;
+        this.transport = transport == null
+                ? request -> CLIENT.send(request, HttpResponse.BodyHandlers.ofInputStream())
+                : transport;
     }
 
     record Payload(String mediaType, String text) {}
@@ -74,78 +70,44 @@ final class NetworkHttp {
         }
     }
 
-    static OkHttpClient client(NetworkPolicy policy, Deadline deadline) {
-        long remaining = deadline.remaining();
-        Dns checkedDns = policy.dns(Dns.SYSTEM);
-        return new OkHttpClient.Builder()
-                .proxy(Proxy.NO_PROXY)
-                .cookieJar(CookieJar.NO_COOKIES)
-                .authenticator(Authenticator.NONE)
-                .proxyAuthenticator(Authenticator.NONE)
-                .cache(null)
-                .protocols(List.of(Protocol.HTTP_1_1))
-                .connectionPool(new ConnectionPool(0, 1, TimeUnit.SECONDS))
-                .followRedirects(false)
-                .followSslRedirects(false)
-                .retryOnConnectionFailure(false)
-                .callTimeout(remaining, TimeUnit.NANOSECONDS)
-                .connectTimeout(Math.min(remaining, TimeUnit.SECONDS.toNanos(3)), TimeUnit.NANOSECONDS)
-                .readTimeout(Math.min(remaining, TimeUnit.SECONDS.toNanos(4)), TimeUnit.NANOSECONDS)
-                .writeTimeout(Math.min(remaining, TimeUnit.SECONDS.toNanos(3)), TimeUnit.NANOSECONDS)
-                .dns(host -> {
-                    deadline.remaining();
-                    var addresses = checkedDns.lookup(host);
-                    deadline.remaining();
-                    return addresses;
-                })
-                .addNetworkInterceptor(chain -> {
-                    deadline.remaining();
-                    Response response = chain.proceed(chain.request());
-                    // Chunk extensions are unbounded in OkHttp 4; cancel before close can drain the body.
-                    if (response.code() != 200
-                            || !response.headers("Transfer-Encoding").isEmpty()) {
-                        chain.call().cancel();
-                        response.close();
-                        throw failure();
-                    }
-                    return response;
-                })
+    static HttpClient client() {
+        return HttpClient.newBuilder()
+                .version(HttpClient.Version.HTTP_1_1)
+                .connectTimeout(Duration.ofSeconds(3))
+                .followRedirects(HttpClient.Redirect.NEVER)
+                .proxy(HttpClient.Builder.NO_PROXY)
                 .build();
     }
 
     Payload exchange(
-            HttpUrl destination,
-            String jsonBody,
-            String apiKey,
-            Set<String> mediaTypes,
-            int maxBytes,
-            Deadline deadline)
+            URI destination, String jsonBody, String apiKey, Set<String> mediaTypes, int maxBytes, Deadline deadline)
             throws IOException {
-        // Policy remains enforced even with a scripted HTTP boundary.
-        HttpUrl url = policy.url(destination.toString());
-        Request.Builder builder = new Request.Builder()
-                .url(url)
+        URI uri = policy.url(destination.toString());
+        HttpRequest.Builder builder = HttpRequest.newBuilder(uri)
+                .timeout(Duration.ofNanos(deadline.remaining()))
                 .header("Accept", String.join(", ", mediaTypes))
                 .header("Accept-Encoding", "identity")
                 .header("User-Agent", "FreeChat-Network-Tools/1.0");
         if (jsonBody != null) {
-            builder.post(RequestBody.create(jsonBody, JSON));
+            builder.header("Content-Type", "application/json; charset=utf-8")
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody, StandardCharsets.UTF_8));
         }
         if (apiKey != null) {
             builder.header("Authorization", "Bearer " + apiKey);
         }
-        Call call = (scriptedCalls == null ? client(policy, deadline) : scriptedCalls).newCall(builder.build());
+        HttpRequest request = builder.build();
+        AtomicReference<InputStream> activeBody = new AtomicReference<>();
         Future<Payload> pending = null;
         try {
             deadline.remaining();
             pending = WORKERS.submit(() -> {
                 deadline.remaining();
-                Response response = call.execute();
-                try {
+                HttpResponse<InputStream> response = transport.send(request);
+                try (InputStream body = response.body()) {
+                    activeBody.set(body);
                     return read(response, mediaTypes, maxBytes, deadline);
                 } finally {
-                    call.cancel();
-                    response.close();
+                    activeBody.set(null);
                 }
             });
             Payload result = pending.get(deadline.remaining(), TimeUnit.NANOSECONDS);
@@ -155,78 +117,80 @@ final class NetworkHttp {
             Thread.currentThread().interrupt();
             throw failure();
         } catch (ExecutionException | TimeoutException | RejectedExecutionException ignored) {
-            // Do not propagate URLs, provider error bodies, queries or credentials through causes/logs.
             throw failure();
         } finally {
-            call.cancel();
             if (pending != null) {
                 pending.cancel(true);
+            }
+            InputStream body = activeBody.getAndSet(null);
+            if (body != null) {
+                try {
+                    body.close();
+                } catch (IOException ignored) {
+                    // Transport errors must not disclose URLs, response bodies or credentials.
+                }
             }
         }
     }
 
-    private static Payload read(Response response, Set<String> mediaTypes, int maxBytes, Deadline deadline)
+    private static Payload read(
+            HttpResponse<InputStream> response, Set<String> mediaTypes, int maxBytes, Deadline deadline)
             throws IOException {
         deadline.remaining();
-        if (response.code() != 200
+        var headers = response.headers();
+        if (response.statusCode() != 200
                 || response.body() == null
-                || !response.headers("Transfer-Encoding").isEmpty()
-                || response.headers().size() > 64) {
+                || !headers.allValues("Transfer-Encoding").isEmpty()) {
             throw failure();
         }
-        int headerBytes = 0;
-        for (int i = 0; i < response.headers().size(); i++) {
-            headerBytes += response.headers().name(i).length()
-                    + response.headers().value(i).length();
+        int headerCount = 0;
+        long headerBytes = 0;
+        for (var entry : headers.map().entrySet()) {
+            for (String value : entry.getValue()) {
+                headerCount++;
+                headerBytes += (long) entry.getKey().length() + value.length();
+            }
         }
-        if (headerBytes > 16_384
-                || response.headers("Content-Type").size() != 1
-                || response.headers("Content-Encoding").size() > 1
-                || response.headers("Content-Length").size() > 1) {
+        if (headerCount > 64
+                || headerBytes > 16_384
+                || headers.allValues("Content-Type").size() != 1
+                || headers.allValues("Content-Encoding").size() > 1
+                || headers.allValues("Content-Length").size() > 1
+                || !"identity"
+                        .equalsIgnoreCase(headers.firstValue("Content-Encoding").orElse("identity"))) {
             throw failure();
         }
-        String encoding = response.header("Content-Encoding", "identity");
-        if (!"identity".equalsIgnoreCase(encoding)) {
-            // No transparent decompression, compressed bombs or encoding-dependent fallback.
-            throw failure();
-        }
-        MediaType type = MediaType.parse(response.header("Content-Type", ""));
-        if (type == null || !mediaTypes.contains(type.type() + "/" + type.subtype())) {
-            throw failure();
-        }
-        String charset = type.parameter("charset");
-        if (charset != null && !charset.equalsIgnoreCase("utf-8") && !charset.equalsIgnoreCase("utf8")) {
-            throw failure();
-        }
-        long declared = response.body().contentLength();
-        if (declared < -1 || declared > maxBytes) {
-            throw failure();
-        }
-        String lengthHeader = response.header("Content-Length");
-        if (lengthHeader != null) {
-            if (!lengthHeader.matches("[0-9]{1,10}")) {
+        MimeType type;
+        try {
+            type = MimeTypeUtils.parseMimeType(
+                    headers.firstValue("Content-Type").orElseThrow());
+            if (!mediaTypes.contains(type.getType() + "/" + type.getSubtype())
+                    || type.getCharset() != null && !type.getCharset().equals(StandardCharsets.UTF_8)) {
                 throw failure();
             }
-            long headerLength = Long.parseLong(lengthHeader);
-            if (headerLength > maxBytes || declared >= 0 && declared != headerLength) {
+        } catch (IllegalArgumentException ignored) {
+            throw failure();
+        }
+        long declared = -1;
+        String length = headers.firstValue("Content-Length").orElse(null);
+        if (length != null) {
+            if (!length.matches("[0-9]{1,10}") || (declared = Long.parseLong(length)) > maxBytes) {
                 throw failure();
             }
-            declared = headerLength;
         }
         ByteArrayOutputStream bytes = new ByteArrayOutputStream(Math.min(maxBytes, 8192));
         byte[] buffer = new byte[8192];
-        try (var input = response.body().byteStream()) {
-            while (true) {
-                deadline.remaining();
-                int count = input.read(buffer, 0, Math.min(buffer.length, maxBytes - bytes.size() + 1));
-                if (count == -1) {
-                    break;
-                }
-                if (count == 0 || count > maxBytes - bytes.size()) {
-                    throw failure();
-                }
-                bytes.write(buffer, 0, count);
+        InputStream input = response.body();
+        while (true) {
+            deadline.remaining();
+            int count = input.read(buffer, 0, Math.min(buffer.length, maxBytes - bytes.size() + 1));
+            if (count == -1) {
+                break;
             }
+            if (count == 0 || count > maxBytes - bytes.size()) {
+                throw failure();
+            }
+            bytes.write(buffer, 0, count);
         }
         if (declared >= 0 && declared != bytes.size()) {
             throw failure();
@@ -238,7 +202,7 @@ final class NetworkHttp {
                 .decode(ByteBuffer.wrap(bytes.toByteArray()))
                 .toString();
         deadline.remaining();
-        return new Payload(type.type() + "/" + type.subtype(), text);
+        return new Payload(type.getType() + "/" + type.getSubtype(), text);
     }
 
     static IOException failure() {

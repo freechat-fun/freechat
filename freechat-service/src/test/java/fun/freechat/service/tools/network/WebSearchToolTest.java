@@ -11,7 +11,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import okio.Buffer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -88,13 +87,15 @@ class WebSearchToolTest {
         assertEquals("POST", calls.request.method());
         assertEquals(
                 "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/responses",
-                calls.request.url().toString());
-        assertEquals("Bearer " + KEY, calls.request.header("Authorization"));
-        assertNull(calls.request.header("Cookie"));
-        Buffer body = new Buffer();
-        assertNotNull(calls.request.body());
-        calls.request.body().writeTo(body);
-        String bodyText = body.readUtf8();
+                calls.request.uri().toString());
+        assertEquals(
+                "Bearer " + KEY,
+                calls.request.headers().firstValue("Authorization").orElseThrow());
+        assertTrue(calls.request.headers().firstValue("Cookie").isEmpty());
+        assertEquals(
+                "application/json; charset=utf-8",
+                calls.request.headers().firstValue("Content-Type").orElseThrow());
+        String bodyText = bodyText(calls.request);
         JsonNode sent = args(bodyText);
         assertEquals("qwen3.5-plus", sent.path("model").asText());
         assertFalse(sent.path("stream").asBoolean(true));
@@ -266,10 +267,8 @@ class WebSearchToolTest {
 
     @Test
     void rejectsRedirectAndNonJsonBodyWithoutDisclosingAuthorization() {
-        Calls redirect = new Calls(request -> response(request, 302, "application/json", KEY)
-                .newBuilder()
-                .header("Location", "https://evil.com/collect")
-                .build());
+        Calls redirect = new Calls(request ->
+                response(request, 302, "application/json", KEY).withHeader("Location", "https://evil.com/collect"));
         Exception error =
                 assertThrows(IOException.class, () -> tool(redirect).execute(args("{\"query\":\"facts\"}"), context()));
         assertEquals(1, redirect.count.get());
