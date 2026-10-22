@@ -7,7 +7,7 @@ check_docker
 MODULE_PATH=${PROJECT_PATH}/${PROJECT_NAME}-dal
 RESOURCE_PATH=${MODULE_PATH}/src/main/resources
 SERVICE_NAMES="mysql redis milvus"
-SERVICES_CONFIG=local-deps.yml
+SERVICES_CONFIG="${SCRIPTS_PATH}/local-deps.yml"
 
 export MYSQL_TAG=9.4.0
 export MYSQL_PASSWORD=hello1234
@@ -21,18 +21,6 @@ export REDIS_PASSWORD=hello1234
 export REDIS_NAME=${PROJECT_NAME}-redis
 export REDIS_PORT=6379
 export REDIS_HOST_PORT=6379
-
-export ETCD_TAG=v3.5.16
-export ETCD_NAME=${PROJECT_NAME}-etcd
-export ETCD_PORT=2379
-export ETCD_HOST_PORT=2379
-
-export MINIO_TAG=RELEASE.2025-09-07T16-13-09Z
-export MINIO_NAME=${PROJECT_NAME}-minio
-export MINIO_PORT=9000
-export MINIO_HOST_PORT=9000
-export MINIO_CONTROL_PORT=9001
-export MINIO_CONTROL_HOST_PORT=9001
 
 export MILVUS_TAG=v2.5.19
 export MILVUS_USERNAME=root
@@ -67,9 +55,9 @@ EOF
   cp -f ${RESOURCE_PATH}/sql/schema.sql ${MYSQL_VOLUME}/docker-entrypoint-initdb.d/initdb-1.sql
   cp -f ${RESOURCE_PATH}/sql/data-local.sql ${MYSQL_VOLUME}/docker-entrypoint-initdb.d/initdb-2.sql
 
-  docker compose -f ${SERVICES_CONFIG} -p ${PROJECT_NAME} up --wait ${SERVICE_NAMES}
+  docker compose -f "${SERVICES_CONFIG}" -p ${PROJECT_NAME} up --wait ${SERVICE_NAMES}
 elif [[ " ${ARGS[*]} " =~ " --stop " ]]; then
-  docker compose -f ${SERVICES_CONFIG} -p ${PROJECT_NAME} down
+  docker compose -f "${SERVICES_CONFIG}" -p ${PROJECT_NAME} down
 else
-  docker compose -f ${SERVICES_CONFIG} -p ${PROJECT_NAME} top
+  docker compose -f "${SERVICES_CONFIG}" -p ${PROJECT_NAME} top
 fi
