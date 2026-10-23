@@ -6,24 +6,24 @@ Request data for creating new character information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**parent_uid** | **str** | Referenced character | [optional] 
-**visibility** | **str** | Visibility: private (default), public, public_org, hidden | [optional] 
-**name** | **str** | Character name | 
-**description** | **str** | Character description | [optional] 
-**nickname** | **str** | Character nickname | [optional] 
-**avatar** | **str** | Character avatar url | [optional] 
-**picture** | **str** | Character picture url | [optional] 
-**video** | **str** | Character video url | [optional] 
-**gender** | **str** | Character gender: male | female | other | [optional] 
-**profile** | **str** | Character profile | [optional] 
-**greeting** | **str** | Character greeting | [optional] 
-**chat_style** | **str** | Character chat-style | [optional] 
-**chat_example** | **str** | Character chat-example | [optional] 
-**default_scene** | **str** | Default scene, which will be set as the default conversation background information when creating a new chat | [optional] 
-**lang** | **str** | Character language: en (default) | zh | ... | [optional] 
-**ext** | **str** | Additional information, JSON format | [optional] 
-**draft** | **str** | Character draft information | [optional] 
-**tags** | **List[str]** | Tag set | [optional] 
+**parent_uid** | **str** | Referenced character | [optional]
+**visibility** | **str** | Visibility: private (default), public, public_org, hidden | [optional]
+**name** | **str** | Character name |
+**description** | **str** | Character description | [optional]
+**nickname** | **str** | Character nickname | [optional]
+**avatar** | **str** | Character avatar url | [optional]
+**picture** | **str** | Character picture url | [optional]
+**video** | **str** | Character video url | [optional]
+**gender** | **str** | Character gender: male | female | other | [optional]
+**profile** | **str** | Character profile | [optional]
+**greeting** | **str** | Character greeting | [optional]
+**chat_style** | **str** | Character chat-style | [optional]
+**chat_example** | **str** | Character chat-example | [optional]
+**default_scene** | **str** | Default scene, which will be set as the default conversation background information when creating a new chat | [optional]
+**lang** | **str** | Character language: en (default) | zh | ... | [optional]
+**ext** | **str** | Additional JSON information. tools.enabled is an exact tool-name allowlist; missing or null inherits roleplay, memory and image defaults, subject to prerequisites. An empty tools list disables all tools. skills.enabled is a list of the creator&#39;s installed skill IDs; missing, null or empty enables no skills. With skills enabled, default tools include skill and read_skill_resource, and only approved in-process roleplay, memory and skill-reading tools are available. Skill references are omitted from character exports and cleared on import or cloning. | [optional]
+**draft** | **str** | Character draft information | [optional]
+**tags** | **List[str]** | Tag set | [optional]
 
 ## Example
 

@@ -87,6 +87,9 @@ public class CharacterServiceImpl implements CharacterService {
     @Autowired
     private ToolRegistry toolRegistry;
 
+    @Autowired
+    private fun.freechat.service.skills.SkillCharacterPolicy skillPolicy;
+
     private QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder wrapQueryExpression(
             QueryExpressionDSL<SelectModel> c, String currentUserId) {
         return c.where(
@@ -178,11 +181,13 @@ public class CharacterServiceImpl implements CharacterService {
         PojoUtils.mapWhenExists(draft::getChatStyle, info::setChatStyle);
         PojoUtils.mapWhenExists(draft::getGreeting, info::setGreeting);
         PojoUtils.mapWhenExists(draft::getProfile, info::setProfile);
+        PojoUtils.mapWhenExists(draft::getExt, info::setExt);
     }
 
     private void doCreate(Pair<CharacterInfo, List<String>> infoPair) {
         CharacterInfo info = infoPair.getLeft();
         toolRegistry.validateConfiguration(info.getExt());
+        skillPolicy.validate(info.getUserId(), info.getExt(), info.getDraft());
         LocalDateTime now = LocalDateTime.now();
         int rows = characterInfoMapper.insertSelective(info.withGmtCreate(now).withGmtModified(now));
         if (rows <= 0) {
@@ -407,6 +412,13 @@ public class CharacterServiceImpl implements CharacterService {
     public boolean update(Pair<CharacterInfo, List<String>> infoPair) {
         if (infoPair.getLeft().getExt() != null) {
             toolRegistry.validateConfiguration(infoPair.getLeft().getExt());
+        }
+        CharacterInfo requested = infoPair.getLeft();
+        requested.setUserId(
+                skillPolicy.validateUpdate(requested.getCharacterId(), requested.getExt(), requested.getDraft()));
+        String draftExt = fun.freechat.service.skills.CharacterSkillConfiguration.draftExt(requested.getDraft());
+        if (draftExt != null) {
+            toolRegistry.validateConfiguration(draftExt);
         }
         SqlSession session = sqlSessionFactory.openSession();
         try {
@@ -704,6 +716,7 @@ public class CharacterServiceImpl implements CharacterService {
     @Override
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public Long publish(Long characterId, Visibility visibility, User user) {
+        skillPolicy.validatePublication(characterId);
         Long publishedInfoId;
         SqlSession session = sqlSessionFactory.openSession();
         try {

@@ -58,6 +58,18 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
         }
         String currentRole = AccountUtils.currentRole();
         User currentUser = AccountUtils.currentUser();
+        if ("skillDefaultOp".equals(permission)) {
+            try {
+                return targetObject instanceof String id
+                        && applicationContext
+                                .getBean(fun.freechat.service.skills.SkillService.class)
+                                .list(currentUser.getUserId())
+                                .stream()
+                                .anyMatch(skill -> skill.skillId().equals(id));
+            } catch (RuntimeException ignored) {
+                return false;
+            }
+        }
         if (AuthorityUtils.adminRole().equals(currentRole)) {
             return true;
         }

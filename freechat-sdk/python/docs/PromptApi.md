@@ -86,7 +86,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_ref_dto** | [**PromptRefDTO**](PromptRefDTO.md)| Prompt record | 
+ **prompt_ref_dto** | [**PromptRefDTO**](PromptRefDTO.md)| Prompt record |
 
 ### Return type
 
@@ -164,7 +164,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_template_dto** | [**PromptTemplateDTO**](PromptTemplateDTO.md)| String type prompt template | 
+ **prompt_template_dto** | [**PromptTemplateDTO**](PromptTemplateDTO.md)| String type prompt template |
 
 ### Return type
 
@@ -243,7 +243,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_query_dto** | [**List[PromptQueryDTO]**](PromptQueryDTO.md)| Query conditions | 
+ **prompt_query_dto** | [**List[PromptQueryDTO]**](PromptQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -322,7 +322,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_query_dto** | [**List[PromptQueryDTO]**](PromptQueryDTO.md)| Query conditions | 
+ **prompt_query_dto** | [**List[PromptQueryDTO]**](PromptQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -407,7 +407,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_id** | **int**| The referenced promptId | 
+ **prompt_id** | **int**| The referenced promptId |
 
 ### Return type
 
@@ -484,7 +484,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **request_body** | [**List[int]**](int.md)| List of prompt information to be created | 
+ **request_body** | [**List[int]**](int.md)| List of prompt information to be created |
 
 ### Return type
 
@@ -562,7 +562,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_query_dto** | [**PromptQueryDTO**](PromptQueryDTO.md)| Query conditions | 
+ **prompt_query_dto** | [**PromptQueryDTO**](PromptQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -640,7 +640,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_query_dto** | [**PromptQueryDTO**](PromptQueryDTO.md)| Query conditions | 
+ **prompt_query_dto** | [**PromptQueryDTO**](PromptQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -729,7 +729,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_create_dto** | [**PromptCreateDTO**](PromptCreateDTO.md)| Information of the prompt to be created | 
+ **prompt_create_dto** | [**PromptCreateDTO**](PromptCreateDTO.md)| Information of the prompt to be created |
 
 ### Return type
 
@@ -807,7 +807,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_create_dto** | [**List[PromptCreateDTO]**](PromptCreateDTO.md)| List of prompt information to be created | 
+ **prompt_create_dto** | [**List[PromptCreateDTO]**](PromptCreateDTO.md)| List of prompt information to be created |
 
 ### Return type
 
@@ -884,7 +884,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_id** | **int**| The promptId to be deleted | 
+ **prompt_id** | **int**| The promptId to be deleted |
 
 ### Return type
 
@@ -961,7 +961,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **name** | **str**| The prompt name to be deleted | 
+ **name** | **str**| The prompt name to be deleted |
 
 ### Return type
 
@@ -1038,7 +1038,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **request_body** | [**List[int]**](int.md)| List of promptIds to be deleted | 
+ **request_body** | [**List[int]**](int.md)| List of promptIds to be deleted |
 
 ### Return type
 
@@ -1115,7 +1115,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **name** | **str**| Name | 
+ **name** | **str**| Name |
 
 ### Return type
 
@@ -1193,7 +1193,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_id** | **int**| PromptId to be obtained | 
+ **prompt_id** | **int**| PromptId to be obtained |
 
 ### Return type
 
@@ -1271,7 +1271,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_id** | **int**| PromptId to be obtained | 
+ **prompt_id** | **int**| PromptId to be obtained |
 
 ### Return type
 
@@ -1349,7 +1349,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **name** | **str**| Prompt name | 
+ **name** | **str**| Prompt name |
 
 ### Return type
 
@@ -1426,7 +1426,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **desired** | **str**| Desired name | 
+ **desired** | **str**| Desired name |
 
 ### Return type
 
@@ -1504,8 +1504,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_id** | **int**| The promptId to be published | 
- **visibility** | **str**| Visibility: public | private | ... | 
+ **prompt_id** | **int**| The promptId to be published |
+ **visibility** | **str**| Visibility: public | private | ... |
 
 ### Return type
 
@@ -1584,7 +1584,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_query_dto** | [**PromptQueryDTO**](PromptQueryDTO.md)| Query conditions | 
+ **prompt_query_dto** | [**PromptQueryDTO**](PromptQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -1676,7 +1676,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_query_dto** | [**PromptQueryDTO**](PromptQueryDTO.md)| Query conditions | 
+ **prompt_query_dto** | [**PromptQueryDTO**](PromptQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -1768,7 +1768,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_query_dto** | [**PromptQueryDTO**](PromptQueryDTO.md)| Query conditions | 
+ **prompt_query_dto** | [**PromptQueryDTO**](PromptQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -1847,7 +1847,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_ai_param_dto** | [**PromptAiParamDTO**](PromptAiParamDTO.md)| Call parameters | 
+ **prompt_ai_param_dto** | [**PromptAiParamDTO**](PromptAiParamDTO.md)| Call parameters |
 
 ### Return type
 
@@ -1926,7 +1926,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_ai_param_dto** | [**PromptAiParamDTO**](PromptAiParamDTO.md)| Call parameters | 
+ **prompt_ai_param_dto** | [**PromptAiParamDTO**](PromptAiParamDTO.md)| Call parameters |
 
 ### Return type
 
@@ -2005,8 +2005,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_id** | **int**| The promptId to be updated | 
- **prompt_update_dto** | [**PromptUpdateDTO**](PromptUpdateDTO.md)| The prompt information to be updated | 
+ **prompt_id** | **int**| The promptId to be updated |
+ **prompt_update_dto** | [**PromptUpdateDTO**](PromptUpdateDTO.md)| The prompt information to be updated |
 
 ### Return type
 

@@ -16,6 +16,8 @@ import PromptTaskEdit from './pages/prompt/PromptTaskEdit';
 import PromptTaskInfo from './pages/prompt/PromptTaskInfo';
 import Chats from './pages/chat/Chats';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import Skills from './pages/skill/Skills';
+import SkillInfo from './pages/skill/SkillInfo';
 
 const sidebarRoutes = [
   {
@@ -37,6 +39,14 @@ const sidebarRoutes = [
   {
     path: 'w/prompts',
     element: <Prompts />,
+  },
+  {
+    path: 'w/skills',
+    element: <Skills />,
+  },
+  {
+    path: 'w/skill/:id',
+    element: <SkillInfo />,
   },
   {
     path: 'w/prompt/:id',

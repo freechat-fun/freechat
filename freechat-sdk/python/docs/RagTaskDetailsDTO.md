@@ -6,19 +6,19 @@ Prompt task detailed information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**request_id** | **str** | Request identifier | [optional] 
-**id** | **int** | RAG task identifier | [optional] 
-**gmt_create** | **datetime** | Creation time | [optional] 
-**gmt_modified** | **datetime** | Modification time | [optional] 
-**gmt_start** | **datetime** | Task start execution time | [optional] 
-**gmt_end** | **datetime** | Task end execution time | [optional] 
-**character_uid** | **str** | Character identifier | [optional] 
-**source_type** | **str** | Source type: file (default) | url | [optional] 
-**source** | **str** | Source information, url, or a key for file | [optional] 
-**max_segment_size** | **int** | The maximum size of a segment in tokens. | [optional] 
-**max_overlap_size** | **int** | The maximum size of the overlap between segments in tokens. | [optional] 
-**status** | **str** | Task execution status: pending | running | succeeded | failed | canceled | [optional] 
-**ext** | **str** | Additional information, JSON format | [optional] 
+**request_id** | **str** | Request identifier | [optional]
+**id** | **int** | RAG task identifier | [optional]
+**gmt_create** | **datetime** | Creation time | [optional]
+**gmt_modified** | **datetime** | Modification time | [optional]
+**gmt_start** | **datetime** | Task start execution time | [optional]
+**gmt_end** | **datetime** | Task end execution time | [optional]
+**character_uid** | **str** | Character identifier | [optional]
+**source_type** | **str** | Source type: file (default) | url | [optional]
+**source** | **str** | Source information, url, or a key for file | [optional]
+**max_segment_size** | **int** | The maximum size of a segment in tokens. | [optional]
+**max_overlap_size** | **int** | The maximum size of the overlap between segments in tokens. | [optional]
+**status** | **str** | Task execution status: pending | running | succeeded | failed | canceled | [optional]
+**ext** | **str** | Additional information, JSON format | [optional]
 
 ## Example
 

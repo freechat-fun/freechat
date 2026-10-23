@@ -6,16 +6,16 @@ Model credential information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**request_id** | **str** | Request identifier | [optional] 
-**id** | **int** | Credential identifier | [optional] 
-**gmt_create** | **datetime** | Creation time | [optional] 
-**gmt_modified** | **datetime** | Modification time | [optional] 
-**gmt_used** | **datetime** | Last use time | [optional] 
-**name** | **str** | Credential name | [optional] 
-**provider** | **str** | Model provider: hugging_face | open_ai | azure_open_ai | dash_scope | ollama | unknown | [optional] 
-**token** | **str** | Credential content | [optional] 
-**enabled** | **bool** | Whether to enable | [optional] 
-**username** | **str** | Credential owner | [optional] 
+**request_id** | **str** | Request identifier | [optional]
+**id** | **int** | Credential identifier | [optional]
+**gmt_create** | **datetime** | Creation time | [optional]
+**gmt_modified** | **datetime** | Modification time | [optional]
+**gmt_used** | **datetime** | Last use time | [optional]
+**name** | **str** | Credential name | [optional]
+**provider** | **str** | Model provider: hugging_face | open_ai | azure_open_ai | dash_scope | ollama | unknown | [optional]
+**token** | **str** | Credential content | [optional]
+**enabled** | **bool** | Whether to enable | [optional]
+**username** | **str** | Credential owner | [optional]
 
 ## Example
 

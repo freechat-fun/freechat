@@ -52,7 +52,7 @@ public final class MemoryStreamingModel implements StreamingChatModel {
         Call call = new Call(handler);
         try {
             lifetime.check();
-            call.request = request.toBuilder().messages(invocation.messages()).build();
+            call.request = invocation.modelRequest(request);
             lifetime.check();
             send.accept(call);
         } catch (Throwable ignored) {

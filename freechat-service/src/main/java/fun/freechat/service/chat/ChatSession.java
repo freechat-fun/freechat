@@ -33,6 +33,8 @@ public class ChatSession {
     private final Map<String, Object> variables;
     private final String memoryFingerprint;
     private final ToolBinder toolBinder;
+    private final fun.freechat.service.skills.SkillBinder skillBinder;
+    private final fun.freechat.service.skills.SkillInvocation skillInvocation;
 
     @Setter
     private MemoryUsage memoryUsage;
@@ -52,7 +54,9 @@ public class ChatSession {
             MemoryUsage memoryUsage,
             List<Object> objectsWithTools,
             Map<ToolSpecification, ToolExecutor> tools,
-            ToolBinder toolBinder) {
+            ToolBinder toolBinder,
+            fun.freechat.service.skills.SkillBinder skillBinder,
+            fun.freechat.service.skills.SkillInvocation skillInvocation) {
         aiServiceContext = AiServiceContext.create(ChatService.class);
         aiServiceContext.chatModel = chatModel;
         aiServiceContext.streamingChatModel = streamingChatModel;
@@ -74,6 +78,8 @@ public class ChatSession {
         this.memoryUsage = memoryUsage;
         this.memoryFingerprint = memoryFingerprint;
         this.toolBinder = toolBinder;
+        this.skillBinder = skillBinder;
+        this.skillInvocation = skillInvocation;
 
         if (CollectionUtils.isNotEmpty(objectsWithTools)) {
             this.tools(objectsWithTools);
@@ -89,7 +95,12 @@ public class ChatSession {
             List<Object> recallTools,
             int maxToolRounds,
             Runnable guard) {
+        var skills = skillBinder == null ? null : skillBinder.bind();
+        if (skills != null && memory instanceof fun.freechat.service.chat.memory.MemoryInvocation preparedMemory) {
+            preparedMemory.requestOverlay(skills::messages, skills::validateRequest);
+        }
         ChatSession invocation = ChatSession.builder()
+                .skillInvocation(skills)
                 .chatModel(getChatModel())
                 .streamingChatModel(streaming)
                 .imageChatModel(imageChatModel)
@@ -117,8 +128,14 @@ public class ChatSession {
                 all.put(tool.toolSpecification(), tool.toolExecutor());
             }
         }
+        if (skills != null) {
+            all.putAll(skills.executors());
+        }
         if (toolBinder != null) {
             all = new java.util.LinkedHashMap<>(toolBinder.bind(all));
+        }
+        if (skills != null) {
+            all = new java.util.LinkedHashMap<>(skills.restrict(all));
         }
         all.replaceAll((specification, executor) -> (request, memoryId) -> {
             guard.run();
@@ -135,14 +152,29 @@ public class ChatSession {
         return invocation;
     }
 
-    public Map<ToolSpecification, ToolExecutor> bindToolsForInvocation() {
+    public record InvocationTools(
+            Map<ToolSpecification, ToolExecutor> tools, fun.freechat.service.skills.SkillInvocation skills) {}
+
+    public InvocationTools bindInvocation() {
+        var skills = skillInvocation != null ? skillInvocation : skillBinder == null ? null : skillBinder.bind();
         Map<ToolSpecification, ToolExecutor> candidates = new java.util.LinkedHashMap<>();
         if (getToolSpecifications() != null) {
             for (ToolSpecification specification : getToolSpecifications()) {
                 candidates.put(specification, getToolExecutors().get(specification.name()));
             }
         }
-        return toolBinder == null ? candidates : toolBinder.bind(candidates);
+        if (skills != null && skillInvocation == null) {
+            candidates.putAll(skills.executors());
+        }
+        Map<ToolSpecification, ToolExecutor> bound = toolBinder == null ? candidates : toolBinder.bind(candidates);
+        if (skills != null && skillInvocation == null) {
+            bound = skills.restrict(bound);
+        }
+        return new InvocationTools(bound, skills);
+    }
+
+    public Map<ToolSpecification, ToolExecutor> bindToolsForInvocation() {
+        return bindInvocation().tools();
     }
 
     @SuppressWarnings("unused")

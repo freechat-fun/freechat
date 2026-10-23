@@ -6,20 +6,20 @@ Agent summary information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**request_id** | **str** | Request identifier | [optional] 
-**agent_id** | **int** | Agent identifier, will change after publish | [optional] 
-**agent_uid** | **str** | Agent immutable identifier | [optional] 
-**gmt_create** | **datetime** | Creation time | [optional] 
-**gmt_modified** | **datetime** | Modification time | [optional] 
-**parent_uid** | **str** | Referenced agent | [optional] 
-**visibility** | **str** | Visibility: private, public, public_org, hidden | [optional] 
-**format** | **str** | Agent format, currently supported: langflow | [optional] 
-**version** | **int** | Version | [optional] 
-**name** | **str** | Agent name | [optional] 
-**description** | **str** | Agent description | [optional] 
-**username** | **str** | Agent owner | [optional] 
-**tags** | **List[str]** | Tag set | [optional] 
-**ai_models** | [**List[AiModelInfoDTO]**](AiModelInfoDTO.md) | Supported model set | [optional] 
+**request_id** | **str** | Request identifier | [optional]
+**agent_id** | **int** | Agent identifier, will change after publish | [optional]
+**agent_uid** | **str** | Agent immutable identifier | [optional]
+**gmt_create** | **datetime** | Creation time | [optional]
+**gmt_modified** | **datetime** | Modification time | [optional]
+**parent_uid** | **str** | Referenced agent | [optional]
+**visibility** | **str** | Visibility: private, public, public_org, hidden | [optional]
+**format** | **str** | Agent format, currently supported: langflow | [optional]
+**version** | **int** | Version | [optional]
+**name** | **str** | Agent name | [optional]
+**description** | **str** | Agent description | [optional]
+**username** | **str** | Agent owner | [optional]
+**tags** | **List[str]** | Tag set | [optional]
+**ai_models** | [**List[AiModelInfoDTO]**](AiModelInfoDTO.md) | Supported model set | [optional]
 
 ## Example
 

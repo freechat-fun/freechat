@@ -13,6 +13,9 @@ export default defineConfig({
       'window.Prism': 'prismjs',
     }),
   ],
+  optimizeDeps: {
+    include: ['prismjs'],
+  },
   build: {
     rolldownOptions: {
       output: {

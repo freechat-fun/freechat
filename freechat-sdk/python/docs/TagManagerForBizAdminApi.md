@@ -64,9 +64,9 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **refer_type** | **str**| Tag type (prompt, agent, plugin...) | 
- **refer_id** | **str**| Resource identifier of the tag | 
- **tag** | **str**| Tag content | 
+ **refer_type** | **str**| Tag type (prompt, agent, plugin...) |
+ **refer_id** | **str**| Resource identifier of the tag |
+ **tag** | **str**| Tag content |
 
 ### Return type
 
@@ -145,9 +145,9 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **refer_type** | **str**| Tag type (prompt, agent, plugin...) | 
- **refer_id** | **str**| Resource identifier of the tag | 
- **tag** | **str**| Tag content | 
+ **refer_type** | **str**| Tag type (prompt, agent, plugin...) |
+ **refer_id** | **str**| Resource identifier of the tag |
+ **tag** | **str**| Tag content |
 
 ### Return type
 

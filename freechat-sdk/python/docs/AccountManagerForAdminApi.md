@@ -75,8 +75,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **username** | **str**| Username | 
- **duration** | **int**| Validity period (seconds) | 
+ **username** | **str**| Username |
+ **duration** | **int**| Validity period (seconds) |
 
 ### Return type
 
@@ -154,7 +154,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **user_full_details_dto** | [**UserFullDetailsDTO**](UserFullDetailsDTO.md)| User information | 
+ **user_full_details_dto** | [**UserFullDetailsDTO**](UserFullDetailsDTO.md)| User information |
 
 ### Return type
 
@@ -231,7 +231,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **token** | **str**| API Token | 
+ **token** | **str**| API Token |
 
 ### Return type
 
@@ -308,7 +308,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **username** | **str**| Username | 
+ **username** | **str**| Username |
 
 ### Return type
 
@@ -385,7 +385,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **token** | **str**| API Token | 
+ **token** | **str**| API Token |
 
 ### Return type
 
@@ -463,7 +463,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **username** | **str**| Username | 
+ **username** | **str**| Username |
 
 ### Return type
 
@@ -541,7 +541,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **token** | **str**| API Token | 
+ **token** | **str**| API Token |
 
 ### Return type
 
@@ -618,7 +618,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **username** | **str**| Username | 
+ **username** | **str**| Username |
 
 ### Return type
 
@@ -696,7 +696,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **username** | **str**| Username | 
+ **username** | **str**| Username |
 
 ### Return type
 
@@ -775,8 +775,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **page_size** | **int**| Maximum quantity | 
- **page_num** | **int**| Current page number | 
+ **page_size** | **int**| Maximum quantity |
+ **page_num** | **int**| Current page number |
 
 ### Return type
 
@@ -928,7 +928,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **page_size** | **int**| Maximum quantity | 
+ **page_size** | **int**| Maximum quantity |
 
 ### Return type
 
@@ -1006,8 +1006,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **username** | **str**| Username | 
- **request_body** | [**List[str]**](str.md)| Permission list | 
+ **username** | **str**| Username |
+ **request_body** | [**List[str]**](str.md)| Permission list |
 
 ### Return type
 
@@ -1085,7 +1085,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **user_full_details_dto** | [**UserFullDetailsDTO**](UserFullDetailsDTO.md)| User information | 
+ **user_full_details_dto** | [**UserFullDetailsDTO**](UserFullDetailsDTO.md)| User information |
 
 ### Return type
 

@@ -32,11 +32,18 @@ public final class DatabaseToolPolicySource implements ToolPolicySource {
                                     CharacterInfoDynamicSqlSupport.characterId.descending())
                             .limit(1))
                     .orElseThrow();
+            var enabled = new java.util.HashSet<>(
+                    CharacterToolConfiguration.parse(character.getExt()).enabled());
+            if (!fun.freechat.service.skills.CharacterSkillConfiguration.parse(character.getExt())
+                    .enabled()
+                    .isEmpty()) {
+                enabled.retainAll(fun.freechat.service.skills.SkillTools.SAFE_TOOLS);
+            }
             return new Policy(
                     context.getUserId(),
                     character.getCharacterUid(),
                     backend.getBackendId(),
-                    CharacterToolConfiguration.parse(character.getExt()).enabled(),
+                    enabled,
                     backend.getLongTermMemoryWindowSize() != null && backend.getLongTermMemoryWindowSize() > 0,
                     Byte.valueOf((byte) 1).equals(backend.getEnableAlbumTool()));
         } catch (RuntimeException ignored) {

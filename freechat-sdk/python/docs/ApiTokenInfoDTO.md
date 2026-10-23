@@ -6,16 +6,16 @@ API token information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**request_id** | **str** | Request identifier | [optional] 
-**id** | **int** | Token identifier | [optional] 
-**gmt_create** | **datetime** | Creation time | [optional] 
-**gmt_modified** | **datetime** | Modification time | [optional] 
-**type** | **str** | Token type | [optional] 
-**issued_at** | **datetime** | Token issuance time | [optional] 
-**expires_at** | **datetime** | Token expiration time | [optional] 
-**token** | **str** | Token content | [optional] 
-**policy** | **str** | Token policy | [optional] 
-**username** | **str** | Token owner | [optional] 
+**request_id** | **str** | Request identifier | [optional]
+**id** | **int** | Token identifier | [optional]
+**gmt_create** | **datetime** | Creation time | [optional]
+**gmt_modified** | **datetime** | Modification time | [optional]
+**type** | **str** | Token type | [optional]
+**issued_at** | **datetime** | Token issuance time | [optional]
+**expires_at** | **datetime** | Token expiration time | [optional]
+**token** | **str** | Token content | [optional]
+**policy** | **str** | Token policy | [optional]
+**username** | **str** | Token owner | [optional]
 
 ## Example
 

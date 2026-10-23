@@ -6,10 +6,10 @@ RAG task information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**source_type** | **str** | Source type: file (default) | url | [optional] 
-**source** | **str** | Source information, url, or a key for file | [optional] 
-**max_segment_size** | **int** | The maximum size of a segment in tokens. | [optional] 
-**max_overlap_size** | **int** | The maximum size of the overlap between segments in tokens. | [optional] 
+**source_type** | **str** | Source type: file (default) | url | [optional]
+**source** | **str** | Source information, url, or a key for file | [optional]
+**max_segment_size** | **int** | The maximum size of a segment in tokens. | [optional]
+**max_overlap_size** | **int** | The maximum size of the overlap between segments in tokens. | [optional]
 
 ## Example
 

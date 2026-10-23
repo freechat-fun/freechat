@@ -52,9 +52,16 @@ auth:
     autoRegister: true
   aiApiKey:
     limits: 3
+skills:
+  sources:
+    allowed-hosts: ""
+  review:
+    model-id: ""
+    api-key: ""
+    base-url: ""
 chat:
   tools:
-    allowed: get_current_time,calculate,roll_dice,search_memory,read_memory,find_image,read_file,write_file,edit,list_directory,glob,grep_search,run_shell_command,web_fetch,web_search
+    allowed: get_current_time,calculate,roll_dice,search_memory,read_memory,find_image,skill,read_skill_resource,read_file,write_file,edit,list_directory,glob,grep_search,run_shell_command,web_fetch,web_search
     web-fetch:
       allowed-hosts: ""
     web-search:

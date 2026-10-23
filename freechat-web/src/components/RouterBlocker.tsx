@@ -1,5 +1,5 @@
-import { forwardRef } from 'react';
-import { useBlocker } from 'react-router-dom';
+import { forwardRef, useCallback } from 'react';
+import { useBeforeUnload, useBlocker } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DialogContentText } from '@mui/material';
 import { ConfirmModal } from '.';
@@ -20,6 +20,18 @@ const RouterBlocker = forwardRef<HTMLDivElement, RouterBlockerProps>(
     const blocker = useBlocker(
       ({ currentLocation, nextLocation }) =>
         when && currentLocation.pathname !== nextLocation.pathname
+    );
+
+    useBeforeUnload(
+      useCallback(
+        (event: BeforeUnloadEvent) => {
+          if (when) {
+            event.preventDefault();
+            event.returnValue = '';
+          }
+        },
+        [when]
+      )
     );
 
     return (

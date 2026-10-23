@@ -81,10 +81,10 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **info_type** | **str**| Info type: prompt | agent | plugin | character | 
- **info_id** | **str**| Unique resource identifier | 
- **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
- **delta** | **int**| Delta in statistical value | 
+ **info_type** | **str**| Info type: prompt | agent | plugin | character |
+ **info_id** | **str**| Unique resource identifier |
+ **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score |
+ **delta** | **int**| Delta in statistical value |
 
 ### Return type
 
@@ -162,8 +162,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **info_type** | **str**| Info type: prompt | agent | plugin | character | 
- **info_id** | **str**| Unique resource identifier | 
+ **info_type** | **str**| Info type: prompt | agent | plugin | character |
+ **info_id** | **str**| Unique resource identifier |
 
 ### Return type
 
@@ -242,9 +242,9 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **info_type** | **str**| Info type: prompt | agent | plugin | character | 
- **info_id** | **str**| Unique resource identifier | 
- **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
+ **info_type** | **str**| Info type: prompt | agent | plugin | character |
+ **info_id** | **str**| Unique resource identifier |
+ **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score |
 
 ### Return type
 
@@ -323,8 +323,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **info_type** | **str**| Info type: prompt | agent | plugin | character | 
- **info_id** | **str**| Unique resource identifier | 
+ **info_type** | **str**| Info type: prompt | agent | plugin | character |
+ **info_id** | **str**| Unique resource identifier |
 
 ### Return type
 
@@ -403,9 +403,9 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **info_type** | **str**| Info type: prompt | agent | plugin | character | 
- **info_id** | **str**| Unique resource identifier | 
- **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
+ **info_type** | **str**| Info type: prompt | agent | plugin | character |
+ **info_id** | **str**| Unique resource identifier |
+ **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score |
 
 ### Return type
 
@@ -485,9 +485,9 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
- **page_size** | **int**| Maximum quantity | 
- **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] 
+ **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score |
+ **page_size** | **int**| Maximum quantity |
+ **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional]
 
 ### Return type
 
@@ -568,10 +568,10 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
- **page_size** | **int**| Maximum quantity | 
- **page_num** | **int**| Current page number | 
- **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] 
+ **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score |
+ **page_size** | **int**| Maximum quantity |
+ **page_num** | **int**| Current page number |
+ **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional]
 
 ### Return type
 
@@ -650,8 +650,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
- **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] 
+ **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score |
+ **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional]
 
 ### Return type
 
@@ -730,8 +730,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
- **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] 
+ **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score |
+ **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional]
 
 ### Return type
 
@@ -811,9 +811,9 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
- **page_size** | **int**| Maximum quantity | 
- **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] 
+ **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score |
+ **page_size** | **int**| Maximum quantity |
+ **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional]
 
 ### Return type
 
@@ -894,10 +894,10 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
- **page_size** | **int**| Maximum quantity | 
- **page_num** | **int**| Current page number | 
- **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] 
+ **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score |
+ **page_size** | **int**| Maximum quantity |
+ **page_num** | **int**| Current page number |
+ **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional]
 
 ### Return type
 
@@ -977,9 +977,9 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **info_type** | **str**| Info type: prompt | agent | plugin | character | 
- **page_size** | **int**| Maximum quantity | 
- **text** | **str**| Key word | [optional] 
+ **info_type** | **str**| Info type: prompt | agent | plugin | character |
+ **page_size** | **int**| Maximum quantity |
+ **text** | **str**| Key word | [optional]
 
 ### Return type
 
@@ -1060,10 +1060,10 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
- **page_size** | **int**| Maximum quantity | 
- **page_num** | **int**| Current page number | 
- **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] 
+ **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score |
+ **page_size** | **int**| Maximum quantity |
+ **page_num** | **int**| Current page number |
+ **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional]
 
 ### Return type
 
@@ -1142,8 +1142,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
- **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] 
+ **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score |
+ **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional]
 
 ### Return type
 
@@ -1223,9 +1223,9 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
- **page_size** | **int**| Maximum quantity | 
- **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] 
+ **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score |
+ **page_size** | **int**| Maximum quantity |
+ **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional]
 
 ### Return type
 
@@ -1304,8 +1304,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
- **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] 
+ **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score |
+ **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional]
 
 ### Return type
 
@@ -1385,9 +1385,9 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
- **page_size** | **int**| Maximum quantity | 
- **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] 
+ **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score |
+ **page_size** | **int**| Maximum quantity |
+ **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional]
 
 ### Return type
 
@@ -1468,10 +1468,10 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
- **page_size** | **int**| Maximum quantity | 
- **page_num** | **int**| Current page number | 
- **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] 
+ **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score |
+ **page_size** | **int**| Maximum quantity |
+ **page_num** | **int**| Current page number |
+ **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional]
 
 ### Return type
 

@@ -63,8 +63,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **backend_id** | **str**| Character backend identifier | 
- **tg_chat_id** | **int**| Telegram chat id | 
+ **backend_id** | **str**| Character backend identifier |
+ **tg_chat_id** | **int**| Telegram chat id |
 
 ### Return type
 
@@ -144,9 +144,9 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **chat_id** | **str**| tg_chat.chat_id | 
- **limit** | **int**| Max rows to return (default 100) | [optional] 
- **offset** | **int**| Row offset (default 0) | [optional] 
+ **chat_id** | **str**| tg_chat.chat_id |
+ **limit** | **int**| Max rows to return (default 100) | [optional]
+ **offset** | **int**| Row offset (default 0) | [optional]
 
 ### Return type
 

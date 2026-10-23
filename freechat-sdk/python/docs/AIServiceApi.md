@@ -67,7 +67,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **ai_api_key_create_dto** | [**AiApiKeyCreateDTO**](AiApiKeyCreateDTO.md)| Model call credential information | 
+ **ai_api_key_create_dto** | [**AiApiKeyCreateDTO**](AiApiKeyCreateDTO.md)| Model call credential information |
 
 ### Return type
 
@@ -144,7 +144,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **int**| Credential identifier | 
+ **id** | **int**| Credential identifier |
 
 ### Return type
 
@@ -221,7 +221,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **int**| Credential identifier | 
+ **id** | **int**| Credential identifier |
 
 ### Return type
 
@@ -298,7 +298,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **int**| Credential identifier | 
+ **id** | **int**| Credential identifier |
 
 ### Return type
 
@@ -376,7 +376,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **int**| Credential identifier | 
+ **id** | **int**| Credential identifier |
 
 ### Return type
 
@@ -454,7 +454,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **provider** | **str**| Model provider | 
+ **provider** | **str**| Model provider |
 
 ### Return type
 

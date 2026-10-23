@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -31,6 +31,7 @@ import {
   TinyInput,
 } from '../../components';
 import {
+  Alert,
   Avatar,
   Box,
   Button,
@@ -66,12 +67,18 @@ import {
   CharacterBackendsPane,
   CharacterDocumentsPane,
   CharacterGuide,
+  CharacterSkillSelector,
 } from '../../components/character';
 import { HelpIcon } from '../../components/icon';
 import { createPromptForCharacter } from '../../libs/chat_utils';
 import { getCompressedImage } from '../../libs/ui_utils';
 import { objectsEqual } from '../../libs/js_utils';
 import { exportCharacter } from '../../libs/character_utils';
+import {
+  normalizeSkillError,
+  parseCharacterSkillExt,
+  setCharacterSkillIds,
+} from '../../libs/skill_utils';
 import { InputAdornment } from '@mui/material';
 
 type CharacterEditorProps = {
@@ -80,7 +87,12 @@ type CharacterEditorProps = {
 
 export default function CharacterEditor({ id }: CharacterEditorProps) {
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation(['character', 'account', 'button']);
+  const { t, i18n } = useTranslation([
+    'character',
+    'account',
+    'button',
+    'skill',
+  ]);
   const { accountApi, promptApi, promptTaskApi, characterApi, chatApi } =
     useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
@@ -103,6 +115,10 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
   const [chatStyle, setChatStyle] = useState('');
   const [chatExample, setChatExample] = useState('');
   const [defaultScene, setDefaultScene] = useState('');
+  const [ext, setExt] = useState<string>();
+  const [enabledSkillIds, setEnabledSkillIds] = useState<string[]>([]);
+  const [extError, setExtError] = useState(false);
+  const [navigationTarget, setNavigationTarget] = useState<string>();
 
   const [visibility, setVisibility] = useState<string>();
   const [tags, setTags] = useState<string[]>([]);
@@ -117,15 +133,26 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
 
   const originName = useRef('');
   const backendRef = useRef<HTMLDivElement>(null);
+  const reportLoadError = useEffectEvent((reason: unknown) =>
+    handleError(reason)
+  );
 
   useEffect(() => {
+    let active = true;
     if (id) {
       characterApi
         ?.getCharacterDetails(id)
-        .then(setOrigRecord)
-        .catch(handleError);
+        .then((record) => {
+          if (active) setOrigRecord(record);
+        })
+        .catch((reason: unknown) => {
+          if (active) reportLoadError(reason);
+        });
     }
-  }, [handleError, id, characterApi]);
+    return () => {
+      active = false;
+    };
+  }, [id, characterApi]);
 
   useEffect(() => {
     if (origRecord) {
@@ -158,6 +185,15 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
       setChatStyle(draftRecord.chatStyle ?? '');
       setChatExample(draftRecord.chatExample ?? '');
       setDefaultScene(draftRecord.defaultScene ?? '');
+      setExt(draftRecord.ext);
+      try {
+        parseCharacterSkillExt(origRecord.ext);
+        setEnabledSkillIds(parseCharacterSkillExt(draftRecord.ext).enabled);
+        setExtError(false);
+      } catch {
+        setEnabledSkillIds([]);
+        setExtError(true);
+      }
       setVisibility(draftRecord.visibility ?? 'private');
       setTags(draftRecord.tags ?? []);
       setEditEnabled(true);
@@ -169,6 +205,24 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
       backendRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [editBackend]);
+
+  useEffect(() => {
+    if (navigationTarget) navigate(navigationTarget);
+  }, [navigate, navigationTarget]);
+
+  function handleSkillSelection(ids: string[]) {
+    if (extError) return;
+    try {
+      setExt(setCharacterSkillIds(ext, ids));
+      setEnabledSkillIds(ids);
+    } catch {
+      setExtError(true);
+    }
+  }
+
+  function handleSaveError(reason: unknown) {
+    handleError(normalizeSkillError(reason, (key) => t(key, { ns: 'skill' })));
+  }
 
   function handleNameChange(): void {
     if (editRecordNameError) {
@@ -234,7 +288,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
   }
 
   function handleRecordSave(): void {
-    if (!id) {
+    if (!id || extError) {
       return;
     }
     const draftRecord = getEditRecord();
@@ -255,11 +309,11 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
           .then(setOrigRecord)
           .catch(handleError);
       })
-      .catch(handleError);
+      .catch(handleSaveError);
   }
 
   function handleRecordPublish(): void {
-    if (!id) {
+    if (!id || extError) {
       return;
     }
     const onUpdated = (
@@ -321,7 +375,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
             .catch(handleError);
         }
       })
-      .catch(handleError);
+      .catch(handleSaveError);
   }
 
   function handleRecordExport(): void {
@@ -352,6 +406,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
     request.name = record.name ?? `untitiled-${formatDate(new Date())}`;
     request.draft = '';
     request.tags = record.tags;
+    request.ext = record.ext;
     request.visibility = record.visibility === 'private' ? 'private' : 'public';
 
     return request;
@@ -374,6 +429,14 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
     redirectToChatPrompt?: boolean,
     redirectHash?: string
   ) {
+    if (extError && redirectToChatPrompt) {
+      handleError({
+        message: t(
+          'skill:Character extension data is malformed. Saving is disabled to avoid overwriting it.'
+        ),
+      });
+      return;
+    }
     const request = new CharacterBackendDTO();
     request.chatPromptTaskId = backend.chatPromptTaskId;
     request.greetingPromptTaskId = backend.greetingPromptTaskId;
@@ -502,6 +565,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
     newRecord.defaultScene = defaultScene;
     newRecord.visibility = visibility;
     newRecord.tags = [...tags];
+    newRecord.ext = ext;
     newRecord.characterUid = origRecord.characterUid;
 
     return newRecord;
@@ -537,11 +601,13 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
       objectsEqual(draftRecord.chatExample, chatExample) &&
       objectsEqual(draftRecord.defaultScene, defaultScene) &&
       objectsEqual(draftRecord.visibility ?? 'private', visibility) &&
+      objectsEqual(draftRecord.ext, ext) &&
       objectsEqual(draftRecord.tags ?? [], tags)
     );
   }
 
   function saveAndNavigate(promptTaskId: string, hash?: string): void {
+    if (extError) return;
     const draftRecord = getEditRecord();
     draftRecord.characterId = undefined;
     draftRecord.draft = undefined;
@@ -551,9 +617,13 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
 
     characterApi
       ?.updateCharacter(id, request)
-      .finally(() =>
-        navigate(`/w/prompt/task/edit/${promptTaskId}${hash ?? ''}`)
-      );
+      .then((saved) => {
+        if (saved)
+          setNavigationTarget(
+            `/w/prompt/task/edit/${promptTaskId}${hash ?? ''}`
+          );
+      })
+      .catch(handleSaveError);
   }
 
   return (
@@ -602,7 +672,9 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
           }}
         >
           <Button
-            disabled={isSaved() || visibility === 'hidden' || !editEnabled}
+            disabled={
+              extError || isSaved() || visibility === 'hidden' || !editEnabled
+            }
             startIcon={isSaved() ? <CheckRounded /> : <SaveAltRounded />}
             onClick={handleRecordSave}
             sx={{
@@ -612,7 +684,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
             {t('button:Save')}
           </Button>
           <Button
-            disabled={!editEnabled}
+            disabled={extError || !editEnabled}
             startIcon={<IosShareRounded />}
             onClick={handleRecordPublish}
             sx={{
@@ -760,9 +832,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
                   disabled={!editEnabled}
                   name="nickname"
                   value={nickname || ''}
-                  onChange={(event) =>
-                    setNickname(event.target.value)
-                  }
+                  onChange={(event) => setNickname(event.target.value)}
                   size="small"
                 />
                 <LabelTypography>{t('account:Gender')}</LabelTypography>
@@ -870,9 +940,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
               name="info-chat-style"
               minRows={1}
               value={chatStyle || ''}
-              onChange={(event) =>
-                setChatStyle(event.target.value)
-              }
+              onChange={(event) => setChatStyle(event.target.value)}
             />
 
             <LabelTypography>{t('Chat Example')}</LabelTypography>
@@ -880,9 +948,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
               name="info-chat-example"
               minRows={3}
               value={chatExample || ''}
-              onChange={(event) =>
-                setChatExample(event.target.value)
-              }
+              onChange={(event) => setChatExample(event.target.value)}
             />
 
             <FlexBox>
@@ -900,9 +966,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
               name="info-default-scene"
               minRows={1}
               value={defaultScene || ''}
-              onChange={(event) =>
-                setDefaultScene(event.target.value)
-              }
+              onChange={(event) => setDefaultScene(event.target.value)}
             />
 
             <LabelTypography>{t('Greeting')}</LabelTypography>
@@ -911,6 +975,24 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
               minRows={1}
               value={greeting || ''}
               onChange={(event) => setGreeting(event.target.value)}
+            />
+          </StyledStack>
+          <LinePlaceholder />
+
+          <StyledStack
+            sx={{ '&:hover, &:focus-within': { transform: 'none' } }}
+          >
+            {extError && (
+              <Alert severity="error">
+                {t(
+                  'skill:Character extension data is malformed. Saving is disabled to avoid overwriting it.'
+                )}
+              </Alert>
+            )}
+            <CharacterSkillSelector
+              enabled={enabledSkillIds}
+              disabled={!editEnabled || extError}
+              onChange={handleSkillSelection}
             />
           </StyledStack>
           <LinePlaceholder />
@@ -1005,7 +1087,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
       </ConfirmModal>
 
       <RouterBlocker
-        when={!isSaved()}
+        when={!navigationTarget && !isSaved()}
         message={t(
           'You may have unsaved changes. Are you sure you want to leave?'
         )}

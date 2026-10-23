@@ -17,14 +17,20 @@ public record CharacterToolConfiguration(Set<String> enabled) {
             return new CharacterToolConfiguration(DEFAULTS);
         }
         JsonNode root = ToolArguments.parse(ext);
+        Set<String> defaults = new LinkedHashSet<>(DEFAULTS);
+        if (!fun.freechat.service.skills.CharacterSkillConfiguration.parse(ext)
+                .enabled()
+                .isEmpty()) {
+            defaults.addAll(fun.freechat.service.skills.SkillTools.NAMES);
+        }
         JsonNode tools = root.get("tools");
         if (tools == null || tools.isNull()) {
-            return new CharacterToolConfiguration(DEFAULTS);
+            return new CharacterToolConfiguration(defaults);
         }
         ToolArguments.only(tools, "enabled");
         JsonNode selection = tools.get("enabled");
         if (selection == null || selection.isNull()) {
-            return new CharacterToolConfiguration(DEFAULTS);
+            return new CharacterToolConfiguration(defaults);
         }
         if (!selection.isArray() || selection.size() > 64) {
             throw new IllegalArgumentException("Invalid character tool configuration");

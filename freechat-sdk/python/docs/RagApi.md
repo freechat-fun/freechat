@@ -68,7 +68,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **task_id** | **int**| The taskId to be canceled | 
+ **task_id** | **int**| The taskId to be canceled |
 
 ### Return type
 
@@ -147,8 +147,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_uid** | **str**| The characterUid to be added a RAG task | 
- **rag_task_dto** | [**RagTaskDTO**](RagTaskDTO.md)| The RAG task to be added | 
+ **character_uid** | **str**| The characterUid to be added a RAG task |
+ **rag_task_dto** | [**RagTaskDTO**](RagTaskDTO.md)| The RAG task to be added |
 
 ### Return type
 
@@ -225,7 +225,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **task_id** | **int**| The taskId to be deleted | 
+ **task_id** | **int**| The taskId to be deleted |
 
 ### Return type
 
@@ -303,7 +303,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **task_id** | **int**| The taskId to be queried | 
+ **task_id** | **int**| The taskId to be queried |
 
 ### Return type
 
@@ -380,7 +380,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **task_id** | **int**| The taskId to be queried status | 
+ **task_id** | **int**| The taskId to be queried status |
 
 ### Return type
 
@@ -458,7 +458,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_uid** | **str**| The characterUid to be queried | 
+ **character_uid** | **str**| The characterUid to be queried |
 
 ### Return type
 
@@ -535,7 +535,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **task_id** | **int**| The taskId to be started | 
+ **task_id** | **int**| The taskId to be started |
 
 ### Return type
 
@@ -614,8 +614,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **task_id** | **int**| The taskId to be updated | 
- **rag_task_dto** | [**RagTaskDTO**](RagTaskDTO.md)| The prompt task info to be updated | 
+ **task_id** | **int**| The taskId to be updated |
+ **rag_task_dto** | [**RagTaskDTO**](RagTaskDTO.md)| The prompt task info to be updated |
 
 ### Return type
 

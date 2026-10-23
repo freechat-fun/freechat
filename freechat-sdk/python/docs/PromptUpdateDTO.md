@@ -6,20 +6,20 @@ Request data for updating prompt information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**parent_uid** | **str** | Referenced prompt | [optional] 
-**visibility** | **str** | Visibility: private (default), public, public_org, hidden | [optional] 
-**name** | **str** | Prompt name | 
-**description** | **str** | Prompt description | [optional] 
-**template** | **str** | Prompt text template content, choose one from template and chatTemplate field, priority: template &gt; chatTemplate | [optional] 
-**chat_template** | [**ChatPromptContentDTO**](ChatPromptContentDTO.md) | Prompt chat template content | [optional] 
-**format** | **str** | Prompt format: mustache (default) | f_string | [optional] 
-**lang** | **str** | Prompt language: en (default) | zh_CN | ... | [optional] 
-**example** | **str** | Prompt example | [optional] 
-**inputs** | **str** | Prompt parameters, JSON format | [optional] 
-**ext** | **str** | Additional information, JSON format | [optional] 
-**draft** | **str** | Draft content | [optional] 
-**tags** | **List[str]** | Tag set | [optional] 
-**ai_models** | **List[str]** | Supported model set, empty means no model limit | [optional] 
+**parent_uid** | **str** | Referenced prompt | [optional]
+**visibility** | **str** | Visibility: private (default), public, public_org, hidden | [optional]
+**name** | **str** | Prompt name |
+**description** | **str** | Prompt description | [optional]
+**template** | **str** | Prompt text template content, choose one from template and chatTemplate field, priority: template &gt; chatTemplate | [optional]
+**chat_template** | [**ChatPromptContentDTO**](ChatPromptContentDTO.md) | Prompt chat template content | [optional]
+**format** | **str** | Prompt format: mustache (default) | f_string | [optional]
+**lang** | **str** | Prompt language: en (default) | zh_CN | ... | [optional]
+**example** | **str** | Prompt example | [optional]
+**inputs** | **str** | Prompt parameters, JSON format | [optional]
+**ext** | **str** | Additional information, JSON format | [optional]
+**draft** | **str** | Draft content | [optional]
+**tags** | **List[str]** | Tag set | [optional]
+**ai_models** | **List[str]** | Supported model set, empty means no model limit | [optional]
 
 ## Example
 

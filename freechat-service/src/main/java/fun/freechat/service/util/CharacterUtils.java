@@ -27,6 +27,7 @@ public class CharacterUtils {
             PojoUtils.mapWhenExists(() -> "greeting", draftInfo::setGreeting, converter);
             PojoUtils.mapWhenExists(() -> "chatStyle", draftInfo::setChatStyle, converter);
             PojoUtils.mapWhenExists(() -> "chatExample", draftInfo::setChatExample, converter);
+            PojoUtils.mapWhenExists(() -> "ext", draftInfo::setExt, converter);
         } catch (JsonProcessingException e) {
             log.warn("Failed to parse draft: {}", draft);
         }

@@ -68,6 +68,14 @@ class ToolPolicyPersistenceTest {
         }
         verify(contexts, times(3)).selectByPrimaryKey("chat");
         verify(backends, times(3)).selectByPrimaryKey("backend");
+        character.setExt(
+                "{\"skills\":{\"enabled\":[\"" + "a".repeat(32)
+                        + "\"]},\"tools\":{\"enabled\":[\"find_image\",\"web_fetch\",\"read_file\",\"run_shell_command\",\"calculate\",\"skill\"]}}");
+        var constrained = source.load("chat");
+        assertEquals(Set.of("calculate", "skill"), constrained.enabled());
+        assertFalse(constrained.permits("find_image"));
+        assertFalse(constrained.permits("web_fetch"));
+        assertFalse(constrained.permits("run_shell_command"));
     }
 
     @Test

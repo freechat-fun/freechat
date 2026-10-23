@@ -71,7 +71,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **all** | **str**| Whether to return virtual reported owners | [optional] 
+ **all** | **str**| Whether to return virtual reported owners | [optional]
 
 ### Return type
 
@@ -148,7 +148,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **all** | **str**| Whether to return virtual reported owners | [optional] 
+ **all** | **str**| Whether to return virtual reported owners | [optional]
 
 ### Return type
 
@@ -228,8 +228,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **username** | **str**| The account being queried, must be a subordinate account of the current account | 
- **all** | **str**| Whether to return virtual reported owners | [optional] 
+ **username** | **str**| The account being queried, must be a subordinate account of the current account |
+ **all** | **str**| Whether to return virtual reported owners | [optional]
 
 ### Return type
 
@@ -307,8 +307,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **username** | **str**| The account being queried, must be a subordinate account of the current account | 
- **all** | **str**| Whether to return virtual managed subordinates | [optional] 
+ **username** | **str**| The account being queried, must be a subordinate account of the current account |
+ **all** | **str**| Whether to return virtual managed subordinates | [optional]
 
 ### Return type
 
@@ -385,7 +385,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **all** | **str**| Whether to return virtual managed subordinates | [optional] 
+ **all** | **str**| Whether to return virtual managed subordinates | [optional]
 
 ### Return type
 
@@ -462,7 +462,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **all** | **str**| Whether to return virtual managed subordinates | [optional] 
+ **all** | **str**| Whether to return virtual managed subordinates | [optional]
 
 ### Return type
 
@@ -539,7 +539,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **username** | **str**| Username | 
+ **username** | **str**| Username |
 
 ### Return type
 
@@ -616,7 +616,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **username** | **str**| The account being operated, must be a subordinate account of the current account | 
+ **username** | **str**| The account being operated, must be a subordinate account of the current account |
 
 ### Return type
 
@@ -694,8 +694,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **username** | **str**| Username | 
- **request_body** | [**List[str]**](str.md)| Permission list | 
+ **username** | **str**| Username |
+ **request_body** | [**List[str]**](str.md)| Permission list |
 
 ### Return type
 
@@ -773,8 +773,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **username** | **str**| The account being operated, must be a subordinate account of the current account | 
- **request_body** | [**List[str]**](str.md)| The (direct) superior account of the subordinate account, all accounts must be subordinate accounts of the current account | 
+ **username** | **str**| The account being operated, must be a subordinate account of the current account |
+ **request_body** | [**List[str]**](str.md)| The (direct) superior account of the subordinate account, all accounts must be subordinate accounts of the current account |
 
 ### Return type
 
@@ -852,8 +852,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **username** | **str**| The account being operated, must be a subordinate account of the current account | 
- **request_body** | [**List[str]**](str.md)| The (direct) subordinate account of the subordinate account, all accounts must be subordinate accounts of the current account | 
+ **username** | **str**| The account being operated, must be a subordinate account of the current account |
+ **request_body** | [**List[str]**](str.md)| The (direct) subordinate account of the subordinate account, all accounts must be subordinate accounts of the current account |
 
 ### Return type
 

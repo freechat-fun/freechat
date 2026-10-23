@@ -14,6 +14,7 @@ import {
   AccountTreeRounded,
   AndroidRounded,
   ArticleRounded,
+  AutoStoriesRounded,
   GitHub,
   HelpRounded,
   HomeRounded,
@@ -173,6 +174,14 @@ export default function ThinSidebar() {
             <ItemTooltip title={t('Prompts')}>
               <ItemButton href="/w/prompts">
                 <ArticleRounded />
+              </ItemButton>
+            </ItemTooltip>
+          </ListItem>
+
+          <ListItem disablePadding sx={{ display: { xs: 'none', md: 'flex' } }}>
+            <ItemTooltip title={t('Skills')}>
+              <ItemButton href="/w/skills" aria-label={t('Skills')}>
+                <AutoStoriesRounded />
               </ItemButton>
             </ItemTooltip>
           </ListItem>

@@ -6,9 +6,9 @@ Token usage information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**input_token_count** | **int** | Input token count | [optional] 
-**output_token_count** | **int** | Output token count | [optional] 
-**total_token_count** | **int** | Total token count | [optional] 
+**input_token_count** | **int** | Input token count | [optional]
+**output_token_count** | **int** | Output token count | [optional]
+**total_token_count** | **int** | Total token count | [optional]
 
 ## Example
 

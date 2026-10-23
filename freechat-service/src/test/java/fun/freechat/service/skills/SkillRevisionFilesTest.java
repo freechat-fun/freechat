@@ -1,0 +1,237 @@
+package fun.freechat.service.skills;
+
+import static fun.freechat.service.skills.SkillException.Code.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import fun.freechat.service.common.FileStore;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+class SkillRevisionFilesTest {
+    private static final String OWNER = "owner/../../秘密";
+    private static final String SKILL = "1".repeat(32);
+    private static final String REVISION = "2".repeat(32);
+    private static final Map<String, String> INPUT = Map.of(
+            "SKILL.md", "---\nname: writing\ndescription: Friendly writing\n---\nKeep paragraphs short.\r\n中文 café",
+            "references/guide.txt", "Use everyday words.\n");
+
+    @Test
+    void exactPlainFilesSurviveNewInstanceWithNonlocalBackend() {
+        RemoteFiles remote = new RemoteFiles();
+        SkillRevisionFiles files = new SkillRevisionFiles(remote);
+        var snapshot = SkillRevisionFiles.snapshot(INPUT);
+        files.stage(OWNER, SKILL, REVISION, snapshot, () -> {});
+        assertEquals(INPUT, new SkillRevisionFiles(remote).read(OWNER, SKILL, REVISION, snapshot.manifest()));
+        String root = SkillRevisionFiles.root(OWNER, SKILL, REVISION);
+        assertTrue(root.matches("private/skills/[0-9a-f]{64}/[0-9a-f]{32}/[0-9a-f]{32}/"));
+        assertFalse(root.contains(OWNER));
+        INPUT.forEach((name, content) ->
+                assertArrayEquals(content.getBytes(StandardCharsets.UTF_8), remote.objects.get(root + name)));
+        assertFalse(snapshot.manifest().contains("everyday"));
+        assertFalse(snapshot.manifest().contains("paragraphs"));
+    }
+
+    @Test
+    void rejectsSameLengthTamperExtraBytesAndMissingFile() {
+        for (int mode = 0; mode < 3; mode++) {
+            RemoteFiles remote = new RemoteFiles();
+            SkillRevisionFiles files = new SkillRevisionFiles(remote);
+            var snapshot = SkillRevisionFiles.snapshot(INPUT);
+            files.stage(OWNER, SKILL, REVISION, snapshot, () -> {});
+            String path = SkillRevisionFiles.root(OWNER, SKILL, REVISION) + "SKILL.md";
+            if (mode == 0) {
+                remote.objects.get(path)[0] = '?';
+            } else if (mode == 1) {
+                remote.objects.put(path, Arrays.copyOf(remote.objects.get(path), remote.objects.get(path).length + 1));
+            } else {
+                remote.objects.remove(path);
+            }
+            assertCode(SKILL_STORAGE_UNAVAILABLE, () -> files.read(OWNER, SKILL, REVISION, snapshot.manifest()));
+        }
+    }
+
+    @Test
+    void partialOrCorruptWriteCannotChangePreviousRevision() {
+        RemoteFiles remote = new RemoteFiles();
+        SkillRevisionFiles files = new SkillRevisionFiles(remote);
+        var snapshot = SkillRevisionFiles.snapshot(INPUT);
+        files.stage(OWNER, SKILL, REVISION, snapshot, () -> {});
+        Map<String, byte[]> before = new HashMap<>(remote.objects);
+        remote.corruptWrites = true;
+        assertCode(SKILL_STORAGE_UNAVAILABLE, () -> files.stage(OWNER, SKILL, "3".repeat(32), snapshot, () -> {}));
+        before.forEach((path, bytes) -> assertArrayEquals(bytes, remote.objects.get(path)));
+        assertEquals(INPUT, files.read(OWNER, SKILL, REVISION, snapshot.manifest()));
+        assertCode(SKILL_STORAGE_UNAVAILABLE, () -> files.stage(OWNER, SKILL, REVISION, snapshot, () -> {}));
+    }
+
+    @Test
+    void expiryFencePreventsAnyFurtherStagingWrites() {
+        RemoteFiles remote = new RemoteFiles();
+        var files = new SkillRevisionFiles(remote);
+        assertCode(
+                SKILL_DRAFT_EXPIRED,
+                () -> files.stage(OWNER, SKILL, REVISION, SkillRevisionFiles.snapshot(INPUT), () -> {
+                    throw new SkillException(SKILL_DRAFT_EXPIRED);
+                }));
+        assertTrue(remote.objects.isEmpty());
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+            strings = {
+                "../SKILL.md",
+                "/SKILL.md",
+                "references/../other.txt",
+                "references//x.md",
+                "references\\x.md",
+                "references/%2e%2e.txt",
+                "references/CON.txt",
+                "references/.hidden.md",
+                "references/x.md/other.txt",
+                "references/a..txt",
+                "skill.md",
+                "x.sh"
+            })
+    void refusesTraversalAndUnsupportedPathsBeforeIo(String filename) {
+        assertCode(SKILL_INVALID_FORMAT, () -> SkillRevisionFiles.snapshot(Map.of(filename, "text")));
+    }
+
+    @Test
+    void malformedUtf16CannotBeSilentlyReplaced() {
+        assertCode(SKILL_INVALID_FORMAT, () -> SkillRevisionFiles.snapshot(Map.of("SKILL.md", "broken\ud800")));
+    }
+
+    @Test
+    void rejectsPoisonedManifestsBeforeDeletingAnyFiles() {
+        RemoteFiles remote = new RemoteFiles();
+        var files = new SkillRevisionFiles(remote);
+        var snapshot = SkillRevisionFiles.snapshot(INPUT);
+        files.stage(OWNER, SKILL, REVISION, snapshot, () -> {});
+        for (String bad : List.of(
+                snapshot.manifest().replace("references/guide.txt", "../guide.txt"),
+                snapshot.manifest().replace("\"length\":", "\"length\":999999999,\"ignored\":"),
+                "{\"SKILL.md\":{\"length\":-1,\"sha256\":\"" + "a".repeat(64) + "\"}}")) {
+            assertCode(SKILL_STORAGE_UNAVAILABLE, () -> files.delete(OWNER, SKILL, REVISION, bad));
+        }
+        assertTrue(remote.deleted.isEmpty());
+        assertCode(SKILL_STORAGE_UNAVAILABLE, () -> files.delete(OWNER, "../escape", REVISION, snapshot.manifest()));
+    }
+
+    @Test
+    void cleanupDeletesOnlyKnownRevisionFilesAndCanRepeat() {
+        RemoteFiles remote = new RemoteFiles();
+        var files = new SkillRevisionFiles(remote);
+        var snapshot = SkillRevisionFiles.snapshot(INPUT);
+        files.stage(OWNER, SKILL, REVISION, snapshot, () -> {});
+        files.stage(OWNER, SKILL, "4".repeat(32), snapshot, () -> {});
+        remote.objects.put("private/unrelated.txt", new byte[] {1});
+        files.delete(OWNER, SKILL, REVISION, snapshot.manifest());
+        files.delete(OWNER, SKILL, REVISION, snapshot.manifest());
+        assertEquals(INPUT, files.read(OWNER, SKILL, "4".repeat(32), snapshot.manifest()));
+        assertTrue(remote.objects.containsKey("private/unrelated.txt"));
+        assertTrue(remote.deleted.stream()
+                .allMatch(path -> path.startsWith(SkillRevisionFiles.root(OWNER, SKILL, REVISION))));
+    }
+
+    private static void assertCode(SkillException.Code code, org.junit.jupiter.api.function.Executable operation) {
+        SkillException error = assertThrows(SkillException.class, operation);
+        assertEquals(code, error.code());
+        assertEquals(code.name(), error.getMessage());
+        assertNull(error.getCause());
+    }
+
+    /** Object-store semantics: no local paths, rename, listing, compression, or directory objects. */
+    private static final class RemoteFiles implements FileStore {
+        final Map<String, byte[]> objects = new HashMap<>();
+        final List<String> deleted = new ArrayList<>();
+        boolean corruptWrites;
+
+        @Override
+        public Path toPath(String path) {
+            throw new AssertionError("local paths forbidden");
+        }
+
+        @Override
+        public void close() {}
+
+        @Override
+        public long size(String path) {
+            throw new AssertionError("size hints are not authoritative");
+        }
+
+        @Override
+        public List<String> list(String path, String regex, boolean recursive) {
+            throw new AssertionError("listing forbidden");
+        }
+
+        @Override
+        public void createDirectories(String path) {}
+
+        @Override
+        public long write(String path, InputStream stream, Long size, Instant modified) {
+            throw new AssertionError("unexpected stream write");
+        }
+
+        @Override
+        public long write(String path, byte[] bytes, Instant modified) {
+            byte[] stored = bytes.clone();
+            if (corruptWrites && stored.length > 0) {
+                stored[0] ^= 1;
+            }
+            objects.put(path, stored);
+            return bytes.length;
+        }
+
+        @Override
+        public OutputStream newOutputStream(String path) {
+            throw new AssertionError("unexpected output stream");
+        }
+
+        @Override
+        public InputStream newInputStream(String path) throws IOException {
+            if (!objects.containsKey(path)) {
+                throw new IOException("private backend details");
+            }
+            return new ByteArrayInputStream(objects.get(path));
+        }
+
+        @Override
+        public boolean exists(String path) {
+            return objects.containsKey(path);
+        }
+
+        @Override
+        public void delete(String path) {
+            deleted.add(path);
+            objects.remove(path);
+        }
+
+        @Override
+        public void move(String source, String target) {
+            throw new AssertionError("non-atomic move forbidden");
+        }
+
+        @Override
+        public long getLastModifiedTime(String path) {
+            throw new AssertionError("not needed");
+        }
+
+        @Override
+        public void setLastModifiedTime(String path, long time) {
+            throw new AssertionError("not needed");
+        }
+    }
+}

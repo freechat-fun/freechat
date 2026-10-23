@@ -75,7 +75,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **plugin_query_dto** | [**List[PluginQueryDTO]**](PluginQueryDTO.md)| Query conditions | 
+ **plugin_query_dto** | [**List[PluginQueryDTO]**](PluginQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -154,7 +154,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **plugin_query_dto** | [**List[PluginQueryDTO]**](PluginQueryDTO.md)| Query conditions | 
+ **plugin_query_dto** | [**List[PluginQueryDTO]**](PluginQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -232,7 +232,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **plugin_query_dto** | [**PluginQueryDTO**](PluginQueryDTO.md)| Query conditions | 
+ **plugin_query_dto** | [**PluginQueryDTO**](PluginQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -319,7 +319,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **plugin_create_dto** | [**PluginCreateDTO**](PluginCreateDTO.md)| Information of the plugin to be created | 
+ **plugin_create_dto** | [**PluginCreateDTO**](PluginCreateDTO.md)| Information of the plugin to be created |
 
 ### Return type
 
@@ -397,7 +397,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **plugin_create_dto** | [**List[PluginCreateDTO]**](PluginCreateDTO.md)| List of plugin information to be created | 
+ **plugin_create_dto** | [**List[PluginCreateDTO]**](PluginCreateDTO.md)| List of plugin information to be created |
 
 ### Return type
 
@@ -474,7 +474,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **plugin_id** | **int**| The pluginId to be deleted | 
+ **plugin_id** | **int**| The pluginId to be deleted |
 
 ### Return type
 
@@ -551,7 +551,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **request_body** | [**List[int]**](int.md)| List of pluginIds to be deleted | 
+ **request_body** | [**List[int]**](int.md)| List of pluginIds to be deleted |
 
 ### Return type
 
@@ -629,7 +629,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **plugin_id** | **int**| PluginId to be obtained | 
+ **plugin_id** | **int**| PluginId to be obtained |
 
 ### Return type
 
@@ -707,7 +707,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **plugin_id** | **int**| PluginId to be obtained | 
+ **plugin_id** | **int**| PluginId to be obtained |
 
 ### Return type
 
@@ -782,7 +782,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **plugin_id** | **int**| The pluginId to be fetched | 
+ **plugin_id** | **int**| The pluginId to be fetched |
 
 ### Return type
 
@@ -861,7 +861,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **plugin_query_dto** | [**PluginQueryDTO**](PluginQueryDTO.md)| Query conditions | 
+ **plugin_query_dto** | [**PluginQueryDTO**](PluginQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -954,7 +954,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **plugin_query_dto** | [**PluginQueryDTO**](PluginQueryDTO.md)| Query conditions | 
+ **plugin_query_dto** | [**PluginQueryDTO**](PluginQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -1033,8 +1033,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **plugin_id** | **int**| The pluginId to be updated | 
- **plugin_update_dto** | [**PluginUpdateDTO**](PluginUpdateDTO.md)| The plugin information to be updated | 
+ **plugin_id** | **int**| The pluginId to be updated |
+ **plugin_update_dto** | [**PluginUpdateDTO**](PluginUpdateDTO.md)| The plugin information to be updated |
 
 ### Return type
 

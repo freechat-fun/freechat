@@ -6,18 +6,18 @@ Request data for updating agent information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**parent_uid** | **str** | Referenced agent | [optional] 
-**visibility** | **str** | Visibility: private (default), public, public_org, hidden | [optional] 
-**format** | **str** | Agent format, currently supported: langflow | [optional] 
-**name** | **str** | Agent name | 
-**description** | **str** | Agent description | [optional] 
-**config** | **str** | Agent configuration | [optional] 
-**example** | **str** | Agent example | [optional] 
-**parameters** | **str** | Agent parameters, JSON format | [optional] 
-**ext** | **str** | Additional information, JSON format | [optional] 
-**draft** | **str** | Draft content | [optional] 
-**tags** | **List[str]** | Tag set | [optional] 
-**ai_models** | **List[str]** | Supported model set, empty means no model limit | [optional] 
+**parent_uid** | **str** | Referenced agent | [optional]
+**visibility** | **str** | Visibility: private (default), public, public_org, hidden | [optional]
+**format** | **str** | Agent format, currently supported: langflow | [optional]
+**name** | **str** | Agent name |
+**description** | **str** | Agent description | [optional]
+**config** | **str** | Agent configuration | [optional]
+**example** | **str** | Agent example | [optional]
+**parameters** | **str** | Agent parameters, JSON format | [optional]
+**ext** | **str** | Additional information, JSON format | [optional]
+**draft** | **str** | Draft content | [optional]
+**tags** | **List[str]** | Tag set | [optional]
+**ai_models** | **List[str]** | Supported model set, empty means no model limit | [optional]
 
 ## Example
 

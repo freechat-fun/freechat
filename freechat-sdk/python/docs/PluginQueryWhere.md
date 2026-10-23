@@ -6,17 +6,17 @@ Query condition
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**visibility** | **str** | Visibility: public, public_org (search this organization), private (default) | [optional] 
-**username** | **str** | Effective when searching public, public_org prompts, if not specified, search all users | [optional] 
-**manifest_format** | **str** | Manifest configuration format, currently supported: dash_scope, open_ai. | [optional] 
-**api_format** | **str** | API description format, currently supported: openapi_v3. | [optional] 
-**tags** | **List[str]** | Tags | [optional] 
-**tags_op** | **str** | Relationship between tags: and | or (default) | [optional] 
-**ai_models** | **List[str]** | Model set | [optional] 
-**ai_models_op** | **str** | Relationship between model sets: and | or (default) | [optional] 
-**name** | **str** | Name, left match | [optional] 
-**provider** | **str** | Provider, left match | [optional] 
-**text** | **str** | Name, provider Information, manifest (real-time pulling is not supported at the moment), fuzzy matching, any one match is sufficient; public scope + general search for all users does not guarantee real-time. | [optional] 
+**visibility** | **str** | Visibility: public, public_org (search this organization), private (default) | [optional]
+**username** | **str** | Effective when searching public, public_org prompts, if not specified, search all users | [optional]
+**manifest_format** | **str** | Manifest configuration format, currently supported: dash_scope, open_ai. | [optional]
+**api_format** | **str** | API description format, currently supported: openapi_v3. | [optional]
+**tags** | **List[str]** | Tags | [optional]
+**tags_op** | **str** | Relationship between tags: and | or (default) | [optional]
+**ai_models** | **List[str]** | Model set | [optional]
+**ai_models_op** | **str** | Relationship between model sets: and | or (default) | [optional]
+**name** | **str** | Name, left match | [optional]
+**provider** | **str** | Provider, left match | [optional]
+**text** | **str** | Name, provider Information, manifest (real-time pulling is not supported at the moment), fuzzy matching, any one match is sufficient; public scope + general search for all users does not guarantee real-time. | [optional]
 
 ## Example
 

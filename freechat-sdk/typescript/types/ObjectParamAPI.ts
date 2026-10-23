@@ -60,6 +60,12 @@ import { PromptTemplateDTO } from '../models/PromptTemplateDTO.js';
 import { PromptUpdateDTO } from '../models/PromptUpdateDTO.js';
 import { RagTaskDTO } from '../models/RagTaskDTO.js';
 import { RagTaskDetailsDTO } from '../models/RagTaskDetailsDTO.js';
+import { SkillConfirmDTO } from '../models/SkillConfirmDTO.js';
+import { SkillDetailsDTO } from '../models/SkillDetailsDTO.js';
+import { SkillDraftDTO } from '../models/SkillDraftDTO.js';
+import { SkillInstallDTO } from '../models/SkillInstallDTO.js';
+import { SkillSummaryDTO } from '../models/SkillSummaryDTO.js';
+import { SkillUpdateDTO } from '../models/SkillUpdateDTO.js';
 import { SseEmitter } from '../models/SseEmitter.js';
 import { TgMessageDTO } from '../models/TgMessageDTO.js';
 import { TokenUsageDTO } from '../models/TokenUsageDTO.js';
@@ -1233,7 +1239,7 @@ export class ObjectAgentApi {
     }
 
     /**
-     * Enter the agentId, generate a new record, the content is basically the same as the original agent, but the following fields are different: - Version number is 1 - Visibility is private - The parent agent is the source agentId - The creation time is the current moment.  - All statistical indicators are zeroed.  Return the new agentId. 
+     * Enter the agentId, generate a new record, the content is basically the same as the original agent, but the following fields are different: - Version number is 1 - Visibility is private - The parent agent is the source agentId - The creation time is the current moment.  - All statistical indicators are zeroed.  Return the new agentId.
      * Clone Agent
      * @param param the request object
      */
@@ -1242,7 +1248,7 @@ export class ObjectAgentApi {
     }
 
     /**
-     * Enter the agentId, generate a new record, the content is basically the same as the original agent, but the following fields are different: - Version number is 1 - Visibility is private - The parent agent is the source agentId - The creation time is the current moment.  - All statistical indicators are zeroed.  Return the new agentId. 
+     * Enter the agentId, generate a new record, the content is basically the same as the original agent, but the following fields are different: - Version number is 1 - Visibility is private - The parent agent is the source agentId - The creation time is the current moment.  - All statistical indicators are zeroed.  Return the new agentId.
      * Clone Agent
      * @param param the request object
      */
@@ -1287,7 +1293,7 @@ export class ObjectAgentApi {
     }
 
     /**
-     * Create a agent, ignore required fields: - Agent name - Agent configuration  Limitations: - Description: 300 characters - Configuration: 2000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10 
+     * Create a agent, ignore required fields: - Agent name - Agent configuration  Limitations: - Description: 300 characters - Configuration: 2000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10
      * Create Agent
      * @param param the request object
      */
@@ -1296,7 +1302,7 @@ export class ObjectAgentApi {
     }
 
     /**
-     * Create a agent, ignore required fields: - Agent name - Agent configuration  Limitations: - Description: 300 characters - Configuration: 2000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10 
+     * Create a agent, ignore required fields: - Agent name - Agent configuration  Limitations: - Description: 300 characters - Configuration: 2000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10
      * Create Agent
      * @param param the request object
      */
@@ -1449,7 +1455,7 @@ export class ObjectAgentApi {
     }
 
     /**
-     * Search agents: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Format: exact match, currently supported: langflow   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - General: name, description, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the agent summary content. - Support pagination. 
+     * Search agents: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Format: exact match, currently supported: langflow   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - General: name, description, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the agent summary content. - Support pagination.
      * Search Agent Summary
      * @param param the request object
      */
@@ -1458,7 +1464,7 @@ export class ObjectAgentApi {
     }
 
     /**
-     * Search agents: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Format: exact match, currently supported: langflow   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - General: name, description, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the agent summary content. - Support pagination. 
+     * Search agents: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Format: exact match, currently supported: langflow   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - General: name, description, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the agent summary content. - Support pagination.
      * Search Agent Summary
      * @param param the request object
      */
@@ -2114,7 +2120,7 @@ export class ObjectCharacterApi {
     }
 
     /**
-     * Enter the characterId, generate a new record, the content is basically the same as the original character, but the following fields are different: - Version number is 1 - Visibility is private - The parent character is the source characterId - The creation time is the current moment. - All statistical indicators are zeroed.  Return the new characterId. 
+     * Enter the characterId, generate a new record, the content is basically the same as the original character, but the following fields are different: - Version number is 1 - Visibility is private - The parent character is the source characterId - The creation time is the current moment. - All statistical indicators are zeroed.  Return the new characterId.
      * Clone Character
      * @param param the request object
      */
@@ -2123,7 +2129,7 @@ export class ObjectCharacterApi {
     }
 
     /**
-     * Enter the characterId, generate a new record, the content is basically the same as the original character, but the following fields are different: - Version number is 1 - Visibility is private - The parent character is the source characterId - The creation time is the current moment. - All statistical indicators are zeroed.  Return the new characterId. 
+     * Enter the characterId, generate a new record, the content is basically the same as the original character, but the following fields are different: - Version number is 1 - Visibility is private - The parent character is the source characterId - The creation time is the current moment. - All statistical indicators are zeroed.  Return the new characterId.
      * Clone Character
      * @param param the request object
      */
@@ -2654,7 +2660,7 @@ export class ObjectCharacterApi {
     }
 
     /**
-     * Search characters: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Name: left match.   - Language, exact match.   - General: name, description, profile, chat style, experience, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the character summary content. - Support pagination. 
+     * Search characters: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Name: left match.   - Language, exact match.   - General: name, description, profile, chat style, experience, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the character summary content. - Support pagination.
      * Search Character Summary
      * @param param the request object
      */
@@ -2663,7 +2669,7 @@ export class ObjectCharacterApi {
     }
 
     /**
-     * Search characters: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Name: left match.   - Language, exact match.   - General: name, description, profile, chat style, experience, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the character summary content. - Support pagination. 
+     * Search characters: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Name: left match.   - Language, exact match.   - General: name, description, profile, chat style, experience, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the character summary content. - Support pagination.
      * Search Character Summary
      * @param param the request object
      */
@@ -2672,7 +2678,7 @@ export class ObjectCharacterApi {
     }
 
     /**
-     * Search characters: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Name: left match.   - Language, exact match.   - General: name, description, profile, chat style, experience, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the character summary content. - Support pagination. 
+     * Search characters: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Name: left match.   - Language, exact match.   - General: name, description, profile, chat style, experience, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the character summary content. - Support pagination.
      * Search Public Character Summary
      * @param param the request object
      */
@@ -2681,7 +2687,7 @@ export class ObjectCharacterApi {
     }
 
     /**
-     * Search characters: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Name: left match.   - Language, exact match.   - General: name, description, profile, chat style, experience, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the character summary content. - Support pagination. 
+     * Search characters: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Name: left match.   - Language, exact match.   - General: name, description, profile, chat style, experience, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the character summary content. - Support pagination.
      * Search Public Character Summary
      * @param param the request object
      */
@@ -4415,7 +4421,7 @@ export class ObjectOrganizationApi {
     }
 
     /**
-     * Get the superior relationship of the subordinate account, including direct and indirect owners, default does not include virtual reported owners, so there will be no circular relationship.<br/> By specifying all=1, virtual reported owners can be returned, in this case, there may be a circular relationship. 
+     * Get the superior relationship of the subordinate account, including direct and indirect owners, default does not include virtual reported owners, so there will be no circular relationship.<br/> By specifying all=1, virtual reported owners can be returned, in this case, there may be a circular relationship.
      * Get Superior Relationship
      * @param param the request object
      */
@@ -4424,7 +4430,7 @@ export class ObjectOrganizationApi {
     }
 
     /**
-     * Get the superior relationship of the subordinate account, including direct and indirect owners, default does not include virtual reported owners, so there will be no circular relationship.<br/> By specifying all=1, virtual reported owners can be returned, in this case, there may be a circular relationship. 
+     * Get the superior relationship of the subordinate account, including direct and indirect owners, default does not include virtual reported owners, so there will be no circular relationship.<br/> By specifying all=1, virtual reported owners can be returned, in this case, there may be a circular relationship.
      * Get Superior Relationship
      * @param param the request object
      */
@@ -4776,7 +4782,7 @@ export class ObjectPluginApi {
     }
 
     /**
-     * Create a plugin, required fields: - Plugin name - Plugin manifestInfo (URL or JSON) - Plugin apiInfo (URL or JSON)  Limitations: - Name: 100 characters - Example: 2000 characters - Tags: 5 
+     * Create a plugin, required fields: - Plugin name - Plugin manifestInfo (URL or JSON) - Plugin apiInfo (URL or JSON)  Limitations: - Name: 100 characters - Example: 2000 characters - Tags: 5
      * Create Plugin
      * @param param the request object
      */
@@ -4785,7 +4791,7 @@ export class ObjectPluginApi {
     }
 
     /**
-     * Create a plugin, required fields: - Plugin name - Plugin manifestInfo (URL or JSON) - Plugin apiInfo (URL or JSON)  Limitations: - Name: 100 characters - Example: 2000 characters - Tags: 5 
+     * Create a plugin, required fields: - Plugin name - Plugin manifestInfo (URL or JSON) - Plugin apiInfo (URL or JSON)  Limitations: - Name: 100 characters - Example: 2000 characters - Tags: 5
      * Create Plugin
      * @param param the request object
      */
@@ -4920,7 +4926,7 @@ export class ObjectPluginApi {
     }
 
     /**
-     * Search plugins: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Plugin information format: currently supported: dash_scope, open_ai.   - Interface information format: currently supported: openapi_v3.   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - Provider: left match.   - General: name, provider information, manifest (real-time pull mode is not currently supported), fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the plugin summary content. - Support pagination. 
+     * Search plugins: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Plugin information format: currently supported: dash_scope, open_ai.   - Interface information format: currently supported: openapi_v3.   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - Provider: left match.   - General: name, provider information, manifest (real-time pull mode is not currently supported), fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the plugin summary content. - Support pagination.
      * Search Plugin Summary
      * @param param the request object
      */
@@ -4929,7 +4935,7 @@ export class ObjectPluginApi {
     }
 
     /**
-     * Search plugins: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Plugin information format: currently supported: dash_scope, open_ai.   - Interface information format: currently supported: openapi_v3.   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - Provider: left match.   - General: name, provider information, manifest (real-time pull mode is not currently supported), fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the plugin summary content. - Support pagination. 
+     * Search plugins: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Plugin information format: currently supported: dash_scope, open_ai.   - Interface information format: currently supported: openapi_v3.   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - Provider: left match.   - General: name, provider information, manifest (real-time pull mode is not currently supported), fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the plugin summary content. - Support pagination.
      * Search Plugin Summary
      * @param param the request object
      */
@@ -5294,7 +5300,7 @@ export class ObjectPromptApi {
     }
 
     /**
-     * Enter the promptId, generate a new record, the content is basically the same as the original prompt, but the following fields are different: - Version number is 1 - Visibility is private - The parent prompt is the source promptId - The creation time is the current moment. - All statistical indicators are zeroed.  Return the new promptId. 
+     * Enter the promptId, generate a new record, the content is basically the same as the original prompt, but the following fields are different: - Version number is 1 - Visibility is private - The parent prompt is the source promptId - The creation time is the current moment. - All statistical indicators are zeroed.  Return the new promptId.
      * Clone Prompt
      * @param param the request object
      */
@@ -5303,7 +5309,7 @@ export class ObjectPromptApi {
     }
 
     /**
-     * Enter the promptId, generate a new record, the content is basically the same as the original prompt, but the following fields are different: - Version number is 1 - Visibility is private - The parent prompt is the source promptId - The creation time is the current moment. - All statistical indicators are zeroed.  Return the new promptId. 
+     * Enter the promptId, generate a new record, the content is basically the same as the original prompt, but the following fields are different: - Version number is 1 - Visibility is private - The parent prompt is the source promptId - The creation time is the current moment. - All statistical indicators are zeroed.  Return the new promptId.
      * Clone Prompt
      * @param param the request object
      */
@@ -5366,7 +5372,7 @@ export class ObjectPromptApi {
     }
 
     /**
-     * Create a prompt, required fields: - Prompt name - Prompt content - Applicable model  Limitations: - Description: 300 characters - Template: 1000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10 
+     * Create a prompt, required fields: - Prompt name - Prompt content - Applicable model  Limitations: - Description: 300 characters - Template: 1000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10
      * Create Prompt
      * @param param the request object
      */
@@ -5375,7 +5381,7 @@ export class ObjectPromptApi {
     }
 
     /**
-     * Create a prompt, required fields: - Prompt name - Prompt content - Applicable model  Limitations: - Description: 300 characters - Template: 1000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10 
+     * Create a prompt, required fields: - Prompt name - Prompt content - Applicable model  Limitations: - Description: 300 characters - Template: 1000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10
      * Create Prompt
      * @param param the request object
      */
@@ -5582,7 +5588,7 @@ export class ObjectPromptApi {
     }
 
     /**
-     * Search prompts: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - Type, exact match: string (default) | chat.   - Language, exact match.   - General: name, description, template, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the prompt summary content. - Support pagination. 
+     * Search prompts: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - Type, exact match: string (default) | chat.   - Language, exact match.   - General: name, description, template, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the prompt summary content. - Support pagination.
      * Search Prompt Summary
      * @param param the request object
      */
@@ -5591,7 +5597,7 @@ export class ObjectPromptApi {
     }
 
     /**
-     * Search prompts: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - Type, exact match: string (default) | chat.   - Language, exact match.   - General: name, description, template, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the prompt summary content. - Support pagination. 
+     * Search prompts: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - Type, exact match: string (default) | chat.   - Language, exact match.   - General: name, description, template, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the prompt summary content. - Support pagination.
      * Search Prompt Summary
      * @param param the request object
      */
@@ -5600,7 +5606,7 @@ export class ObjectPromptApi {
     }
 
     /**
-     * Search prompts: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - Type, exact match: string (default) | chat.   - Language, exact match.   - General: name, description, template, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the prompt summary content. - Support pagination. 
+     * Search prompts: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - Type, exact match: string (default) | chat.   - Language, exact match.   - General: name, description, template, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the prompt summary content. - Support pagination.
      * Search Public Prompt Summary
      * @param param the request object
      */
@@ -5609,7 +5615,7 @@ export class ObjectPromptApi {
     }
 
     /**
-     * Search prompts: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - Type, exact match: string (default) | chat.   - Language, exact match.   - General: name, description, template, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the prompt summary content. - Support pagination. 
+     * Search prompts: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - Type, exact match: string (default) | chat.   - Language, exact match.   - General: name, description, template, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the prompt summary content. - Support pagination.
      * Search Public Prompt Summary
      * @param param the request object
      */
@@ -6052,6 +6058,197 @@ export class ObjectRagApi {
      */
     public updateRagTask(param: RagApiUpdateRagTaskRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.updateRagTask(param.taskId, param.ragTaskDTO,  options).toPromise();
+    }
+
+}
+
+import { ObservableSkillApi } from "./ObservableAPI.js";
+import { SkillApiRequestFactory, SkillApiResponseProcessor} from "../apis/SkillApi.js";
+
+export interface SkillApiConfirmSkillRequest {
+    /**
+     *
+     * Defaults to: undefined
+     * @type string
+     * @memberof SkillApiconfirmSkill
+     */
+    draftId: string
+    /**
+     *
+     * @type SkillConfirmDTO
+     * @memberof SkillApiconfirmSkill
+     */
+    skillConfirmDTO: SkillConfirmDTO
+}
+
+export interface SkillApiDeleteSkillRequest {
+    /**
+     *
+     * Defaults to: undefined
+     * @type string
+     * @memberof SkillApideleteSkill
+     */
+    skillId: string
+    /**
+     *
+     * Defaults to: undefined
+     * @type string
+     * @memberof SkillApideleteSkill
+     */
+    expectedRevision: string
+}
+
+export interface SkillApiGetSkillRequest {
+    /**
+     *
+     * Defaults to: undefined
+     * @type string
+     * @memberof SkillApigetSkill
+     */
+    skillId: string
+}
+
+export interface SkillApiListSkillsRequest {
+}
+
+export interface SkillApiPrepareSkillRequest {
+    /**
+     *
+     * @type SkillInstallDTO
+     * @memberof SkillApiprepareSkill
+     */
+    skillInstallDTO: SkillInstallDTO
+}
+
+export interface SkillApiUpdateSkillRequest {
+    /**
+     *
+     * Defaults to: undefined
+     * @type string
+     * @memberof SkillApiupdateSkill
+     */
+    skillId: string
+    /**
+     *
+     * @type SkillUpdateDTO
+     * @memberof SkillApiupdateSkill
+     */
+    skillUpdateDTO: SkillUpdateDTO
+}
+
+export class ObjectSkillApi {
+    private api: ObservableSkillApi
+
+    public constructor(configuration: Configuration, requestFactory?: SkillApiRequestFactory, responseProcessor?: SkillApiResponseProcessor) {
+        this.api = new ObservableSkillApi(configuration, requestFactory, responseProcessor);
+    }
+
+    /**
+     * Publish an unexpired reviewed draft belonging to the authenticated user. Confirmation is single-use and bound to its exact content digest.
+     * Confirm Skill Installation
+     * @param param the request object
+     */
+    public confirmSkillWithHttpInfo(param: SkillApiConfirmSkillRequest, options?: ConfigurationOptions): Promise<HttpInfo<SkillDetailsDTO>> {
+        return this.api.confirmSkillWithHttpInfo(param.draftId, param.skillConfirmDTO,  options).toPromise();
+    }
+
+    /**
+     * Publish an unexpired reviewed draft belonging to the authenticated user. Confirmation is single-use and bound to its exact content digest.
+     * Confirm Skill Installation
+     * @param param the request object
+     */
+    public confirmSkill(param: SkillApiConfirmSkillRequest, options?: ConfigurationOptions): Promise<SkillDetailsDTO> {
+        return this.api.confirmSkill(param.draftId, param.skillConfirmDTO,  options).toPromise();
+    }
+
+    /**
+     * Revoke an owned skill at its expected revision; characters cannot continue loading it.
+     * Delete My Skill
+     * @param param the request object
+     */
+    public deleteSkillWithHttpInfo(param: SkillApiDeleteSkillRequest, options?: ConfigurationOptions): Promise<HttpInfo<void>> {
+        return this.api.deleteSkillWithHttpInfo(param.skillId, param.expectedRevision,  options).toPromise();
+    }
+
+    /**
+     * Revoke an owned skill at its expected revision; characters cannot continue loading it.
+     * Delete My Skill
+     * @param param the request object
+     */
+    public deleteSkill(param: SkillApiDeleteSkillRequest, options?: ConfigurationOptions): Promise<void> {
+        return this.api.deleteSkill(param.skillId, param.expectedRevision,  options).toPromise();
+    }
+
+    /**
+     * Read a complete skill document set owned by the authenticated user.
+     * Get My Skill
+     * @param param the request object
+     */
+    public getSkillWithHttpInfo(param: SkillApiGetSkillRequest, options?: ConfigurationOptions): Promise<HttpInfo<SkillDetailsDTO>> {
+        return this.api.getSkillWithHttpInfo(param.skillId,  options).toPromise();
+    }
+
+    /**
+     * Read a complete skill document set owned by the authenticated user.
+     * Get My Skill
+     * @param param the request object
+     */
+    public getSkill(param: SkillApiGetSkillRequest, options?: ConfigurationOptions): Promise<SkillDetailsDTO> {
+        return this.api.getSkill(param.skillId,  options).toPromise();
+    }
+
+    /**
+     * List only the authenticated user\'s installed skills.
+     * List My Skills
+     * @param param the request object
+     */
+    public listSkillsWithHttpInfo(param: SkillApiListSkillsRequest = {}, options?: ConfigurationOptions): Promise<HttpInfo<Array<SkillSummaryDTO>>> {
+        return this.api.listSkillsWithHttpInfo( options).toPromise();
+    }
+
+    /**
+     * List only the authenticated user\'s installed skills.
+     * List My Skills
+     * @param param the request object
+     */
+    public listSkills(param: SkillApiListSkillsRequest = {}, options?: ConfigurationOptions): Promise<Array<SkillSummaryDTO>> {
+        return this.api.listSkills( options).toPromise();
+    }
+
+    /**
+     * Validate and review pasted/uploaded text documents or a raw document from an operator-approved HTTPS host. Publication requires explicit confirmation of the returned digest.
+     * Prepare Skill Installation
+     * @param param the request object
+     */
+    public prepareSkillWithHttpInfo(param: SkillApiPrepareSkillRequest, options?: ConfigurationOptions): Promise<HttpInfo<SkillDraftDTO>> {
+        return this.api.prepareSkillWithHttpInfo(param.skillInstallDTO,  options).toPromise();
+    }
+
+    /**
+     * Validate and review pasted/uploaded text documents or a raw document from an operator-approved HTTPS host. Publication requires explicit confirmation of the returned digest.
+     * Prepare Skill Installation
+     * @param param the request object
+     */
+    public prepareSkill(param: SkillApiPrepareSkillRequest, options?: ConfigurationOptions): Promise<SkillDraftDTO> {
+        return this.api.prepareSkill(param.skillInstallDTO,  options).toPromise();
+    }
+
+    /**
+     * Rebuild, validate and review the complete document set before atomically replacing the expected revision. Rejection leaves the installed revision unchanged.
+     * Update My Skill
+     * @param param the request object
+     */
+    public updateSkillWithHttpInfo(param: SkillApiUpdateSkillRequest, options?: ConfigurationOptions): Promise<HttpInfo<SkillDetailsDTO>> {
+        return this.api.updateSkillWithHttpInfo(param.skillId, param.skillUpdateDTO,  options).toPromise();
+    }
+
+    /**
+     * Rebuild, validate and review the complete document set before atomically replacing the expected revision. Rejection leaves the installed revision unchanged.
+     * Update My Skill
+     * @param param the request object
+     */
+    public updateSkill(param: SkillApiUpdateSkillRequest, options?: ConfigurationOptions): Promise<SkillDetailsDTO> {
+        return this.api.updateSkill(param.skillId, param.skillUpdateDTO,  options).toPromise();
     }
 
 }

@@ -73,7 +73,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **duration** | **int**| Token validity duration (seconds) | 
+ **duration** | **int**| Token validity duration (seconds) |
 
 ### Return type
 
@@ -223,7 +223,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **token** | **str**| Token content | 
+ **token** | **str**| Token content |
 
 ### Return type
 
@@ -300,7 +300,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **int**| Token id | 
+ **id** | **int**| Token id |
 
 ### Return type
 
@@ -377,7 +377,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **token** | **str**| Token content | 
+ **token** | **str**| Token content |
 
 ### Return type
 
@@ -454,7 +454,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **int**| Token id | 
+ **id** | **int**| Token id |
 
 ### Return type
 
@@ -531,7 +531,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **int**| Token id | 
+ **id** | **int**| Token id |
 
 ### Return type
 
@@ -609,7 +609,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **username** | **str**| Username | 
+ **username** | **str**| Username |
 
 ### Return type
 
@@ -909,7 +909,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **user_details_dto** | [**UserDetailsDTO**](UserDetailsDTO.md)| User information | 
+ **user_details_dto** | [**UserDetailsDTO**](UserDetailsDTO.md)| User information |
 
 ### Return type
 
@@ -986,7 +986,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **file** | **bytes**| User picture | 
+ **file** | **bytes**| User picture |
 
 ### Return type
 

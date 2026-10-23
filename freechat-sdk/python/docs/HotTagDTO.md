@@ -6,8 +6,8 @@ Hot tag
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**content** | **str** | Tag content | [optional] 
-**count** | **int** | Tag count | [optional] 
+**content** | **str** | Tag content | [optional]
+**count** | **int** | Tag count | [optional]
 
 ## Example
 

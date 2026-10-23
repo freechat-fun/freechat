@@ -295,6 +295,12 @@ Class | Method | HTTP request | Description
 *RagApi* | [**listRagTasks**](docs/RagApi.md#listragtasks) | **GET** /api/v2/rag/tasks/{characterUid} | List RAG Tasks
 *RagApi* | [**startRagTask**](docs/RagApi.md#startragtask) | **POST** /api/v2/rag/task/start/{taskId} | Start RAG Task
 *RagApi* | [**updateRagTask**](docs/RagApi.md#updateragtask) | **PUT** /api/v2/rag/task/{taskId} | Update RAG Task
+*SkillApi* | [**confirmSkill**](docs/SkillApi.md#confirmskill) | **POST** /api/v2/skill/install/{draftId} | Confirm Skill Installation
+*SkillApi* | [**deleteSkill**](docs/SkillApi.md#deleteskill) | **DELETE** /api/v2/skill/{skillId} | Delete My Skill
+*SkillApi* | [**getSkill**](docs/SkillApi.md#getskill) | **GET** /api/v2/skill/{skillId} | Get My Skill
+*SkillApi* | [**listSkills**](docs/SkillApi.md#listskills) | **GET** /api/v2/skill | List My Skills
+*SkillApi* | [**prepareSkill**](docs/SkillApi.md#prepareskill) | **POST** /api/v2/skill/install | Prepare Skill Installation
+*SkillApi* | [**updateSkill**](docs/SkillApi.md#updateskill) | **PUT** /api/v2/skill/{skillId} | Update My Skill
 *TTSServiceApi* | [**listTtsBuiltinSpeakers**](docs/TTSServiceApi.md#listttsbuiltinspeakers) | **GET** /api/v2/public/tts/builtin/speakers | List Builtin Speakers
 *TTSServiceApi* | [**playSample**](docs/TTSServiceApi.md#playsample) | **GET** /api/v2/public/tts/play/sample/{speakerType}/{speaker} | Play Sample Audio
 *TTSServiceApi* | [**speakMessage**](docs/TTSServiceApi.md#speakmessage) | **GET** /api/v2/tts/speak/{messageId} | Speak Message
@@ -364,6 +370,12 @@ Class | Method | HTTP request | Description
  - [PromptUpdateDTO](docs/PromptUpdateDTO.md)
  - [RagTaskDTO](docs/RagTaskDTO.md)
  - [RagTaskDetailsDTO](docs/RagTaskDetailsDTO.md)
+ - [SkillConfirmDTO](docs/SkillConfirmDTO.md)
+ - [SkillDetailsDTO](docs/SkillDetailsDTO.md)
+ - [SkillDraftDTO](docs/SkillDraftDTO.md)
+ - [SkillInstallDTO](docs/SkillInstallDTO.md)
+ - [SkillSummaryDTO](docs/SkillSummaryDTO.md)
+ - [SkillUpdateDTO](docs/SkillUpdateDTO.md)
  - [SseEmitter](docs/SseEmitter.md)
  - [TgMessageDTO](docs/TgMessageDTO.md)
  - [TokenUsageDTO](docs/TokenUsageDTO.md)
