@@ -60,6 +60,10 @@ public final class MemoryInvocation implements ChatMemory, AutoCloseable {
     private List<ToolSpecification> tools = List.of();
     private SystemMessage baseSystem;
     private SystemMessage renderedSystem;
+    private java.util.function.UnaryOperator<List<ChatMessage>> requestOverlay =
+            java.util.function.UnaryOperator.identity();
+    private java.util.function.Consumer<dev.langchain4j.model.chat.request.ChatRequest> requestPreflight =
+            ignored -> {};
     private AiMessage pendingAnswer;
     private TokenUsage pendingUsage;
     private MemoryConsolidator.Work preparation;
@@ -306,7 +310,23 @@ public final class MemoryInvocation implements ChatMemory, AutoCloseable {
         request.add(system);
         request.addAll(history);
         request.addAll(current);
-        bounds.requirePrompt(request, tools, model.providerContextLimit());
+        bounds.requirePrompt(requestOverlay.apply(request), tools, model.providerContextLimit());
+    }
+
+    public synchronized void requestOverlay(
+            java.util.function.UnaryOperator<List<ChatMessage>> overlay,
+            java.util.function.Consumer<dev.langchain4j.model.chat.request.ChatRequest> preflight) {
+        check();
+        requestOverlay = java.util.Objects.requireNonNull(overlay);
+        requestPreflight = java.util.Objects.requireNonNull(preflight);
+    }
+
+    public synchronized dev.langchain4j.model.chat.request.ChatRequest modelRequest(
+            dev.langchain4j.model.chat.request.ChatRequest request) {
+        var result =
+                request.toBuilder().messages(requestOverlay.apply(messages())).build();
+        requestPreflight.accept(result);
+        return result;
     }
 
     private SystemMessage compose(MemoryDocument summary) {

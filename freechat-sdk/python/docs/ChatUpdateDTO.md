@@ -6,16 +6,16 @@ Request data for updating a chat session
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**user_nickname** | **str** | User nickname for this session | [optional] 
-**user_profile** | **str** | User profile for this session | [optional] 
-**character_nickname** | **str** | Character nickname for this session | [optional] 
-**about** | **str** | Anything about this session | [optional] 
-**character_uid** | **str** | Character uid for this session | 
-**backend_id** | **str** | Character backend for this session | [optional] 
-**api_key_name** | **str** | API-KEY name, priority: apiKeyName &gt; apiKeyValue | [optional] 
-**api_key_value** | **str** | API-KEY value | [optional] 
-**ext** | **str** | Extra info for this session | [optional] 
-**gmt_read** | **datetime** | Read time | [optional] 
+**user_nickname** | **str** | User nickname for this session | [optional]
+**user_profile** | **str** | User profile for this session | [optional]
+**character_nickname** | **str** | Character nickname for this session | [optional]
+**about** | **str** | Anything about this session | [optional]
+**character_uid** | **str** | Character uid for this session |
+**backend_id** | **str** | Character backend for this session | [optional]
+**api_key_name** | **str** | API-KEY name, priority: apiKeyName &gt; apiKeyValue | [optional]
+**api_key_value** | **str** | API-KEY value | [optional]
+**ext** | **str** | Extra info for this session | [optional]
+**gmt_read** | **datetime** | Read time | [optional]
 
 ## Example
 

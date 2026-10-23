@@ -15,7 +15,7 @@ class ChatToolsConfigurationTest {
     void springWiresCatalogButNeverInstallsAWorkspaceRuntime() {
         try (var application = application(Map.of())) {
             ToolRegistry registry = application.getBean(ToolRegistry.class);
-            assertEquals(15, registry.list().size());
+            assertEquals(17, registry.list().size());
             assertEquals(
                     7,
                     registry.list().stream()

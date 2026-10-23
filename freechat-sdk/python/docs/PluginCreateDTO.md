@@ -6,16 +6,16 @@ Request data for creating new plugin information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**visibility** | **str** | Visibility: private (default), public, public_org, hidden | [optional] 
-**name** | **str** | Plugin name | 
-**manifest_format** | **str** | Manifest format, currently supported: dash_scope (default), open_ai | [optional] 
-**manifest_info** | **str** | Manifest content, can be full content or a URL | [optional] 
-**api_format** | **str** | API description format, currently supported: openapi_v3 (default) | [optional] 
-**api_info** | **str** | API description content, can be full content or a URL | [optional] 
-**provider** | **str** | Provider information, default is the current user&#39;s username | [optional] 
-**ext** | **str** | Additional information, JSON format | [optional] 
-**tags** | **List[str]** | Tag set | [optional] 
-**ai_models** | **List[str]** | Supported model set, empty means no model limit | [optional] 
+**visibility** | **str** | Visibility: private (default), public, public_org, hidden | [optional]
+**name** | **str** | Plugin name |
+**manifest_format** | **str** | Manifest format, currently supported: dash_scope (default), open_ai | [optional]
+**manifest_info** | **str** | Manifest content, can be full content or a URL | [optional]
+**api_format** | **str** | API description format, currently supported: openapi_v3 (default) | [optional]
+**api_info** | **str** | API description content, can be full content or a URL | [optional]
+**provider** | **str** | Provider information, default is the current user&#39;s username | [optional]
+**ext** | **str** | Additional information, JSON format | [optional]
+**tags** | **List[str]** | Tag set | [optional]
+**ai_models** | **List[str]** | Supported model set, empty means no model limit | [optional]
 
 ## Example
 

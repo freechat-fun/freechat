@@ -105,8 +105,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_uid** | **str**| The characterUid to be added a backend | 
- **character_backend_dto** | [**CharacterBackendDTO**](CharacterBackendDTO.md)| The character backend to be added | 
+ **character_uid** | **str**| The characterUid to be added a backend |
+ **character_backend_dto** | [**CharacterBackendDTO**](CharacterBackendDTO.md)| The character backend to be added |
 
 ### Return type
 
@@ -185,7 +185,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_query_dto** | [**List[CharacterQueryDTO]**](CharacterQueryDTO.md)| Query conditions | 
+ **character_query_dto** | [**List[CharacterQueryDTO]**](CharacterQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -264,7 +264,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_query_dto** | [**List[CharacterQueryDTO]**](CharacterQueryDTO.md)| Query conditions | 
+ **character_query_dto** | [**List[CharacterQueryDTO]**](CharacterQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -349,7 +349,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_id** | **int**| The referenced characterId | 
+ **character_id** | **int**| The referenced characterId |
 
 ### Return type
 
@@ -427,7 +427,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_query_dto** | [**CharacterQueryDTO**](CharacterQueryDTO.md)| Query conditions | 
+ **character_query_dto** | [**CharacterQueryDTO**](CharacterQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -505,7 +505,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_query_dto** | [**CharacterQueryDTO**](CharacterQueryDTO.md)| Query conditions | 
+ **character_query_dto** | [**CharacterQueryDTO**](CharacterQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -583,7 +583,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_create_dto** | [**CharacterCreateDTO**](CharacterCreateDTO.md)| Information of the character to be created | 
+ **character_create_dto** | [**CharacterCreateDTO**](CharacterCreateDTO.md)| Information of the character to be created |
 
 ### Return type
 
@@ -660,7 +660,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_id** | **int**| The characterId to be deleted | 
+ **character_id** | **int**| The characterId to be deleted |
 
 ### Return type
 
@@ -737,7 +737,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **name** | **str**| The character name to be deleted | 
+ **name** | **str**| The character name to be deleted |
 
 ### Return type
 
@@ -814,7 +814,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_uid** | **str**| The character uid to be deleted | 
+ **character_uid** | **str**| The character uid to be deleted |
 
 ### Return type
 
@@ -891,7 +891,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **key** | **str**| Document key | 
+ **key** | **str**| Document key |
 
 ### Return type
 
@@ -968,7 +968,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **key** | **str**| Image key | 
+ **key** | **str**| Image key |
 
 ### Return type
 
@@ -1045,7 +1045,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **key** | **str**| Video key | 
+ **key** | **str**| Video key |
 
 ### Return type
 
@@ -1123,8 +1123,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_backend_id** | **str**| The characterBackendId | 
- **key** | **str**| Voice key | 
+ **character_backend_id** | **str**| The characterBackendId |
+ **key** | **str**| Voice key |
 
 ### Return type
 
@@ -1201,7 +1201,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **name** | **str**| Name | 
+ **name** | **str**| Name |
 
 ### Return type
 
@@ -1276,7 +1276,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_id** | **int**| Character identifier | 
+ **character_id** | **int**| Character identifier |
 
 ### Return type
 
@@ -1354,7 +1354,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_id** | **int**| CharacterId to be obtained | 
+ **character_id** | **int**| CharacterId to be obtained |
 
 ### Return type
 
@@ -1431,7 +1431,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **name** | **str**| Character name | 
+ **name** | **str**| Character name |
 
 ### Return type
 
@@ -1509,7 +1509,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_id** | **int**| CharacterId to be obtained | 
+ **character_id** | **int**| CharacterId to be obtained |
 
 ### Return type
 
@@ -1587,7 +1587,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_uid** | **str**| The characterUid to be queried | 
+ **character_uid** | **str**| The characterUid to be queried |
 
 ### Return type
 
@@ -1664,7 +1664,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **file** | **bytes**| Character avatar | 
+ **file** | **bytes**| Character avatar |
 
 ### Return type
 
@@ -1741,7 +1741,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_uid** | **str**| The characterUid to be queried | 
+ **character_uid** | **str**| The characterUid to be queried |
 
 ### Return type
 
@@ -1819,7 +1819,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_uid** | **str**| The characterUid to be queried | 
+ **character_uid** | **str**| The characterUid to be queried |
 
 ### Return type
 
@@ -1896,7 +1896,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_uid** | **str**| Character unique identifier | 
+ **character_uid** | **str**| Character unique identifier |
 
 ### Return type
 
@@ -1973,7 +1973,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_uid** | **str**| Character unique identifier | 
+ **character_uid** | **str**| Character unique identifier |
 
 ### Return type
 
@@ -2051,7 +2051,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **name** | **str**| Character name | 
+ **name** | **str**| Character name |
 
 ### Return type
 
@@ -2128,7 +2128,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_uid** | **str**| Character unique identifier | 
+ **character_uid** | **str**| Character unique identifier |
 
 ### Return type
 
@@ -2205,7 +2205,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_backend_id** | **str**| The characterBackendId | 
+ **character_backend_id** | **str**| The characterBackendId |
 
 ### Return type
 
@@ -2282,7 +2282,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **desired** | **str**| Desired name | 
+ **desired** | **str**| Desired name |
 
 ### Return type
 
@@ -2360,8 +2360,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_id** | **int**| The characterId to be published | 
- **visibility** | **str**| Visibility: public | private | ... | 
+ **character_id** | **int**| The characterId to be published |
+ **visibility** | **str**| Visibility: public | private | ... |
 
 ### Return type
 
@@ -2438,7 +2438,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_id** | **int**| The characterId to be published | 
+ **character_id** | **int**| The characterId to be published |
 
 ### Return type
 
@@ -2515,7 +2515,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_backend_id** | **str**| The characterBackendId to be removed | 
+ **character_backend_id** | **str**| The characterBackendId to be removed |
 
 ### Return type
 
@@ -2594,7 +2594,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_query_dto** | [**CharacterQueryDTO**](CharacterQueryDTO.md)| Query conditions | 
+ **character_query_dto** | [**CharacterQueryDTO**](CharacterQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -2684,7 +2684,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_query_dto** | [**CharacterQueryDTO**](CharacterQueryDTO.md)| Query conditions | 
+ **character_query_dto** | [**CharacterQueryDTO**](CharacterQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -2774,7 +2774,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_query_dto** | [**CharacterQueryDTO**](CharacterQueryDTO.md)| Query conditions | 
+ **character_query_dto** | [**CharacterQueryDTO**](CharacterQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -2851,7 +2851,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_backend_id** | **str**| The characterBackendId to be set to default | 
+ **character_backend_id** | **str**| The characterBackendId to be set to default |
 
 ### Return type
 
@@ -2930,8 +2930,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_id** | **int**| The characterId to be updated | 
- **character_update_dto** | [**CharacterUpdateDTO**](CharacterUpdateDTO.md)| The character information to be updated | 
+ **character_id** | **int**| The characterId to be updated |
+ **character_update_dto** | [**CharacterUpdateDTO**](CharacterUpdateDTO.md)| The character information to be updated |
 
 ### Return type
 
@@ -3010,8 +3010,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_backend_id** | **str**| The characterBackendId to be updated | 
- **character_backend_dto** | [**CharacterBackendDTO**](CharacterBackendDTO.md)| The character backend configuration to be updated | 
+ **character_backend_id** | **str**| The characterBackendId to be updated |
+ **character_backend_dto** | [**CharacterBackendDTO**](CharacterBackendDTO.md)| The character backend configuration to be updated |
 
 ### Return type
 
@@ -3089,8 +3089,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_uid** | **str**| Character unique identifier | 
- **file** | **bytes**| Character avatar | 
+ **character_uid** | **str**| Character unique identifier |
+ **file** | **bytes**| Character avatar |
 
 ### Return type
 
@@ -3168,8 +3168,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_uid** | **str**| Character unique identifier | 
- **file** | **bytes**| Character document | 
+ **character_uid** | **str**| Character unique identifier |
+ **file** | **bytes**| Character document |
 
 ### Return type
 
@@ -3247,8 +3247,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_uid** | **str**| Character unique identifier | 
- **file** | **bytes**| Character picture | 
+ **character_uid** | **str**| Character unique identifier |
+ **file** | **bytes**| Character picture |
 
 ### Return type
 
@@ -3326,8 +3326,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_uid** | **str**| Character unique identifier | 
- **file** | **bytes**| Character video | 
+ **character_uid** | **str**| Character unique identifier |
+ **file** | **bytes**| Character video |
 
 ### Return type
 
@@ -3405,8 +3405,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_backend_id** | **str**| The characterBackendId | 
- **file** | **bytes**| Character voice | 
+ **character_backend_id** | **str**| The characterBackendId |
+ **file** | **bytes**| Character voice |
 
 ### Return type
 

@@ -137,8 +137,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **speaker_type** | **str**| The speaker type | 
- **speaker** | **str**| The speaker | 
+ **speaker_type** | **str**| The speaker type |
+ **speaker** | **str**| The speaker |
 
 ### Return type
 
@@ -215,7 +215,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **message_id** | **int**| The message id | 
+ **message_id** | **int**| The message id |
 
 ### Return type
 

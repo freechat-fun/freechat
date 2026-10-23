@@ -79,7 +79,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **chat_id** | **str**| Chat session identifier | 
+ **chat_id** | **str**| Chat session identifier |
 
 ### Return type
 
@@ -156,7 +156,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **chat_id** | **str**| Chat session identifier | 
+ **chat_id** | **str**| Chat session identifier |
 
 ### Return type
 
@@ -233,7 +233,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_uid** | **str**| Character uid | 
+ **character_uid** | **str**| Character uid |
 
 ### Return type
 
@@ -311,7 +311,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **chat_id** | **str**| Chat session identifier | 
+ **chat_id** | **str**| Chat session identifier |
 
 ### Return type
 
@@ -464,8 +464,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **chat_id** | **str**| Chat session identifier | 
- **limit** | **int**| Messages limit | 
+ **chat_id** | **str**| Chat session identifier |
+ **limit** | **int**| Messages limit |
 
 ### Return type
 
@@ -545,9 +545,9 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **chat_id** | **str**| Chat session identifier | 
- **limit** | **int**| Messages limit | 
- **offset** | **int**| Messages offset (from new to old) | 
+ **chat_id** | **str**| Chat session identifier |
+ **limit** | **int**| Messages limit |
+ **offset** | **int**| Messages offset (from new to old) |
 
 ### Return type
 
@@ -625,7 +625,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **chat_id** | **str**| Chat session identifier | 
+ **chat_id** | **str**| Chat session identifier |
 
 ### Return type
 
@@ -704,8 +704,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **chat_id** | **str**| Chat session identifier | 
- **limit** | **int**| Messages limit | 
+ **chat_id** | **str**| Chat session identifier |
+ **limit** | **int**| Messages limit |
 
 ### Return type
 
@@ -785,9 +785,9 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **chat_id** | **str**| Chat session identifier | 
- **limit** | **int**| Messages limit | 
- **offset** | **int**| Messages offset (from new to old) | 
+ **chat_id** | **str**| Chat session identifier |
+ **limit** | **int**| Messages limit |
+ **offset** | **int**| Messages offset (from new to old) |
 
 ### Return type
 
@@ -865,7 +865,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **chat_id** | **str**| Chat session identifier | 
+ **chat_id** | **str**| Chat session identifier |
 
 ### Return type
 
@@ -943,8 +943,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **chat_id** | **str**| Chat session identifier | 
- **count** | **int**| Message count to be rolled back | 
+ **chat_id** | **str**| Chat session identifier |
+ **count** | **int**| Message count to be rolled back |
 
 ### Return type
 
@@ -1023,8 +1023,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **chat_id** | **str**| Chat session identifier | 
- **assistant_uid** | **str**| Assistant uid | 
+ **chat_id** | **str**| Chat session identifier |
+ **assistant_uid** | **str**| Assistant uid |
 
 ### Return type
 
@@ -1104,8 +1104,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **chat_id** | **str**| Chat session identifier | 
- **chat_message_dto** | [**ChatMessageDTO**](ChatMessageDTO.md)| Chat message | 
+ **chat_id** | **str**| Chat session identifier |
+ **chat_message_dto** | [**ChatMessageDTO**](ChatMessageDTO.md)| Chat message |
 
 ### Return type
 
@@ -1183,7 +1183,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **chat_create_dto** | [**ChatCreateDTO**](ChatCreateDTO.md)| Parameters for starting a chat session | 
+ **chat_create_dto** | [**ChatCreateDTO**](ChatCreateDTO.md)| Parameters for starting a chat session |
 
 ### Return type
 
@@ -1262,8 +1262,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **chat_id** | **str**| Chat session identifier | 
- **assistant_uid** | **str**| Assistant uid | 
+ **chat_id** | **str**| Chat session identifier |
+ **assistant_uid** | **str**| Assistant uid |
 
 ### Return type
 
@@ -1343,8 +1343,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **chat_id** | **str**| Chat session identifier | 
- **chat_message_dto** | [**ChatMessageDTO**](ChatMessageDTO.md)| Chat message | 
+ **chat_id** | **str**| Chat session identifier |
+ **chat_message_dto** | [**ChatMessageDTO**](ChatMessageDTO.md)| Chat message |
 
 ### Return type
 
@@ -1423,8 +1423,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **chat_id** | **str**| Chat session identifier | 
- **chat_update_dto** | [**ChatUpdateDTO**](ChatUpdateDTO.md)| The chat session information to be updated | 
+ **chat_id** | **str**| Chat session identifier |
+ **chat_update_dto** | [**ChatUpdateDTO**](ChatUpdateDTO.md)| The chat session information to be updated |
 
 ### Return type
 

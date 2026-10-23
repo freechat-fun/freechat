@@ -6,10 +6,10 @@ User summary information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**request_id** | **str** | Request identifier | [optional] 
-**username** | **str** | Username | [optional] 
-**nickname** | **str** | Nickname | [optional] 
-**picture** | **str** | Avatar | [optional] 
+**request_id** | **str** | Request identifier | [optional]
+**username** | **str** | Username | [optional]
+**nickname** | **str** | Nickname | [optional]
+**picture** | **str** | Avatar | [optional]
 
 ## Example
 

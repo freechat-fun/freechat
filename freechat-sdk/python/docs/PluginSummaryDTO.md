@@ -6,19 +6,19 @@ Plugin summary information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**request_id** | **str** | Request identifier | [optional] 
-**plugin_id** | **int** | Plugin identifier | [optional] 
-**plugin_uid** | **str** | Plugin immutable identifier | [optional] 
-**gmt_create** | **datetime** | Creation time | [optional] 
-**gmt_modified** | **datetime** | Modification time | [optional] 
-**visibility** | **str** | Visibility: private, public, public_org, hidden | [optional] 
-**name** | **str** | Plugin name | [optional] 
-**provider** | **str** | Information of the provider | [optional] 
-**manifest_format** | **str** | Manifest format, currently supported: dash_scope, open_ai | [optional] 
-**api_format** | **str** | API description format, currently supported: openapi_v3 | [optional] 
-**username** | **str** | Plugin owner | [optional] 
-**tags** | **List[str]** | Tag set | [optional] 
-**ai_models** | [**List[AiModelInfoDTO]**](AiModelInfoDTO.md) | Supported model set | [optional] 
+**request_id** | **str** | Request identifier | [optional]
+**plugin_id** | **int** | Plugin identifier | [optional]
+**plugin_uid** | **str** | Plugin immutable identifier | [optional]
+**gmt_create** | **datetime** | Creation time | [optional]
+**gmt_modified** | **datetime** | Modification time | [optional]
+**visibility** | **str** | Visibility: private, public, public_org, hidden | [optional]
+**name** | **str** | Plugin name | [optional]
+**provider** | **str** | Information of the provider | [optional]
+**manifest_format** | **str** | Manifest format, currently supported: dash_scope, open_ai | [optional]
+**api_format** | **str** | API description format, currently supported: openapi_v3 | [optional]
+**username** | **str** | Plugin owner | [optional]
+**tags** | **List[str]** | Tag set | [optional]
+**ai_models** | [**List[AiModelInfoDTO]**](AiModelInfoDTO.md) | Supported model set | [optional]
 
 ## Example
 

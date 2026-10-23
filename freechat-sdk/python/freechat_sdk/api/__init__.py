@@ -16,6 +16,7 @@ from freechat_sdk.api.plugin_api import PluginApi
 from freechat_sdk.api.prompt_api import PromptApi
 from freechat_sdk.api.prompt_task_api import PromptTaskApi
 from freechat_sdk.api.rag_api import RagApi
+from freechat_sdk.api.skill_api import SkillApi
 from freechat_sdk.api.tts_service_api import TTSServiceApi
 from freechat_sdk.api.tag_manager_for_biz_admin_api import TagManagerForBizAdminApi
 from freechat_sdk.api.telegram_manager_for_admin_api import TelegramManagerForAdminApi

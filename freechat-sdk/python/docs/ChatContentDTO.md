@@ -6,8 +6,8 @@ Chat content
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**type** | **str** | Chat type: text (default) | image | video | audio | pdf | ... | [optional] 
-**content** | **str** | Chat content(for image, it might be a normal url or data url) | 
+**type** | **str** | Chat type: text (default) | image | video | audio | pdf | ... | [optional]
+**content** | **str** | Chat content(for image, it might be a normal url or data url) |
 
 ## Example
 

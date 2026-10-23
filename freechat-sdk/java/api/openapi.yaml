@@ -23,12 +23,13 @@ info:
     \ limits** for characters.\n- Supports characters **importing and exporting**.\n\
     - Supports **character-to-character chats**.\n- Supports **character voices**.\n\
     - Supports chatting with characters via **Telegram**.\n- Supports individual **debugging\
-    \ and sharing prompts**.\n\n## Snapshots\n### On PC\n#### Home Page\n![Home Page\
-    \ Snapshot](https://freechat.fun/img/snapshot_w1.jpg)\n#### Development View\n\
-    ![Development View Snapshot](https://freechat.fun/img/snapshot_w2.jpg)\n#### Chat\
-    \ View\n![Chat View Snapshot](https://freechat.fun/img/snapshot_w3.jpg)\n\n###\
-    \ On Mobile\n![Chat Snapshot 1](https://freechat.fun/img/snapshot_m1.jpg) ![Chat\
-    \ Snapshot 2](https://freechat.fun/img/snapshot_m2.jpg)<br />\n![Chat Snapshot\
+    \ and sharing prompts**.\n\nTo connect another messaging service, see the [channel\
+    \ plugin developer guide](docs/channel-plugins.md).\n\n## Snapshots\n### On PC\n\
+    #### Home Page\n![Home Page Snapshot](https://freechat.fun/img/snapshot_w1.jpg)\n\
+    #### Development View\n![Development View Snapshot](https://freechat.fun/img/snapshot_w2.jpg)\n\
+    #### Chat View\n![Chat View Snapshot](https://freechat.fun/img/snapshot_w3.jpg)\n\
+    \n### On Mobile\n![Chat Snapshot 1](https://freechat.fun/img/snapshot_m1.jpg)\
+    \ ![Chat Snapshot 2](https://freechat.fun/img/snapshot_m2.jpg)<br />\n![Chat Snapshot\
     \ 3](https://freechat.fun/img/snapshot_m3.jpg) ![Chat Snapshot 4](https://freechat.fun/img/snapshot_m4.jpg)\n\
     \n## Character Design\n```mermaid\nflowchart TD\n    A(Character) --> B(Profile)\n\
     \    A --> C(Knowledge/RAG)\n    A --> D(Album)\n    A --> E(Backend-1)\n    A\
@@ -137,7 +138,7 @@ info:
     \ your model, please contact us. We look forward to AI technology helping people\
     \ create their own \"soul mates\" in the future.\n"
   title: FreeChat OpenAPI Definition
-  version: 2.9.0
+  version: 2.10.0-beta
 servers:
 - url: http://127.0.0.1:8080/
 security:
@@ -149,6 +150,8 @@ tags:
   name: Encryption Manager (for admin)
 - description: "Manage tags, callable only by super administrators and business administrators."
   name: "Tag Manager (for biz, admin)"
+- description: "Private, user-owned prompt-only skills"
+  name: Skill
 - description: "Application configuration information, viewable only by super administrators."
   name: App Config (for admin)
 - description: Inspect Telegram chat bindings and message history.
@@ -156,6 +159,93 @@ tags:
 - description: "Manage users, callable only by super administrators."
   name: Account Manager (for admin)
 paths:
+  /api/v2/skill/{skillId}:
+    delete:
+      description: Revoke an owned skill at its expected revision; characters cannot
+        continue loading it.
+      operationId: deleteSkill
+      parameters:
+      - explode: false
+        in: path
+        name: skillId
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: expectedRevision
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: form
+      responses:
+        "204":
+          description: No Content
+      summary: Delete My Skill
+      tags:
+      - Skill
+      x-accepts:
+      - application/json
+    get:
+      description: Read a complete skill document set owned by the authenticated user.
+      operationId: getSkill
+      parameters:
+      - explode: false
+        in: path
+        name: skillId
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillDetailsDTO"
+          description: OK
+      summary: Get My Skill
+      tags:
+      - Skill
+      x-accepts:
+      - application/json
+    put:
+      description: "Rebuild, validate and review the complete document set before\
+        \ atomically replacing the expected revision. Rejection leaves the installed\
+        \ revision unchanged."
+      operationId: updateSkill
+      parameters:
+      - explode: false
+        in: path
+        name: skillId
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SkillUpdateDTO"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillDetailsDTO"
+          description: OK
+      summary: Update My Skill
+      tags:
+      - Skill
+      x-content-type: application/json
+      x-accepts:
+      - application/json
   /api/v2/rag/task/{taskId}:
     delete:
       description: Delete a RAG task.
@@ -1558,6 +1648,64 @@ paths:
       summary: Add Statistics
       tags:
       - Interactive Statistics
+      x-accepts:
+      - application/json
+  /api/v2/skill/install:
+    post:
+      description: Validate and review pasted/uploaded text documents or a raw document
+        from an operator-approved HTTPS host. Publication requires explicit confirmation
+        of the returned digest.
+      operationId: prepareSkill
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SkillInstallDTO"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillDraftDTO"
+          description: OK
+      summary: Prepare Skill Installation
+      tags:
+      - Skill
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /api/v2/skill/install/{draftId}:
+    post:
+      description: Publish an unexpired reviewed draft belonging to the authenticated
+        user. Confirmation is single-use and bound to its exact content digest.
+      operationId: confirmSkill
+      parameters:
+      - explode: false
+        in: path
+        name: draftId
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SkillConfirmDTO"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillDetailsDTO"
+          description: OK
+      summary: Confirm Skill Installation
+      tags:
+      - Skill
+      x-content-type: application/json
       x-accepts:
       - application/json
   /api/v2/rag/task/{characterUid}:
@@ -4350,6 +4498,24 @@ paths:
       - audio/mpeg
       - audio/octet-stream
       - audio/wav
+  /api/v2/skill:
+    get:
+      description: List only the authenticated user's installed skills.
+      operationId: listSkills
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/SkillSummaryDTO"
+                type: array
+          description: OK
+      summary: List My Skills
+      tags:
+      - Skill
+      x-accepts:
+      - application/json
   /api/v2/rag/tasks/{characterUid}:
     get:
       description: List the RAG tasks by characterId.
@@ -6968,6 +7134,71 @@ paths:
       - application/json
 components:
   schemas:
+    SkillUpdateDTO:
+      description: Replace a skill only after the complete resulting bundle is validated
+        and reviewed again
+      example:
+        files:
+          key: files
+        expectedRevision: expectedRevision
+      properties:
+        expectedRevision:
+          description: Current revision returned by getSkill; stale saves are rejected
+          maxLength: 64
+          minLength: 0
+          type: string
+        files:
+          additionalProperties:
+            type: string
+          description: "Complete resulting document set, including unchanged files"
+      required:
+      - expectedRevision
+      - files
+    SkillDetailsDTO:
+      description: Owner-only contents of an installed prompt skill
+      example:
+        skillId: skillId
+        name: name
+        digest: digest
+        description: description
+        modified: 2000-01-23T04:56:07.000+00:00
+        files:
+          key: files
+        revision: revision
+        tags:
+        - tags
+        - tags
+      properties:
+        skillId:
+          description: Opaque skill identifier
+          type: string
+        revision:
+          description: Current immutable revision identifier
+          type: string
+        name:
+          description: Skill name
+          type: string
+        description:
+          description: Skill description
+          type: string
+        tags:
+          description: "Descriptive labels, not permission grants"
+          items:
+            type: string
+          type: array
+          uniqueItems: true
+        modified:
+          description: Last publication time
+          format: date-time
+          type: string
+        files:
+          additionalProperties:
+            type: string
+          description: Logical document names and exact UTF-8 text; never server filesystem
+            paths
+        digest:
+          description: SHA-256 digest of the complete validated bundle
+          type: string
     RagTaskDTO:
       description: RAG task information
       example:
@@ -7394,7 +7625,14 @@ components:
           description: "Character language: en (default) | zh | ..."
           type: string
         ext:
-          description: "Additional information, JSON format"
+          description: "Additional JSON information. tools.enabled is an exact tool-name\
+            \ allowlist; missing or null inherits roleplay, memory and image defaults,\
+            \ subject to prerequisites. An empty tools list disables all tools. skills.enabled\
+            \ is a list of the creator's installed skill IDs; missing, null or empty\
+            \ enables no skills. With skills enabled, default tools include skill\
+            \ and read_skill_resource, and only approved in-process roleplay, memory\
+            \ and skill-reading tools are available. Skill references are omitted\
+            \ from character exports and cleared on import or cloning."
           type: string
         draft:
           description: Character draft information
@@ -7732,6 +7970,77 @@ components:
           type: string
         address:
           type: string
+    SkillInstallDTO:
+      description: Install a prompt-only skill from either text documents or an operator-approved
+        HTTPS source
+      example:
+        sourceUrl: sourceUrl
+        files:
+          key: files
+      properties:
+        files:
+          additionalProperties:
+            type: string
+          description: Uploaded or pasted text documents including SKILL.md; mutually
+            exclusive with sourceUrl
+        sourceUrl:
+          description: Approved HTTPS URL of a raw SKILL.md document; no recursive
+            fetching or redirects
+          maxLength: 2048
+          minLength: 0
+          type: string
+    SkillDraftDTO:
+      description: Reviewed installation preview; confirmation is bound to its exact
+        digest
+      example:
+        skillId: skillId
+        draftId: draftId
+        name: name
+        digest: digest
+        description: description
+        files:
+          key: files
+        expectedRevision: expectedRevision
+        expiresAt: 2000-01-23T04:56:07.000+00:00
+      properties:
+        draftId:
+          description: Owner-scoped single-use draft identifier
+          type: string
+        skillId:
+          description: Server-assigned skill identifier
+          type: string
+        expectedRevision:
+          description: "Revision being replaced, absent for a new skill"
+          type: string
+        name:
+          description: Validated skill name
+          type: string
+        description:
+          description: Validated skill description
+          type: string
+        files:
+          additionalProperties:
+            type: string
+          description: Complete staged document set for confirmation
+        digest:
+          description: Digest to supply when confirming this preview
+          type: string
+        expiresAt:
+          description: Confirmation expiry time
+          format: date-time
+          type: string
+    SkillConfirmDTO:
+      description: Confirm publication of the exact reviewed installation preview
+      example:
+        digest: digest
+      properties:
+        digest:
+          description: SHA-256 digest returned with the preview
+          minLength: 1
+          pattern: "[0-9a-f]{64}"
+          type: string
+      required:
+      - digest
     PromptQuery.Where:
       description: Query condition
       properties:
@@ -8884,7 +9193,14 @@ components:
           description: "Character language: en (default) | zh | ..."
           type: string
         ext:
-          description: "Additional information, JSON format"
+          description: "Additional JSON information. tools.enabled is an exact tool-name\
+            \ allowlist; missing or null inherits roleplay, memory and image defaults,\
+            \ subject to prerequisites. An empty tools list disables all tools. skills.enabled\
+            \ is a list of the creator's installed skill IDs; missing, null or empty\
+            \ enables no skills. With skills enabled, default tools include skill\
+            \ and read_skill_resource, and only approved in-process roleplay, memory\
+            \ and skill-reading tools are available. Skill references are omitted\
+            \ from character exports and cleared on import or cloning."
           type: string
         draft:
           description: Character draft information
@@ -9602,6 +9918,40 @@ components:
           description: Draft content
           type: string
     StreamingResponseBody: {}
+    SkillSummaryDTO:
+      description: "An installed, private, prompt-only skill"
+      example:
+        skillId: skillId
+        name: name
+        description: description
+        modified: 2000-01-23T04:56:07.000+00:00
+        revision: revision
+        tags:
+        - tags
+        - tags
+      properties:
+        skillId:
+          description: Opaque skill identifier
+          type: string
+        revision:
+          description: Current immutable revision identifier
+          type: string
+        name:
+          description: Skill name
+          type: string
+        description:
+          description: Skill description
+          type: string
+        tags:
+          description: "Descriptive labels, not permission grants"
+          items:
+            type: string
+          type: array
+          uniqueItems: true
+        modified:
+          description: Last publication time
+          format: date-time
+          type: string
     RagTaskDetailsDTO:
       description: Prompt task detailed information
       example:

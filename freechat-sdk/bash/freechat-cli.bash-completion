@@ -261,6 +261,12 @@ _freechat-cli()
     operations["listRagTasks"]=1
     operations["startRagTask"]=1
     operations["updateRagTask"]=1
+    operations["confirmSkill"]=1
+    operations["deleteSkill"]=1
+    operations["getSkill"]=1
+    operations["listSkills"]=1
+    operations["prepareSkill"]=1
+    operations["updateSkill"]=1
     operations["listTtsBuiltinSpeakers"]=1
     operations["playSample"]=1
     operations["speakMessage"]=1
@@ -464,6 +470,12 @@ _freechat-cli()
     operation_parameters["listRagTasks"]="characterUid= "
     operation_parameters["startRagTask"]="taskId= "
     operation_parameters["updateRagTask"]="taskId= "
+    operation_parameters["confirmSkill"]="draftId= "
+    operation_parameters["deleteSkill"]="skillId= expectedRevision= "
+    operation_parameters["getSkill"]="skillId= "
+    operation_parameters["listSkills"]=""
+    operation_parameters["prepareSkill"]=""
+    operation_parameters["updateSkill"]="skillId= "
     operation_parameters["listTtsBuiltinSpeakers"]=""
     operation_parameters["playSample"]="speakerType= speaker= "
     operation_parameters["speakMessage"]="messageId= "

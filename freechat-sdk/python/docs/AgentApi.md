@@ -78,7 +78,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agent_query_dto** | [**List[AgentQueryDTO]**](AgentQueryDTO.md)| Query conditions | 
+ **agent_query_dto** | [**List[AgentQueryDTO]**](AgentQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -157,7 +157,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agent_query_dto** | [**List[AgentQueryDTO]**](AgentQueryDTO.md)| Query conditions | 
+ **agent_query_dto** | [**List[AgentQueryDTO]**](AgentQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -242,7 +242,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agent_id** | **int**| The referenced agentId | 
+ **agent_id** | **int**| The referenced agentId |
 
 ### Return type
 
@@ -319,7 +319,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **request_body** | [**List[int]**](int.md)| List of agent information to be created | 
+ **request_body** | [**List[int]**](int.md)| List of agent information to be created |
 
 ### Return type
 
@@ -397,7 +397,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agent_query_dto** | [**AgentQueryDTO**](AgentQueryDTO.md)| Query conditions | 
+ **agent_query_dto** | [**AgentQueryDTO**](AgentQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -485,7 +485,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agent_create_dto** | [**AgentCreateDTO**](AgentCreateDTO.md)| Information of the agent to be created | 
+ **agent_create_dto** | [**AgentCreateDTO**](AgentCreateDTO.md)| Information of the agent to be created |
 
 ### Return type
 
@@ -563,7 +563,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agent_create_dto** | [**List[AgentCreateDTO]**](AgentCreateDTO.md)| List of agent information to be created | 
+ **agent_create_dto** | [**List[AgentCreateDTO]**](AgentCreateDTO.md)| List of agent information to be created |
 
 ### Return type
 
@@ -640,7 +640,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agent_id** | **int**| AgentId to be deleted | 
+ **agent_id** | **int**| AgentId to be deleted |
 
 ### Return type
 
@@ -717,7 +717,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **request_body** | [**List[int]**](int.md)| List of agentId to be deleted | 
+ **request_body** | [**List[int]**](int.md)| List of agentId to be deleted |
 
 ### Return type
 
@@ -795,7 +795,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agent_id** | **int**| AgentId to be obtained | 
+ **agent_id** | **int**| AgentId to be obtained |
 
 ### Return type
 
@@ -873,7 +873,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agent_id** | **int**| agentId to be obtained | 
+ **agent_id** | **int**| agentId to be obtained |
 
 ### Return type
 
@@ -951,7 +951,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **name** | **str**| Agent name | 
+ **name** | **str**| Agent name |
 
 ### Return type
 
@@ -1029,8 +1029,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agent_id** | **int**| The agentId to be published | 
- **visibility** | **str**| Visibility: public | private | ... | 
+ **agent_id** | **int**| The agentId to be published |
+ **visibility** | **str**| Visibility: public | private | ... |
 
 ### Return type
 
@@ -1109,7 +1109,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agent_query_dto** | [**AgentQueryDTO**](AgentQueryDTO.md)| Query conditions | 
+ **agent_query_dto** | [**AgentQueryDTO**](AgentQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -1200,7 +1200,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agent_query_dto** | [**AgentQueryDTO**](AgentQueryDTO.md)| Query conditions | 
+ **agent_query_dto** | [**AgentQueryDTO**](AgentQueryDTO.md)| Query conditions |
 
 ### Return type
 
@@ -1279,8 +1279,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agent_id** | **int**| AgentId to be updated | 
- **agent_update_dto** | [**AgentUpdateDTO**](AgentUpdateDTO.md)| Agent information to be updated | 
+ **agent_id** | **int**| AgentId to be updated |
+ **agent_update_dto** | [**AgentUpdateDTO**](AgentUpdateDTO.md)| Agent information to be updated |
 
 ### Return type
 

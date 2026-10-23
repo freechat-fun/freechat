@@ -474,7 +474,12 @@ case $state in
             "getRagTaskStatus[Get RAG Task Status]" \
             "listRagTasks[List RAG Tasks]" \
             "startRagTask[Start RAG Task]" \
-            "updateRagTask[Update RAG Task]"             "listTtsBuiltinSpeakers[List Builtin Speakers]" \
+            "updateRagTask[Update RAG Task]"             "confirmSkill[Confirm Skill Installation]" \
+            "deleteSkill[Delete My Skill]" \
+            "getSkill[Get My Skill]" \
+            "listSkills[List My Skills]" \
+            "prepareSkill[Prepare Skill Installation]" \
+            "updateSkill[Update My Skill]"             "listTtsBuiltinSpeakers[List Builtin Speakers]" \
             "playSample[Play Sample Audio]" \
             "speakMessage[Speak Message]"             "createTag[Create Tag]" \
             "deleteTag[Delete Tag]"             "findTelegramChat[Find Telegram Chat]" \
@@ -1823,6 +1828,47 @@ case $state in
         local -a _op_arguments
         _op_arguments=(
           "taskId=:[PATH] The taskId to be updated"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      confirmSkill)
+        local -a _op_arguments
+        _op_arguments=(
+          "draftId=:[PATH] "
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deleteSkill)
+        local -a _op_arguments
+        _op_arguments=(
+          "skillId=:[PATH] "
+          "expectedRevision=:[QUERY] "
+          )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getSkill)
+        local -a _op_arguments
+        _op_arguments=(
+          "skillId=:[PATH] "
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listSkills)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      prepareSkill)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      updateSkill)
+        local -a _op_arguments
+        _op_arguments=(
+          "skillId=:[PATH] "
                     )
         _describe -t actions 'operations' _op_arguments -S '' && ret=0
         ;;

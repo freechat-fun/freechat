@@ -28,6 +28,7 @@ public final class ChatExecution {
     private final Object memoryId;
     private final ChatMemory memory;
     private final Map<ToolSpecification, ToolExecutor> tools;
+    private final fun.freechat.service.skills.SkillInvocation skills;
     private ChatResponse pending;
     private Long messageId;
 
@@ -35,7 +36,9 @@ public final class ChatExecution {
         this.session = session;
         this.memoryId = memoryId;
         this.memory = session.getChatMemory(memoryId);
-        this.tools = session.bindToolsForInvocation();
+        var invocation = session.bindInvocation();
+        this.tools = invocation.tools();
+        this.skills = invocation.skills();
     }
 
     public Pair<ChatResponse, Long> send(LongTermChatMemoryStore.Binding binding, Runnable verifyModeration) {
@@ -48,7 +51,7 @@ public final class ChatExecution {
                 if (binding != null) {
                     binding.lifetime().check();
                 }
-                ChatResponse response = delegate.chat(request);
+                ChatResponse response = delegate.chat(skills == null ? request : skills.request(request));
                 if (binding != null
                         && !binding.memory().response(UUID.randomUUID().toString(), response)) {
                     throw new IllegalStateException("Chat memory invocation is no longer valid");
@@ -97,10 +100,11 @@ public final class ChatExecution {
     }
 
     public TokenStream stream() {
-        return builder(Streaming.class)
-                .streamingChatModel(session.getStreamingChatModel())
-                .build()
-                .send(memoryId);
+        var model = session.getStreamingChatModel();
+        if (skills != null && !(memory instanceof fun.freechat.service.chat.memory.MemoryInvocation)) {
+            model = new fun.freechat.service.skills.SkillStreamingModel(model, skills);
+        }
+        return builder(Streaming.class).streamingChatModel(model).build().send(memoryId);
     }
 
     private <T> AiServices<T> builder(Class<T> type) {

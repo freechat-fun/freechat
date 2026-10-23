@@ -5,7 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**timeout** | **int** |  | [optional] 
+**timeout** | **int** |  | [optional]
 
 ## Example
 

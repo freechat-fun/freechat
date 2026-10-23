@@ -49,6 +49,8 @@ public class CharacterUtils implements ApplicationContextAware {
         info.setName(newUniqueName(info.getName()));
         info.setCharacterId(null);
         info.setVersion(1);
+        info.setExt(fun.freechat.service.skills.CharacterSkillConfiguration.withoutSkills(info.getExt()));
+        info.setDraft(fun.freechat.service.skills.CharacterSkillConfiguration.withoutDraftSkills(info.getDraft()));
         info.setUserId(AccountUtils.currentUser().getUserId());
     }
 

@@ -6,13 +6,13 @@ Prompt task information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**prompt_ref** | [**PromptRefDTO**](PromptRefDTO.md) | Prompt reference information | 
-**model_id** | **str** | Model identifier | [optional] 
-**api_key_name** | **str** | API-KEY name, priority: apiKeyName &gt; apiKeyValue | [optional] 
-**api_key_value** | **str** | API-KEY value | [optional] 
-**params** | **Dict[str, object]** | Model call parameters | [optional] 
-**cron** | **str** | Task scheduling configuration which compatible with Quartz cron format | [optional] 
-**status** | **str** | Task execution status: pending | running | succeeded | failed | [optional] 
+**prompt_ref** | [**PromptRefDTO**](PromptRefDTO.md) | Prompt reference information |
+**model_id** | **str** | Model identifier | [optional]
+**api_key_name** | **str** | API-KEY name, priority: apiKeyName &gt; apiKeyValue | [optional]
+**api_key_value** | **str** | API-KEY value | [optional]
+**params** | **Dict[str, object]** | Model call parameters | [optional]
+**cron** | **str** | Task scheduling configuration which compatible with Quartz cron format | [optional]
+**status** | **str** | Task execution status: pending | running | succeeded | failed | [optional]
 
 ## Example
 

@@ -1,5 +1,6 @@
 export { default as CharacterGuide } from './CharacterGuide';
 export { default as CharacterEditor } from './CharacterEditor';
+export { default as CharacterSkillSelector } from './CharacterSkillSelector';
 export { default as CharacterBackendsPane } from './CharacterBackendsPane';
 export { default as CharacterBackendSettings } from './CharacterBackendSettings';
 export { default as CharacterGallery } from './CharacterGallery';

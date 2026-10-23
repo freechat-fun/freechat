@@ -56,6 +56,12 @@ export * from '../models/PromptTemplateDTO.js';
 export * from '../models/PromptUpdateDTO.js';
 export * from '../models/RagTaskDTO.js';
 export * from '../models/RagTaskDetailsDTO.js';
+export * from '../models/SkillConfirmDTO.js';
+export * from '../models/SkillDetailsDTO.js';
+export * from '../models/SkillDraftDTO.js';
+export * from '../models/SkillInstallDTO.js';
+export * from '../models/SkillSummaryDTO.js';
+export * from '../models/SkillUpdateDTO.js';
 export * from '../models/SseEmitter.js';
 export * from '../models/TgMessageDTO.js';
 export * from '../models/TokenUsageDTO.js';
@@ -121,6 +127,12 @@ import { PromptTemplateDTO } from '../models/PromptTemplateDTO.js';
 import { PromptUpdateDTO } from '../models/PromptUpdateDTO.js';
 import { RagTaskDTO } from '../models/RagTaskDTO.js';
 import { RagTaskDetailsDTO } from '../models/RagTaskDetailsDTO.js';
+import { SkillConfirmDTO } from '../models/SkillConfirmDTO.js';
+import { SkillDetailsDTO } from '../models/SkillDetailsDTO.js';
+import { SkillDraftDTO } from '../models/SkillDraftDTO.js';
+import { SkillInstallDTO } from '../models/SkillInstallDTO.js';
+import { SkillSummaryDTO } from '../models/SkillSummaryDTO.js';
+import { SkillUpdateDTO } from '../models/SkillUpdateDTO.js';
 import { SseEmitter } from '../models/SseEmitter.js';
 import { TgMessageDTO } from '../models/TgMessageDTO.js';
 import { TokenUsageDTO } from '../models/TokenUsageDTO.js';
@@ -202,6 +214,12 @@ let typeMap: {[index: string]: any} = {
     "PromptUpdateDTO": PromptUpdateDTO,
     "RagTaskDTO": RagTaskDTO,
     "RagTaskDetailsDTO": RagTaskDetailsDTO,
+    "SkillConfirmDTO": SkillConfirmDTO,
+    "SkillDetailsDTO": SkillDetailsDTO,
+    "SkillDraftDTO": SkillDraftDTO,
+    "SkillInstallDTO": SkillInstallDTO,
+    "SkillSummaryDTO": SkillSummaryDTO,
+    "SkillUpdateDTO": SkillUpdateDTO,
     "SseEmitter": SseEmitter,
     "TgMessageDTO": TgMessageDTO,
     "TokenUsageDTO": TokenUsageDTO,

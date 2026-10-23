@@ -6,16 +6,16 @@ Telegram message information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **int** | Record identifier | [optional] 
-**gmt_create** | **datetime** | Creation time | [optional] 
-**gmt_modified** | **datetime** | Modification time | [optional] 
-**chat_id** | **str** | Related tg_chat.chat_id | [optional] 
-**tg_message_id** | **int** | Telegram message id | [optional] 
-**tg_user_id** | **int** | Sender telegram user id | [optional] 
-**direction** | **str** | Direction: in | out | [optional] 
-**message_type** | **str** | Message type | [optional] 
-**content** | **str** | Plain text content | [optional] 
-**payload** | **str** | Raw telegram update payload (JSON) | [optional] 
+**id** | **int** | Record identifier | [optional]
+**gmt_create** | **datetime** | Creation time | [optional]
+**gmt_modified** | **datetime** | Modification time | [optional]
+**chat_id** | **str** | Related tg_chat.chat_id | [optional]
+**tg_message_id** | **int** | Telegram message id | [optional]
+**tg_user_id** | **int** | Sender telegram user id | [optional]
+**direction** | **str** | Direction: in | out | [optional]
+**message_type** | **str** | Message type | [optional]
+**content** | **str** | Plain text content | [optional]
+**payload** | **str** | Raw telegram update payload (JSON) | [optional]
 
 ## Example
 

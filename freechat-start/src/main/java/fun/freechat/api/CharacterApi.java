@@ -125,6 +125,9 @@ public class CharacterApi {
     @Autowired
     private ToolRegistry toolRegistry;
 
+    @Autowired
+    private fun.freechat.service.skills.SkillCharacterPolicy skillPolicy;
+
     private void validateCharacterTools(String ext) {
         try {
             toolRegistry.validateConfiguration(ext);
@@ -343,6 +346,7 @@ public class CharacterApi {
                     @NotNull
                     CharacterCreateDTO character) {
         validateCharacterTools(character.getExt());
+        skillPolicy.validate(AccountUtils.currentUser().getUserId(), character.getExt(), character.getDraft());
         var characterInfo = character.toCharacterInfo();
         if (!characterService.create(characterInfo)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create character.");
@@ -378,6 +382,7 @@ public class CharacterApi {
                     @NotNull
                     CharacterUpdateDTO character) {
         validateCharacterTools(character.getExt());
+        skillPolicy.validateUpdate(characterId, character.getExt(), character.getDraft());
         var characterInfo = character.toCharacterInfo(characterId);
         characterInfo.getLeft().setCharacterUid(characterService.getUid(characterId));
         return characterService.update(characterInfo);
@@ -1157,6 +1162,10 @@ public class CharacterApi {
         var characterTriple = characterService.details(characterId, currentUser);
         CharacterCreateDTO characterCreateDTO =
                 CharacterCreateDTO.from(Pair.of(characterTriple.getLeft(), characterTriple.getMiddle()));
+        characterCreateDTO.setExt(
+                fun.freechat.service.skills.CharacterSkillConfiguration.withoutSkills(characterCreateDTO.getExt()));
+        characterCreateDTO.setDraft(fun.freechat.service.skills.CharacterSkillConfiguration.withoutDraftSkills(
+                characterCreateDTO.getDraft()));
 
         List<CharacterBackend> backends =
                 characterTriple.getRight() != null ? characterTriple.getRight() : Collections.emptyList();
@@ -1377,6 +1386,10 @@ public class CharacterApi {
 
         // create character
         CharacterCreateDTO characterCreateDTO = characterConf.getCharacter();
+        characterCreateDTO.setExt(
+                fun.freechat.service.skills.CharacterSkillConfiguration.withoutSkills(characterCreateDTO.getExt()));
+        characterCreateDTO.setDraft(fun.freechat.service.skills.CharacterSkillConfiguration.withoutDraftSkills(
+                characterCreateDTO.getDraft()));
         validateCharacterTools(characterCreateDTO.getExt());
         var characterPair = characterCreateDTO.toCharacterInfo();
         CharacterUtils.resetCharacterInfoPair(characterPair, null);
@@ -1416,6 +1429,7 @@ public class CharacterApi {
     private void handleAvatar(HttpServletRequest request, String userId, CharacterInfo characterInfo, Path confPath)
             throws IOException {
         Path srcPath = confPath.resolve("avatar");
+        if (Files.notExists(srcPath)) return;
         String dir = PUBLIC_DIR + userId + "/character/avatar/" + characterInfo.getCharacterUid();
         FileStore fileStore = StoreUtils.defaultFileStore();
         try (Stream<Path> stream = Files.list(srcPath)) {
@@ -1448,6 +1462,7 @@ public class CharacterApi {
 
     private void handlePictures(String userId, CharacterInfo characterInfo, Path confPath) throws IOException {
         Path srcPath = confPath.resolve("pictures");
+        if (Files.notExists(srcPath)) return;
         String dir = PUBLIC_DIR + userId + "/character/picture/" + characterInfo.getCharacterUid();
         FileStore fileStore = StoreUtils.defaultFileStore();
         try (Stream<Path> stream = Files.list(srcPath)) {
@@ -1463,6 +1478,7 @@ public class CharacterApi {
 
     private void handleVideos(String userId, CharacterInfo characterInfo, Path confPath) throws IOException {
         Path srcPath = confPath.resolve("videos");
+        if (Files.notExists(srcPath)) return;
         String dir = PUBLIC_DIR + userId + "/character/videos/" + characterInfo.getCharacterUid();
         FileStore fileStore = StoreUtils.defaultFileStore();
         try (Stream<Path> stream = Files.list(srcPath)) {
@@ -1478,6 +1494,7 @@ public class CharacterApi {
 
     private void handleDocuments(String userId, CharacterInfo characterInfo, Path confPath) throws IOException {
         Path srcPath = confPath.resolve("documents");
+        if (Files.notExists(srcPath)) return;
         String dir = PRIVATE_DIR + userId + "/character/document/" + characterInfo.getCharacterUid();
         FileStore fileStore = StoreUtils.defaultFileStore();
         try (Stream<Path> stream = Files.list(srcPath)) {
@@ -1507,6 +1524,7 @@ public class CharacterApi {
             String userId, CharacterInfo characterInfo, List<CharacterBackend> backends, Path confPath)
             throws IOException {
         Path srcPath = confPath.resolve("voices");
+        if (Files.notExists(srcPath)) return;
         FileStore fileStore = StoreUtils.defaultFileStore();
         try (Stream<Path> stream = Files.list(srcPath)) {
             stream.filter(Files::isRegularFile).forEach(voicePath -> {

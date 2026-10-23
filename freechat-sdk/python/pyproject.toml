@@ -1,6 +1,6 @@
 [project]
 name = "freechat_sdk"
-version = "2.9.0"
+version = "2.10.0-beta"
 description = "FreeChat OpenAPI Definition"
 authors = [
   {name = "OpenAPI Generator Community",email = "team@openapitools.org"},

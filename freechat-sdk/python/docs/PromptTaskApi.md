@@ -65,7 +65,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_task_dto** | [**PromptTaskDTO**](PromptTaskDTO.md)| The prompt task to be added | 
+ **prompt_task_dto** | [**PromptTaskDTO**](PromptTaskDTO.md)| The prompt task to be added |
 
 ### Return type
 
@@ -142,7 +142,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_task_id** | **str**| The promptTaskId to be deleted | 
+ **prompt_task_id** | **str**| The promptTaskId to be deleted |
 
 ### Return type
 
@@ -220,7 +220,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_task_id** | **str**| The promptTaskId to be queried | 
+ **prompt_task_id** | **str**| The promptTaskId to be queried |
 
 ### Return type
 
@@ -299,8 +299,8 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_task_id** | **str**| The promptTaskId to be updated | 
- **prompt_task_dto** | [**PromptTaskDTO**](PromptTaskDTO.md)| The prompt task info to be updated | 
+ **prompt_task_id** | **str**| The promptTaskId to be updated |
+ **prompt_task_dto** | [**PromptTaskDTO**](PromptTaskDTO.md)| The prompt task info to be updated |
 
 ### Return type
 

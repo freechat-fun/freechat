@@ -6,16 +6,16 @@ Interactive statistics information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**request_id** | **str** | Request identifier | [optional] 
-**gmt_create** | **datetime** | Creation time | [optional] 
-**gmt_modified** | **datetime** | Modification time | [optional] 
-**refer_type** | **str** | Resource type | [optional] 
-**refer_id** | **str** | Resource identifier | [optional] 
-**view_count** | **int** | View count | [optional] 
-**refer_count** | **int** | Reference count | [optional] 
-**recommend_count** | **int** | Recommendation count | [optional] 
-**score_count** | **int** | Score count | [optional] 
-**score** | **int** | Average score | [optional] 
+**request_id** | **str** | Request identifier | [optional]
+**gmt_create** | **datetime** | Creation time | [optional]
+**gmt_modified** | **datetime** | Modification time | [optional]
+**refer_type** | **str** | Resource type | [optional]
+**refer_id** | **str** | Resource identifier | [optional]
+**view_count** | **int** | View count | [optional]
+**refer_count** | **int** | Reference count | [optional]
+**recommend_count** | **int** | Recommendation count | [optional]
+**score_count** | **int** | Score count | [optional]
+**score** | **int** | Average score | [optional]
 
 ## Example
 

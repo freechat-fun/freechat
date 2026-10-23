@@ -61,7 +61,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **text** | **str**| Text to be encrypted | 
+ **text** | **str**| Text to be encrypted |
 
 ### Return type
 

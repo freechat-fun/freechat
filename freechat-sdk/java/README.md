@@ -1,7 +1,7 @@
 # freechat-sdk
 
 FreeChat OpenAPI Definition
-- API version: 2.9.0
+- API version: 2.10.0-beta
   - Generator version: 7.21.0
 
 # FreeChat: Create Friends for Yourself with AI
@@ -31,6 +31,8 @@ It is recommended to run [Ollama](https://ollama.com/) + FreeChat locally to tes
 - Supports **character voices**.
 - Supports chatting with characters via **Telegram**.
 - Supports individual **debugging and sharing prompts**.
+
+To connect another messaging service, see the [channel plugin developer guide](docs/channel-plugins.md).
 
 ## Snapshots
 ### On PC
@@ -277,7 +279,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>2.9.0</version>
+  <version>2.10.0-beta</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -293,7 +295,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:2.9.0"
+     implementation "fun.freechat:freechat-sdk:2.10.0-beta"
   }
 ```
 
@@ -307,7 +309,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-2.9.0.jar`
+* `target/freechat-sdk-2.10.0-beta.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -548,6 +550,12 @@ Class | Method | HTTP request | Description
 *RagApi* | [**listRagTasks**](docs/RagApi.md#listRagTasks) | **GET** /api/v2/rag/tasks/{characterUid} | List RAG Tasks
 *RagApi* | [**startRagTask**](docs/RagApi.md#startRagTask) | **POST** /api/v2/rag/task/start/{taskId} | Start RAG Task
 *RagApi* | [**updateRagTask**](docs/RagApi.md#updateRagTask) | **PUT** /api/v2/rag/task/{taskId} | Update RAG Task
+*SkillApi* | [**confirmSkill**](docs/SkillApi.md#confirmSkill) | **POST** /api/v2/skill/install/{draftId} | Confirm Skill Installation
+*SkillApi* | [**deleteSkill**](docs/SkillApi.md#deleteSkill) | **DELETE** /api/v2/skill/{skillId} | Delete My Skill
+*SkillApi* | [**getSkill**](docs/SkillApi.md#getSkill) | **GET** /api/v2/skill/{skillId} | Get My Skill
+*SkillApi* | [**listSkills**](docs/SkillApi.md#listSkills) | **GET** /api/v2/skill | List My Skills
+*SkillApi* | [**prepareSkill**](docs/SkillApi.md#prepareSkill) | **POST** /api/v2/skill/install | Prepare Skill Installation
+*SkillApi* | [**updateSkill**](docs/SkillApi.md#updateSkill) | **PUT** /api/v2/skill/{skillId} | Update My Skill
 *TagManagerForBizAdminApi* | [**createTag**](docs/TagManagerForBizAdminApi.md#createTag) | **POST** /api/v2/biz/admin/tag/{referType}/{referId}/{tag} | Create Tag
 *TagManagerForBizAdminApi* | [**deleteTag**](docs/TagManagerForBizAdminApi.md#deleteTag) | **DELETE** /api/v2/biz/admin/tag/{referType}/{referId}/{tag} | Delete Tag
 *TelegramManagerForAdminApi* | [**findTelegramChat**](docs/TelegramManagerForAdminApi.md#findTelegramChat) | **GET** /api/v2/admin/chat/tg/{backendId}/{tgChatId} | Find Telegram Chat
@@ -617,6 +625,12 @@ Class | Method | HTTP request | Description
  - [PromptUpdateDTO](docs/PromptUpdateDTO.md)
  - [RagTaskDTO](docs/RagTaskDTO.md)
  - [RagTaskDetailsDTO](docs/RagTaskDetailsDTO.md)
+ - [SkillConfirmDTO](docs/SkillConfirmDTO.md)
+ - [SkillDetailsDTO](docs/SkillDetailsDTO.md)
+ - [SkillDraftDTO](docs/SkillDraftDTO.md)
+ - [SkillInstallDTO](docs/SkillInstallDTO.md)
+ - [SkillSummaryDTO](docs/SkillSummaryDTO.md)
+ - [SkillUpdateDTO](docs/SkillUpdateDTO.md)
  - [SseEmitter](docs/SseEmitter.md)
  - [TgMessageDTO](docs/TgMessageDTO.md)
  - [TokenUsageDTO](docs/TokenUsageDTO.md)

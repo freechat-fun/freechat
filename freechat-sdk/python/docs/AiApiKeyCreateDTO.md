@@ -6,10 +6,10 @@ Request data for adding new model credential information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**name** | **str** | Credential name | 
-**provider** | **str** | Model provider: hugging_face | open_ai | azure_open_ai | dash_scope | ollama | unknown | 
-**token** | **str** | Credential content | 
-**enabled** | **bool** | Whether to enable (enabled by default) | [optional] 
+**name** | **str** | Credential name |
+**provider** | **str** | Model provider: hugging_face | open_ai | azure_open_ai | dash_scope | ollama | unknown |
+**token** | **str** | Credential content |
+**enabled** | **bool** | Whether to enable (enabled by default) | [optional]
 
 ## Example
 

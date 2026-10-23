@@ -6,13 +6,13 @@ Application metadata
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**name** | **str** | Application name | [optional] 
-**version** | **str** | Application version | [optional] 
-**build_timestamp** | **str** | Build time | [optional] 
-**build_number** | **str** | Build number | [optional] 
-**commit_url** | **str** | Commit URL | [optional] 
-**release_note_url** | **str** | Release notes | [optional] 
-**running_env** | **str** | Running environment | [optional] 
+**name** | **str** | Application name | [optional]
+**version** | **str** | Application version | [optional]
+**build_timestamp** | **str** | Build time | [optional]
+**build_number** | **str** | Build number | [optional]
+**commit_url** | **str** | Commit URL | [optional]
+**release_note_url** | **str** | Release notes | [optional]
+**running_env** | **str** | Running environment | [optional]
 
 ## Example
 

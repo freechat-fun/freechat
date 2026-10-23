@@ -71,6 +71,10 @@
 
         <table tableName="chat_memory_commit" />
 
+        <table tableName="skill_info" />
+
+        <table tableName="skill_draft" />
+
         <table tableName="rag_task">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>

@@ -6,12 +6,12 @@ Model information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**request_id** | **str** | Request identifier | [optional] 
-**model_id** | **str** | Model identifier: [provider]name | [optional] 
-**name** | **str** | Model name | [optional] 
-**description** | **str** | Model description | [optional] 
-**provider** | **str** | Model provider: hugging_face | open_ai | azure_open_ai | dash_scope | ollama | unknown | [optional] 
-**type** | **str** | Model type: text2text | text2chat | text2image | embedding | moderation | multimodal | [optional] 
+**request_id** | **str** | Request identifier | [optional]
+**model_id** | **str** | Model identifier: [provider]name | [optional]
+**name** | **str** | Model name | [optional]
+**description** | **str** | Model description | [optional]
+**provider** | **str** | Model provider: hugging_face | open_ai | azure_open_ai | dash_scope | ollama | unknown | [optional]
+**type** | **str** | Model type: text2text | text2chat | text2image | embedding | moderation | multimodal | [optional]
 
 ## Example
 

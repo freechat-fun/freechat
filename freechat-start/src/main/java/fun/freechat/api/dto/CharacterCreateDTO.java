@@ -75,7 +75,7 @@ public class CharacterCreateDTO {
 
     @Schema(
             description =
-                    "Additional JSON information. tools.enabled is an exact tool-name allowlist; missing or null inherits get_current_time, calculate, roll_dice, search_memory, read_memory and find_image, subject to feature prerequisites. An empty list disables all tools.")
+                    "Additional JSON information. tools.enabled is an exact tool-name allowlist; missing or null inherits roleplay, memory and image defaults, subject to prerequisites. An empty tools list disables all tools. skills.enabled is a list of the creator's installed skill IDs; missing, null or empty enables no skills. With skills enabled, default tools include skill and read_skill_resource, and only approved in-process roleplay, memory and skill-reading tools are available. Skill references are omitted from character exports and cleared on import or cloning.")
     private String ext;
 
     @Schema(description = "Character draft information")

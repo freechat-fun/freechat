@@ -98,6 +98,16 @@ function clean_tmp {
         ${sdk_output}/.openapi-generator-ignore \
         ${sdk_output}/.travis.yml \
         ${sdk_output}/git_push.sh
+    python3 - "${sdk_output}" <<'PY' || return
+from pathlib import Path
+import sys
+
+for path in Path(sys.argv[1]).rglob("*"):
+    if path.is_file() and path.suffix in {".java", ".py", ".ts", ".md"}:
+        lines = path.read_text(encoding="utf-8").splitlines()
+        lines = [line.rstrip() if path.suffix != ".md" or line.count(" | ") >= 2 else line for line in lines]
+        path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+PY
 }
 
 function java_sdk {
@@ -149,7 +159,7 @@ scmUrl=${SCM_URL}
   rm -rf ${sdk_output}
   cp -rf ${output} ${SDK_PATH}
   cp -f java/publish.sh ${sdk_output}/publish.sh
-  sed '/<plugins>/r java/pom-private.xml' -i ${sdk_output}/pom.xml
+  python3 -c 'from pathlib import Path; import sys; target = Path(sys.argv[1]); snippet = Path(sys.argv[2]).read_text(encoding="utf-8"); target.write_text(target.read_text(encoding="utf-8").replace("<plugins>\n", "<plugins>\n" + snippet), encoding="utf-8")' "${sdk_output}/pom.xml" java/pom-private.xml || return
 
   clean_tmp ${sdk_output}
 }

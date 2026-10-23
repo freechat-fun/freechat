@@ -19,7 +19,8 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class ToolRuntimeBroker {
-    private static final Set<String> DOMAIN_TOOLS = Set.of("search_memory", "read_memory", "find_image");
+    private static final Set<String> DOMAIN_TOOLS =
+            Set.of("search_memory", "read_memory", "find_image", "skill", "read_skill_resource");
     private final ToolRegistry registry;
     private final ToolPolicySource policies;
     private final CopyOnWriteArrayList<ToolRuntime> runtimes = new CopyOnWriteArrayList<>();
@@ -113,6 +114,15 @@ public final class ToolRuntimeBroker {
             });
         }
         return java.util.Collections.unmodifiableMap(selected);
+    }
+
+    public boolean permits(String name, ToolContext context) {
+        try {
+            authorize(registry.find(name).orElseThrow(), context);
+            return true;
+        } catch (RuntimeException ignored) {
+            return false;
+        }
     }
 
     private void authorize(ToolDefinition definition, ToolContext context) {

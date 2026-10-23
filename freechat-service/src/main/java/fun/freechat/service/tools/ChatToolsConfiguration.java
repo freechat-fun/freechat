@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ChatToolsConfiguration {
     private static final String DEFAULT_ALLOWED =
-            "get_current_time,calculate,roll_dice,search_memory,read_memory,find_image,"
+            "get_current_time,calculate,roll_dice,search_memory,read_memory,find_image,skill,read_skill_resource,"
                     + "read_file,write_file,edit,list_directory,glob,grep_search,run_shell_command,web_fetch,web_search";
     private final List<BuiltinTool> catalog;
     private final List<BuiltinTool> available;
@@ -51,6 +51,7 @@ public class ChatToolsConfiguration {
         List<ToolDefinition> definitions =
                 new ArrayList<>(catalog.stream().map(BuiltinTool::definition).toList());
         definitions.addAll(WorkspaceTools.definitions());
+        definitions.addAll(fun.freechat.service.skills.SkillTools.definitions());
         ToolSpecifications.toolSpecificationsFrom(MemoryRecallTools.class)
                 .forEach(specification -> definitions.add(new ToolDefinition(
                         specification,
