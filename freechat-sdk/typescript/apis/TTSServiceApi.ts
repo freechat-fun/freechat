@@ -67,8 +67,8 @@ export class TTSServiceApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/public/tts/play/sample/{speakerType}/{speaker}'
-            .replace('{' + 'speakerType' + '}', encodeURIComponent(String(speakerType)))
-            .replace('{' + 'speaker' + '}', encodeURIComponent(String(speaker)));
+            .replace('{speakerType}', encodeURIComponent(String(speakerType)))
+            .replace('{speaker}', encodeURIComponent(String(speaker)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -106,7 +106,7 @@ export class TTSServiceApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/tts/speak/{messageId}'
-            .replace('{' + 'messageId' + '}', encodeURIComponent(String(messageId)));
+            .replace('{messageId}', encodeURIComponent(String(messageId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);

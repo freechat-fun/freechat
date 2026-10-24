@@ -1,6 +1,6 @@
 {
   "name": "freechat-sdk",
-  "version": "2.10.0-beta",
+  "version": "2.10.0",
   "description": "OpenAPI client for freechat-sdk",
   "author": "dev.freechat.fun",
   "repository": {

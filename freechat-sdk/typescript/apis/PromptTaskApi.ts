@@ -80,7 +80,7 @@ export class PromptTaskApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/prompt/task/{promptTaskId}'
-            .replace('{' + 'promptTaskId' + '}', encodeURIComponent(String(promptTaskId)));
+            .replace('{promptTaskId}', encodeURIComponent(String(promptTaskId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -118,7 +118,7 @@ export class PromptTaskApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/prompt/task/{promptTaskId}'
-            .replace('{' + 'promptTaskId' + '}', encodeURIComponent(String(promptTaskId)));
+            .replace('{promptTaskId}', encodeURIComponent(String(promptTaskId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -163,7 +163,7 @@ export class PromptTaskApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/prompt/task/{promptTaskId}'
-            .replace('{' + 'promptTaskId' + '}', encodeURIComponent(String(promptTaskId)));
+            .replace('{promptTaskId}', encodeURIComponent(String(promptTaskId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.PUT);

@@ -16,16 +16,16 @@ info:
     \ character**.\n- **Offers a comprehensive range of Open APIs**, with [more than\
     \ 180 methods](https://freechat.fun/w/docs) and provides java/python/typescript\
     \ SDKs. These methods enable easy construction of systems for end-users.\n- Supports\
-    \ setting **RAG** (Retrieval Augmented Generation) for characters.\n- Supports\
-    \ **long-term memory, preset memory** for characters.\n- Supports characters evoking\
-    \ **proactive chat**.\n- Supports **automatic image generation** for characters\
-    \ and replies with mixed text and image messages.\n- Supports setting **quota\
-    \ limits** for characters.\n- Supports characters **importing and exporting**.\n\
-    - Supports **character-to-character chats**.\n- Supports **character voices**.\n\
-    - Supports chatting with characters via **Telegram**.\n- Supports individual **debugging\
-    \ and sharing prompts**.\n\nTo connect another messaging service, see the [channel\
-    \ plugin developer guide](docs/channel-plugins.md).\n\n## Snapshots\n### On PC\n\
-    #### Home Page\n![Home Page Snapshot](https://freechat.fun/img/snapshot_w1.jpg)\n\
+    \ **tools, skills** and **connectors(MCP)**.\n- Supports setting **RAG** (Retrieval\
+    \ Augmented Generation) for characters.\n- Supports **long-term memory, preset\
+    \ memory** for characters.\n- Supports characters evoking **proactive chat**.\n\
+    - Supports **automatic image generation** for characters and replies with mixed\
+    \ text and image messages.\n- Supports setting **quota limits** for characters.\n\
+    - Supports characters **importing and exporting**.\n- Supports **character-to-character\
+    \ chats**.\n- Supports **character voices**.\n- Supports chatting with characters\
+    \ via **Telegram**.\n- Supports individual **debugging and sharing prompts**.\n\
+    \nTo connect another messaging service, see the [channel plugin developer guide](docs/channel-plugins.md).\n\
+    \n## Snapshots\n### On PC\n#### Home Page\n![Home Page Snapshot](https://freechat.fun/img/snapshot_w1.jpg)\n\
     #### Development View\n![Development View Snapshot](https://freechat.fun/img/snapshot_w2.jpg)\n\
     #### Chat View\n![Chat View Snapshot](https://freechat.fun/img/snapshot_w3.jpg)\n\
     \n### On Mobile\n![Chat Snapshot 1](https://freechat.fun/img/snapshot_m1.jpg)\
@@ -138,7 +138,7 @@ info:
     \ your model, please contact us. We look forward to AI technology helping people\
     \ create their own \"soul mates\" in the future.\n"
   title: FreeChat OpenAPI Definition
-  version: 2.10.0-beta
+  version: 2.10.0
 servers:
 - url: http://127.0.0.1:8080/
 security:
@@ -663,6 +663,7 @@ paths:
                 items:
                   type: string
                 type: array
+                default: null
           description: OK
       summary: Get Subordinate Relationship
       tags:
@@ -693,6 +694,7 @@ paths:
               items:
                 type: string
               type: array
+              default: null
         description: "The (direct) subordinate account of the subordinate account,\
           \ all accounts must be subordinate accounts of the current account"
         required: true
@@ -743,6 +745,7 @@ paths:
                 items:
                   type: string
                 type: array
+                default: null
           description: OK
       summary: Get Superior Relationship
       tags:
@@ -773,6 +776,7 @@ paths:
               items:
                 type: string
               type: array
+              default: null
         description: "The (direct) superior account of the subordinate account, all\
           \ accounts must be subordinate accounts of the current account"
         required: true
@@ -811,6 +815,7 @@ paths:
                 items:
                   type: string
                 type: array
+                default: null
           description: OK
       summary: List Subordinate Permissions
       tags:
@@ -841,6 +846,7 @@ paths:
                 type: string
               type: array
               uniqueItems: true
+              default: null
         description: Permission list
         required: true
       responses:
@@ -1413,6 +1419,7 @@ paths:
                   type: string
                 type: array
                 uniqueItems: true
+                default: null
           description: OK
       summary: List User Permissions
       tags:
@@ -1440,6 +1447,7 @@ paths:
                 type: string
               type: array
               uniqueItems: true
+              default: null
         description: Permission list
         required: true
       responses:
@@ -1929,6 +1937,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/PromptSummaryDTO"
                 type: array
+                default: null
           description: OK
       summary: Search Public Prompt Summary
       tags:
@@ -2005,6 +2014,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/CharacterSummaryDTO"
                 type: array
+                default: null
           description: OK
       summary: Search Public Character Summary
       tags:
@@ -2106,6 +2116,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/PromptItemForNameDTO"
                 type: array
+                default: null
           description: OK
       summary: List Versions by Prompt Name
       tags:
@@ -2243,6 +2254,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/PromptSummaryDTO"
                 type: array
+                default: null
           description: OK
       summary: Search Prompt Summary
       tags:
@@ -2325,6 +2337,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/PromptDetailsDTO"
                 type: array
+                default: null
           description: OK
       summary: Search Prompt Details
       tags:
@@ -2408,6 +2421,7 @@ paths:
                 format: int64
                 type: integer
               type: array
+              default: null
         description: List of promptIds to be deleted
         required: true
       responses:
@@ -2419,6 +2433,7 @@ paths:
                   format: int64
                   type: integer
                 type: array
+                default: null
           description: OK
       summary: Batch Delete Prompts
       tags:
@@ -2458,6 +2473,7 @@ paths:
               items:
                 $ref: "#/components/schemas/PromptCreateDTO"
               type: array
+              default: null
         description: List of prompt information to be created
         required: true
       responses:
@@ -2469,6 +2485,7 @@ paths:
                   format: int64
                   type: integer
                 type: array
+                default: null
           description: OK
       summary: Batch Create Prompts
       tags:
@@ -2518,6 +2535,7 @@ paths:
               items:
                 $ref: "#/components/schemas/PromptQueryDTO"
               type: array
+              default: null
         description: Query conditions
         required: true
       responses:
@@ -2529,7 +2547,9 @@ paths:
                   items:
                     $ref: "#/components/schemas/PromptSummaryDTO"
                   type: array
+                  default: null
                 type: array
+                default: null
           description: OK
       summary: Batch Search Prompt Summaries
       tags:
@@ -2579,6 +2599,7 @@ paths:
               items:
                 $ref: "#/components/schemas/PromptQueryDTO"
               type: array
+              default: null
         description: Query conditions
         required: true
       responses:
@@ -2590,7 +2611,9 @@ paths:
                   items:
                     $ref: "#/components/schemas/PromptDetailsDTO"
                   type: array
+                  default: null
                 type: array
+                default: null
           description: OK
       summary: Batch Search Prompt Details
       tags:
@@ -2611,6 +2634,7 @@ paths:
                 format: int64
                 type: integer
               type: array
+              default: null
         description: List of prompt information to be created
         required: true
       responses:
@@ -2622,6 +2646,7 @@ paths:
                   format: int64
                   type: integer
                 type: array
+                default: null
           description: OK
       summary: Batch Clone Prompts
       tags:
@@ -2765,6 +2790,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/PluginSummaryDTO"
                 type: array
+                default: null
           description: OK
       summary: Search Plugin Summary
       tags:
@@ -2804,6 +2830,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/PluginDetailsDTO"
                 type: array
+                default: null
           description: OK
       summary: Search Plugin Details
       tags:
@@ -2850,6 +2877,7 @@ paths:
                 format: int64
                 type: integer
               type: array
+              default: null
         description: List of pluginIds to be deleted
         required: true
       responses:
@@ -2861,6 +2889,7 @@ paths:
                   format: int64
                   type: integer
                 type: array
+                default: null
           description: OK
       summary: Batch Delete Plugins
       tags:
@@ -2897,6 +2926,7 @@ paths:
               items:
                 $ref: "#/components/schemas/PluginCreateDTO"
               type: array
+              default: null
         description: List of plugin information to be created
         required: true
       responses:
@@ -2908,6 +2938,7 @@ paths:
                   format: int64
                   type: integer
                 type: array
+                default: null
           description: OK
       summary: Batch Create Plugins
       tags:
@@ -2958,6 +2989,7 @@ paths:
               items:
                 $ref: "#/components/schemas/PluginQueryDTO"
               type: array
+              default: null
         description: Query conditions
         required: true
       responses:
@@ -2969,7 +3001,9 @@ paths:
                   items:
                     $ref: "#/components/schemas/PluginSummaryDTO"
                   type: array
+                  default: null
                 type: array
+                default: null
           description: OK
       summary: Batch Search Plugin Summaries
       tags:
@@ -3020,6 +3054,7 @@ paths:
               items:
                 $ref: "#/components/schemas/PluginQueryDTO"
               type: array
+              default: null
         description: Query conditions
         required: true
       responses:
@@ -3031,7 +3066,9 @@ paths:
                   items:
                     $ref: "#/components/schemas/PluginDetailsDTO"
                   type: array
+                  default: null
                 type: array
+                default: null
           description: OK
       summary: Batch Search Plugin Details
       tags:
@@ -3050,6 +3087,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/ConnectorDetailsDTO"
                 type: array
+                default: null
           description: OK
       summary: List My Connectors
       tags:
@@ -3126,6 +3164,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/ChatSessionDTO"
                 type: array
+                default: null
           description: OK
       summary: List Chats
       tags:
@@ -3258,6 +3297,7 @@ paths:
                   format: int64
                   type: integer
                 type: array
+                default: null
           description: OK
       summary: Rollback Chat Messages
       tags:
@@ -3384,6 +3424,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/CharacterItemForNameDTO"
                 type: array
+                default: null
           description: OK
       summary: List Versions by Character Name
       tags:
@@ -3433,6 +3474,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/CharacterSummaryDTO"
                 type: array
+                default: null
           description: OK
       summary: Search Character Summary
       tags:
@@ -3660,6 +3702,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/CharacterDetailsDTO"
                 type: array
+                default: null
           description: OK
       summary: Search Character Details
       tags:
@@ -3770,6 +3813,7 @@ paths:
               items:
                 $ref: "#/components/schemas/CharacterQueryDTO"
               type: array
+              default: null
         description: Query conditions
         required: true
       responses:
@@ -3781,7 +3825,9 @@ paths:
                   items:
                     $ref: "#/components/schemas/CharacterSummaryDTO"
                   type: array
+                  default: null
                 type: array
+                default: null
           description: OK
       summary: Batch Search Character Summaries
       tags:
@@ -3829,6 +3875,7 @@ paths:
               items:
                 $ref: "#/components/schemas/CharacterQueryDTO"
               type: array
+              default: null
         description: Query conditions
         required: true
       responses:
@@ -3840,7 +3887,9 @@ paths:
                   items:
                     $ref: "#/components/schemas/CharacterDetailsDTO"
                   type: array
+                  default: null
                 type: array
+                default: null
           description: OK
       summary: Batch Search Character Details
       tags:
@@ -4096,6 +4145,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/AgentItemForNameDTO"
                 type: array
+                default: null
           description: OK
       summary: List Versions by Agent Name
       tags:
@@ -4149,6 +4199,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/AgentSummaryDTO"
                 type: array
+                default: null
           description: OK
       summary: Search Agent Summary
       tags:
@@ -4232,6 +4283,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/AgentDetailsDTO"
                 type: array
+                default: null
           description: OK
       summary: Search Agent Details
       tags:
@@ -4337,6 +4389,7 @@ paths:
               items:
                 $ref: "#/components/schemas/AgentCreateDTO"
               type: array
+              default: null
         description: List of agent information to be created
         required: true
       responses:
@@ -4348,6 +4401,7 @@ paths:
                   format: int64
                   type: integer
                 type: array
+                default: null
           description: OK
       summary: Batch Create Agents
       tags:
@@ -4398,6 +4452,7 @@ paths:
               items:
                 $ref: "#/components/schemas/AgentQueryDTO"
               type: array
+              default: null
         description: Query conditions
         required: true
       responses:
@@ -4409,7 +4464,9 @@ paths:
                   items:
                     $ref: "#/components/schemas/AgentSummaryDTO"
                   type: array
+                  default: null
                 type: array
+                default: null
           description: OK
       summary: Batch Search Agent Summaries
       tags:
@@ -4460,6 +4517,7 @@ paths:
               items:
                 $ref: "#/components/schemas/AgentQueryDTO"
               type: array
+              default: null
         description: Query conditions
         required: true
       responses:
@@ -4471,7 +4529,9 @@ paths:
                   items:
                     $ref: "#/components/schemas/AgentDetailsDTO"
                   type: array
+                  default: null
                 type: array
+                default: null
           description: OK
       summary: Batch Search Agent Details
       tags:
@@ -4492,6 +4552,7 @@ paths:
                 format: int64
                 type: integer
               type: array
+              default: null
         description: List of agent information to be created
         required: true
       responses:
@@ -4503,6 +4564,7 @@ paths:
                   format: int64
                   type: integer
                 type: array
+                default: null
           description: OK
       summary: Batch Clone Agents
       tags:
@@ -4668,6 +4730,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/SkillSummaryDTO"
                 type: array
+                default: null
           description: OK
       summary: List My Skills
       tags:
@@ -4689,6 +4752,7 @@ paths:
                 items:
                   type: string
                 type: array
+                default: null
           description: OK
       summary: Get Allowed Skill Source Hosts
       tags:
@@ -4717,6 +4781,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/RagTaskDetailsDTO"
                 type: array
+                default: null
           description: OK
       summary: List RAG Tasks
       tags:
@@ -4815,6 +4880,7 @@ paths:
                 items:
                   type: string
                 type: array
+                default: null
           description: OK
       summary: List Builtin Speakers
       tags:
@@ -4860,6 +4926,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/HotTagDTO"
                 type: array
+                default: null
           description: OK
       summary: Hot Tags
       tags:
@@ -4981,6 +5048,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/PromptSummaryStatsDTO"
                 type: array
+                default: null
           description: OK
       summary: List Prompts by Statistics
       tags:
@@ -5029,6 +5097,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/PromptSummaryStatsDTO"
                 type: array
+                default: null
           description: OK
       summary: List Prompts by Statistics
       tags:
@@ -5086,6 +5155,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/PromptSummaryStatsDTO"
                 type: array
+                default: null
           description: OK
       summary: List Prompts by Statistics
       tags:
@@ -5143,6 +5213,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/PluginSummaryStatsDTO"
                 type: array
+                default: null
           description: OK
       summary: List Plugins by Statistics
       tags:
@@ -5182,6 +5253,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/PluginSummaryStatsDTO"
                 type: array
+                default: null
           description: OK
       summary: List Plugins by Statistics
       tags:
@@ -5230,6 +5302,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/PluginSummaryStatsDTO"
                 type: array
+                default: null
           description: OK
       summary: List Plugins by Statistics
       tags:
@@ -5269,6 +5342,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/CharacterSummaryStatsDTO"
                 type: array
+                default: null
           description: OK
       summary: List Characters by Statistics
       tags:
@@ -5317,6 +5391,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/CharacterSummaryStatsDTO"
                 type: array
+                default: null
           description: OK
       summary: List Characters by Statistics
       tags:
@@ -5374,6 +5449,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/CharacterSummaryStatsDTO"
                 type: array
+                default: null
           description: OK
       summary: List Characters by Statistics
       tags:
@@ -5422,6 +5498,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/AgentSummaryStatsDTO"
                 type: array
+                default: null
           description: OK
       summary: List Agents by Statistics
       tags:
@@ -5479,6 +5556,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/AgentSummaryStatsDTO"
                 type: array
+                default: null
           description: OK
       summary: List Agents by Statistics
       tags:
@@ -5518,6 +5596,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/AgentSummaryStatsDTO"
                 type: array
+                default: null
           description: OK
       summary: List Agents by Statistics
       tags:
@@ -5750,6 +5829,7 @@ paths:
                 items:
                   type: string
                 type: array
+                default: null
           description: OK
       summary: Get My Subordinate Relationship
       tags:
@@ -5809,6 +5889,7 @@ paths:
                 items:
                   type: string
                 type: array
+                default: null
           description: OK
       summary: Get My Superior Relationship
       tags:
@@ -5970,6 +6051,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/ChatMessageRecordDTO"
                 type: array
+                default: null
           description: OK
       summary: List Chat Messages
       tags:
@@ -6016,6 +6098,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/ChatMessageRecordDTO"
                 type: array
+                default: null
           description: OK
       summary: List Chat Messages
       tags:
@@ -6044,6 +6127,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/ChatMessageRecordDTO"
                 type: array
+                default: null
           description: OK
       summary: List Chat Messages
       tags:
@@ -6081,6 +6165,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/ChatMessageRecordDTO"
                 type: array
+                default: null
           description: OK
       summary: List Chat Debug Messages
       tags:
@@ -6127,6 +6212,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/ChatMessageRecordDTO"
                 type: array
+                default: null
           description: OK
       summary: List Chat Debug Messages
       tags:
@@ -6155,6 +6241,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/ChatMessageRecordDTO"
                 type: array
+                default: null
           description: OK
       summary: List Chat Debug Messages
       tags:
@@ -6209,6 +6296,7 @@ paths:
                 items:
                   type: string
                 type: array
+                default: null
           description: OK
       summary: List Character Voices
       tags:
@@ -6237,6 +6325,7 @@ paths:
                 items:
                   type: string
                 type: array
+                default: null
           description: OK
       summary: List Character Videos
       tags:
@@ -6293,6 +6382,7 @@ paths:
                 items:
                   type: string
                 type: array
+                default: null
           description: OK
       summary: List Character Pictures
       tags:
@@ -6382,6 +6472,7 @@ paths:
                 items:
                   type: string
                 type: array
+                default: null
           description: OK
       summary: List Character Documents
       tags:
@@ -6464,6 +6555,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/CharacterBackendDetailsDTO"
                 type: array
+                default: null
           description: OK
       summary: List Character Backends
       tags:
@@ -6492,6 +6584,7 @@ paths:
                 items:
                   type: string
                 type: array
+                default: null
           description: OK
       summary: List Character Backend ids
       tags:
@@ -6546,6 +6639,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/AiApiKeyInfoDTO"
                 type: array
+                default: null
           description: OK
       summary: List Credentials of Model Provider
       tags:
@@ -6695,6 +6789,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/UserBasicInfoDTO"
                 type: array
+                default: null
           description: OK
       summary: List User Information
       tags:
@@ -6715,6 +6810,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/UserBasicInfoDTO"
                 type: array
+                default: null
           description: OK
       summary: List User Information
       tags:
@@ -6744,6 +6840,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/UserBasicInfoDTO"
                 type: array
+                default: null
           description: OK
       summary: List User Information
       tags:
@@ -6849,6 +6946,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/ApiTokenInfoDTO"
                 type: array
+                default: null
           description: OK
       summary: Get API Token of User
       tags:
@@ -6958,6 +7056,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/TgMessageDTO"
                 type: array
+                default: null
           description: OK
       summary: List Telegram Messages
       tags:
@@ -7009,6 +7108,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/ApiTokenInfoDTO"
                 type: array
+                default: null
           description: OK
       summary: List API Tokens
       tags:
@@ -7083,6 +7183,7 @@ paths:
                   format: int64
                   type: integer
                 type: array
+                default: null
           description: OK
       summary: Delete Prompt by Name
       tags:
@@ -7111,6 +7212,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/ChatMessageRecordDTO"
                 type: array
+                default: null
           description: OK
       summary: Clear Memory
       tags:
@@ -7202,6 +7304,7 @@ paths:
                   format: int64
                   type: integer
                 type: array
+                default: null
           description: OK
       summary: Delete Character by Uid
       tags:
@@ -7258,6 +7361,7 @@ paths:
                   format: int64
                   type: integer
                 type: array
+                default: null
           description: OK
       summary: Delete Character by Name
       tags:
@@ -7303,6 +7407,7 @@ paths:
                 format: int64
                 type: integer
               type: array
+              default: null
         description: List of agentId to be deleted
         required: true
       responses:
@@ -7314,6 +7419,7 @@ paths:
                   format: int64
                   type: integer
                 type: array
+                default: null
           description: OK
       summary: Batch Delete Agents
       tags:
@@ -7327,9 +7433,9 @@ components:
       description: Replace a skill only after the complete resulting bundle is validated
         and reviewed again
       example:
+        expectedRevision: expectedRevision
         files:
           key: files
-        expectedRevision: expectedRevision
       properties:
         expectedRevision:
           description: Current revision returned by getSkill; stale saves are rejected
@@ -7340,6 +7446,7 @@ components:
           additionalProperties:
             type: string
           description: "Complete resulting document set, including unchanged files"
+          type: object
       required:
       - expectedRevision
       - files
@@ -7347,16 +7454,16 @@ components:
       description: Owner-only contents of an installed prompt skill
       example:
         skillId: skillId
-        name: name
-        digest: digest
-        description: description
-        modified: 2000-01-23T04:56:07.000+00:00
-        files:
-          key: files
         revision: revision
+        name: name
+        description: description
         tags:
         - tags
         - tags
+        modified: 2000-01-23T04:56:07.000+00:00
+        files:
+          key: files
+        digest: digest
       properties:
         skillId:
           description: Opaque skill identifier
@@ -7376,6 +7483,7 @@ components:
             type: string
           type: array
           uniqueItems: true
+          default: null
         modified:
           description: Last publication time
           format: date-time
@@ -7385,16 +7493,17 @@ components:
             type: string
           description: Logical document names and exact UTF-8 text; never server filesystem
             paths
+          type: object
         digest:
           description: SHA-256 digest of the complete validated bundle
           type: string
     RagTaskDTO:
       description: RAG task information
       example:
-        maxOverlapSize: 6
         sourceType: sourceType
-        maxSegmentSize: 0
         source: source
+        maxSegmentSize: 0
+        maxOverlapSize: 6
       properties:
         sourceType:
           description: "Source type: file (default) | url"
@@ -7431,22 +7540,22 @@ components:
       description: Chat message
       example:
         role: role
+        name: name
         contents:
         - type: type
           content: content
         - type: type
           content: content
-        name: name
+        toolCalls:
+        - id: id
+          name: name
+          arguments: arguments
+        - id: id
+          name: name
+          arguments: arguments
+        thinking: thinking
         context: context
         messageId: 0
-        toolCalls:
-        - name: name
-          arguments: arguments
-          id: id
-        - name: name
-          arguments: arguments
-          id: id
-        thinking: thinking
       properties:
         role:
           description: "Chat role: system | assistant | user | tool_call | tool_result"
@@ -7462,11 +7571,13 @@ components:
           items:
             $ref: "#/components/schemas/ChatContentDTO"
           type: array
+          default: null
         toolCalls:
           description: Tool calls information during the conversation
           items:
             $ref: "#/components/schemas/ChatToolCallDTO"
           type: array
+          default: null
         thinking:
           description: Thinking information
           type: string
@@ -7493,12 +7604,13 @@ components:
           items:
             $ref: "#/components/schemas/ChatMessageDTO"
           type: array
+          default: null
     ChatToolCallDTO:
       description: Tool call information during the conversation
       example:
+        id: id
         name: name
         arguments: arguments
-        id: id
       properties:
         id:
           description: Tool id
@@ -7513,23 +7625,23 @@ components:
       description: Request data for updating prompt information
       example:
         parentUid: parentUid
-        template: template
-        ext: ext
-        aiModels:
-        - aiModels
-        - aiModels
         visibility: visibility
-        inputs: inputs
-        format: format
+        name: name
         description: description
+        template: template
+        chatTemplate: ""
+        format: format
+        lang: lang
         example: example
+        inputs: inputs
+        ext: ext
+        draft: draft
         tags:
         - tags
         - tags
-        chatTemplate: ""
-        draft: draft
-        name: name
-        lang: lang
+        aiModels:
+        - aiModels
+        - aiModels
       properties:
         parentUid:
           description: Referenced prompt
@@ -7575,19 +7687,21 @@ components:
           items:
             type: string
           type: array
+          default: null
         aiModels:
           description: "Supported model set, empty means no model limit"
           items:
             type: string
           type: array
+          default: null
       required:
       - name
     PromptRefDTO:
       description: Prompt reference information
       example:
+        promptId: 0
         variables:
           key: ""
-        promptId: 0
         draft: true
       properties:
         promptId:
@@ -7595,8 +7709,10 @@ components:
           format: int64
           type: integer
         variables:
-          additionalProperties: {}
+          additionalProperties:
+            nullable: true
           description: "Variables applied to the template, can be empty"
+          type: object
         draft:
           description: Whether to use draft content
           type: boolean
@@ -7605,13 +7721,13 @@ components:
     PromptTaskDTO:
       description: Prompt task information
       example:
-        apiKeyValue: apiKeyValue
-        cron: cron
         promptRef: ""
         modelId: modelId
         apiKeyName: apiKeyName
+        apiKeyValue: apiKeyValue
         params:
           key: ""
+        cron: cron
         status: status
       properties:
         promptRef:
@@ -7628,8 +7744,10 @@ components:
           description: API-KEY value
           type: string
         params:
-          additionalProperties: {}
+          additionalProperties:
+            nullable: true
           description: Model call parameters
+          type: object
         cron:
           description: Task scheduling configuration which compatible with Quartz
             cron format
@@ -7643,20 +7761,20 @@ components:
     PluginUpdateDTO:
       description: Request data for updating plugin information
       example:
-        ext: ext
-        aiModels:
-        - aiModels
-        - aiModels
         visibility: visibility
-        apiFormat: apiFormat
-        provider: provider
-        manifestInfo: manifestInfo
         name: name
-        apiInfo: apiInfo
         manifestFormat: manifestFormat
+        manifestInfo: manifestInfo
+        apiFormat: apiFormat
+        apiInfo: apiInfo
+        provider: provider
+        ext: ext
         tags:
         - tags
         - tags
+        aiModels:
+        - aiModels
+        - aiModels
       properties:
         visibility:
           description: "Visibility: private (default), public, public_org, hidden"
@@ -7688,28 +7806,30 @@ components:
           items:
             type: string
           type: array
+          default: null
         aiModels:
           description: "Supported model set, empty means no model limit"
           items:
             type: string
           type: array
+          default: null
       required:
       - name
     ConnectorWriteDTO:
       description: Private remote MCP configuration. Saves validate syntax only; no
         network requests are made.
       example:
+        name: name
+        transport: http
+        url: url
+        timeout: 0
+        headers:
+          key: headers
         keepHeaderNames:
         - keepHeaderNames
         - keepHeaderNames
-        headers:
-          key: headers
-        name: name
-        active: true
-        transport: http
         expectedRevision: expectedRevision
-        url: url
-        timeout: 0
+        active: true
       properties:
         name:
           description: "Printable display name, 1–64 characters"
@@ -7734,6 +7854,7 @@ components:
             type: string
           description: "New header values, HTTPS only. At most 16 headers and 16 KiB\
             \ total. Values are never returned."
+          type: object
           writeOnly: true
         keepHeaderNames:
           description: Stored header names to retain on update; cannot overlap new
@@ -7741,6 +7862,7 @@ components:
           items:
             type: string
           type: array
+          default: null
         expectedRevision:
           description: Current revision required on update; omit on create
           type: string
@@ -7752,16 +7874,16 @@ components:
         never returned.
       example:
         connectorId: connectorId
-        headerNames:
-        - headerNames
-        - headerNames
+        revision: revision
         name: name
-        active: true
-        modified: 2000-01-23T04:56:07.000+00:00
         transport: transport
         url: url
         timeout: 0
-        revision: revision
+        active: true
+        headerNames:
+        - headerNames
+        - headerNames
+        modified: 2000-01-23T04:56:07.000+00:00
       properties:
         connectorId:
           type: string
@@ -7782,21 +7904,22 @@ components:
           items:
             type: string
           type: array
+          default: null
         modified:
           format: date-time
           type: string
     ChatUpdateDTO:
       description: Request data for updating a chat session
       example:
-        characterNickname: characterNickname
-        apiKeyValue: apiKeyValue
-        ext: ext
-        about: about
         userNickname: userNickname
+        userProfile: userProfile
+        characterNickname: characterNickname
+        about: about
+        characterUid: characterUid
         backendId: backendId
         apiKeyName: apiKeyName
-        characterUid: characterUid
-        userProfile: userProfile
+        apiKeyValue: apiKeyValue
+        ext: ext
         gmtRead: 2000-01-23T04:56:07.000+00:00
       properties:
         userNickname:
@@ -7836,25 +7959,25 @@ components:
       description: Request data for updating character information
       example:
         parentUid: parentUid
-        ext: ext
         visibility: visibility
+        name: name
+        description: description
+        nickname: nickname
+        avatar: avatar
+        picture: picture
+        video: video
         gender: gender
-        defaultScene: defaultScene
         profile: profile
         greeting: greeting
-        description: description
+        chatStyle: chatStyle
         chatExample: chatExample
-        avatar: avatar
-        video: video
-        picture: picture
+        defaultScene: defaultScene
+        lang: lang
+        ext: ext
+        draft: draft
         tags:
         - tags
         - tags
-        draft: draft
-        name: name
-        nickname: nickname
-        lang: lang
-        chatStyle: chatStyle
       properties:
         parentUid:
           description: Referenced character
@@ -7921,34 +8044,35 @@ components:
           items:
             type: string
           type: array
+          default: null
       required:
       - name
     CharacterBackendDTO:
       description: Character backend information
       example:
-        moderationApiKeyName: moderationApiKeyName
-        ttsSpeakerType: ttsSpeakerType
-        moderationParams: moderationParams
-        imageModelId: imageModelId
-        tgBotId: 5
+        isDefault: true
+        chatPromptTaskId: chatPromptTaskId
         greetingPromptTaskId: greetingPromptTaskId
         moderationModelId: moderationModelId
-        ttsSpeakerWav: ttsSpeakerWav
-        enableTts: true
-        enableAlbumTool: true
-        quotaType: quotaType
-        isDefault: true
-        tgBotToken: tgBotToken
+        moderationApiKeyName: moderationApiKeyName
         moderationApiKeyValue: moderationApiKeyValue
-        initQuota: 5
+        moderationParams: moderationParams
+        imageModelId: imageModelId
         imageApiKeyName: imageApiKeyName
-        chatPromptTaskId: chatPromptTaskId
-        messageWindowSize: 0
-        proactiveChatWaitingTime: 1
-        ttsSpeakerIdx: ttsSpeakerIdx
-        longTermMemoryWindowSize: 6
         imageApiKeyValue: imageApiKeyValue
         imageParams: imageParams
+        messageWindowSize: 0
+        longTermMemoryWindowSize: 6
+        proactiveChatWaitingTime: 1
+        initQuota: 5
+        quotaType: quotaType
+        enableAlbumTool: true
+        enableTts: true
+        ttsSpeakerIdx: ttsSpeakerIdx
+        ttsSpeakerWav: ttsSpeakerWav
+        ttsSpeakerType: ttsSpeakerType
+        tgBotId: 5
+        tgBotToken: tgBotToken
       properties:
         isDefault:
           description: Whether it is the default backend
@@ -8032,21 +8156,21 @@ components:
       description: Request data for updating agent information
       example:
         parentUid: parentUid
-        ext: ext
-        aiModels:
-        - aiModels
-        - aiModels
         visibility: visibility
-        draft: draft
         format: format
         name: name
         description: description
         config: config
-        parameters: parameters
         example: example
+        parameters: parameters
+        ext: ext
+        draft: draft
         tags:
         - tags
         - tags
+        aiModels:
+        - aiModels
+        - aiModels
       properties:
         parentUid:
           description: Referenced agent
@@ -8083,40 +8207,42 @@ components:
           items:
             type: string
           type: array
+          default: null
         aiModels:
           description: "Supported model set, empty means no model limit"
           items:
             type: string
           type: array
+          default: null
       required:
       - name
     UserFullDetailsDTO:
       description: Account detailed information (with password)
       example:
-        website: website
-        zoneinfo: zoneinfo
-        birthdate: 2000-01-23T04:56:07.000+00:00
-        address: address
-        gender: gender
-        preferredUsername: preferredUsername
+        requestId: requestId
+        username: username
+        nickname: nickname
         givenName: givenName
+        middleName: middleName
+        familyName: familyName
+        preferredUsername: preferredUsername
         profile: profile
-        locale: locale
         picture: picture
+        website: website
+        email: email
+        gender: gender
+        birthdate: 2000-01-23T04:56:07.000+00:00
+        zoneinfo: zoneinfo
+        locale: locale
+        phoneNumber: phoneNumber
+        updatedAt: 2000-01-23T04:56:07.000+00:00
         platform: platform
         enabled: true
-        expiresAt: 2000-01-23T04:56:07.000+00:00
-        password: password
-        phoneNumber: phoneNumber
-        requestId: requestId
-        passwordExpiresAt: 2000-01-23T04:56:07.000+00:00
-        familyName: familyName
-        nickname: nickname
-        middleName: middleName
         locked: true
-        email: email
-        username: username
-        updatedAt: 2000-01-23T04:56:07.000+00:00
+        expiresAt: 2000-01-23T04:56:07.000+00:00
+        passwordExpiresAt: 2000-01-23T04:56:07.000+00:00
+        address: address
+        password: password
       properties:
         requestId:
           description: Request identifier
@@ -8174,29 +8300,29 @@ components:
     UserDetailsDTO:
       description: Account detailed information
       example:
-        website: website
-        zoneinfo: zoneinfo
-        birthdate: 2000-01-23T04:56:07.000+00:00
-        address: address
-        gender: gender
-        preferredUsername: preferredUsername
+        requestId: requestId
+        username: username
+        nickname: nickname
         givenName: givenName
+        middleName: middleName
+        familyName: familyName
+        preferredUsername: preferredUsername
         profile: profile
-        locale: locale
         picture: picture
+        website: website
+        email: email
+        gender: gender
+        birthdate: 2000-01-23T04:56:07.000+00:00
+        zoneinfo: zoneinfo
+        locale: locale
+        phoneNumber: phoneNumber
+        updatedAt: 2000-01-23T04:56:07.000+00:00
         platform: platform
         enabled: true
-        expiresAt: 2000-01-23T04:56:07.000+00:00
-        phoneNumber: phoneNumber
-        requestId: requestId
-        passwordExpiresAt: 2000-01-23T04:56:07.000+00:00
-        familyName: familyName
-        nickname: nickname
-        middleName: middleName
         locked: true
-        email: email
-        username: username
-        updatedAt: 2000-01-23T04:56:07.000+00:00
+        expiresAt: 2000-01-23T04:56:07.000+00:00
+        passwordExpiresAt: 2000-01-23T04:56:07.000+00:00
+        address: address
       properties:
         requestId:
           description: Request identifier
@@ -8253,15 +8379,16 @@ components:
       description: Install a prompt-only skill bundle from text documents or an LLM-analyzed
         approved source link
       example:
-        sourceUrl: sourceUrl
         files:
           key: files
+        sourceUrl: sourceUrl
       properties:
         files:
           additionalProperties:
             type: string
           description: Uploaded or pasted text documents including SKILL.md; mutually
             exclusive with sourceUrl
+          type: object
         sourceUrl:
           description: "GitHub repository/skill-directory URL, ClawHub skill-page\
             \ URL, or raw document URL from an allowed host. May include surrounding\
@@ -8275,17 +8402,17 @@ components:
       description: Reviewed installation preview; confirmation is bound to its exact
         digest
       example:
-        sourceUrl: sourceUrl
-        skillId: skillId
         draftId: draftId
+        skillId: skillId
+        expectedRevision: expectedRevision
         name: name
-        digest: digest
         description: description
         files:
           key: files
-        sourceRevision: sourceRevision
-        expectedRevision: expectedRevision
+        digest: digest
         expiresAt: 2000-01-23T04:56:07.000+00:00
+        sourceUrl: sourceUrl
+        sourceRevision: sourceRevision
       properties:
         draftId:
           description: Owner-scoped single-use draft identifier
@@ -8306,6 +8433,7 @@ components:
           additionalProperties:
             type: string
           description: Complete staged document set for confirmation
+          type: object
         digest:
           description: Digest to supply when confirming this preview
           type: string
@@ -8349,6 +8477,7 @@ components:
           items:
             type: string
           type: array
+          default: null
         tagsOp:
           description: "Relationship between tags: and | or (default)"
           pattern: and|or
@@ -8358,6 +8487,7 @@ components:
           items:
             type: string
           type: array
+          default: null
         aiModelsOp:
           description: "Relationship between model sets: and | or (default)"
           pattern: and|or
@@ -8380,12 +8510,12 @@ components:
     PromptQueryDTO:
       description: Prompt template query request
       example:
+        where: ""
         orderBy:
         - orderBy
         - orderBy
-        pageSize: 6
-        where: ""
         pageNum: 0
+        pageSize: 6
       properties:
         where:
           allOf:
@@ -8403,6 +8533,7 @@ components:
           items:
             type: string
           type: array
+          default: null
         pageNum:
           description: "Page number, default is 0"
           format: int64
@@ -8414,11 +8545,11 @@ components:
     AiModelInfoDTO:
       description: Model information
       example:
-        modelId: modelId
-        provider: provider
         requestId: requestId
+        modelId: modelId
         name: name
         description: description
+        provider: provider
         type: type
       properties:
         requestId:
@@ -8444,36 +8575,36 @@ components:
     PromptSummaryDTO:
       description: Prompt summary content
       example:
-        parentUid: parentUid
-        gmtModified: 2000-01-23T04:56:07.000+00:00
-        aiModels:
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        visibility: visibility
+        requestId: requestId
+        promptId: 0
         promptUid: promptUid
-        format: format
-        description: description
         gmtCreate: 2000-01-23T04:56:07.000+00:00
-        type: type
+        gmtModified: 2000-01-23T04:56:07.000+00:00
+        parentUid: parentUid
+        visibility: visibility
         version: 6
+        name: name
+        type: type
+        description: description
+        format: format
+        lang: lang
+        username: username
         tags:
         - tags
         - tags
-        requestId: requestId
-        promptId: 0
-        name: name
-        lang: lang
-        username: username
+        aiModels:
+        - requestId: requestId
+          modelId: modelId
+          name: name
+          description: description
+          provider: provider
+          type: type
+        - requestId: requestId
+          modelId: modelId
+          name: name
+          description: description
+          provider: provider
+          type: type
       properties:
         requestId:
           description: Request identifier
@@ -8527,11 +8658,13 @@ components:
           items:
             type: string
           type: array
+          default: null
         aiModels:
           description: Supported model set
           items:
             $ref: "#/components/schemas/AiModelInfoDTO"
           type: array
+          default: null
     CharacterQuery.Where:
       description: Query condition
       properties:
@@ -8548,6 +8681,7 @@ components:
           items:
             type: string
           type: array
+          default: null
         tagsOp:
           description: "Relationship between tags: and | or (default)"
           pattern: and|or
@@ -8570,12 +8704,12 @@ components:
     CharacterQueryDTO:
       description: Character query request
       example:
+        where: ""
         orderBy:
         - orderBy
         - orderBy
-        pageSize: 6
-        where: ""
         pageNum: 0
+        pageSize: 6
       properties:
         where:
           allOf:
@@ -8592,6 +8726,7 @@ components:
           items:
             type: string
           type: array
+          default: null
         pageNum:
           description: "Page number, default is 0"
           format: int64
@@ -8603,30 +8738,30 @@ components:
     CharacterSummaryDTO:
       description: Character summary content
       example:
-        parentUid: parentUid
-        gmtModified: 2000-01-23T04:56:07.000+00:00
-        visibility: visibility
-        gender: gender
-        defaultScene: defaultScene
-        greeting: greeting
-        description: description
-        telegramUrl: telegramUrl
-        avatar: avatar
-        video: video
+        requestId: requestId
+        characterId: 0
+        characterUid: characterUid
         gmtCreate: 2000-01-23T04:56:07.000+00:00
-        priority: 1
+        gmtModified: 2000-01-23T04:56:07.000+00:00
+        parentUid: parentUid
+        visibility: visibility
         version: 6
+        name: name
+        description: description
+        nickname: nickname
+        avatar: avatar
         picture: picture
+        video: video
+        gender: gender
+        lang: lang
+        greeting: greeting
+        defaultScene: defaultScene
+        priority: 1
+        username: username
         tags:
         - tags
         - tags
-        requestId: requestId
-        name: name
-        nickname: nickname
-        lang: lang
-        characterId: 0
-        characterUid: characterUid
-        username: username
+        telegramUrl: telegramUrl
       properties:
         requestId:
           description: Request identifier
@@ -8699,6 +8834,7 @@ components:
           items:
             type: string
           type: array
+          default: null
         telegramUrl:
           description: Telegram URL
           type: string
@@ -8706,23 +8842,23 @@ components:
       description: Request data for creating new prompt information
       example:
         parentUid: parentUid
-        template: template
-        ext: ext
-        aiModels:
-        - aiModels
-        - aiModels
         visibility: visibility
-        inputs: inputs
-        format: format
+        name: name
         description: description
+        template: template
+        chatTemplate: ""
+        format: format
+        lang: lang
         example: example
+        inputs: inputs
+        ext: ext
+        draft: draft
         tags:
         - tags
         - tags
-        chatTemplate: ""
-        draft: draft
-        name: name
-        lang: lang
+        aiModels:
+        - aiModels
+        - aiModels
       properties:
         parentUid:
           description: Referenced prompt
@@ -8768,26 +8904,28 @@ components:
           items:
             type: string
           type: array
+          default: null
         aiModels:
           description: "Supported model set, empty means no model limit"
           items:
             type: string
           type: array
+          default: null
       required:
       - name
     InteractiveStatsDTO:
       description: Interactive statistics information
       example:
-        referCount: 6
-        score: 5
-        gmtModified: 2000-01-23T04:56:07.000+00:00
-        recommendCount: 1
         requestId: requestId
-        scoreCount: 5
-        referId: referId
-        referType: referType
-        viewCount: 0
         gmtCreate: 2000-01-23T04:56:07.000+00:00
+        gmtModified: 2000-01-23T04:56:07.000+00:00
+        referType: referType
+        referId: referId
+        viewCount: 0
+        referCount: 6
+        recommendCount: 1
+        scoreCount: 5
+        score: 5
       properties:
         requestId:
           description: Request identifier
@@ -8829,9 +8967,9 @@ components:
     PromptItemForNameDTO:
       description: Prompt identifier and version information
       example:
-        stats: ""
         promptId: 0
         version: 6
+        stats: ""
       properties:
         promptId:
           description: promptId
@@ -8848,11 +8986,11 @@ components:
     PromptAiParamDTO:
       description: Prompt AI service information
       example:
+        prompt: prompt
+        promptTemplate: ""
         promptRef: ""
         params:
           key: ""
-        prompt: prompt
-        promptTemplate: ""
       properties:
         prompt:
           description: "Complete input content, priority: prompt > promptTemplate\
@@ -8867,19 +9005,21 @@ components:
           - $ref: "#/components/schemas/PromptRefDTO"
           description: Prompt reference information
         params:
-          additionalProperties: {}
+          additionalProperties:
+            nullable: true
           description: "Model call parameters, the actual supported fields are related\
             \ to modelId, depending on the model provider, specific fields can refer\
             \ to: OpenAiParamDTO, QwenParamDTO"
+          type: object
       required:
       - params
     PromptTemplateDTO:
       description: Prompt template content
       example:
         template: template
+        chatTemplate: ""
         variables:
           key: ""
-        chatTemplate: ""
         format: format
       properties:
         template:
@@ -8891,8 +9031,10 @@ components:
           - $ref: "#/components/schemas/ChatPromptContentDTO"
           description: Prompt chat template content
         variables:
-          additionalProperties: {}
+          additionalProperties:
+            nullable: true
           description: "Variables applied to the template, can be empty"
+          type: object
         format:
           description: "Prompt format: mustache (default) | f_string"
           pattern: mustache|f_string
@@ -8901,10 +9043,10 @@ components:
       description: Prompt service result
       example:
         requestId: requestId
-        tokenUsage: ""
-        finishReason: finishReason
         text: text
         message: ""
+        finishReason: finishReason
+        tokenUsage: ""
       properties:
         requestId:
           description: Request identifier
@@ -8949,42 +9091,42 @@ components:
     PromptDetailsDTO:
       description: Prompt detailed content
       example:
-        parentUid: parentUid
-        template: template
-        ext: ext
-        gmtModified: 2000-01-23T04:56:07.000+00:00
-        aiModels:
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        visibility: visibility
+        requestId: requestId
+        promptId: 0
         promptUid: promptUid
-        inputs: inputs
-        format: format
-        description: description
         gmtCreate: 2000-01-23T04:56:07.000+00:00
-        type: type
+        gmtModified: 2000-01-23T04:56:07.000+00:00
+        parentUid: parentUid
+        visibility: visibility
         version: 6
+        name: name
+        type: type
+        description: description
+        format: format
+        lang: lang
+        username: username
         tags:
         - tags
         - tags
-        example: example
+        aiModels:
+        - requestId: requestId
+          modelId: modelId
+          name: name
+          description: description
+          provider: provider
+          type: type
+        - requestId: requestId
+          modelId: modelId
+          name: name
+          description: description
+          provider: provider
+          type: type
+        template: template
         chatTemplate: ""
-        requestId: requestId
-        promptId: 0
+        example: example
+        inputs: inputs
+        ext: ext
         draft: draft
-        name: name
-        lang: lang
-        username: username
       properties:
         requestId:
           description: Request identifier
@@ -9038,11 +9180,13 @@ components:
           items:
             type: string
           type: array
+          default: null
         aiModels:
           description: Supported model set
           items:
             $ref: "#/components/schemas/AiModelInfoDTO"
           type: array
+          default: null
         template:
           description: Prompt text template content
           type: string
@@ -9065,20 +9209,20 @@ components:
     PluginCreateDTO:
       description: Request data for creating new plugin information
       example:
-        ext: ext
-        aiModels:
-        - aiModels
-        - aiModels
         visibility: visibility
-        apiFormat: apiFormat
-        provider: provider
-        manifestInfo: manifestInfo
         name: name
-        apiInfo: apiInfo
         manifestFormat: manifestFormat
+        manifestInfo: manifestInfo
+        apiFormat: apiFormat
+        apiInfo: apiInfo
+        provider: provider
+        ext: ext
         tags:
         - tags
         - tags
+        aiModels:
+        - aiModels
+        - aiModels
       properties:
         visibility:
           description: "Visibility: private (default), public, public_org, hidden"
@@ -9110,11 +9254,13 @@ components:
           items:
             type: string
           type: array
+          default: null
         aiModels:
           description: "Supported model set, empty means no model limit"
           items:
             type: string
           type: array
+          default: null
       required:
       - name
     PluginQuery.Where:
@@ -9140,6 +9286,7 @@ components:
           items:
             type: string
           type: array
+          default: null
         tagsOp:
           description: "Relationship between tags: and | or (default)"
           pattern: and|or
@@ -9149,6 +9296,7 @@ components:
           items:
             type: string
           type: array
+          default: null
         aiModelsOp:
           description: "Relationship between model sets: and | or (default)"
           pattern: and|or
@@ -9167,12 +9315,12 @@ components:
     PluginQueryDTO:
       description: Plugin information query request
       example:
+        where: ""
         orderBy:
         - orderBy
         - orderBy
-        pageSize: 6
-        where: ""
         pageNum: 0
+        pageSize: 6
       properties:
         where:
           allOf:
@@ -9188,6 +9336,7 @@ components:
           items:
             type: string
           type: array
+          default: null
         pageNum:
           description: "Page number, default is 0"
           format: int64
@@ -9199,33 +9348,33 @@ components:
     PluginSummaryDTO:
       description: Plugin summary information
       example:
-        gmtModified: 2000-01-23T04:56:07.000+00:00
-        aiModels:
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        visibility: visibility
+        requestId: requestId
         pluginId: 0
+        pluginUid: pluginUid
         gmtCreate: 2000-01-23T04:56:07.000+00:00
+        gmtModified: 2000-01-23T04:56:07.000+00:00
+        visibility: visibility
+        name: name
+        provider: provider
+        manifestFormat: manifestFormat
+        apiFormat: apiFormat
+        username: username
         tags:
         - tags
         - tags
-        provider: provider
-        apiFormat: apiFormat
-        requestId: requestId
-        name: name
-        pluginUid: pluginUid
-        manifestFormat: manifestFormat
-        username: username
+        aiModels:
+        - requestId: requestId
+          modelId: modelId
+          name: name
+          description: description
+          provider: provider
+          type: type
+        - requestId: requestId
+          modelId: modelId
+          name: name
+          description: description
+          provider: provider
+          type: type
       properties:
         requestId:
           description: Request identifier
@@ -9268,46 +9417,48 @@ components:
           items:
             type: string
           type: array
+          default: null
         aiModels:
           description: Supported model set
           items:
             $ref: "#/components/schemas/AiModelInfoDTO"
           type: array
+          default: null
     PluginDetailsDTO:
       description: Plugin detailed content
       example:
-        ext: ext
-        gmtModified: 2000-01-23T04:56:07.000+00:00
-        aiModels:
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        visibility: visibility
+        requestId: requestId
         pluginId: 0
-        manifestInfo: manifestInfo
-        toolSpecInfo: toolSpecInfo
+        pluginUid: pluginUid
         gmtCreate: 2000-01-23T04:56:07.000+00:00
-        apiInfo: apiInfo
+        gmtModified: 2000-01-23T04:56:07.000+00:00
+        visibility: visibility
+        name: name
+        provider: provider
+        manifestFormat: manifestFormat
+        apiFormat: apiFormat
+        username: username
         tags:
         - tags
         - tags
-        provider: provider
-        apiFormat: apiFormat
-        requestId: requestId
-        name: name
-        pluginUid: pluginUid
+        aiModels:
+        - requestId: requestId
+          modelId: modelId
+          name: name
+          description: description
+          provider: provider
+          type: type
+        - requestId: requestId
+          modelId: modelId
+          name: name
+          description: description
+          provider: provider
+          type: type
+        manifestInfo: manifestInfo
+        apiInfo: apiInfo
         toolSpecFormat: toolSpecFormat
-        manifestFormat: manifestFormat
-        username: username
+        toolSpecInfo: toolSpecInfo
+        ext: ext
       properties:
         requestId:
           description: Request identifier
@@ -9350,11 +9501,13 @@ components:
           items:
             type: string
           type: array
+          default: null
         aiModels:
           description: Supported model set
           items:
             $ref: "#/components/schemas/AiModelInfoDTO"
           type: array
+          default: null
         manifestInfo:
           description: "Manifest content, different formats may have differences"
           type: string
@@ -9385,6 +9538,7 @@ components:
           items:
             $ref: "#/components/schemas/ConnectorToolDTO"
           type: array
+          default: null
     ConnectorToolDTO:
       description: An untrusted tool description advertised by a remote Connector
       example:
@@ -9400,15 +9554,15 @@ components:
     ChatCreateDTO:
       description: Request data for starting a chat session
       example:
-        characterNickname: characterNickname
-        apiKeyValue: apiKeyValue
-        ext: ext
-        about: about
         userNickname: userNickname
+        userProfile: userProfile
+        characterNickname: characterNickname
+        about: about
+        characterUid: characterUid
         backendId: backendId
         apiKeyName: apiKeyName
-        characterUid: characterUid
-        userProfile: userProfile
+        apiKeyValue: apiKeyValue
+        ext: ext
       properties:
         userNickname:
           description: User nickname for this session
@@ -9443,25 +9597,25 @@ components:
       description: Request data for creating new character information
       example:
         parentUid: parentUid
-        ext: ext
         visibility: visibility
+        name: name
+        description: description
+        nickname: nickname
+        avatar: avatar
+        picture: picture
+        video: video
         gender: gender
-        defaultScene: defaultScene
         profile: profile
         greeting: greeting
-        description: description
+        chatStyle: chatStyle
         chatExample: chatExample
-        avatar: avatar
-        video: video
-        picture: picture
+        defaultScene: defaultScene
+        lang: lang
+        ext: ext
+        draft: draft
         tags:
         - tags
         - tags
-        draft: draft
-        name: name
-        nickname: nickname
-        lang: lang
-        chatStyle: chatStyle
       properties:
         parentUid:
           description: Referenced character
@@ -9528,14 +9682,15 @@ components:
           items:
             type: string
           type: array
+          default: null
       required:
       - name
     CharacterItemForNameDTO:
       description: Character identifier and version information
       example:
-        stats: ""
         characterId: 0
         version: 6
+        stats: ""
       properties:
         characterId:
           description: characterId
@@ -9552,36 +9707,36 @@ components:
     CharacterBackendDetailsDTO:
       description: Character backend detailed information
       example:
+        requestId: requestId
+        backendId: backendId
+        gmtCreate: 2000-01-23T04:56:07.000+00:00
         gmtModified: 2000-01-23T04:56:07.000+00:00
+        characterUid: characterUid
+        isDefault: true
+        chatPromptTaskId: chatPromptTaskId
+        greetingPromptTaskId: greetingPromptTaskId
+        moderationModelId: moderationModelId
+        moderationApiKeyName: moderationApiKeyName
+        moderationApiKeyValue: moderationApiKeyValue
         moderationParams: moderationParams
         imageModelId: imageModelId
-        ttsSpeakerWav: ttsSpeakerWav
-        tgBotLink: tgBotLink
-        requestId: requestId
-        moderationApiKeyValue: moderationApiKeyValue
-        initQuota: 7
         imageApiKeyName: imageApiKeyName
-        ttsSpeakerIdx: ttsSpeakerIdx
-        longTermMemoryWindowSize: 5
-        characterUid: characterUid
-        moderationApiKeyName: moderationApiKeyName
-        ttsSpeakerType: ttsSpeakerType
-        tgBotId: 9
-        greetingPromptTaskId: greetingPromptTaskId
-        tgBotUsername: tgBotUsername
-        moderationModelId: moderationModelId
-        backendId: backendId
-        enableTts: true
-        gmtCreate: 2000-01-23T04:56:07.000+00:00
-        enableAlbumTool: true
-        quotaType: quotaType
-        isDefault: true
-        tgBotToken: tgBotToken
-        chatPromptTaskId: chatPromptTaskId
-        messageWindowSize: 5
-        proactiveChatWaitingTime: 2
         imageApiKeyValue: imageApiKeyValue
         imageParams: imageParams
+        messageWindowSize: 5
+        longTermMemoryWindowSize: 5
+        proactiveChatWaitingTime: 2
+        initQuota: 7
+        quotaType: quotaType
+        enableAlbumTool: true
+        enableTts: true
+        ttsSpeakerIdx: ttsSpeakerIdx
+        ttsSpeakerWav: ttsSpeakerWav
+        ttsSpeakerType: ttsSpeakerType
+        tgBotId: 9
+        tgBotToken: tgBotToken
+        tgBotUsername: tgBotUsername
+        tgBotLink: tgBotLink
       properties:
         requestId:
           description: Request identifier
@@ -9686,96 +9841,96 @@ components:
     CharacterDetailsDTO:
       description: Character detailed content
       example:
-        gmtModified: 2000-01-23T04:56:07.000+00:00
-        gender: gender
-        defaultScene: defaultScene
-        greeting: greeting
-        description: description
-        video: video
         requestId: requestId
-        draft: draft
-        nickname: nickname
-        lang: lang
         characterId: 0
         characterUid: characterUid
-        chatStyle: chatStyle
-        parentUid: parentUid
-        ext: ext
-        visibility: visibility
-        profile: profile
-        chatExample: chatExample
-        telegramUrl: telegramUrl
-        avatar: avatar
         gmtCreate: 2000-01-23T04:56:07.000+00:00
-        priority: 1
+        gmtModified: 2000-01-23T04:56:07.000+00:00
+        parentUid: parentUid
+        visibility: visibility
         version: 6
-        backends:
-        - gmtModified: 2000-01-23T04:56:07.000+00:00
-          moderationParams: moderationParams
-          imageModelId: imageModelId
-          ttsSpeakerWav: ttsSpeakerWav
-          tgBotLink: tgBotLink
-          requestId: requestId
-          moderationApiKeyValue: moderationApiKeyValue
-          initQuota: 7
-          imageApiKeyName: imageApiKeyName
-          ttsSpeakerIdx: ttsSpeakerIdx
-          longTermMemoryWindowSize: 5
-          characterUid: characterUid
-          moderationApiKeyName: moderationApiKeyName
-          ttsSpeakerType: ttsSpeakerType
-          tgBotId: 9
-          greetingPromptTaskId: greetingPromptTaskId
-          tgBotUsername: tgBotUsername
-          moderationModelId: moderationModelId
-          backendId: backendId
-          enableTts: true
-          gmtCreate: 2000-01-23T04:56:07.000+00:00
-          enableAlbumTool: true
-          quotaType: quotaType
-          isDefault: true
-          tgBotToken: tgBotToken
-          chatPromptTaskId: chatPromptTaskId
-          messageWindowSize: 5
-          proactiveChatWaitingTime: 2
-          imageApiKeyValue: imageApiKeyValue
-          imageParams: imageParams
-        - gmtModified: 2000-01-23T04:56:07.000+00:00
-          moderationParams: moderationParams
-          imageModelId: imageModelId
-          ttsSpeakerWav: ttsSpeakerWav
-          tgBotLink: tgBotLink
-          requestId: requestId
-          moderationApiKeyValue: moderationApiKeyValue
-          initQuota: 7
-          imageApiKeyName: imageApiKeyName
-          ttsSpeakerIdx: ttsSpeakerIdx
-          longTermMemoryWindowSize: 5
-          characterUid: characterUid
-          moderationApiKeyName: moderationApiKeyName
-          ttsSpeakerType: ttsSpeakerType
-          tgBotId: 9
-          greetingPromptTaskId: greetingPromptTaskId
-          tgBotUsername: tgBotUsername
-          moderationModelId: moderationModelId
-          backendId: backendId
-          enableTts: true
-          gmtCreate: 2000-01-23T04:56:07.000+00:00
-          enableAlbumTool: true
-          quotaType: quotaType
-          isDefault: true
-          tgBotToken: tgBotToken
-          chatPromptTaskId: chatPromptTaskId
-          messageWindowSize: 5
-          proactiveChatWaitingTime: 2
-          imageApiKeyValue: imageApiKeyValue
-          imageParams: imageParams
+        name: name
+        description: description
+        nickname: nickname
+        avatar: avatar
         picture: picture
+        video: video
+        gender: gender
+        lang: lang
+        greeting: greeting
+        defaultScene: defaultScene
+        priority: 1
+        username: username
         tags:
         - tags
         - tags
-        name: name
-        username: username
+        telegramUrl: telegramUrl
+        profile: profile
+        chatStyle: chatStyle
+        chatExample: chatExample
+        ext: ext
+        draft: draft
+        backends:
+        - requestId: requestId
+          backendId: backendId
+          gmtCreate: 2000-01-23T04:56:07.000+00:00
+          gmtModified: 2000-01-23T04:56:07.000+00:00
+          characterUid: characterUid
+          isDefault: true
+          chatPromptTaskId: chatPromptTaskId
+          greetingPromptTaskId: greetingPromptTaskId
+          moderationModelId: moderationModelId
+          moderationApiKeyName: moderationApiKeyName
+          moderationApiKeyValue: moderationApiKeyValue
+          moderationParams: moderationParams
+          imageModelId: imageModelId
+          imageApiKeyName: imageApiKeyName
+          imageApiKeyValue: imageApiKeyValue
+          imageParams: imageParams
+          messageWindowSize: 5
+          longTermMemoryWindowSize: 5
+          proactiveChatWaitingTime: 2
+          initQuota: 7
+          quotaType: quotaType
+          enableAlbumTool: true
+          enableTts: true
+          ttsSpeakerIdx: ttsSpeakerIdx
+          ttsSpeakerWav: ttsSpeakerWav
+          ttsSpeakerType: ttsSpeakerType
+          tgBotId: 9
+          tgBotToken: tgBotToken
+          tgBotUsername: tgBotUsername
+          tgBotLink: tgBotLink
+        - requestId: requestId
+          backendId: backendId
+          gmtCreate: 2000-01-23T04:56:07.000+00:00
+          gmtModified: 2000-01-23T04:56:07.000+00:00
+          characterUid: characterUid
+          isDefault: true
+          chatPromptTaskId: chatPromptTaskId
+          greetingPromptTaskId: greetingPromptTaskId
+          moderationModelId: moderationModelId
+          moderationApiKeyName: moderationApiKeyName
+          moderationApiKeyValue: moderationApiKeyValue
+          moderationParams: moderationParams
+          imageModelId: imageModelId
+          imageApiKeyName: imageApiKeyName
+          imageApiKeyValue: imageApiKeyValue
+          imageParams: imageParams
+          messageWindowSize: 5
+          longTermMemoryWindowSize: 5
+          proactiveChatWaitingTime: 2
+          initQuota: 7
+          quotaType: quotaType
+          enableAlbumTool: true
+          enableTts: true
+          ttsSpeakerIdx: ttsSpeakerIdx
+          ttsSpeakerWav: ttsSpeakerWav
+          ttsSpeakerType: ttsSpeakerType
+          tgBotId: 9
+          tgBotToken: tgBotToken
+          tgBotUsername: tgBotUsername
+          tgBotLink: tgBotLink
       properties:
         requestId:
           description: Request identifier
@@ -9848,6 +10003,7 @@ components:
           items:
             type: string
           type: array
+          default: null
         telegramUrl:
           description: Telegram URL
           type: string
@@ -9871,13 +10027,14 @@ components:
           items:
             $ref: "#/components/schemas/CharacterBackendDetailsDTO"
           type: array
+          default: null
     AiApiKeyCreateDTO:
       description: Request data for adding new model credential information
       example:
-        provider: provider
         name: name
-        enabled: true
+        provider: provider
         token: token
+        enabled: true
       properties:
         name:
           description: Credential name
@@ -9901,21 +10058,21 @@ components:
       description: Request data for creating new agent information
       example:
         parentUid: parentUid
-        ext: ext
-        aiModels:
-        - aiModels
-        - aiModels
         visibility: visibility
-        draft: draft
         format: format
         name: name
         description: description
         config: config
-        parameters: parameters
         example: example
+        parameters: parameters
+        ext: ext
+        draft: draft
         tags:
         - tags
         - tags
+        aiModels:
+        - aiModels
+        - aiModels
       properties:
         parentUid:
           description: Referenced agent
@@ -9952,19 +10109,21 @@ components:
           items:
             type: string
           type: array
+          default: null
         aiModels:
           description: "Supported model set, empty means no model limit"
           items:
             type: string
           type: array
+          default: null
       required:
       - name
     AgentItemForNameDTO:
       description: Agent identifier and version information
       example:
         agentId: 0
-        stats: ""
         version: 6
+        stats: ""
       properties:
         agentId:
           description: agentId
@@ -9997,6 +10156,7 @@ components:
           items:
             type: string
           type: array
+          default: null
         tagsOp:
           description: "Relationship between tags: and | or (default)"
           pattern: and|or
@@ -10006,6 +10166,7 @@ components:
           items:
             type: string
           type: array
+          default: null
         aiModelsOp:
           description: "Relationship between model sets: and | or (default)"
           pattern: and|or
@@ -10021,12 +10182,12 @@ components:
     AgentQueryDTO:
       description: Agent information query request
       example:
+        where: ""
         orderBy:
         - orderBy
         - orderBy
-        pageSize: 6
-        where: ""
         pageNum: 0
+        pageSize: 6
       properties:
         where:
           allOf:
@@ -10043,6 +10204,7 @@ components:
           items:
             type: string
           type: array
+          default: null
         pageNum:
           description: "Page number, default is 0"
           format: int64
@@ -10054,34 +10216,34 @@ components:
     AgentSummaryDTO:
       description: Agent summary information
       example:
-        parentUid: parentUid
+        requestId: requestId
         agentId: 0
+        agentUid: agentUid
+        gmtCreate: 2000-01-23T04:56:07.000+00:00
         gmtModified: 2000-01-23T04:56:07.000+00:00
-        aiModels:
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
+        parentUid: parentUid
         visibility: visibility
         format: format
-        description: description
-        gmtCreate: 2000-01-23T04:56:07.000+00:00
         version: 6
+        name: name
+        description: description
+        username: username
         tags:
         - tags
         - tags
-        requestId: requestId
-        name: name
-        agentUid: agentUid
-        username: username
+        aiModels:
+        - requestId: requestId
+          modelId: modelId
+          name: name
+          description: description
+          provider: provider
+          type: type
+        - requestId: requestId
+          modelId: modelId
+          name: name
+          description: description
+          provider: provider
+          type: type
       properties:
         requestId:
           description: Request identifier
@@ -10128,47 +10290,49 @@ components:
           items:
             type: string
           type: array
+          default: null
         aiModels:
           description: Supported model set
           items:
             $ref: "#/components/schemas/AiModelInfoDTO"
           type: array
+          default: null
     AgentDetailsDTO:
       description: Agent detailed content
       example:
-        parentUid: parentUid
-        ext: ext
+        requestId: requestId
         agentId: 0
+        agentUid: agentUid
+        gmtCreate: 2000-01-23T04:56:07.000+00:00
         gmtModified: 2000-01-23T04:56:07.000+00:00
-        aiModels:
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
+        parentUid: parentUid
         visibility: visibility
         format: format
-        description: description
-        gmtCreate: 2000-01-23T04:56:07.000+00:00
         version: 6
+        name: name
+        description: description
+        username: username
         tags:
         - tags
         - tags
-        example: example
-        requestId: requestId
-        draft: draft
-        name: name
-        agentUid: agentUid
+        aiModels:
+        - requestId: requestId
+          modelId: modelId
+          name: name
+          description: description
+          provider: provider
+          type: type
+        - requestId: requestId
+          modelId: modelId
+          name: name
+          description: description
+          provider: provider
+          type: type
         config: config
+        example: example
         parameters: parameters
-        username: username
+        ext: ext
+        draft: draft
       properties:
         requestId:
           description: Request identifier
@@ -10215,11 +10379,13 @@ components:
           items:
             type: string
           type: array
+          default: null
         aiModels:
           description: Supported model set
           items:
             $ref: "#/components/schemas/AiModelInfoDTO"
           type: array
+          default: null
         config:
           description: Agent configuration
           type: string
@@ -10240,13 +10406,13 @@ components:
       description: "An installed, private, prompt-only skill"
       example:
         skillId: skillId
+        revision: revision
         name: name
         description: description
-        modified: 2000-01-23T04:56:07.000+00:00
-        revision: revision
         tags:
         - tags
         - tags
+        modified: 2000-01-23T04:56:07.000+00:00
       properties:
         skillId:
           description: Opaque skill identifier
@@ -10266,6 +10432,7 @@ components:
             type: string
           type: array
           uniqueItems: true
+          default: null
         modified:
           description: Last publication time
           format: date-time
@@ -10273,19 +10440,19 @@ components:
     RagTaskDetailsDTO:
       description: Prompt task detailed information
       example:
-        ext: ext
-        maxOverlapSize: 1
-        gmtModified: 2000-01-23T04:56:07.000+00:00
-        maxSegmentSize: 6
-        source: source
-        gmtCreate: 2000-01-23T04:56:07.000+00:00
-        gmtStart: 2000-01-23T04:56:07.000+00:00
-        gmtEnd: 2000-01-23T04:56:07.000+00:00
-        sourceType: sourceType
         requestId: requestId
         id: 0
+        gmtCreate: 2000-01-23T04:56:07.000+00:00
+        gmtModified: 2000-01-23T04:56:07.000+00:00
+        gmtStart: 2000-01-23T04:56:07.000+00:00
+        gmtEnd: 2000-01-23T04:56:07.000+00:00
         characterUid: characterUid
+        sourceType: sourceType
+        source: source
+        maxSegmentSize: 6
+        maxOverlapSize: 1
         status: status
+        ext: ext
       properties:
         requestId:
           description: Request identifier
@@ -10337,8 +10504,8 @@ components:
     HotTagDTO:
       description: Hot tag
       example:
-        count: 0
         content: content
+        count: 0
       properties:
         content:
           description: Tag content
@@ -10351,41 +10518,41 @@ components:
       description: "Prompt template summary content, including interactive statistical\
         \ information"
       example:
-        parentUid: parentUid
-        referCount: 5
-        gmtModified: 2000-01-23T04:56:07.000+00:00
-        aiModels:
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        visibility: visibility
+        requestId: requestId
+        promptId: 0
         promptUid: promptUid
-        scoreCount: 2
-        format: format
-        description: description
         gmtCreate: 2000-01-23T04:56:07.000+00:00
-        type: type
+        gmtModified: 2000-01-23T04:56:07.000+00:00
+        parentUid: parentUid
+        visibility: visibility
         version: 6
+        name: name
+        type: type
+        description: description
+        format: format
+        lang: lang
+        username: username
         tags:
         - tags
         - tags
-        score: 7
-        recommendCount: 5
-        requestId: requestId
-        promptId: 0
-        name: name
+        aiModels:
+        - requestId: requestId
+          modelId: modelId
+          name: name
+          description: description
+          provider: provider
+          type: type
+        - requestId: requestId
+          modelId: modelId
+          name: name
+          description: description
+          provider: provider
+          type: type
         viewCount: 1
-        lang: lang
-        username: username
+        referCount: 5
+        recommendCount: 5
+        scoreCount: 2
+        score: 7
       properties:
         requestId:
           description: Request identifier
@@ -10439,11 +10606,13 @@ components:
           items:
             type: string
           type: array
+          default: null
         aiModels:
           description: Supported model set
           items:
             $ref: "#/components/schemas/AiModelInfoDTO"
           type: array
+          default: null
         viewCount:
           description: View count
           format: int64
@@ -10468,38 +10637,38 @@ components:
       description: "Plugin template summary content, including interactive statistical\
         \ information"
       example:
-        referCount: 1
-        gmtModified: 2000-01-23T04:56:07.000+00:00
-        aiModels:
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        visibility: visibility
+        requestId: requestId
         pluginId: 0
-        scoreCount: 5
+        pluginUid: pluginUid
         gmtCreate: 2000-01-23T04:56:07.000+00:00
+        gmtModified: 2000-01-23T04:56:07.000+00:00
+        visibility: visibility
+        name: name
+        provider: provider
+        manifestFormat: manifestFormat
+        apiFormat: apiFormat
+        username: username
         tags:
         - tags
         - tags
-        score: 2
-        recommendCount: 5
-        provider: provider
-        apiFormat: apiFormat
-        requestId: requestId
-        name: name
-        pluginUid: pluginUid
+        aiModels:
+        - requestId: requestId
+          modelId: modelId
+          name: name
+          description: description
+          provider: provider
+          type: type
+        - requestId: requestId
+          modelId: modelId
+          name: name
+          description: description
+          provider: provider
+          type: type
         viewCount: 6
-        manifestFormat: manifestFormat
-        username: username
+        referCount: 1
+        recommendCount: 5
+        scoreCount: 5
+        score: 2
       properties:
         requestId:
           description: Request identifier
@@ -10542,11 +10711,13 @@ components:
           items:
             type: string
           type: array
+          default: null
         aiModels:
           description: Supported model set
           items:
             $ref: "#/components/schemas/AiModelInfoDTO"
           type: array
+          default: null
         viewCount:
           description: View count
           format: int64
@@ -10570,35 +10741,35 @@ components:
     CharacterSummaryStatsDTO:
       description: "Character summary content, including interactive statistical information"
       example:
-        referCount: 5
-        gmtModified: 2000-01-23T04:56:07.000+00:00
-        gender: gender
-        defaultScene: defaultScene
-        scoreCount: 7
-        greeting: greeting
-        description: description
-        video: video
-        score: 9
         requestId: requestId
-        nickname: nickname
-        viewCount: 5
-        lang: lang
         characterId: 0
         characterUid: characterUid
+        gmtCreate: 2000-01-23T04:56:07.000+00:00
+        gmtModified: 2000-01-23T04:56:07.000+00:00
         parentUid: parentUid
         visibility: visibility
-        telegramUrl: telegramUrl
-        avatar: avatar
-        gmtCreate: 2000-01-23T04:56:07.000+00:00
-        priority: 1
         version: 6
+        name: name
+        description: description
+        nickname: nickname
+        avatar: avatar
         picture: picture
+        video: video
+        gender: gender
+        lang: lang
+        greeting: greeting
+        defaultScene: defaultScene
+        priority: 1
+        username: username
         tags:
         - tags
         - tags
+        telegramUrl: telegramUrl
+        viewCount: 5
+        referCount: 5
         recommendCount: 2
-        name: name
-        username: username
+        scoreCount: 7
+        score: 9
       properties:
         requestId:
           description: Request identifier
@@ -10671,6 +10842,7 @@ components:
           items:
             type: string
           type: array
+          default: null
         telegramUrl:
           description: Telegram URL
           type: string
@@ -10698,39 +10870,39 @@ components:
       description: "Agent template summary content, including interactive statistical\
         \ information"
       example:
-        parentUid: parentUid
-        referCount: 5
+        requestId: requestId
         agentId: 0
-        gmtModified: 2000-01-23T04:56:07.000+00:00
-        aiModels:
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        visibility: visibility
-        scoreCount: 2
-        format: format
-        description: description
+        agentUid: agentUid
         gmtCreate: 2000-01-23T04:56:07.000+00:00
+        gmtModified: 2000-01-23T04:56:07.000+00:00
+        parentUid: parentUid
+        visibility: visibility
+        format: format
         version: 6
+        name: name
+        description: description
+        username: username
         tags:
         - tags
         - tags
-        score: 7
-        recommendCount: 5
-        requestId: requestId
-        name: name
-        agentUid: agentUid
+        aiModels:
+        - requestId: requestId
+          modelId: modelId
+          name: name
+          description: description
+          provider: provider
+          type: type
+        - requestId: requestId
+          modelId: modelId
+          name: name
+          description: description
+          provider: provider
+          type: type
         viewCount: 1
-        username: username
+        referCount: 5
+        recommendCount: 5
+        scoreCount: 2
+        score: 7
       properties:
         requestId:
           description: Request identifier
@@ -10777,11 +10949,13 @@ components:
           items:
             type: string
           type: array
+          default: null
         aiModels:
           description: Supported model set
           items:
             $ref: "#/components/schemas/AiModelInfoDTO"
           type: array
+          default: null
         viewCount:
           description: View count
           format: int64
@@ -10805,21 +10979,21 @@ components:
     PromptTaskDetailsDTO:
       description: Prompt task detailed information
       example:
-        apiKeyValue: apiKeyValue
-        cron: cron
-        ext: ext
+        requestId: requestId
+        taskId: taskId
+        gmtCreate: 2000-01-23T04:56:07.000+00:00
         gmtModified: 2000-01-23T04:56:07.000+00:00
+        gmtStart: 2000-01-23T04:56:07.000+00:00
+        gmtEnd: 2000-01-23T04:56:07.000+00:00
         promptRef: ""
         modelId: modelId
         apiKeyName: apiKeyName
-        gmtCreate: 2000-01-23T04:56:07.000+00:00
+        apiKeyValue: apiKeyValue
         params:
           key: ""
-        gmtStart: 2000-01-23T04:56:07.000+00:00
-        gmtEnd: 2000-01-23T04:56:07.000+00:00
-        requestId: requestId
-        taskId: taskId
+        cron: cron
         status: status
+        ext: ext
       properties:
         requestId:
           description: Request identifier
@@ -10857,8 +11031,10 @@ components:
           description: API-KEY value
           type: string
         params:
-          additionalProperties: {}
+          additionalProperties:
+            nullable: true
           description: Model call parameters
+          type: object
         cron:
           description: Task scheduling configuration which compatible with Quartz
             cron format
@@ -10927,9 +11103,9 @@ components:
     ChatMessageRecordDTO:
       description: Chat message record
       example:
-        ext: ext
         message: ""
         gmtCreate: 2000-01-23T04:56:07.000+00:00
+        ext: ext
       properties:
         message:
           allOf:
@@ -10945,15 +11121,15 @@ components:
     ChatSessionDTO:
       description: Chat session
       example:
+        context: ""
         character: ""
         provider: provider
-        senderStatus: senderStatus
-        context: ""
-        proactiveChatWaitingTime: 0
-        isDebugEnabled: true
-        isTtsEnabled: true
-        isCustomizedApiKeyEnabled: true
         latestMessageRecord: ""
+        proactiveChatWaitingTime: 0
+        senderStatus: senderStatus
+        isDebugEnabled: true
+        isCustomizedApiKeyEnabled: true
+        isTtsEnabled: true
       properties:
         context:
           allOf:
@@ -10992,8 +11168,8 @@ components:
     MemoryUsageDTO:
       description: Memory usage information
       example:
-        messageUsage: 0
         requestId: requestId
+        messageUsage: 0
         tokenUsage: ""
       properties:
         requestId:
@@ -11010,15 +11186,15 @@ components:
     AiApiKeyInfoDTO:
       description: Model credential information
       example:
-        gmtModified: 2000-01-23T04:56:07.000+00:00
-        provider: provider
         requestId: requestId
-        gmtUsed: 2000-01-23T04:56:07.000+00:00
-        name: name
         id: 0
         gmtCreate: 2000-01-23T04:56:07.000+00:00
-        enabled: true
+        gmtModified: 2000-01-23T04:56:07.000+00:00
+        gmtUsed: 2000-01-23T04:56:07.000+00:00
+        name: name
+        provider: provider
         token: token
+        enabled: true
         username: username
       properties:
         requestId:
@@ -11060,9 +11236,9 @@ components:
       description: User summary information
       example:
         requestId: requestId
+        username: username
         nickname: nickname
         picture: picture
-        username: username
       properties:
         requestId:
           description: Request identifier
@@ -11079,12 +11255,12 @@ components:
     ApiTokenInfoDTO:
       description: API token information
       example:
-        gmtModified: 2000-01-23T04:56:07.000+00:00
         requestId: requestId
         id: 0
-        issuedAt: 2000-01-23T04:56:07.000+00:00
         gmtCreate: 2000-01-23T04:56:07.000+00:00
+        gmtModified: 2000-01-23T04:56:07.000+00:00
         type: type
+        issuedAt: 2000-01-23T04:56:07.000+00:00
         expiresAt: 2000-01-23T04:56:07.000+00:00
         token: token
         policy: policy
@@ -11128,16 +11304,16 @@ components:
     TgMessageDTO:
       description: Telegram message information
       example:
-        gmtModified: 2000-01-23T04:56:07.000+00:00
-        tgUserId: 1
-        chatId: chatId
-        messageType: messageType
-        tgMessageId: 6
-        payload: payload
         id: 0
         gmtCreate: 2000-01-23T04:56:07.000+00:00
-        content: content
+        gmtModified: 2000-01-23T04:56:07.000+00:00
+        chatId: chatId
+        tgMessageId: 6
+        tgUserId: 1
         direction: direction
+        messageType: messageType
+        content: content
+        payload: payload
       properties:
         id:
           description: Record identifier
@@ -11177,13 +11353,13 @@ components:
     AppMetaDTO:
       description: Application metadata
       example:
-        buildTimestamp: buildTimestamp
-        commitUrl: commitUrl
         name: name
-        runningEnv: runningEnv
         version: version
+        buildTimestamp: buildTimestamp
         buildNumber: buildNumber
+        commitUrl: commitUrl
         releaseNoteUrl: releaseNoteUrl
+        runningEnv: runningEnv
       properties:
         name:
           description: Application name

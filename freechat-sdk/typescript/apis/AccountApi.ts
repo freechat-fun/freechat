@@ -33,7 +33,7 @@ export class AccountApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/account/token/{duration}'
-            .replace('{' + 'duration' + '}', encodeURIComponent(String(duration)));
+            .replace('{duration}', encodeURIComponent(String(duration)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -101,7 +101,7 @@ export class AccountApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/account/token/{token}'
-            .replace('{' + 'token' + '}', encodeURIComponent(String(token)));
+            .replace('{token}', encodeURIComponent(String(token)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -139,7 +139,7 @@ export class AccountApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/account/token/id/{id}'
-            .replace('{' + 'id' + '}', encodeURIComponent(String(id)));
+            .replace('{id}', encodeURIComponent(String(id)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -177,7 +177,7 @@ export class AccountApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/account/token/{token}'
-            .replace('{' + 'token' + '}', encodeURIComponent(String(token)));
+            .replace('{token}', encodeURIComponent(String(token)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.PUT);
@@ -215,7 +215,7 @@ export class AccountApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/account/token/id/{id}'
-            .replace('{' + 'id' + '}', encodeURIComponent(String(id)));
+            .replace('{id}', encodeURIComponent(String(id)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.PUT);
@@ -253,7 +253,7 @@ export class AccountApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/account/token/id/{id}'
-            .replace('{' + 'id' + '}', encodeURIComponent(String(id)));
+            .replace('{id}', encodeURIComponent(String(id)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -291,7 +291,7 @@ export class AccountApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/account/basic/{username}'
-            .replace('{' + 'username' + '}', encodeURIComponent(String(username)));
+            .replace('{username}', encodeURIComponent(String(username)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);

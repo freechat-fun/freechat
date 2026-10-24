@@ -87,7 +87,7 @@ export class ConnectorApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/connector/{connectorId}'
-            .replace('{' + 'connectorId' + '}', encodeURIComponent(String(connectorId)));
+            .replace('{connectorId}', encodeURIComponent(String(connectorId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -130,7 +130,7 @@ export class ConnectorApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/connector/{connectorId}'
-            .replace('{' + 'connectorId' + '}', encodeURIComponent(String(connectorId)));
+            .replace('{connectorId}', encodeURIComponent(String(connectorId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -204,7 +204,7 @@ export class ConnectorApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/connector/{connectorId}/test'
-            .replace('{' + 'connectorId' + '}', encodeURIComponent(String(connectorId)));
+            .replace('{connectorId}', encodeURIComponent(String(connectorId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -254,7 +254,7 @@ export class ConnectorApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/connector/{connectorId}'
-            .replace('{' + 'connectorId' + '}', encodeURIComponent(String(connectorId)));
+            .replace('{connectorId}', encodeURIComponent(String(connectorId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.PUT);

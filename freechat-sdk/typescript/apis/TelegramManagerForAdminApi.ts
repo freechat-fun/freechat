@@ -38,8 +38,8 @@ export class TelegramManagerForAdminApiRequestFactory extends BaseAPIRequestFact
 
         // Path Params
         const localVarPath = '/api/v2/admin/chat/tg/{backendId}/{tgChatId}'
-            .replace('{' + 'backendId' + '}', encodeURIComponent(String(backendId)))
-            .replace('{' + 'tgChatId' + '}', encodeURIComponent(String(tgChatId)));
+            .replace('{backendId}', encodeURIComponent(String(backendId)))
+            .replace('{tgChatId}', encodeURIComponent(String(tgChatId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -81,7 +81,7 @@ export class TelegramManagerForAdminApiRequestFactory extends BaseAPIRequestFact
 
         // Path Params
         const localVarPath = '/api/v2/admin/chat/tg/messages/{chatId}'
-            .replace('{' + 'chatId' + '}', encodeURIComponent(String(chatId)));
+            .replace('{chatId}', encodeURIComponent(String(chatId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);

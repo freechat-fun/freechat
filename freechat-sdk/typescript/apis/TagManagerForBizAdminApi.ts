@@ -44,9 +44,9 @@ export class TagManagerForBizAdminApiRequestFactory extends BaseAPIRequestFactor
 
         // Path Params
         const localVarPath = '/api/v2/biz/admin/tag/{referType}/{referId}/{tag}'
-            .replace('{' + 'referType' + '}', encodeURIComponent(String(referType)))
-            .replace('{' + 'referId' + '}', encodeURIComponent(String(referId)))
-            .replace('{' + 'tag' + '}', encodeURIComponent(String(tag)));
+            .replace('{referType}', encodeURIComponent(String(referType)))
+            .replace('{referId}', encodeURIComponent(String(referId)))
+            .replace('{tag}', encodeURIComponent(String(tag)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -98,9 +98,9 @@ export class TagManagerForBizAdminApiRequestFactory extends BaseAPIRequestFactor
 
         // Path Params
         const localVarPath = '/api/v2/biz/admin/tag/{referType}/{referId}/{tag}'
-            .replace('{' + 'referType' + '}', encodeURIComponent(String(referType)))
-            .replace('{' + 'referId' + '}', encodeURIComponent(String(referId)))
-            .replace('{' + 'tag' + '}', encodeURIComponent(String(tag)));
+            .replace('{referType}', encodeURIComponent(String(referType)))
+            .replace('{referId}', encodeURIComponent(String(referId)))
+            .replace('{tag}', encodeURIComponent(String(tag)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);

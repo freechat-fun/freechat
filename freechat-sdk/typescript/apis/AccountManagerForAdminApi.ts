@@ -41,8 +41,8 @@ export class AccountManagerForAdminApiRequestFactory extends BaseAPIRequestFacto
 
         // Path Params
         const localVarPath = '/api/v2/admin/token/{username}/{duration}'
-            .replace('{' + 'username' + '}', encodeURIComponent(String(username)))
-            .replace('{' + 'duration' + '}', encodeURIComponent(String(duration)));
+            .replace('{username}', encodeURIComponent(String(username)))
+            .replace('{duration}', encodeURIComponent(String(duration)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -128,7 +128,7 @@ export class AccountManagerForAdminApiRequestFactory extends BaseAPIRequestFacto
 
         // Path Params
         const localVarPath = '/api/v2/admin/token/{token}'
-            .replace('{' + 'token' + '}', encodeURIComponent(String(token)));
+            .replace('{token}', encodeURIComponent(String(token)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -166,7 +166,7 @@ export class AccountManagerForAdminApiRequestFactory extends BaseAPIRequestFacto
 
         // Path Params
         const localVarPath = '/api/v2/admin/user/{username}'
-            .replace('{' + 'username' + '}', encodeURIComponent(String(username)));
+            .replace('{username}', encodeURIComponent(String(username)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -204,7 +204,7 @@ export class AccountManagerForAdminApiRequestFactory extends BaseAPIRequestFacto
 
         // Path Params
         const localVarPath = '/api/v2/admin/token/{token}'
-            .replace('{' + 'token' + '}', encodeURIComponent(String(token)));
+            .replace('{token}', encodeURIComponent(String(token)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.PUT);
@@ -242,7 +242,7 @@ export class AccountManagerForAdminApiRequestFactory extends BaseAPIRequestFacto
 
         // Path Params
         const localVarPath = '/api/v2/admin/user/{username}'
-            .replace('{' + 'username' + '}', encodeURIComponent(String(username)));
+            .replace('{username}', encodeURIComponent(String(username)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -280,7 +280,7 @@ export class AccountManagerForAdminApiRequestFactory extends BaseAPIRequestFacto
 
         // Path Params
         const localVarPath = '/api/v2/admin/tokenBy/{token}'
-            .replace('{' + 'token' + '}', encodeURIComponent(String(token)));
+            .replace('{token}', encodeURIComponent(String(token)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -318,7 +318,7 @@ export class AccountManagerForAdminApiRequestFactory extends BaseAPIRequestFacto
 
         // Path Params
         const localVarPath = '/api/v2/admin/authority/{username}'
-            .replace('{' + 'username' + '}', encodeURIComponent(String(username)));
+            .replace('{username}', encodeURIComponent(String(username)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -356,7 +356,7 @@ export class AccountManagerForAdminApiRequestFactory extends BaseAPIRequestFacto
 
         // Path Params
         const localVarPath = '/api/v2/admin/token/{username}'
-            .replace('{' + 'username' + '}', encodeURIComponent(String(username)));
+            .replace('{username}', encodeURIComponent(String(username)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -401,8 +401,8 @@ export class AccountManagerForAdminApiRequestFactory extends BaseAPIRequestFacto
 
         // Path Params
         const localVarPath = '/api/v2/admin/users/{pageSize}/{pageNum}'
-            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)))
-            .replace('{' + 'pageNum' + '}', encodeURIComponent(String(pageNum)));
+            .replace('{pageSize}', encodeURIComponent(String(pageSize)))
+            .replace('{pageNum}', encodeURIComponent(String(pageNum)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -470,7 +470,7 @@ export class AccountManagerForAdminApiRequestFactory extends BaseAPIRequestFacto
 
         // Path Params
         const localVarPath = '/api/v2/admin/users/{pageSize}'
-            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)));
+            .replace('{pageSize}', encodeURIComponent(String(pageSize)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -515,7 +515,7 @@ export class AccountManagerForAdminApiRequestFactory extends BaseAPIRequestFacto
 
         // Path Params
         const localVarPath = '/api/v2/admin/authority/{username}'
-            .replace('{' + 'username' + '}', encodeURIComponent(String(username)));
+            .replace('{username}', encodeURIComponent(String(username)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.PUT);

@@ -43,7 +43,7 @@ export class SkillApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/skill/install/{draftId}'
-            .replace('{' + 'draftId' + '}', encodeURIComponent(String(draftId)));
+            .replace('{draftId}', encodeURIComponent(String(draftId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -99,7 +99,7 @@ export class SkillApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/skill/{skillId}'
-            .replace('{' + 'skillId' + '}', encodeURIComponent(String(skillId)));
+            .replace('{skillId}', encodeURIComponent(String(skillId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -142,7 +142,7 @@ export class SkillApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/skill/{skillId}'
-            .replace('{' + 'skillId' + '}', encodeURIComponent(String(skillId)));
+            .replace('{skillId}', encodeURIComponent(String(skillId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -295,7 +295,7 @@ export class SkillApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/skill/{skillId}'
-            .replace('{' + 'skillId' + '}', encodeURIComponent(String(skillId)));
+            .replace('{skillId}', encodeURIComponent(String(skillId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.PUT);

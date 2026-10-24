@@ -57,10 +57,10 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
         // Path Params
         const localVarPath = '/api/v2/stats/{infoType}/{infoId}/{statsType}/{delta}'
-            .replace('{' + 'infoType' + '}', encodeURIComponent(String(infoType)))
-            .replace('{' + 'infoId' + '}', encodeURIComponent(String(infoId)))
-            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)))
-            .replace('{' + 'delta' + '}', encodeURIComponent(String(delta)));
+            .replace('{infoType}', encodeURIComponent(String(infoType)))
+            .replace('{infoId}', encodeURIComponent(String(infoId)))
+            .replace('{statsType}', encodeURIComponent(String(statsType)))
+            .replace('{delta}', encodeURIComponent(String(delta)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -105,8 +105,8 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
         // Path Params
         const localVarPath = '/api/v2/public/score/{infoType}/{infoId}'
-            .replace('{' + 'infoType' + '}', encodeURIComponent(String(infoType)))
-            .replace('{' + 'infoId' + '}', encodeURIComponent(String(infoId)));
+            .replace('{infoType}', encodeURIComponent(String(infoType)))
+            .replace('{infoId}', encodeURIComponent(String(infoId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -158,9 +158,9 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
         // Path Params
         const localVarPath = '/api/v2/public/stats/{infoType}/{infoId}/{statsType}'
-            .replace('{' + 'infoType' + '}', encodeURIComponent(String(infoType)))
-            .replace('{' + 'infoId' + '}', encodeURIComponent(String(infoId)))
-            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)));
+            .replace('{infoType}', encodeURIComponent(String(infoType)))
+            .replace('{infoId}', encodeURIComponent(String(infoId)))
+            .replace('{statsType}', encodeURIComponent(String(statsType)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -205,8 +205,8 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
         // Path Params
         const localVarPath = '/api/v2/public/stats/{infoType}/{infoId}'
-            .replace('{' + 'infoType' + '}', encodeURIComponent(String(infoType)))
-            .replace('{' + 'infoId' + '}', encodeURIComponent(String(infoId)));
+            .replace('{infoType}', encodeURIComponent(String(infoType)))
+            .replace('{infoId}', encodeURIComponent(String(infoId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -258,9 +258,9 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
         // Path Params
         const localVarPath = '/api/v2/stats/{infoType}/{infoId}/{statsType}'
-            .replace('{' + 'infoType' + '}', encodeURIComponent(String(infoType)))
-            .replace('{' + 'infoId' + '}', encodeURIComponent(String(infoId)))
-            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)));
+            .replace('{infoType}', encodeURIComponent(String(infoType)))
+            .replace('{infoId}', encodeURIComponent(String(infoId)))
+            .replace('{statsType}', encodeURIComponent(String(statsType)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -307,8 +307,8 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
         // Path Params
         const localVarPath = '/api/v2/public/stats/agents/by/{statsType}/{pageSize}'
-            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)))
-            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)));
+            .replace('{statsType}', encodeURIComponent(String(statsType)))
+            .replace('{pageSize}', encodeURIComponent(String(pageSize)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -367,9 +367,9 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
         // Path Params
         const localVarPath = '/api/v2/public/stats/agents/by/{statsType}/{pageSize}/{pageNum}'
-            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)))
-            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)))
-            .replace('{' + 'pageNum' + '}', encodeURIComponent(String(pageNum)));
+            .replace('{statsType}', encodeURIComponent(String(statsType)))
+            .replace('{pageSize}', encodeURIComponent(String(pageSize)))
+            .replace('{pageNum}', encodeURIComponent(String(pageNum)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -414,7 +414,7 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
         // Path Params
         const localVarPath = '/api/v2/public/stats/agents/by/{statsType}'
-            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)));
+            .replace('{statsType}', encodeURIComponent(String(statsType)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -459,7 +459,7 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
         // Path Params
         const localVarPath = '/api/v2/public/stats/characters/by/{statsType}'
-            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)));
+            .replace('{statsType}', encodeURIComponent(String(statsType)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -511,8 +511,8 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
         // Path Params
         const localVarPath = '/api/v2/public/stats/characters/by/{statsType}/{pageSize}'
-            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)))
-            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)));
+            .replace('{statsType}', encodeURIComponent(String(statsType)))
+            .replace('{pageSize}', encodeURIComponent(String(pageSize)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -571,9 +571,9 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
         // Path Params
         const localVarPath = '/api/v2/public/stats/characters/by/{statsType}/{pageSize}/{pageNum}'
-            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)))
-            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)))
-            .replace('{' + 'pageNum' + '}', encodeURIComponent(String(pageNum)));
+            .replace('{statsType}', encodeURIComponent(String(statsType)))
+            .replace('{pageSize}', encodeURIComponent(String(pageSize)))
+            .replace('{pageNum}', encodeURIComponent(String(pageNum)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -625,8 +625,8 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
         // Path Params
         const localVarPath = '/api/v2/public/tags/hot/{infoType}/{pageSize}'
-            .replace('{' + 'infoType' + '}', encodeURIComponent(String(infoType)))
-            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)));
+            .replace('{infoType}', encodeURIComponent(String(infoType)))
+            .replace('{pageSize}', encodeURIComponent(String(pageSize)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -685,9 +685,9 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
         // Path Params
         const localVarPath = '/api/v2/public/stats/plugins/by/{statsType}/{pageSize}/{pageNum}'
-            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)))
-            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)))
-            .replace('{' + 'pageNum' + '}', encodeURIComponent(String(pageNum)));
+            .replace('{statsType}', encodeURIComponent(String(statsType)))
+            .replace('{pageSize}', encodeURIComponent(String(pageSize)))
+            .replace('{pageNum}', encodeURIComponent(String(pageNum)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -732,7 +732,7 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
         // Path Params
         const localVarPath = '/api/v2/public/stats/plugins/by/{statsType}'
-            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)));
+            .replace('{statsType}', encodeURIComponent(String(statsType)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -784,8 +784,8 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
         // Path Params
         const localVarPath = '/api/v2/public/stats/plugins/by/{statsType}/{pageSize}'
-            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)))
-            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)));
+            .replace('{statsType}', encodeURIComponent(String(statsType)))
+            .replace('{pageSize}', encodeURIComponent(String(pageSize)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -830,7 +830,7 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
         // Path Params
         const localVarPath = '/api/v2/public/stats/prompts/by/{statsType}'
-            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)));
+            .replace('{statsType}', encodeURIComponent(String(statsType)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -882,8 +882,8 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
         // Path Params
         const localVarPath = '/api/v2/public/stats/prompts/by/{statsType}/{pageSize}'
-            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)))
-            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)));
+            .replace('{statsType}', encodeURIComponent(String(statsType)))
+            .replace('{pageSize}', encodeURIComponent(String(pageSize)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -942,9 +942,9 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
         // Path Params
         const localVarPath = '/api/v2/public/stats/prompts/by/{statsType}/{pageSize}/{pageNum}'
-            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)))
-            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)))
-            .replace('{' + 'pageNum' + '}', encodeURIComponent(String(pageNum)));
+            .replace('{statsType}', encodeURIComponent(String(statsType)))
+            .replace('{pageSize}', encodeURIComponent(String(pageSize)))
+            .replace('{pageNum}', encodeURIComponent(String(pageNum)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
