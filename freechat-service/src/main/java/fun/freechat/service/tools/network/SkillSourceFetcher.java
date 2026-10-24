@@ -28,8 +28,8 @@ public final class SkillSourceFetcher {
 
     @Autowired
     public SkillSourceFetcher(
-            @Value("${skills.sources.allowed-hosts:github.com,clawhub.ai}") String hosts,
-            @Value("${skills.sources.github-token:}") String githubToken,
+            @Value("${skills.sources.allowedHosts:github.com,clawhub.ai}") String hosts,
+            @Value("${skills.sources.githubToken:}") String githubToken,
             SkillSourceAnalyzer analyzer) {
         this(
                 Arrays.stream(hosts.split(","))

@@ -23,9 +23,9 @@ class SkillSourceFetcherTest {
     void defaultAndOverriddenHostListsMatchTheEffectivePolicy() {
         for (var settings : List.of(
                 Map.<String, Object>of(),
-                Map.<String, Object>of("skills.sources.allowed-hosts", " GITHUB.COM.,clawhub.ai,github.com "),
-                Map.<String, Object>of("skills.sources.allowed-hosts", "example.com"),
-                Map.<String, Object>of("skills.sources.allowed-hosts", ""))) {
+                Map.<String, Object>of("skills.sources.allowedHosts", " GITHUB.COM.,clawhub.ai,github.com "),
+                Map.<String, Object>of("skills.sources.allowedHosts", "example.com"),
+                Map.<String, Object>of("skills.sources.allowedHosts", ""))) {
             try (var application = new org.springframework.context.annotation.AnnotationConfigApplicationContext()) {
                 application
                         .getEnvironment()
@@ -35,7 +35,7 @@ class SkillSourceFetcherTest {
                 application.register(SkillSourceFetcher.class);
                 application.refresh();
                 var hosts = application.getBean(SkillSourceFetcher.class).allowedHosts();
-                String configured = (String) settings.get("skills.sources.allowed-hosts");
+                String configured = (String) settings.get("skills.sources.allowedHosts");
                 if ("".equals(configured)) assertTrue(hosts.isEmpty());
                 else if ("example.com".equals(configured)) assertEquals(List.of("example.com"), hosts);
                 else assertEquals(List.of("clawhub.ai", "github.com"), hosts);

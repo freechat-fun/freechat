@@ -189,7 +189,7 @@ class LongTermMemoryRuntimeConfigTest {
         List<ScheduledThreadPoolExecutor> local = new ArrayList<>();
         runtime()
                 .withBean("milvusEmbeddingStoreService", ExactEmbeddingStoreService.class, () -> durable)
-                .withPropertyValues("chat.memory.long-term.workers-per-node=3")
+                .withPropertyValues("chat.memory.longTerm.workersPerNode=3")
                 .run(context -> {
                     assertThat(context).hasNotFailed();
                     ScheduledThreadPoolExecutor turn =
@@ -231,7 +231,7 @@ class LongTermMemoryRuntimeConfigTest {
         runtime()
                 .withBean("milvusEmbeddingStoreService", ExactEmbeddingStoreService.class, () -> durable)
                 .withBean("runtimeTokenEstimator", TokenCountEstimator.class, () -> estimator)
-                .withPropertyValues("chat.memory.long-term.token-estimator-bean=runtimeTokenEstimator")
+                .withPropertyValues("chat.memory.longTerm.tokenEstimatorBean=runtimeTokenEstimator")
                 .run(context -> {
                     assertThat(context).hasNotFailed();
                     var bounds = context.getBean(MemoryBoundsFactory.class).forLanguage("en");

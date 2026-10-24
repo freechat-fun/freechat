@@ -25,10 +25,10 @@ public class ChatToolsConfiguration {
     private final List<BuiltinTool> available;
 
     public ChatToolsConfiguration(
-            @Value("${chat.tools.web-fetch.allowed-hosts:}") String hosts,
-            @Value("${chat.tools.web-search.endpoint:}") String endpoint,
-            @Value("${chat.tools.web-search.api-key:}") String apiKey,
-            @Value("${chat.tools.web-search.model:}") String model) {
+            @Value("${chat.tools.webFetch.allowedHosts:}") String hosts,
+            @Value("${chat.tools.webSearch.endpoint:}") String endpoint,
+            @Value("${chat.tools.webSearch.apiKey:}") String apiKey,
+            @Value("${chat.tools.webSearch.model:}") String model) {
         List<BuiltinTool> roleplay = RoleplayTools.create();
         WebFetchTool fetch = new WebFetchTool(names(hosts));
         WebSearchTool search = new WebSearchTool(endpoint, apiKey, model);

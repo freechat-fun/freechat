@@ -29,6 +29,53 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class ToolConfigurationTest {
     @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void networkToolsBindCamelCaseSettingsAndEnvironmentVariables(boolean environmentVariables) throws Exception {
+        try (var context = new org.springframework.context.annotation.AnnotationConfigApplicationContext()) {
+            var sources = context.getEnvironment().getPropertySources();
+            sources.remove(org.springframework.core.env.StandardEnvironment.SYSTEM_PROPERTIES_PROPERTY_SOURCE_NAME);
+            sources.remove(org.springframework.core.env.StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME);
+            String endpoint = "https://dashscope.aliyuncs.com/compatible-mode/v1";
+            if (environmentVariables) {
+                sources.addFirst(new org.springframework.core.env.SystemEnvironmentPropertySource(
+                        "systemEnvironment",
+                        Map.of(
+                                "CHAT_TOOLS_WEBFETCH_ALLOWEDHOSTS", "example.com",
+                                "CHAT_TOOLS_WEBSEARCH_ENDPOINT", endpoint,
+                                "CHAT_TOOLS_WEBSEARCH_APIKEY", "test-only-key",
+                                "CHAT_TOOLS_WEBSEARCH_MODEL", "test-model")));
+            } else {
+                sources.addFirst(new org.springframework.core.env.MapPropertySource(
+                        "explicit-settings",
+                        Map.of(
+                                "chat.tools.webFetch.allowedHosts", "example.com",
+                                "chat.tools.webSearch.endpoint", endpoint,
+                                "chat.tools.webSearch.apiKey", "test-only-key",
+                                "chat.tools.webSearch.model", "test-model")));
+            }
+            for (var defaults : new org.springframework.boot.env.YamlPropertySourceLoader()
+                    .load(
+                            "application-defaults",
+                            new org.springframework.core.io.ClassPathResource("application.yml"))) {
+                sources.addLast(defaults);
+            }
+            org.springframework.boot.context.properties.source.ConfigurationPropertySources.attach(
+                    context.getEnvironment());
+            context.refresh();
+            var configuration = context.getAutowireCapableBeanFactory().createBean(ChatToolsConfiguration.class);
+            var available =
+                    (List<?>) org.springframework.test.util.ReflectionTestUtils.getField(configuration, "available");
+            assertNotNull(available);
+            assertTrue(available.stream()
+                    .anyMatch(tool -> tool instanceof fun.freechat.service.tools.network.WebFetchTool fetch
+                            && fetch.configured()));
+            assertTrue(available.stream()
+                    .anyMatch(tool -> tool instanceof fun.freechat.service.tools.network.WebSearchTool search
+                            && search.configured()));
+        }
+    }
+
+    @ParameterizedTest
     @ValueSource(strings = {"en", "zh"})
     void imageToolUsesEnglishAnnotationForCatalogAndSessionRegistration(String language) {
         var settings = withSettings().mockMaker(org.mockito.MockMakers.SUBCLASS);

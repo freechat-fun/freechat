@@ -12,7 +12,7 @@ const skillErrorMessages: Record<string, string> = {
   SKILL_SOURCE_UNAVAILABLE:
     'The skill source is unavailable. Check the URL and try again.',
   SKILL_SOURCE_RATE_LIMITED:
-    'The skill source rate limit has been reached. Try again later. For GitHub, ask an administrator to configure skills.sources.github-token.',
+    'The skill source rate limit has been reached. Try again later. For GitHub, ask an administrator to configure skills.sources.githubToken.',
   SKILL_SOURCE_AMBIGUOUS:
     'Could not identify one skill. Provide a specific repository or skill-directory link.',
   SKILL_SOURCE_ANALYSIS_UNAVAILABLE:
@@ -27,7 +27,7 @@ const skillErrorMessages: Record<string, string> = {
   SKILL_REVIEW_UNAVAILABLE:
     'Skill review is temporarily unavailable. Nothing was saved; please try again later.',
   SKILL_MODEL_NOT_CONFIGURED:
-    'The server-side skill management model is missing or invalid. Ask an administrator to configure skills.review.model-id, skills.review.base-url and, for cloud providers, skills.review.api-key, then restart the server.',
+    'The server-side skill management model is missing or invalid. Ask an administrator to configure skills.review.modelId, skills.review.baseUrl and, for cloud providers, skills.review.apiKey, then restart the server.',
   SKILL_STORAGE_UNAVAILABLE:
     'Skill storage is temporarily unavailable. Please try again later.',
   SKILL_ACCESS_DENIED: 'You do not have permission to access this skill.',

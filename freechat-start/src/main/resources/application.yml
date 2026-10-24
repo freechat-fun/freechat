@@ -54,20 +54,20 @@ auth:
     limits: 3
 skills:
   sources:
-    allowed-hosts: github.com,clawhub.ai
-    github-token: ""
+    allowedHosts: github.com,clawhub.ai
+    githubToken: ""
   review:
-    model-id: ""
-    api-key: ""
-    base-url: ""
+    modelId: ""
+    apiKey: ""
+    baseUrl: ""
 chat:
   tools:
     allowed: get_current_time,calculate,roll_dice,search_memory,read_memory,find_image,skill,read_skill_resource,read_file,write_file,edit,list_directory,glob,grep_search,run_shell_command,web_fetch,web_search
-    web-fetch:
-      allowed-hosts: ""
-    web-search:
+    webFetch:
+      allowedHosts: ""
+    webSearch:
       endpoint: ""
-      api-key: ""
+      apiKey: ""
       model: ""
   memory:
     maxMessageSize: 1000
@@ -77,35 +77,35 @@ chat:
     maxLongTermMemoryWindowSize: 30
     minLongTermMemoryWindowSize: 0
     defaultLongTermMemoryWindowSize: 5
-    long-term:
-      idle-timeout: PT1H
-      scan-interval: PT30S
-      workers-per-node: 2
-      dispatch-batch-size: 100
-      turn-lease: PT60S
-      lease-renew-interval: PT15S
-      turn-max-duration: PT10M
-      job-max-duration: PT10M
-      extraction-claim-lease: PT5M
-      extraction-timeout: PT60S
-      foreground-timeout: PT90S
-      max-foreground-batches: 2
-      max-attempts: 5
-      retry-initial-delay: PT30S
-      retry-max-delay: PT30M
-      extraction-max-input-tokens: 6000
-      max-input-tokens: 8192
-      response-reserve-tokens: 2048
-      summary-max-tokens: 768
-      profile-max-tokens: 512
-      profile-max-facts: 32
-      search-min-score: 0.3
-      search-query-max-chars: 2000
-      tool-result-max-tokens: 1024
-      tool-total-max-tokens: 4096
-      max-tool-rounds: 10
-      gc-grace-period: PT24H
-      token-estimator-bean: ""
+    longTerm:
+      idleTimeout: PT1H
+      scanInterval: PT30S
+      workersPerNode: 2
+      dispatchBatchSize: 100
+      turnLease: PT60S
+      leaseRenewInterval: PT15S
+      turnMaxDuration: PT10M
+      jobMaxDuration: PT10M
+      extractionClaimLease: PT5M
+      extractionTimeout: PT60S
+      foregroundTimeout: PT90S
+      maxForegroundBatches: 2
+      maxAttempts: 5
+      retryInitialDelay: PT30S
+      retryMaxDelay: PT30M
+      extractionMaxInputTokens: 6000
+      maxInputTokens: 8192
+      responseReserveTokens: 2048
+      summaryMaxTokens: 768
+      profileMaxTokens: 512
+      profileMaxFacts: 32
+      searchMinScore: 0.3
+      searchQueryMaxChars: 2000
+      toolResultMaxTokens: 1024
+      toolTotalMaxTokens: 4096
+      maxToolRounds: 10
+      gcGracePeriod: PT24H
+      tokenEstimatorBean: ""
   rag:
     maxMaxSegmentSize: 1000
     minMaxSegmentSize: 0
@@ -178,8 +178,8 @@ spring:
             clientSecret: 'fakeSecret'
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 20MB
+      maxFileSize: 10MB
+      maxRequestSize: 20MB
   task:
     taskExecution:
       threadNamePrefix: default-task-

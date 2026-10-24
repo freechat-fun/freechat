@@ -18,7 +18,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class LongTermMemoryPropertiesTest {
-    private static final String PREFIX = "chat.memory.long-term.";
+    private static final String PREFIX = "chat.memory.longTerm.";
     private static final int FIXED_MEMORY_TOKENS = 768 + 2 * 512;
 
     @Test
@@ -79,7 +79,7 @@ class LongTermMemoryPropertiesTest {
         LongTermMemoryProperties properties = new LongTermMemoryProperties();
         properties.setSearchMinScore(score);
 
-        assertInvalid(properties, "search-min-score must be between zero and one");
+        assertInvalid(properties, "searchMinScore must be between zero and one");
     }
 
     @ParameterizedTest
@@ -97,7 +97,7 @@ class LongTermMemoryPropertiesTest {
         LongTermMemoryProperties properties = new LongTermMemoryProperties();
         properties.setLeaseRenewInterval(properties.getTurnLease().plusNanos(extraNanos));
 
-        assertInvalid(properties, "lease-renew-interval must be shorter than both leases");
+        assertInvalid(properties, "leaseRenewInterval must be shorter than both leases");
     }
 
     @ParameterizedTest
@@ -106,7 +106,7 @@ class LongTermMemoryPropertiesTest {
         LongTermMemoryProperties properties = new LongTermMemoryProperties();
         properties.setExtractionClaimLease(properties.getLeaseRenewInterval().minusNanos(extraNanos));
 
-        assertInvalid(properties, "lease-renew-interval must be shorter than both leases");
+        assertInvalid(properties, "leaseRenewInterval must be shorter than both leases");
     }
 
     @Test
@@ -144,7 +144,7 @@ class LongTermMemoryPropertiesTest {
         properties.setTurnMaxDuration(Duration.ofMinutes(11));
         properties.setGcGracePeriod(properties.getTurnMaxDuration().minusNanos(missingNanos));
 
-        assertInvalid(properties, "gc-grace-period must exceed both absolute lifetimes");
+        assertInvalid(properties, "gcGracePeriod must exceed both absolute lifetimes");
     }
 
     @ParameterizedTest
@@ -154,7 +154,7 @@ class LongTermMemoryPropertiesTest {
         properties.setJobMaxDuration(Duration.ofMinutes(11));
         properties.setGcGracePeriod(properties.getJobMaxDuration().minusNanos(missingNanos));
 
-        assertInvalid(properties, "gc-grace-period must exceed both absolute lifetimes");
+        assertInvalid(properties, "gcGracePeriod must exceed both absolute lifetimes");
     }
 
     @Test
@@ -170,7 +170,7 @@ class LongTermMemoryPropertiesTest {
         LongTermMemoryProperties properties = new LongTermMemoryProperties();
         properties.setRetryInitialDelay(properties.getRetryMaxDelay().plusNanos(1));
 
-        assertInvalid(properties, "retry-initial-delay exceeds retry-max-delay");
+        assertInvalid(properties, "retryInitialDelay exceeds retryMaxDelay");
     }
 
     @Test
@@ -225,7 +225,7 @@ class LongTermMemoryPropertiesTest {
         LongTermMemoryProperties properties = new LongTermMemoryProperties();
         properties.setToolResultMaxTokens(properties.getToolTotalMaxTokens() + 1);
 
-        assertInvalid(properties, "tool-result-max-tokens exceeds tool-total-max-tokens");
+        assertInvalid(properties, "toolResultMaxTokens exceeds toolTotalMaxTokens");
     }
 
     @Test
@@ -244,7 +244,7 @@ class LongTermMemoryPropertiesTest {
         properties.setTokenEstimatorBean(beanName);
 
         if (beanName == null) {
-            assertInvalid(properties, "token-estimator-bean must not be null");
+            assertInvalid(properties, "tokenEstimatorBean must not be null");
         } else {
             assertDoesNotThrow(properties::afterPropertiesSet);
             assertEquals(beanName, properties.getTokenEstimatorBean());
@@ -259,62 +259,62 @@ class LongTermMemoryPropertiesTest {
     private static Stream<DurationSetting> durationSettings() {
         return Stream.of(
                 new DurationSetting(
-                        "idle-timeout",
+                        "idleTimeout",
                         Duration.parse("PT1H"),
                         LongTermMemoryProperties::getIdleTimeout,
                         LongTermMemoryProperties::setIdleTimeout),
                 new DurationSetting(
-                        "scan-interval",
+                        "scanInterval",
                         Duration.ofSeconds(30),
                         LongTermMemoryProperties::getScanInterval,
                         LongTermMemoryProperties::setScanInterval),
                 new DurationSetting(
-                        "turn-lease",
+                        "turnLease",
                         Duration.ofSeconds(60),
                         LongTermMemoryProperties::getTurnLease,
                         LongTermMemoryProperties::setTurnLease),
                 new DurationSetting(
-                        "lease-renew-interval",
+                        "leaseRenewInterval",
                         Duration.ofSeconds(15),
                         LongTermMemoryProperties::getLeaseRenewInterval,
                         LongTermMemoryProperties::setLeaseRenewInterval),
                 new DurationSetting(
-                        "turn-max-duration",
+                        "turnMaxDuration",
                         Duration.ofMinutes(10),
                         LongTermMemoryProperties::getTurnMaxDuration,
                         LongTermMemoryProperties::setTurnMaxDuration),
                 new DurationSetting(
-                        "job-max-duration",
+                        "jobMaxDuration",
                         Duration.ofMinutes(10),
                         LongTermMemoryProperties::getJobMaxDuration,
                         LongTermMemoryProperties::setJobMaxDuration),
                 new DurationSetting(
-                        "extraction-claim-lease",
+                        "extractionClaimLease",
                         Duration.ofMinutes(5),
                         LongTermMemoryProperties::getExtractionClaimLease,
                         LongTermMemoryProperties::setExtractionClaimLease),
                 new DurationSetting(
-                        "extraction-timeout",
+                        "extractionTimeout",
                         Duration.ofSeconds(60),
                         LongTermMemoryProperties::getExtractionTimeout,
                         LongTermMemoryProperties::setExtractionTimeout),
                 new DurationSetting(
-                        "foreground-timeout",
+                        "foregroundTimeout",
                         Duration.ofSeconds(90),
                         LongTermMemoryProperties::getForegroundTimeout,
                         LongTermMemoryProperties::setForegroundTimeout),
                 new DurationSetting(
-                        "retry-initial-delay",
+                        "retryInitialDelay",
                         Duration.ofSeconds(30),
                         LongTermMemoryProperties::getRetryInitialDelay,
                         LongTermMemoryProperties::setRetryInitialDelay),
                 new DurationSetting(
-                        "retry-max-delay",
+                        "retryMaxDelay",
                         Duration.ofMinutes(30),
                         LongTermMemoryProperties::getRetryMaxDelay,
                         LongTermMemoryProperties::setRetryMaxDelay),
                 new DurationSetting(
-                        "gc-grace-period",
+                        "gcGracePeriod",
                         Duration.ofHours(24),
                         LongTermMemoryProperties::getGcGracePeriod,
                         LongTermMemoryProperties::setGcGracePeriod));
@@ -340,72 +340,72 @@ class LongTermMemoryPropertiesTest {
     private static Stream<NumericSetting> numericSettings() {
         return Stream.of(
                 new NumericSetting(
-                        "workers-per-node",
+                        "workersPerNode",
                         2,
                         LongTermMemoryProperties::getWorkersPerNode,
                         LongTermMemoryProperties::setWorkersPerNode),
                 new NumericSetting(
-                        "dispatch-batch-size",
+                        "dispatchBatchSize",
                         100,
                         LongTermMemoryProperties::getDispatchBatchSize,
                         LongTermMemoryProperties::setDispatchBatchSize),
                 new NumericSetting(
-                        "max-foreground-batches",
+                        "maxForegroundBatches",
                         2,
                         LongTermMemoryProperties::getMaxForegroundBatches,
                         LongTermMemoryProperties::setMaxForegroundBatches),
                 new NumericSetting(
-                        "max-attempts",
+                        "maxAttempts",
                         5,
                         LongTermMemoryProperties::getMaxAttempts,
                         LongTermMemoryProperties::setMaxAttempts),
                 new NumericSetting(
-                        "extraction-max-input-tokens",
+                        "extractionMaxInputTokens",
                         6000,
                         LongTermMemoryProperties::getExtractionMaxInputTokens,
                         LongTermMemoryProperties::setExtractionMaxInputTokens),
                 new NumericSetting(
-                        "max-input-tokens",
+                        "maxInputTokens",
                         8192,
                         LongTermMemoryProperties::getMaxInputTokens,
                         LongTermMemoryProperties::setMaxInputTokens),
                 new NumericSetting(
-                        "response-reserve-tokens",
+                        "responseReserveTokens",
                         2048,
                         LongTermMemoryProperties::getResponseReserveTokens,
                         LongTermMemoryProperties::setResponseReserveTokens),
                 new NumericSetting(
-                        "summary-max-tokens",
+                        "summaryMaxTokens",
                         768,
                         LongTermMemoryProperties::getSummaryMaxTokens,
                         LongTermMemoryProperties::setSummaryMaxTokens),
                 new NumericSetting(
-                        "profile-max-tokens",
+                        "profileMaxTokens",
                         512,
                         LongTermMemoryProperties::getProfileMaxTokens,
                         LongTermMemoryProperties::setProfileMaxTokens),
                 new NumericSetting(
-                        "profile-max-facts",
+                        "profileMaxFacts",
                         32,
                         LongTermMemoryProperties::getProfileMaxFacts,
                         LongTermMemoryProperties::setProfileMaxFacts),
                 new NumericSetting(
-                        "search-query-max-chars",
+                        "searchQueryMaxChars",
                         2000,
                         LongTermMemoryProperties::getSearchQueryMaxChars,
                         LongTermMemoryProperties::setSearchQueryMaxChars),
                 new NumericSetting(
-                        "tool-result-max-tokens",
+                        "toolResultMaxTokens",
                         1024,
                         LongTermMemoryProperties::getToolResultMaxTokens,
                         LongTermMemoryProperties::setToolResultMaxTokens),
                 new NumericSetting(
-                        "tool-total-max-tokens",
+                        "toolTotalMaxTokens",
                         4096,
                         LongTermMemoryProperties::getToolTotalMaxTokens,
                         LongTermMemoryProperties::setToolTotalMaxTokens),
                 new NumericSetting(
-                        "max-tool-rounds",
+                        "maxToolRounds",
                         10,
                         LongTermMemoryProperties::getMaxToolRounds,
                         LongTermMemoryProperties::setMaxToolRounds));
@@ -418,17 +418,17 @@ class LongTermMemoryPropertiesTest {
 
     private static Stream<Arguments> invalidTimeoutRelationships() {
         return Stream.of(
-                arguments("turn-lease exceeds turn-max-duration", (Consumer<LongTermMemoryProperties>) properties ->
+                arguments("turnLease exceeds turnMaxDuration", (Consumer<LongTermMemoryProperties>) properties ->
                         properties.setTurnLease(properties.getTurnMaxDuration().plusNanos(1))),
-                arguments("extraction-timeout exceeds job-max-duration", (Consumer<LongTermMemoryProperties>)
-                        properties -> {
+                arguments(
+                        "extractionTimeout exceeds jobMaxDuration", (Consumer<LongTermMemoryProperties>) properties -> {
                             properties.setJobMaxDuration(
                                     properties.getExtractionTimeout().minusNanos(1));
                         }),
-                arguments("foreground-timeout exceeds turn-max-duration", (Consumer<LongTermMemoryProperties>)
+                arguments("foregroundTimeout exceeds turnMaxDuration", (Consumer<LongTermMemoryProperties>)
                         properties -> properties.setForegroundTimeout(
                                 properties.getTurnMaxDuration().plusNanos(1))),
-                arguments("extraction-timeout exceeds foreground-timeout", (Consumer<LongTermMemoryProperties>)
+                arguments("extractionTimeout exceeds foregroundTimeout", (Consumer<LongTermMemoryProperties>)
                         properties -> properties.setExtractionTimeout(
                                 properties.getForegroundTimeout().plusNanos(1))));
     }
