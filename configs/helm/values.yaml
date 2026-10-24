@@ -1,15 +1,15 @@
 global:
   redis:
-    password: ''
-  defaultStorageClass: 'default'
-  storageClass: 'default'
+    password: ""
+  defaultStorageClass: "default"
+  storageClass: "default"
 app:
   accelerationDomain: storage.freechat.fun
 backend:
   enabled: true
   auth:
     aes:
-      key: ''
+      key: ""
     oauth2:
       aliyun:
         enable: true
@@ -17,18 +17,18 @@ backend:
         clientAuthenticationMethod: client_secret_basic
         clientName: Aliyun
         scope: openid
-        clientId: ''
-        clientSecret: ''
+        clientId: ""
+        clientSecret: ""
       github:
         enable: true
-        scope: ''
-        clientId: ''
-        clientSecret: ''
+        scope: ""
+        clientId: ""
+        clientSecret: ""
       google:
         enable: true
         scope: openid,profile,email
-        clientId: ''
-        clientSecret: ''
+        clientId: ""
+        clientSecret: ""
   autoscaling:
     enabled: false
   container:
@@ -43,7 +43,7 @@ backend:
   image:
     pullPolicy: Always
     repository: freechatfun/freechat
-    tag: ''
+    tag: ""
   ingress:
     annotations:
       cert-manager.io/cluster-issuer: freechat-letsencrypt-http01
@@ -75,8 +75,8 @@ backend:
     size: 8Gi
   pdb:
     create: true
-    minAvailable: ''
-    maxUnavailable: ''
+    minAvailable: ""
+    maxUnavailable: ""
   podSecurityContext:
     fsGroup: 10000
   replicaCount: 2
@@ -96,12 +96,12 @@ backend:
     image:
       pullPolicy: IfNotPresent
       repository: busybox
-      tag: 'latest'
+      tag: "latest"
   promtail:
     image:
       pullPolicy: IfNotPresent
       repository: grafana/promtail
-      tag: 'latest'
+      tag: "latest"
 frontend:
   enabled: false
   autoscaling:
@@ -109,7 +109,7 @@ frontend:
   image:
     pullPolicy: Always
     repository: freechatfun/freechat
-    tag: ''
+    tag: ""
   ingress:
     annotations:
       cert-manager.io/cluster-issuer: freechat-letsencrypt-http01
@@ -138,8 +138,8 @@ frontend:
       enabled: true
   pdb:
     create: true
-    minAvailable: ''
-    maxUnavailable: ''
+    minAvailable: ""
+    maxUnavailable: ""
   replicaCount: 2
   resources:
     limits: {}
@@ -158,11 +158,11 @@ mysql:
   auth:
     database: freechat
     username: freechat
-    password: ''
-    rootPassword: ''
+    password: ""
+    rootPassword: ""
   initdbScripts:
-    1-schema.sql: ''
-    2-data.sql: ''
+    1-schema.sql: ""
+    2-data.sql: ""
   metrics:
     enabled: false
 redis:
@@ -210,9 +210,9 @@ milvus:
     auth:
       enabled: true
       username: root
-      password: ''
-      rootPassword: ''
-      token: ''
+      password: ""
+      rootPassword: ""
+      token: ""
   minio:
     persistence:
       annotations:
@@ -228,7 +228,7 @@ milvus:
       - name: ETCD_SNAPSHOT_COUNT
         value: "50000"
     pdb:
-      minAvailable: ''
+      minAvailable: ""
     replicaCount: 1
   proxy:
     service:
@@ -245,6 +245,20 @@ milvus:
       tls: true
       annotations:
         cert-manager.io/cluster-issuer: freechat-letsencrypt-http01
+skills:
+  sources:
+    allowedHosts: github.com,clawhub.ai
+    githubToken: ""
+  review:
+    modelId: ""
+    apiKey: ""
+    baseUrl: ""
+chat:
+  tools:
+    webSearch:
+      modelId: ""
+      apiKey: ""
+      baseUrl: ""
 tts:
   baseUrl: https://tts.freechat.fun
 prometheus:
@@ -262,7 +276,7 @@ grafana:
   enabled: false
   admin:
     user: freechat
-    password: ''
+    password: ""
   persistence:
     annotations:
       helm.sh/resource-policy: keep

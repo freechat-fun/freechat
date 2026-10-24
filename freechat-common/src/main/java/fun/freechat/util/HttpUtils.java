@@ -28,7 +28,7 @@ public class HttpUtils {
 
     private static final int CALL_TIMEOUT_M = 3;
     private static final String DEFAULT_USER_AGENT =
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36";
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36";
     private static final String DEFAULT_CONTENT_TYPE = "application/json";
     private static final String DEFAULT_ACCEPT = "*/*";
     private static final HttpClient client = HttpClient.newBuilder()

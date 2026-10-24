@@ -66,22 +66,40 @@ redis:
     {{- else if .Values.redis.auth.password }}
     {{- $redisPassword = .Values.redis.auth.password }}
     {{- end }}
-    password: {{ $redisPassword }}
+    password: {{ $redisPassword | quote }}
 embedding:
   milvus:
     {{- with .Values.milvus }}
     url: {{ default "http://milvus:19530" .url }}
     {{- if .milvus.auth.enabled }}
     {{- if .milvus.auth.token }}
-    token: {{ .milvus.auth.token }}
+    token: {{ .milvus.auth.token | quote }}
     {{- else }}
     username: root
-    password: {{ default "Milvus" .milvus.auth.rootPassword }}
+    password: {{ default "Milvus" .milvus.auth.rootPassword | quote }}
     {{- end }}
     {{- end }}
     {{- end }}
+{{- with .Values.skills }}
+skills:
+  sources:
+    allowedHosts: {{ default "github.com,clawhub.ai" .sources.allowedHosts | quote }}
+    githubToken: {{ .sources.githubToken | quote }}
+  review:
+    modelId: {{ .review.modelId | quote }}
+    apiKey: {{ .review.apiKey | quote }}
+    baseUrl: {{ .review.baseUrl | quote }}
+{{- end }}
+{{- with .Values.chat }}
+chat:
+  tools:
+    webSearch:
+      modelId: {{ .tools.webSearch.modelId | quote }}
+      apiKey: {{ .tools.webSearch.apiKey | quote }}
+      baseUrl: {{ .tools.webSearch.baseUrl | quote }}
+{{- end }}
 {{- with .Values.tts }}
 tts:
-  baseUrl: {{ default "http://localhost:5002" .baseUrl }}
+  baseUrl: {{ default "http://localhost:5002" .baseUrl | quote }}
 {{- end }}
 {{ end }}
