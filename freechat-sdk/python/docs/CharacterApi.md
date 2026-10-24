@@ -1225,7 +1225,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **export_character**
-> export_character(character_id)
+> export_character(character_id, include_connectors=include_connectors)
 
 Export Character Configuration
 
@@ -1261,10 +1261,11 @@ with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.CharacterApi(api_client)
     character_id = 56 # int | Character identifier
+    include_connectors = False # bool | Include credentialless connector definitions (character owner only) (optional) (default to False)
 
     try:
         # Export Character Configuration
-        api_instance.export_character(character_id)
+        api_instance.export_character(character_id, include_connectors=include_connectors)
     except Exception as e:
         print("Exception when calling CharacterApi->export_character: %s\n" % e)
 ```
@@ -1277,6 +1278,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **character_id** | **int**| Character identifier |
+ **include_connectors** | **bool**| Include credentialless connector definitions (character owner only) | [optional] [default to False]
 
 ### Return type
 

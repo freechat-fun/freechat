@@ -34,6 +34,10 @@ import { ChatPromptContentDTO } from '../models/ChatPromptContentDTO.js';
 import { ChatSessionDTO } from '../models/ChatSessionDTO.js';
 import { ChatToolCallDTO } from '../models/ChatToolCallDTO.js';
 import { ChatUpdateDTO } from '../models/ChatUpdateDTO.js';
+import { ConnectorDetailsDTO } from '../models/ConnectorDetailsDTO.js';
+import { ConnectorTestDTO } from '../models/ConnectorTestDTO.js';
+import { ConnectorToolDTO } from '../models/ConnectorToolDTO.js';
+import { ConnectorWriteDTO } from '../models/ConnectorWriteDTO.js';
 import { HotTagDTO } from '../models/HotTagDTO.js';
 import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
 import { LlmResultDTO } from '../models/LlmResultDTO.js';
@@ -1730,6 +1734,13 @@ export interface CharacterApiExportCharacterRequest {
      * @memberof CharacterApiexportCharacter
      */
     characterId: number
+    /**
+     * Include credentialless connector definitions (character owner only)
+     * Defaults to: false
+     * @type boolean
+     * @memberof CharacterApiexportCharacter
+     */
+    includeConnectors?: boolean
 }
 
 export interface CharacterApiGetCharacterDetailsRequest {
@@ -2341,7 +2352,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public exportCharacterWithHttpInfo(param: CharacterApiExportCharacterRequest, options?: ConfigurationOptions): Promise<HttpInfo<void>> {
-        return this.api.exportCharacterWithHttpInfo(param.characterId,  options).toPromise();
+        return this.api.exportCharacterWithHttpInfo(param.characterId, param.includeConnectors,  options).toPromise();
     }
 
     /**
@@ -2350,7 +2361,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public exportCharacter(param: CharacterApiExportCharacterRequest, options?: ConfigurationOptions): Promise<void> {
-        return this.api.exportCharacter(param.characterId,  options).toPromise();
+        return this.api.exportCharacter(param.characterId, param.includeConnectors,  options).toPromise();
     }
 
     /**
@@ -3427,6 +3438,194 @@ export class ObjectChatApi {
      */
     public updateChat(param: ChatApiUpdateChatRequest, options?: ConfigurationOptions): Promise<boolean> {
         return this.api.updateChat(param.chatId, param.chatUpdateDTO,  options).toPromise();
+    }
+
+}
+
+import { ObservableConnectorApi } from "./ObservableAPI.js";
+import { ConnectorApiRequestFactory, ConnectorApiResponseProcessor} from "../apis/ConnectorApi.js";
+
+export interface ConnectorApiCreateConnectorRequest {
+    /**
+     *
+     * @type ConnectorWriteDTO
+     * @memberof ConnectorApicreateConnector
+     */
+    connectorWriteDTO: ConnectorWriteDTO
+}
+
+export interface ConnectorApiDeleteConnectorRequest {
+    /**
+     *
+     * Defaults to: undefined
+     * @type string
+     * @memberof ConnectorApideleteConnector
+     */
+    connectorId: string
+    /**
+     *
+     * Defaults to: undefined
+     * @type string
+     * @memberof ConnectorApideleteConnector
+     */
+    expectedRevision: string
+}
+
+export interface ConnectorApiGetConnectorRequest {
+    /**
+     *
+     * Defaults to: undefined
+     * @type string
+     * @memberof ConnectorApigetConnector
+     */
+    connectorId: string
+}
+
+export interface ConnectorApiListConnectorsRequest {
+}
+
+export interface ConnectorApiTestConnectorRequest {
+    /**
+     *
+     * Defaults to: undefined
+     * @type string
+     * @memberof ConnectorApitestConnector
+     */
+    connectorId: string
+    /**
+     *
+     * Defaults to: undefined
+     * @type string
+     * @memberof ConnectorApitestConnector
+     */
+    expectedRevision: string
+}
+
+export interface ConnectorApiUpdateConnectorRequest {
+    /**
+     *
+     * Defaults to: undefined
+     * @type string
+     * @memberof ConnectorApiupdateConnector
+     */
+    connectorId: string
+    /**
+     *
+     * @type ConnectorWriteDTO
+     * @memberof ConnectorApiupdateConnector
+     */
+    connectorWriteDTO: ConnectorWriteDTO
+}
+
+export class ObjectConnectorApi {
+    private api: ObservableConnectorApi
+
+    public constructor(configuration: Configuration, requestFactory?: ConnectorApiRequestFactory, responseProcessor?: ConnectorApiResponseProcessor) {
+        this.api = new ObservableConnectorApi(configuration, requestFactory, responseProcessor);
+    }
+
+    /**
+     * Validates syntax and stores encrypted header values without contacting the endpoint. Public address checks run before network use.
+     * Create My Connector
+     * @param param the request object
+     */
+    public createConnectorWithHttpInfo(param: ConnectorApiCreateConnectorRequest, options?: ConfigurationOptions): Promise<HttpInfo<ConnectorDetailsDTO>> {
+        return this.api.createConnectorWithHttpInfo(param.connectorWriteDTO,  options).toPromise();
+    }
+
+    /**
+     * Validates syntax and stores encrypted header values without contacting the endpoint. Public address checks run before network use.
+     * Create My Connector
+     * @param param the request object
+     */
+    public createConnector(param: ConnectorApiCreateConnectorRequest, options?: ConfigurationOptions): Promise<ConnectorDetailsDTO> {
+        return this.api.createConnector(param.connectorWriteDTO,  options).toPromise();
+    }
+
+    /**
+     * Delete My Connector
+     * @param param the request object
+     */
+    public deleteConnectorWithHttpInfo(param: ConnectorApiDeleteConnectorRequest, options?: ConfigurationOptions): Promise<HttpInfo<void>> {
+        return this.api.deleteConnectorWithHttpInfo(param.connectorId, param.expectedRevision,  options).toPromise();
+    }
+
+    /**
+     * Delete My Connector
+     * @param param the request object
+     */
+    public deleteConnector(param: ConnectorApiDeleteConnectorRequest, options?: ConfigurationOptions): Promise<void> {
+        return this.api.deleteConnector(param.connectorId, param.expectedRevision,  options).toPromise();
+    }
+
+    /**
+     * Returns metadata and header names, never header values.
+     * Get My Connector
+     * @param param the request object
+     */
+    public getConnectorWithHttpInfo(param: ConnectorApiGetConnectorRequest, options?: ConfigurationOptions): Promise<HttpInfo<ConnectorDetailsDTO>> {
+        return this.api.getConnectorWithHttpInfo(param.connectorId,  options).toPromise();
+    }
+
+    /**
+     * Returns metadata and header names, never header values.
+     * Get My Connector
+     * @param param the request object
+     */
+    public getConnector(param: ConnectorApiGetConnectorRequest, options?: ConfigurationOptions): Promise<ConnectorDetailsDTO> {
+        return this.api.getConnector(param.connectorId,  options).toPromise();
+    }
+
+    /**
+     * List My Connectors
+     * @param param the request object
+     */
+    public listConnectorsWithHttpInfo(param: ConnectorApiListConnectorsRequest = {}, options?: ConfigurationOptions): Promise<HttpInfo<Array<ConnectorDetailsDTO>>> {
+        return this.api.listConnectorsWithHttpInfo( options).toPromise();
+    }
+
+    /**
+     * List My Connectors
+     * @param param the request object
+     */
+    public listConnectors(param: ConnectorApiListConnectorsRequest = {}, options?: ConfigurationOptions): Promise<Array<ConnectorDetailsDTO>> {
+        return this.api.listConnectors( options).toPromise();
+    }
+
+    /**
+     * Initialize an owned HTTP or SSE MCP server and list its tools without executing any tool. Private addresses and redirects are rejected. The stored configuration revision must match.
+     * Test My Connector
+     * @param param the request object
+     */
+    public testConnectorWithHttpInfo(param: ConnectorApiTestConnectorRequest, options?: ConfigurationOptions): Promise<HttpInfo<ConnectorTestDTO>> {
+        return this.api.testConnectorWithHttpInfo(param.connectorId, param.expectedRevision,  options).toPromise();
+    }
+
+    /**
+     * Initialize an owned HTTP or SSE MCP server and list its tools without executing any tool. Private addresses and redirects are rejected. The stored configuration revision must match.
+     * Test My Connector
+     * @param param the request object
+     */
+    public testConnector(param: ConnectorApiTestConnectorRequest, options?: ConfigurationOptions): Promise<ConnectorTestDTO> {
+        return this.api.testConnector(param.connectorId, param.expectedRevision,  options).toPromise();
+    }
+
+    /**
+     * Replaces an expected revision. Explicitly retain unchanged header names; retained credentials cannot move to another origin.
+     * Update My Connector
+     * @param param the request object
+     */
+    public updateConnectorWithHttpInfo(param: ConnectorApiUpdateConnectorRequest, options?: ConfigurationOptions): Promise<HttpInfo<ConnectorDetailsDTO>> {
+        return this.api.updateConnectorWithHttpInfo(param.connectorId, param.connectorWriteDTO,  options).toPromise();
+    }
+
+    /**
+     * Replaces an expected revision. Explicitly retain unchanged header names; retained credentials cannot move to another origin.
+     * Update My Connector
+     * @param param the request object
+     */
+    public updateConnector(param: ConnectorApiUpdateConnectorRequest, options?: ConfigurationOptions): Promise<ConnectorDetailsDTO> {
+        return this.api.updateConnector(param.connectorId, param.connectorWriteDTO,  options).toPromise();
     }
 
 }

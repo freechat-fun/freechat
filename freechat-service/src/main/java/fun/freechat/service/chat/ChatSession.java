@@ -35,6 +35,8 @@ public class ChatSession {
     private final ToolBinder toolBinder;
     private final fun.freechat.service.skills.SkillBinder skillBinder;
     private final fun.freechat.service.skills.SkillInvocation skillInvocation;
+    private final fun.freechat.service.connectors.ConnectorBinder connectorBinder;
+    private final fun.freechat.service.connectors.ConnectorInvocation connectorInvocation;
 
     @Setter
     private MemoryUsage memoryUsage;
@@ -56,7 +58,9 @@ public class ChatSession {
             Map<ToolSpecification, ToolExecutor> tools,
             ToolBinder toolBinder,
             fun.freechat.service.skills.SkillBinder skillBinder,
-            fun.freechat.service.skills.SkillInvocation skillInvocation) {
+            fun.freechat.service.skills.SkillInvocation skillInvocation,
+            fun.freechat.service.connectors.ConnectorBinder connectorBinder,
+            fun.freechat.service.connectors.ConnectorInvocation connectorInvocation) {
         aiServiceContext = AiServiceContext.create(ChatService.class);
         aiServiceContext.chatModel = chatModel;
         aiServiceContext.streamingChatModel = streamingChatModel;
@@ -80,6 +84,8 @@ public class ChatSession {
         this.toolBinder = toolBinder;
         this.skillBinder = skillBinder;
         this.skillInvocation = skillInvocation;
+        this.connectorBinder = connectorBinder;
+        this.connectorInvocation = connectorInvocation;
 
         if (CollectionUtils.isNotEmpty(objectsWithTools)) {
             this.tools(objectsWithTools);
@@ -99,20 +105,6 @@ public class ChatSession {
         if (skills != null && memory instanceof fun.freechat.service.chat.memory.MemoryInvocation preparedMemory) {
             preparedMemory.requestOverlay(skills::messages, skills::validateRequest);
         }
-        ChatSession invocation = ChatSession.builder()
-                .skillInvocation(skills)
-                .chatModel(getChatModel())
-                .streamingChatModel(streaming)
-                .imageChatModel(imageChatModel)
-                .moderationModel(getModerationModel())
-                .chatMemory(memory)
-                .prompt(prompt)
-                .promptFormat(promptFormat)
-                .variables(new java.util.HashMap<>(variables))
-                .memoryFingerprint(memoryFingerprint)
-                .retriever(getRetriever())
-                .memoryUsage(memoryUsage)
-                .build();
         Map<ToolSpecification, ToolExecutor> all = new java.util.LinkedHashMap<>();
         if (getToolSpecifications() != null) {
             for (ToolSpecification specification : getToolSpecifications()) {
@@ -147,13 +139,53 @@ public class ChatSession {
                 throw new IllegalStateException("Chat tool execution failed");
             }
         });
-        invocation.tools(all);
-        invocation.aiServiceContext.toolService.maxToolCallingRoundTrips(maxToolRounds);
-        return invocation;
+        var connectors = skills != null || connectorBinder == null ? null : connectorBinder.bind();
+        try {
+            if (connectors != null) {
+                for (var entry : connectors.tools().entrySet()) {
+                    var executor = entry.getValue();
+                    putTool(all, entry.getKey(), (request, memoryId) -> {
+                        guard.run();
+                        String result = executor.execute(request, memoryId);
+                        guard.run();
+                        return result;
+                    });
+                }
+            }
+            ChatSession invocation = ChatSession.builder()
+                    .skillInvocation(skills)
+                    .connectorInvocation(connectors)
+                    .chatModel(getChatModel())
+                    .streamingChatModel(streaming)
+                    .imageChatModel(imageChatModel)
+                    .moderationModel(getModerationModel())
+                    .chatMemory(memory)
+                    .prompt(prompt)
+                    .promptFormat(promptFormat)
+                    .variables(new java.util.HashMap<>(variables))
+                    .memoryFingerprint(memoryFingerprint)
+                    .retriever(getRetriever())
+                    .memoryUsage(memoryUsage)
+                    .tools(all)
+                    .build();
+            invocation.aiServiceContext.toolService.maxToolCallingRoundTrips(maxToolRounds);
+            return invocation;
+        } catch (RuntimeException | Error failure) {
+            if (connectors != null) connectors.close();
+            throw failure;
+        }
     }
 
     public record InvocationTools(
-            Map<ToolSpecification, ToolExecutor> tools, fun.freechat.service.skills.SkillInvocation skills) {}
+            Map<ToolSpecification, ToolExecutor> tools,
+            fun.freechat.service.skills.SkillInvocation skills,
+            fun.freechat.service.connectors.ConnectorInvocation connectors)
+            implements AutoCloseable {
+        @Override
+        public void close() {
+            if (connectors != null) connectors.close();
+        }
+    }
 
     public InvocationTools bindInvocation() {
         var skills = skillInvocation != null ? skillInvocation : skillBinder == null ? null : skillBinder.bind();
@@ -170,7 +202,34 @@ public class ChatSession {
         if (skills != null && skillInvocation == null) {
             bound = skills.restrict(bound);
         }
-        return new InvocationTools(bound, skills);
+        var connectors = connectorInvocation != null
+                ? connectorInvocation
+                : skills != null || connectorBinder == null ? null : connectorBinder.bind();
+        try {
+            if (connectors != null) {
+                connectors.check();
+                if (connectorInvocation == null) {
+                    bound = new java.util.LinkedHashMap<>(bound);
+                    for (var entry : connectors.tools().entrySet()) putTool(bound, entry.getKey(), entry.getValue());
+                }
+            }
+            return new InvocationTools(java.util.Collections.unmodifiableMap(bound), skills, connectors);
+        } catch (RuntimeException | Error failure) {
+            if (connectors != null) connectors.close();
+            throw failure;
+        }
+    }
+
+    private static void putTool(
+            Map<ToolSpecification, ToolExecutor> tools, ToolSpecification specification, ToolExecutor executor) {
+        if (tools.keySet().stream().anyMatch(existing -> existing.name().equals(specification.name()))) {
+            throw new IllegalStateException("Duplicate chat tool name");
+        }
+        tools.put(specification, executor);
+    }
+
+    public void closeConnectors() {
+        if (connectorInvocation != null) connectorInvocation.close();
     }
 
     public Map<ToolSpecification, ToolExecutor> bindToolsForInvocation() {

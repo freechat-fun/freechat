@@ -1060,7 +1060,7 @@ public class Example {
 
 <a id="exportCharacter"></a>
 # **exportCharacter**
-> exportCharacter(characterId)
+> exportCharacter(characterId, includeConnectors)
 
 Export Character Configuration
 
@@ -1087,8 +1087,9 @@ public class Example {
 
     CharacterApi apiInstance = new CharacterApi(defaultClient);
     Long characterId = 56L; // Long | Character identifier
+    Boolean includeConnectors = false; // Boolean | Include credentialless connector definitions (character owner only)
     try {
-      apiInstance.exportCharacter(characterId);
+      apiInstance.exportCharacter(characterId, includeConnectors);
     } catch (ApiException e) {
       System.err.println("Exception when calling CharacterApi#exportCharacter");
       System.err.println("Status code: " + e.getCode());
@@ -1105,6 +1106,7 @@ public class Example {
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **characterId** | **Long**| Character identifier | |
+| **includeConnectors** | **Boolean**| Include credentialless connector definitions (character owner only) | [optional] [default to false] |
 
 ### Return type
 

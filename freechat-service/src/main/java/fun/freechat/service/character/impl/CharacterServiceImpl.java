@@ -90,6 +90,9 @@ public class CharacterServiceImpl implements CharacterService {
     @Autowired
     private fun.freechat.service.skills.SkillCharacterPolicy skillPolicy;
 
+    @Autowired
+    private fun.freechat.service.connectors.ConnectorCharacterPolicy connectorPolicy;
+
     private QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder wrapQueryExpression(
             QueryExpressionDSL<SelectModel> c, String currentUserId) {
         return c.where(
@@ -188,6 +191,7 @@ public class CharacterServiceImpl implements CharacterService {
         CharacterInfo info = infoPair.getLeft();
         toolRegistry.validateConfiguration(info.getExt());
         skillPolicy.validate(info.getUserId(), info.getExt(), info.getDraft());
+        connectorPolicy.validate(info.getUserId(), info.getExt(), info.getDraft());
         LocalDateTime now = LocalDateTime.now();
         int rows = characterInfoMapper.insertSelective(info.withGmtCreate(now).withGmtModified(now));
         if (rows <= 0) {
@@ -416,6 +420,7 @@ public class CharacterServiceImpl implements CharacterService {
         CharacterInfo requested = infoPair.getLeft();
         requested.setUserId(
                 skillPolicy.validateUpdate(requested.getCharacterId(), requested.getExt(), requested.getDraft()));
+        connectorPolicy.validateUpdate(requested.getCharacterId(), requested.getExt(), requested.getDraft());
         String draftExt = fun.freechat.service.skills.CharacterSkillConfiguration.draftExt(requested.getDraft());
         if (draftExt != null) {
             toolRegistry.validateConfiguration(draftExt);
@@ -717,6 +722,7 @@ public class CharacterServiceImpl implements CharacterService {
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public Long publish(Long characterId, Visibility visibility, User user) {
         skillPolicy.validatePublication(characterId);
+        connectorPolicy.validatePublication(characterId);
         Long publishedInfoId;
         SqlSession session = sqlSessionFactory.openSession();
         try {

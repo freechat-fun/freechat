@@ -34,6 +34,11 @@ import {
   Button,
   ButtonGroup,
   Chip,
+  Alert,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   DialogContentText,
   FormControl,
   FormHelperText,
@@ -61,7 +66,8 @@ import {
   transitionStyles,
 } from '../../libs/ui_utils';
 import { i18nConfig } from '../../configs/i18n-config';
-import { exportCharacter } from '../../libs/character_utils';
+import CharacterExportDialog from '../../components/character/CharacterExportDialog';
+import { normalizeConnectorError } from '../../libs/connector_utils';
 
 let idCounter = 0;
 
@@ -167,7 +173,7 @@ RecordCard.displayName = 'Characters.RecordCard';
 
 export default function Characters() {
   const navigate = useNavigate();
-  const { t } = useTranslation(['character']);
+  const { t } = useTranslation(['character', 'connector']);
   const { accountApi, characterApi, chatApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
@@ -186,6 +192,9 @@ export default function Characters() {
   const [showCardsFinish, setShowCardsFinish] = useState(false);
 
   const [characterUploading, setCharacterUploading] = useState(false);
+  const [recordExported, setRecordExported] = useState<CharacterSummaryDTO>();
+  const [importWarning, setImportWarning] = useState(false);
+  const [importErrorKey, setImportErrorKey] = useState<string>();
 
   const fileInputId = useRef(
     `character-configuration-input-${idCounter}`
@@ -302,9 +311,7 @@ export default function Characters() {
   }
 
   function handleDownload(record: CharacterSummaryDTO): void {
-    if (record.characterId) {
-      exportCharacter(record.characterId).catch(handleError);
-    }
+    if (record.characterId) setRecordExported(record);
   }
 
   function handleNameChange(): void {
@@ -342,12 +349,26 @@ export default function Characters() {
     event: React.ChangeEvent<HTMLInputElement>
   ): void {
     const file = event.target.files && event.target.files[0];
-    if (file) {
+    event.target.value = '';
+    if (file && characterApi) {
       setCharacterUploading(true);
+      setImportErrorKey(undefined);
       characterApi
-        ?.importCharacter(file)
+        .importCharacter(file)
         .then(() => doSearch())
-        .catch(handleError)
+        .catch((reason: unknown) => {
+          const error = normalizeConnectorError(reason);
+          setImportErrorKey(
+            error.known
+              ? error.messageKey
+              : 'Character import failed. Check the file and try again.'
+          );
+          if (error.code === 401)
+            handleError({
+              code: 401,
+              message: t(error.messageKey, { ns: 'connector' }),
+            });
+        })
         .finally(() => setCharacterUploading(false));
     }
   }
@@ -416,21 +437,22 @@ export default function Characters() {
           >
             {t('button:Create')}
           </Button>
-          <label htmlFor={fileInputId}>
-            <Button
-              disabled={characterUploading}
-              startIcon={<ImportExportRounded />}
-              onClick={handleConfFileModify}
-              sx={{
-                borderRadius: '16px',
-              }}
-            >
-              {t('button:Import')}
-            </Button>
-          </label>
+          <Button
+            disabled={characterUploading}
+            startIcon={<ImportExportRounded />}
+            onClick={() => setImportWarning(true)}
+            sx={{ borderRadius: '16px' }}
+          >
+            {t('button:Import')}
+          </Button>
         </ButtonGroup>
       </Box>
       <LinePlaceholder />
+      {importErrorKey && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {t(importErrorKey, { ns: 'connector' })}
+        </Alert>
+      )}
       <Box
         sx={{
           display: 'grid',
@@ -514,6 +536,40 @@ export default function Characters() {
         </IconButton>
       </Box>
 
+      {recordExported?.characterId && (
+        <CharacterExportDialog
+          characterId={recordExported.characterId}
+          onClose={() => setRecordExported(undefined)}
+        />
+      )}
+      <Dialog
+        open={importWarning}
+        onClose={() => setImportWarning(false)}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>{t('connector:Import character')}</DialogTitle>
+        <DialogContent>
+          <Alert severity="warning">
+            {t(
+              'connector:Imported connectors are private inactive copies owned by the importing user. Review and configure them before use; existing IDs and credentials are never reused across accounts.'
+            )}
+          </Alert>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setImportWarning(false)}>
+            {t('button:Cancel')}
+          </Button>
+          <Button
+            onClick={() => {
+              setImportWarning(false);
+              handleConfFileModify();
+            }}
+          >
+            {t('connector:Choose file')}
+          </Button>
+        </DialogActions>
+      </Dialog>
       <ConfirmModal
         open={!!recordDeleted}
         onClose={() => setRecordDeleted(undefined)}

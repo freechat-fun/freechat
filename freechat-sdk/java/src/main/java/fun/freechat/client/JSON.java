@@ -128,6 +128,10 @@ public class JSON {
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.ChatSessionDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.ChatToolCallDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.ChatUpdateDTO.CustomTypeAdapterFactory());
+        gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.ConnectorDetailsDTO.CustomTypeAdapterFactory());
+        gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.ConnectorTestDTO.CustomTypeAdapterFactory());
+        gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.ConnectorToolDTO.CustomTypeAdapterFactory());
+        gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.ConnectorWriteDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.HotTagDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.InteractiveStatsDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.LlmResultDTO.CustomTypeAdapterFactory());

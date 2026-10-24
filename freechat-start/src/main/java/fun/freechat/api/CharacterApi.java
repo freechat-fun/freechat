@@ -9,6 +9,7 @@ import static org.yaml.snakeyaml.nodes.Tag.MAP;
 import fun.freechat.api.dto.*;
 import fun.freechat.api.dto.conf.CharacterBackendConfigurationDTO;
 import fun.freechat.api.dto.conf.CharacterConfigurationDTO;
+import fun.freechat.api.dto.conf.ConnectorConfigurationDTO;
 import fun.freechat.api.util.*;
 import fun.freechat.channels.telegram.TelegramChannelManager;
 import fun.freechat.model.*;
@@ -16,6 +17,11 @@ import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.TtsService;
 import fun.freechat.service.common.FileStore;
 import fun.freechat.service.config.RuntimeConfig;
+import fun.freechat.service.connectors.CharacterConnectorConfiguration;
+import fun.freechat.service.connectors.ConnectorCharacterPolicy;
+import fun.freechat.service.connectors.ConnectorConfiguration;
+import fun.freechat.service.connectors.ConnectorException;
+import fun.freechat.service.connectors.ConnectorService;
 import fun.freechat.service.enums.InfoType;
 import fun.freechat.service.enums.SourceType;
 import fun.freechat.service.enums.StatsType;
@@ -127,6 +133,12 @@ public class CharacterApi {
 
     @Autowired
     private fun.freechat.service.skills.SkillCharacterPolicy skillPolicy;
+
+    @Autowired
+    private ConnectorCharacterPolicy connectorPolicy;
+
+    @Autowired
+    private ConnectorService connectorService;
 
     private void validateCharacterTools(String ext) {
         try {
@@ -347,6 +359,7 @@ public class CharacterApi {
                     CharacterCreateDTO character) {
         validateCharacterTools(character.getExt());
         skillPolicy.validate(AccountUtils.currentUser().getUserId(), character.getExt(), character.getDraft());
+        connectorPolicy.validate(AccountUtils.currentUser().getUserId(), character.getExt(), character.getDraft());
         var characterInfo = character.toCharacterInfo();
         if (!characterService.create(characterInfo)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create character.");
@@ -381,8 +394,10 @@ public class CharacterApi {
                     @RequestBody
                     @NotNull
                     CharacterUpdateDTO character) {
+        AccountUtils.currentUser();
         validateCharacterTools(character.getExt());
         skillPolicy.validateUpdate(characterId, character.getExt(), character.getDraft());
+        connectorPolicy.validateUpdate(characterId, character.getExt(), character.getDraft());
         var characterInfo = character.toCharacterInfo(characterId);
         characterInfo.getLeft().setCharacterUid(characterService.getUid(characterId));
         return characterService.update(characterInfo);
@@ -525,8 +540,10 @@ public class CharacterApi {
                     Long characterId,
             @Parameter(description = "Visibility: public | private | ...") @PathVariable("visibility")
                     Optional<String> visibility) {
+        User currentUser = AccountUtils.currentUser();
+        connectorPolicy.validatePublication(characterId);
         Visibility publishVisibility = visibility.map(Visibility::of).orElse(Visibility.PUBLIC);
-        return characterService.publish(characterId, publishVisibility, AccountUtils.currentUser());
+        return characterService.publish(characterId, publishVisibility, currentUser);
     }
 
     private static final java.util.regex.Pattern TG_BOT_TOKEN_PATTERN =
@@ -1156,16 +1173,29 @@ public class CharacterApi {
     @GetMapping(value = "/export/{characterId}", produces = "application/gzip")
     public void exportCharacter(
             @Parameter(description = "Character identifier") @PathVariable("characterId") @Positive Long characterId,
+            @Parameter(description = "Include credentialless connector definitions (character owner only)")
+                    @RequestParam(defaultValue = "false")
+                    boolean includeConnectors,
             HttpServletResponse response) {
         User currentUser = AccountUtils.currentUser();
         String currentUserId = currentUser.getUserId();
         var characterTriple = characterService.details(characterId, currentUser);
+        if (characterTriple == null || characterTriple.getLeft() == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Character not found");
+        }
+        List<ConnectorConfigurationDTO> connectorConfigurations =
+                includeConnectors ? exportConnectors(characterTriple.getLeft(), currentUserId) : null;
         CharacterCreateDTO characterCreateDTO =
                 CharacterCreateDTO.from(Pair.of(characterTriple.getLeft(), characterTriple.getMiddle()));
         characterCreateDTO.setExt(
                 fun.freechat.service.skills.CharacterSkillConfiguration.withoutSkills(characterCreateDTO.getExt()));
         characterCreateDTO.setDraft(fun.freechat.service.skills.CharacterSkillConfiguration.withoutDraftSkills(
                 characterCreateDTO.getDraft()));
+        if (!includeConnectors) {
+            characterCreateDTO.setExt(CharacterConnectorConfiguration.withoutConnectors(characterCreateDTO.getExt()));
+            characterCreateDTO.setDraft(
+                    CharacterConnectorConfiguration.withoutDraftConnectors(characterCreateDTO.getDraft()));
+        }
 
         List<CharacterBackend> backends =
                 characterTriple.getRight() != null ? characterTriple.getRight() : Collections.emptyList();
@@ -1215,6 +1245,7 @@ public class CharacterApi {
         CharacterConfigurationDTO characterConf = CharacterConfigurationDTO.builder()
                 .character(characterCreateDTO)
                 .backends(characterBackendConfList)
+                .connectors(connectorConfigurations)
                 .build();
 
         LinkedList<Triple<String, InputStream, Long>> entries = new LinkedList<>();
@@ -1266,6 +1297,32 @@ public class CharacterApi {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR, "Failed to compress character configuration", e);
         }
+    }
+
+    private List<ConnectorConfigurationDTO> exportConnectors(CharacterInfo character, String currentUserId) {
+        // Registry metadata is private even when the character is public or the caller is an administrator.
+        if (StringUtils.isBlank(currentUserId) || !currentUserId.equals(character.getUserId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the character owner can export connectors");
+        }
+        Set<String> references = new TreeSet<>(
+                CharacterConnectorConfiguration.parse(character.getExt()).enabled());
+        references.addAll(
+                CharacterConnectorConfiguration.parse(CharacterConnectorConfiguration.draftExt(character.getDraft()))
+                        .enabled());
+        if (references.isEmpty()) {
+            return List.of();
+        }
+        Map<String, ConnectorService.Summary> owned = new HashMap<>();
+        connectorService.list(character.getUserId()).forEach(summary -> owned.put(summary.connectorId(), summary));
+        List<ConnectorConfigurationDTO> descriptors = new ArrayList<>();
+        for (String reference : references) {
+            ConnectorService.Summary summary = owned.get(reference);
+            if (summary == null) {
+                throw new ConnectorException(ConnectorException.Code.CONNECTOR_ACCESS_DENIED);
+            }
+            descriptors.add(ConnectorConfigurationDTO.from(summary));
+        }
+        return descriptors;
     }
 
     private static List<Triple<String, InputStream, Long>> voices(
@@ -1346,13 +1403,14 @@ public class CharacterApi {
             @Parameter(description = "Character avatar") @RequestParam("file") @NotNull MultipartFile file) {
         FileStore fileStore = StoreUtils.defaultFileStore();
         String userId = AccountUtils.currentUser().getUserId();
+        Map<String, String> createdConnectors = new LinkedHashMap<>();
 
         try {
             Path tempDir = Files.createTempDirectory(file.getOriginalFilename() + "-");
             TarUtils.extractGzip(file.getInputStream(), tempDir);
 
             handleManifestYaml(tempDir);
-            Pair<CharacterInfo, List<CharacterBackend>> characterConf = handleCharacterJson(tempDir);
+            Pair<CharacterInfo, List<CharacterBackend>> characterConf = handleCharacterJson(tempDir, createdConnectors);
             CharacterInfo characterInfo = characterConf.getLeft();
             List<CharacterBackend> backends = characterConf.getRight();
             handleAvatar(request, userId, characterInfo, tempDir);
@@ -1364,8 +1422,12 @@ public class CharacterApi {
             cleanUpTempDirectory(tempDir);
             return characterInfo.getCharacterId();
         } catch (IOException | NullPointerException e) {
+            cleanupImportedConnectors(userId, createdConnectors);
             throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR, "Failed to import character configuration", e);
+                    HttpStatus.INTERNAL_SERVER_ERROR, "Failed to import character configuration");
+        } catch (RuntimeException failure) {
+            cleanupImportedConnectors(userId, createdConnectors);
+            throw failure;
         }
     }
 
@@ -1379,13 +1441,28 @@ public class CharacterApi {
         }
     }
 
-    private Pair<CharacterInfo, List<CharacterBackend>> handleCharacterJson(Path confPath) throws IOException {
+    private Pair<CharacterInfo, List<CharacterBackend>> handleCharacterJson(
+            Path confPath, Map<String, String> createdConnectors) throws IOException {
         Path characterFile = confPath.resolve("character.json");
         String characterJson = Files.readString(characterFile, StandardCharsets.UTF_8);
         CharacterConfigurationDTO characterConf = CharacterConfigurationDTO.fromJson(characterJson);
 
-        // create character
+        // Archive references are remapping keys only; never copy live source IDs into the new character.
         CharacterCreateDTO characterCreateDTO = characterConf.getCharacter();
+        List<ConnectorConfigurationDTO> descriptors =
+                characterConf.getConnectors() == null ? List.of() : characterConf.getConnectors();
+        Set<String> enabled = descriptors.isEmpty()
+                ? Set.of()
+                : CharacterConnectorConfiguration.parse(characterCreateDTO.getExt())
+                        .enabled();
+        Set<String> draftEnabled = descriptors.isEmpty()
+                ? Set.of()
+                : CharacterConnectorConfiguration.parse(
+                                CharacterConnectorConfiguration.draftExt(characterCreateDTO.getDraft()))
+                        .enabled();
+        characterCreateDTO.setExt(CharacterConnectorConfiguration.withoutConnectors(characterCreateDTO.getExt()));
+        characterCreateDTO.setDraft(
+                CharacterConnectorConfiguration.withoutDraftConnectors(characterCreateDTO.getDraft()));
         characterCreateDTO.setExt(
                 fun.freechat.service.skills.CharacterSkillConfiguration.withoutSkills(characterCreateDTO.getExt()));
         characterCreateDTO.setDraft(fun.freechat.service.skills.CharacterSkillConfiguration.withoutDraftSkills(
@@ -1393,9 +1470,7 @@ public class CharacterApi {
         validateCharacterTools(characterCreateDTO.getExt());
         var characterPair = characterCreateDTO.toCharacterInfo();
         CharacterUtils.resetCharacterInfoPair(characterPair, null);
-        if (!characterService.create(characterPair)) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create character.");
-        }
+        createImportedCharacter(characterPair, descriptors, enabled, draftEnabled, createdConnectors);
 
         CharacterInfo characterInfo = characterPair.getLeft();
         String characterUid = characterInfo.getCharacterUid();
@@ -1424,6 +1499,83 @@ public class CharacterApi {
         }
 
         return Pair.of(characterInfo, backends);
+    }
+
+    private void createImportedCharacter(
+            Pair<CharacterInfo, List<String>> characterPair,
+            List<ConnectorConfigurationDTO> descriptors,
+            Set<String> enabled,
+            Set<String> draftEnabled,
+            Map<String, String> createdRevisions) {
+        if (descriptors.size() > ConnectorConfigurationDTO.MAX_DESCRIPTORS) {
+            throw new ConnectorException(ConnectorException.Code.CONNECTOR_INVALID_CONFIGURATION);
+        }
+        // Validate the entire archive before creating even the first connector. Constructors perform no network I/O.
+        Map<String, ConnectorConfiguration> configurations = new LinkedHashMap<>();
+        for (ConnectorConfigurationDTO descriptor : descriptors) {
+            if (descriptor == null
+                    || configurations.putIfAbsent(descriptor.reference(), descriptor.toConfiguration()) != null) {
+                throw new ConnectorException(ConnectorException.Code.CONNECTOR_INVALID_CONFIGURATION);
+            }
+        }
+        String ownerId = AccountUtils.currentUser().getUserId();
+        CharacterInfo character = characterPair.getLeft();
+        character.setUserId(ownerId);
+        Map<String, String> mapping = new HashMap<>();
+        try {
+            for (var entry : configurations.entrySet()) {
+                ConnectorService.Summary created = connectorService.create(ownerId, entry.getValue(), false);
+                createdRevisions.put(created.connectorId(), created.revision());
+                mapping.put(entry.getKey(), created.connectorId());
+            }
+            if (!descriptors.isEmpty()) {
+                character.setVisibility(Visibility.PRIVATE.text());
+            }
+            // resetCharacterInfoPair strips bindings for all clones; restore only fresh, importer-owned references
+            // here.
+            character.setExt(
+                    CharacterConnectorConfiguration.withEnabled(character.getExt(), remapConnectors(enabled, mapping)));
+            String draftExt = CharacterConnectorConfiguration.draftExt(character.getDraft());
+            if (draftExt != null) {
+                var draft = (com.fasterxml.jackson.databind.node.ObjectNode)
+                        fun.freechat.service.tools.ToolArguments.parse(character.getDraft());
+                draft.put(
+                        "ext",
+                        CharacterConnectorConfiguration.withEnabled(draftExt, remapConnectors(draftEnabled, mapping)));
+                character.setDraft(fun.freechat.service.tools.ToolArguments.result(draft));
+            }
+            connectorPolicy.validate(ownerId, character.getExt(), character.getDraft());
+            if (!characterService.create(characterPair)) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create character.");
+            }
+        } catch (RuntimeException failure) {
+            cleanupImportedConnectors(ownerId, createdRevisions);
+            throw failure;
+        }
+    }
+
+    private void cleanupImportedConnectors(String ownerId, Map<String, String> createdRevisions) {
+        var iterator = createdRevisions.entrySet().iterator();
+        while (iterator.hasNext()) {
+            var created = iterator.next();
+            try {
+                connectorService.delete(ownerId, created.getKey(), created.getValue());
+                iterator.remove();
+            } catch (RuntimeException ignored) {
+                log.warn("Failed to clean up a connector after character import failed");
+            }
+        }
+    }
+
+    private static Set<String> remapConnectors(Set<String> references, Map<String, String> mapping) {
+        Set<String> remapped = new HashSet<>();
+        for (String reference : references) {
+            String id = mapping.get(reference);
+            if (id != null) {
+                remapped.add(id);
+            }
+        }
+        return remapped;
     }
 
     private void handleAvatar(HttpServletRequest request, String userId, CharacterInfo characterInfo, Path confPath)

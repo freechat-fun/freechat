@@ -34,6 +34,10 @@ import { ChatPromptContentDTO } from '../models/ChatPromptContentDTO.js';
 import { ChatSessionDTO } from '../models/ChatSessionDTO.js';
 import { ChatToolCallDTO } from '../models/ChatToolCallDTO.js';
 import { ChatUpdateDTO } from '../models/ChatUpdateDTO.js';
+import { ConnectorDetailsDTO } from '../models/ConnectorDetailsDTO.js';
+import { ConnectorTestDTO } from '../models/ConnectorTestDTO.js';
+import { ConnectorToolDTO } from '../models/ConnectorToolDTO.js';
+import { ConnectorWriteDTO } from '../models/ConnectorWriteDTO.js';
 import { HotTagDTO } from '../models/HotTagDTO.js';
 import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
 import { LlmResultDTO } from '../models/LlmResultDTO.js';
@@ -1656,10 +1660,11 @@ export class PromiseCharacterApi {
      * Export character configuration in tar.gz format, including settings, documents and pictures.
      * Export Character Configuration
      * @param characterId Character identifier
+     * @param [includeConnectors] Include credentialless connector definitions (character owner only)
      */
-    public exportCharacterWithHttpInfo(characterId: number, _options?: PromiseConfigurationOptions): Promise<HttpInfo<void>> {
+    public exportCharacterWithHttpInfo(characterId: number, includeConnectors?: boolean, _options?: PromiseConfigurationOptions): Promise<HttpInfo<void>> {
         const observableOptions = wrapOptions(_options);
-        const result = this.api.exportCharacterWithHttpInfo(characterId, observableOptions);
+        const result = this.api.exportCharacterWithHttpInfo(characterId, includeConnectors, observableOptions);
         return result.toPromise();
     }
 
@@ -1667,10 +1672,11 @@ export class PromiseCharacterApi {
      * Export character configuration in tar.gz format, including settings, documents and pictures.
      * Export Character Configuration
      * @param characterId Character identifier
+     * @param [includeConnectors] Include credentialless connector definitions (character owner only)
      */
-    public exportCharacter(characterId: number, _options?: PromiseConfigurationOptions): Promise<void> {
+    public exportCharacter(characterId: number, includeConnectors?: boolean, _options?: PromiseConfigurationOptions): Promise<void> {
         const observableOptions = wrapOptions(_options);
-        const result = this.api.exportCharacter(characterId, observableOptions);
+        const result = this.api.exportCharacter(characterId, includeConnectors, observableOptions);
         return result.toPromise();
     }
 
@@ -2718,6 +2724,157 @@ export class PromiseChatApi {
     public updateChat(chatId: string, chatUpdateDTO: ChatUpdateDTO, _options?: PromiseConfigurationOptions): Promise<boolean> {
         const observableOptions = wrapOptions(_options);
         const result = this.api.updateChat(chatId, chatUpdateDTO, observableOptions);
+        return result.toPromise();
+    }
+
+
+}
+
+
+
+import { ObservableConnectorApi } from './ObservableAPI.js';
+
+import { ConnectorApiRequestFactory, ConnectorApiResponseProcessor} from "../apis/ConnectorApi.js";
+export class PromiseConnectorApi {
+    private api: ObservableConnectorApi
+
+    public constructor(
+        configuration: Configuration,
+        requestFactory?: ConnectorApiRequestFactory,
+        responseProcessor?: ConnectorApiResponseProcessor
+    ) {
+        this.api = new ObservableConnectorApi(configuration, requestFactory, responseProcessor);
+    }
+
+    /**
+     * Validates syntax and stores encrypted header values without contacting the endpoint. Public address checks run before network use.
+     * Create My Connector
+     * @param connectorWriteDTO
+     */
+    public createConnectorWithHttpInfo(connectorWriteDTO: ConnectorWriteDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<ConnectorDetailsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createConnectorWithHttpInfo(connectorWriteDTO, observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * Validates syntax and stores encrypted header values without contacting the endpoint. Public address checks run before network use.
+     * Create My Connector
+     * @param connectorWriteDTO
+     */
+    public createConnector(connectorWriteDTO: ConnectorWriteDTO, _options?: PromiseConfigurationOptions): Promise<ConnectorDetailsDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.createConnector(connectorWriteDTO, observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete My Connector
+     * @param connectorId
+     * @param expectedRevision
+     */
+    public deleteConnectorWithHttpInfo(connectorId: string, expectedRevision: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<void>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteConnectorWithHttpInfo(connectorId, expectedRevision, observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete My Connector
+     * @param connectorId
+     * @param expectedRevision
+     */
+    public deleteConnector(connectorId: string, expectedRevision: string, _options?: PromiseConfigurationOptions): Promise<void> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.deleteConnector(connectorId, expectedRevision, observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * Returns metadata and header names, never header values.
+     * Get My Connector
+     * @param connectorId
+     */
+    public getConnectorWithHttpInfo(connectorId: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<ConnectorDetailsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getConnectorWithHttpInfo(connectorId, observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * Returns metadata and header names, never header values.
+     * Get My Connector
+     * @param connectorId
+     */
+    public getConnector(connectorId: string, _options?: PromiseConfigurationOptions): Promise<ConnectorDetailsDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getConnector(connectorId, observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * List My Connectors
+     */
+    public listConnectorsWithHttpInfo(_options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<ConnectorDetailsDTO>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listConnectorsWithHttpInfo(observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * List My Connectors
+     */
+    public listConnectors(_options?: PromiseConfigurationOptions): Promise<Array<ConnectorDetailsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.listConnectors(observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * Initialize an owned HTTP or SSE MCP server and list its tools without executing any tool. Private addresses and redirects are rejected. The stored configuration revision must match.
+     * Test My Connector
+     * @param connectorId
+     * @param expectedRevision
+     */
+    public testConnectorWithHttpInfo(connectorId: string, expectedRevision: string, _options?: PromiseConfigurationOptions): Promise<HttpInfo<ConnectorTestDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.testConnectorWithHttpInfo(connectorId, expectedRevision, observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * Initialize an owned HTTP or SSE MCP server and list its tools without executing any tool. Private addresses and redirects are rejected. The stored configuration revision must match.
+     * Test My Connector
+     * @param connectorId
+     * @param expectedRevision
+     */
+    public testConnector(connectorId: string, expectedRevision: string, _options?: PromiseConfigurationOptions): Promise<ConnectorTestDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.testConnector(connectorId, expectedRevision, observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * Replaces an expected revision. Explicitly retain unchanged header names; retained credentials cannot move to another origin.
+     * Update My Connector
+     * @param connectorId
+     * @param connectorWriteDTO
+     */
+    public updateConnectorWithHttpInfo(connectorId: string, connectorWriteDTO: ConnectorWriteDTO, _options?: PromiseConfigurationOptions): Promise<HttpInfo<ConnectorDetailsDTO>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateConnectorWithHttpInfo(connectorId, connectorWriteDTO, observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * Replaces an expected revision. Explicitly retain unchanged header names; retained credentials cannot move to another origin.
+     * Update My Connector
+     * @param connectorId
+     * @param connectorWriteDTO
+     */
+    public updateConnector(connectorId: string, connectorWriteDTO: ConnectorWriteDTO, _options?: PromiseConfigurationOptions): Promise<ConnectorDetailsDTO> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.updateConnector(connectorId, connectorWriteDTO, observableOptions);
         return result.toPromise();
     }
 

@@ -70,6 +70,21 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                 return false;
             }
         }
+        if ("connectorDefaultOp".equals(permission)) {
+            try {
+                return authentication != null
+                        && authentication.isAuthenticated()
+                        && currentUser != null
+                        && targetObject instanceof String id
+                        && applicationContext
+                                .getBean(fun.freechat.service.connectors.ConnectorService.class)
+                                .list(currentUser.getUserId())
+                                .stream()
+                                .anyMatch(connector -> connector.connectorId().equals(id));
+            } catch (RuntimeException ignored) {
+                return false;
+            }
+        }
         if (AuthorityUtils.adminRole().equals(currentRole)) {
             return true;
         }

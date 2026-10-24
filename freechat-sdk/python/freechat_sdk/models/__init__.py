@@ -45,6 +45,10 @@ from freechat_sdk.models.chat_prompt_content_dto import ChatPromptContentDTO
 from freechat_sdk.models.chat_session_dto import ChatSessionDTO
 from freechat_sdk.models.chat_tool_call_dto import ChatToolCallDTO
 from freechat_sdk.models.chat_update_dto import ChatUpdateDTO
+from freechat_sdk.models.connector_details_dto import ConnectorDetailsDTO
+from freechat_sdk.models.connector_test_dto import ConnectorTestDTO
+from freechat_sdk.models.connector_tool_dto import ConnectorToolDTO
+from freechat_sdk.models.connector_write_dto import ConnectorWriteDTO
 from freechat_sdk.models.hot_tag_dto import HotTagDTO
 from freechat_sdk.models.interactive_stats_dto import InteractiveStatsDTO
 from freechat_sdk.models.llm_result_dto import LlmResultDTO

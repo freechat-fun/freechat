@@ -19,6 +19,7 @@ const i18nConfig = {
     'sidebar',
     'prompt',
     'skill',
+    'connector',
     'character',
     'chat',
   ],

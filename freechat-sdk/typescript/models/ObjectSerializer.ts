@@ -30,6 +30,10 @@ export * from '../models/ChatPromptContentDTO.js';
 export * from '../models/ChatSessionDTO.js';
 export * from '../models/ChatToolCallDTO.js';
 export * from '../models/ChatUpdateDTO.js';
+export * from '../models/ConnectorDetailsDTO.js';
+export * from '../models/ConnectorTestDTO.js';
+export * from '../models/ConnectorToolDTO.js';
+export * from '../models/ConnectorWriteDTO.js';
 export * from '../models/HotTagDTO.js';
 export * from '../models/InteractiveStatsDTO.js';
 export * from '../models/LlmResultDTO.js';
@@ -101,6 +105,10 @@ import { ChatPromptContentDTO } from '../models/ChatPromptContentDTO.js';
 import { ChatSessionDTO } from '../models/ChatSessionDTO.js';
 import { ChatToolCallDTO } from '../models/ChatToolCallDTO.js';
 import { ChatUpdateDTO } from '../models/ChatUpdateDTO.js';
+import { ConnectorDetailsDTO } from '../models/ConnectorDetailsDTO.js';
+import { ConnectorTestDTO } from '../models/ConnectorTestDTO.js';
+import { ConnectorToolDTO } from '../models/ConnectorToolDTO.js';
+import { ConnectorWriteDTO , ConnectorWriteDTOTransportEnum         } from '../models/ConnectorWriteDTO.js';
 import { HotTagDTO } from '../models/HotTagDTO.js';
 import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
 import { LlmResultDTO } from '../models/LlmResultDTO.js';
@@ -153,6 +161,7 @@ let primitives = [
                  ];
 
 let enumsMap: Set<string> = new Set<string>([
+    "ConnectorWriteDTOTransportEnum",
 ]);
 
 let typeMap: {[index: string]: any} = {
@@ -188,6 +197,10 @@ let typeMap: {[index: string]: any} = {
     "ChatSessionDTO": ChatSessionDTO,
     "ChatToolCallDTO": ChatToolCallDTO,
     "ChatUpdateDTO": ChatUpdateDTO,
+    "ConnectorDetailsDTO": ConnectorDetailsDTO,
+    "ConnectorTestDTO": ConnectorTestDTO,
+    "ConnectorToolDTO": ConnectorToolDTO,
+    "ConnectorWriteDTO": ConnectorWriteDTO,
     "HotTagDTO": HotTagDTO,
     "InteractiveStatsDTO": InteractiveStatsDTO,
     "LlmResultDTO": LlmResultDTO,

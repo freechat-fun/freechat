@@ -470,6 +470,12 @@ Class | Method | HTTP request | Description
 *ChatApi* | [**streamSendAssistant**](docs/ChatApi.md#streamSendAssistant) | **GET** /api/v2/chat/send/stream/assistant/{chatId}/{assistantUid} | Send Assistant for Chat Message by Streaming Back
 *ChatApi* | [**streamSendMessage**](docs/ChatApi.md#streamSendMessage) | **POST** /api/v2/chat/send/stream/{chatId} | Send Chat Message by Streaming Back
 *ChatApi* | [**updateChat**](docs/ChatApi.md#updateChat) | **PUT** /api/v2/chat/{chatId} | Update Chat Session
+*ConnectorApi* | [**createConnector**](docs/ConnectorApi.md#createConnector) | **POST** /api/v2/connector | Create My Connector
+*ConnectorApi* | [**deleteConnector**](docs/ConnectorApi.md#deleteConnector) | **DELETE** /api/v2/connector/{connectorId} | Delete My Connector
+*ConnectorApi* | [**getConnector**](docs/ConnectorApi.md#getConnector) | **GET** /api/v2/connector/{connectorId} | Get My Connector
+*ConnectorApi* | [**listConnectors**](docs/ConnectorApi.md#listConnectors) | **GET** /api/v2/connector | List My Connectors
+*ConnectorApi* | [**testConnector**](docs/ConnectorApi.md#testConnector) | **POST** /api/v2/connector/{connectorId}/test | Test My Connector
+*ConnectorApi* | [**updateConnector**](docs/ConnectorApi.md#updateConnector) | **PUT** /api/v2/connector/{connectorId} | Update My Connector
 *EncryptionManagerForAdminApi* | [**encryptText**](docs/EncryptionManagerForAdminApi.md#encryptText) | **GET** /api/v2/admin/encryption/encrypt/{text} | Encrypt Text
 *InteractiveStatisticsApi* | [**addStatistic**](docs/InteractiveStatisticsApi.md#addStatistic) | **POST** /api/v2/stats/{infoType}/{infoId}/{statsType}/{delta} | Add Statistics
 *InteractiveStatisticsApi* | [**getScore**](docs/InteractiveStatisticsApi.md#getScore) | **GET** /api/v2/public/score/{infoType}/{infoId} | Get Score for Resource
@@ -600,6 +606,10 @@ Class | Method | HTTP request | Description
  - [ChatSessionDTO](docs/ChatSessionDTO.md)
  - [ChatToolCallDTO](docs/ChatToolCallDTO.md)
  - [ChatUpdateDTO](docs/ChatUpdateDTO.md)
+ - [ConnectorDetailsDTO](docs/ConnectorDetailsDTO.md)
+ - [ConnectorTestDTO](docs/ConnectorTestDTO.md)
+ - [ConnectorToolDTO](docs/ConnectorToolDTO.md)
+ - [ConnectorWriteDTO](docs/ConnectorWriteDTO.md)
  - [HotTagDTO](docs/HotTagDTO.md)
  - [InteractiveStatsDTO](docs/InteractiveStatsDTO.md)
  - [LlmResultDTO](docs/LlmResultDTO.md)

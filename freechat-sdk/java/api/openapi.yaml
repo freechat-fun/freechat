@@ -158,6 +158,8 @@ tags:
   name: Telegram Manager (for admin)
 - description: "Manage users, callable only by super administrators."
   name: Account Manager (for admin)
+- description: "Private, user-owned remote MCP connectors"
+  name: Connector
 paths:
   /api/v2/skill/{skillId}:
     delete:
@@ -851,6 +853,86 @@ paths:
       summary: Update Subordinate Permissions
       tags:
       - Organization
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /api/v2/connector/{connectorId}:
+    delete:
+      operationId: deleteConnector
+      parameters:
+      - explode: false
+        in: path
+        name: connectorId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: expectedRevision
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "204":
+          description: No Content
+      summary: Delete My Connector
+      tags:
+      - Connector
+      x-accepts:
+      - application/json
+    get:
+      description: "Returns metadata and header names, never header values."
+      operationId: getConnector
+      parameters:
+      - explode: false
+        in: path
+        name: connectorId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConnectorDetailsDTO"
+          description: OK
+      summary: Get My Connector
+      tags:
+      - Connector
+      x-accepts:
+      - application/json
+    put:
+      description: Replaces an expected revision. Explicitly retain unchanged header
+        names; retained credentials cannot move to another origin.
+      operationId: updateConnector
+      parameters:
+      - explode: false
+        in: path
+        name: connectorId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConnectorWriteDTO"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConnectorDetailsDTO"
+          description: OK
+      summary: Update My Connector
+      tags:
+      - Connector
       x-content-type: application/json
       x-accepts:
       - application/json
@@ -2955,6 +3037,81 @@ paths:
       tags:
       - Plugin
       x-content-type: application/json
+      x-accepts:
+      - application/json
+  /api/v2/connector:
+    get:
+      operationId: listConnectors
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/ConnectorDetailsDTO"
+                type: array
+          description: OK
+      summary: List My Connectors
+      tags:
+      - Connector
+      x-accepts:
+      - application/json
+    post:
+      description: Validates syntax and stores encrypted header values without contacting
+        the endpoint. Public address checks run before network use.
+      operationId: createConnector
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConnectorWriteDTO"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConnectorDetailsDTO"
+          description: OK
+      summary: Create My Connector
+      tags:
+      - Connector
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /api/v2/connector/{connectorId}/test:
+    post:
+      description: Initialize an owned HTTP or SSE MCP server and list its tools without
+        executing any tool. Private addresses and redirects are rejected. The stored
+        configuration revision must match.
+      operationId: testConnector
+      parameters:
+      - explode: false
+        in: path
+        name: connectorId
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: expectedRevision
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConnectorTestDTO"
+          description: OK
+      summary: Test My Connector
+      tags:
+      - Connector
       x-accepts:
       - application/json
   /api/v2/chat:
@@ -6159,6 +6316,16 @@ paths:
           minimum: 0
           type: integer
         style: simple
+      - description: Include credentialless connector definitions (character owner
+          only)
+        explode: true
+        in: query
+        name: includeConnectors
+        required: false
+        schema:
+          default: false
+          type: boolean
+        style: form
       responses:
         "200":
           description: OK
@@ -7528,6 +7695,96 @@ components:
           type: array
       required:
       - name
+    ConnectorWriteDTO:
+      description: Private remote MCP configuration. Saves validate syntax only; no
+        network requests are made.
+      example:
+        keepHeaderNames:
+        - keepHeaderNames
+        - keepHeaderNames
+        headers:
+          key: headers
+        name: name
+        active: true
+        transport: http
+        expectedRevision: expectedRevision
+        url: url
+        timeout: 0
+      properties:
+        name:
+          description: "Printable display name, 1–64 characters"
+          type: string
+        transport:
+          description: Remote HTTP or SSE only
+          enum:
+          - http
+          - sse
+          type: string
+        url:
+          description: "HTTP(S) base URL, at most 2048 characters; no credentials,\
+            \ query, or fragment"
+          type: string
+        timeout:
+          default: 60000
+          description: "Timeout in milliseconds, 1000–120000"
+          format: int32
+          type: integer
+        headers:
+          additionalProperties:
+            type: string
+          description: "New header values, HTTPS only. At most 16 headers and 16 KiB\
+            \ total. Values are never returned."
+          writeOnly: true
+        keepHeaderNames:
+          description: Stored header names to retain on update; cannot overlap new
+            headers or move to another origin
+          items:
+            type: string
+          type: array
+        expectedRevision:
+          description: Current revision required on update; omit on create
+          type: string
+        active:
+          default: true
+          type: boolean
+    ConnectorDetailsDTO:
+      description: Private connector metadata. Header names only; secret values are
+        never returned.
+      example:
+        connectorId: connectorId
+        headerNames:
+        - headerNames
+        - headerNames
+        name: name
+        active: true
+        modified: 2000-01-23T04:56:07.000+00:00
+        transport: transport
+        url: url
+        timeout: 0
+        revision: revision
+      properties:
+        connectorId:
+          type: string
+        revision:
+          type: string
+        name:
+          type: string
+        transport:
+          type: string
+        url:
+          type: string
+        timeout:
+          format: int32
+          type: integer
+        active:
+          type: boolean
+        headerNames:
+          items:
+            type: string
+          type: array
+        modified:
+          format: date-time
+          type: string
     ChatUpdateDTO:
       description: Request data for updating a chat session
       example:
@@ -9113,6 +9370,32 @@ components:
           type: string
         ext:
           description: "Additional information, JSON format"
+          type: string
+    ConnectorTestDTO:
+      description: Connector discovery result; no remote tools have been executed
+      example:
+        tools:
+        - name: name
+          description: description
+        - name: name
+          description: description
+      properties:
+        tools:
+          description: Bounded catalog of remote tools
+          items:
+            $ref: "#/components/schemas/ConnectorToolDTO"
+          type: array
+    ConnectorToolDTO:
+      description: An untrusted tool description advertised by a remote Connector
+      example:
+        name: name
+        description: description
+      properties:
+        name:
+          description: Remote tool name
+          type: string
+        description:
+          description: Untrusted remote tool description; display as text
           type: string
     ChatCreateDTO:
       description: Request data for starting a chat session

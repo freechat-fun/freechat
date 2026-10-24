@@ -248,9 +248,18 @@ public final class MemoryTokenStream implements TokenStream, AutoCloseable {
 
     @Override
     public void close() {
-        lifetime.close();
-        if (!invocation.completed()) {
-            failed();
+        try {
+            lifetime.close();
+            if (!invocation.completed()) {
+                failed();
+            }
+        } finally {
+            if (delegate instanceof AutoCloseable closeable) {
+                try {
+                    closeable.close();
+                } catch (Exception ignored) {
+                }
+            }
         }
     }
 }

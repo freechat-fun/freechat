@@ -401,7 +401,12 @@ case $state in
             "startChat[Start Chat Session]" \
             "streamSendAssistant[Send Assistant for Chat Message by Streaming Back]" \
             "streamSendMessage[Send Chat Message by Streaming Back]" \
-            "updateChat[Update Chat Session]"             "encryptText[Encrypt Text]"             "addStatistic[Add Statistics]" \
+            "updateChat[Update Chat Session]"             "createConnector[Create My Connector]" \
+            "deleteConnector[Delete My Connector]" \
+            "getConnector[Get My Connector]" \
+            "listConnectors[List My Connectors]" \
+            "testConnector[Test My Connector]" \
+            "updateConnector[Update My Connector]"             "encryptText[Encrypt Text]"             "addStatistic[Add Statistics]" \
             "getScore[Get Score for Resource]" \
             "getStatistic[Get Statistics]" \
             "getStatistics[Get All Statistics]" \
@@ -936,7 +941,9 @@ case $state in
         local -a _op_arguments
         _op_arguments=(
           "characterId=:[PATH] Character identifier"
-                    )
+          "includeConnectors=true:[QUERY] Include credentialless connector definitions (character owner only)"
+          "includeConnectors=false:[QUERY] Include credentialless connector definitions (character owner only)"
+          )
         _describe -t actions 'operations' _op_arguments -S '' && ret=0
         ;;
       getCharacterDetails)
@@ -1255,6 +1262,48 @@ case $state in
         local -a _op_arguments
         _op_arguments=(
           "chatId=:[PATH] Chat session identifier"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      createConnector)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deleteConnector)
+        local -a _op_arguments
+        _op_arguments=(
+          "connectorId=:[PATH] "
+          "expectedRevision=:[QUERY] "
+          )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getConnector)
+        local -a _op_arguments
+        _op_arguments=(
+          "connectorId=:[PATH] "
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listConnectors)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      testConnector)
+        local -a _op_arguments
+        _op_arguments=(
+          "connectorId=:[PATH] "
+          "expectedRevision=:[QUERY] "
+          )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      updateConnector)
+        local -a _op_arguments
+        _op_arguments=(
+          "connectorId=:[PATH] "
                     )
         _describe -t actions 'operations' _op_arguments -S '' && ret=0
         ;;
