@@ -132,10 +132,50 @@ public class DatabaseSkillService implements SkillService {
         } else if (expectedRevision != null) {
             throw conflict();
         }
+        reviewer.requireAvailable();
         // Cheap, bounded path/encoding checks only. Content validation and review happen on staged bytes.
         SkillRevisionFiles.Snapshot snapshot = SkillRevisionFiles.snapshot(input);
         SkillDraft reserved = transaction(() -> reserve(ownerId, skillId, expectedRevision, snapshot.manifest()));
+        return finishReserved(reserved, () -> snapshot);
+    }
+
+    @Override
+    public Draft prepareSource(String ownerId, Supplier<Map<String, String>> source) {
+        owner(ownerId);
+        reviewer.requireAvailable();
+        // Admit and count the attempt before any network/model work; no SQL lock spans the callback.
+        SkillDraft reserved = transaction(() -> reserve(ownerId, null, null, "{}"));
+        return finishReserved(reserved, () -> {
+            try {
+                return SkillRevisionFiles.snapshot(source.get());
+            } catch (SkillException failure) {
+                throw failure;
+            } catch (RuntimeException ignored) {
+                throw new SkillException(SKILL_SOURCE_UNAVAILABLE);
+            }
+        });
+    }
+
+    private Draft finishReserved(SkillDraft reserved, Supplier<SkillRevisionFiles.Snapshot> source) {
+        String ownerId = reserved.getUserId();
         try {
+            SkillRevisionFiles.Snapshot snapshot = source.get();
+            if ("{}".equals(reserved.getManifest())) {
+                // Persist the exact snapshot before the first write, fencing late or revoked resolutions.
+                transaction(() -> {
+                    lockOwner(ownerId);
+                    SkillDraft row = lockDraft(ownerId, reserved.getDraftId());
+                    LocalDateTime now = coordination.databaseNow();
+                    checkStaging(row, now);
+                    if (!"{}".equals(row.getManifest())) {
+                        throw conflict();
+                    }
+                    requireOne(drafts.updateByPrimaryKey(
+                            row.withManifest(snapshot.manifest()).withGmtModified(now)));
+                    return null;
+                });
+                reserved.withManifest(snapshot.manifest());
+            }
             files.stage(
                     ownerId,
                     reserved.getSkillId(),
@@ -180,7 +220,7 @@ public class DatabaseSkillService implements SkillService {
             return new Draft(
                     reserved.getDraftId(),
                     reserved.getSkillId(),
-                    expectedRevision,
+                    reserved.getExpectedRevision(),
                     bundle,
                     reserved.getExpiresAt().toInstant(ZoneOffset.UTC));
         } catch (RuntimeException failure) {
@@ -351,7 +391,7 @@ public class DatabaseSkillService implements SkillService {
                 return null;
             });
         } catch (SkillException ignored) {
-            // The reservation already persisted a complete manifest and an expiry-based GC deadline.
+            // The reservation already persisted its manifest and an expiry-based GC deadline.
         }
     }
 

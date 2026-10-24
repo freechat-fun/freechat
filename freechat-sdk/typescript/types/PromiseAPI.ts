@@ -4796,6 +4796,26 @@ export class PromiseSkillApi {
     }
 
     /**
+     * Return the effective source hostname allowlist for skill imports. An empty list disables URL imports. GitHub repository and ClawHub skill links use fixed provider APIs to import a pinned document bundle; other allowed sources must return raw text or Markdown.
+     * Get Allowed Skill Source Hosts
+     */
+    public getSkillAllowedHostsWithHttpInfo(_options?: PromiseConfigurationOptions): Promise<HttpInfo<Array<string>>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getSkillAllowedHostsWithHttpInfo(observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * Return the effective source hostname allowlist for skill imports. An empty list disables URL imports. GitHub repository and ClawHub skill links use fixed provider APIs to import a pinned document bundle; other allowed sources must return raw text or Markdown.
+     * Get Allowed Skill Source Hosts
+     */
+    public getSkillAllowedHosts(_options?: PromiseConfigurationOptions): Promise<Array<string>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.getSkillAllowedHosts(observableOptions);
+        return result.toPromise();
+    }
+
+    /**
      * List only the authenticated user\'s installed skills.
      * List My Skills
      */
@@ -4816,7 +4836,7 @@ export class PromiseSkillApi {
     }
 
     /**
-     * Validate and review pasted/uploaded text documents or a raw document from an operator-approved HTTPS host. Publication requires explicit confirmation of the returned digest.
+     * Analyze an approved source URL with the server-configured LLM, import a pinned GitHub or ClawHub skill bundle or a raw document, and validate and review every file. Also accepts pasted/uploaded text bundles. Publication requires explicit confirmation of the returned digest.
      * Prepare Skill Installation
      * @param skillInstallDTO
      */
@@ -4827,7 +4847,7 @@ export class PromiseSkillApi {
     }
 
     /**
-     * Validate and review pasted/uploaded text documents or a raw document from an operator-approved HTTPS host. Publication requires explicit confirmation of the returned digest.
+     * Analyze an approved source URL with the server-configured LLM, import a pinned GitHub or ClawHub skill bundle or a raw document, and validate and review every file. Also accepts pasted/uploaded text bundles. Publication requires explicit confirmation of the returned digest.
      * Prepare Skill Installation
      * @param skillInstallDTO
      */

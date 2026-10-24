@@ -298,6 +298,7 @@ Class | Method | HTTP request | Description
 *SkillApi* | [**confirmSkill**](docs/SkillApi.md#confirmskill) | **POST** /api/v2/skill/install/{draftId} | Confirm Skill Installation
 *SkillApi* | [**deleteSkill**](docs/SkillApi.md#deleteskill) | **DELETE** /api/v2/skill/{skillId} | Delete My Skill
 *SkillApi* | [**getSkill**](docs/SkillApi.md#getskill) | **GET** /api/v2/skill/{skillId} | Get My Skill
+*SkillApi* | [**getSkillAllowedHosts**](docs/SkillApi.md#getskillallowedhosts) | **GET** /api/v2/skill/sources/allowed-hosts | Get Allowed Skill Source Hosts
 *SkillApi* | [**listSkills**](docs/SkillApi.md#listskills) | **GET** /api/v2/skill | List My Skills
 *SkillApi* | [**prepareSkill**](docs/SkillApi.md#prepareskill) | **POST** /api/v2/skill/install | Prepare Skill Installation
 *SkillApi* | [**updateSkill**](docs/SkillApi.md#updateskill) | **PUT** /api/v2/skill/{skillId} | Update My Skill

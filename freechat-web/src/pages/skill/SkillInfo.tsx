@@ -60,7 +60,7 @@ function SkillDetails({ id }: { id: string }) {
   const [deleting, setDeleting] = useState(false);
   const [adding, setAdding] = useState(false);
   const [fileName, setFileName] = useState('');
-  const [validationError, setValidationError] = useState<string>();
+  const [validationErrorKey, setValidationErrorKey] = useState<string>();
   const reportLoadError = useEffectEvent((reason: unknown) =>
     handleError(normalizeSkillError(reason, t))
   );
@@ -99,7 +99,7 @@ function SkillDetails({ id }: { id: string }) {
   async function save() {
     if (!skillApi || !record?.revision || !id || busy) return;
     setBusy(true);
-    setValidationError(undefined);
+    setValidationErrorKey(undefined);
     const request = new SkillUpdateDTO();
     request.expectedRevision = record.revision;
     request.files = { ...files };
@@ -114,7 +114,7 @@ function SkillDetails({ id }: { id: string }) {
       setRemoveSelected(false);
     } catch (reason) {
       const error = normalizeSkillError(reason, t);
-      setValidationError(error.message);
+      setValidationErrorKey(error.messageKey);
       if (error.code === 401) handleError(error);
     } finally {
       setBusy(false);
@@ -135,7 +135,7 @@ function SkillDetails({ id }: { id: string }) {
   }
 
   function cancel() {
-    setValidationError(undefined);
+    setValidationErrorKey(undefined);
     setFiles({ ...record?.files });
     if (!Object.prototype.hasOwnProperty.call(record?.files ?? {}, selected))
       setSelected('SKILL.md');
@@ -264,7 +264,9 @@ function SkillDetails({ id }: { id: string }) {
           'Automated review does not guarantee safety. Read every file. Never include secrets in skills used by shared characters.'
         )}
       </Alert>
-      {validationError && <Alert severity="error">{validationError}</Alert>}
+      {validationErrorKey && (
+        <Alert severity="error">{t(validationErrorKey)}</Alert>
+      )}
       {editing && (
         <Alert severity="info">
           {t(
@@ -325,7 +327,7 @@ function SkillDetails({ id }: { id: string }) {
             onChange={(event) => setFileName(event.target.value)}
             error={!!fileName && !validNewFile}
             helperText={t(
-              'Use a unique relative .md or .txt path, such as references/guide.md. The file is not saved until you validate and save.'
+              'Use a unique safe relative path, such as LICENSE or config/rclone.conf.example. Any extension is allowed. The file is not saved until you validate and save.'
             )}
             sx={{ mt: 1 }}
           />

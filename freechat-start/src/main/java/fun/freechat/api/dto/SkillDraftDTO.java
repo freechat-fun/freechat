@@ -33,6 +33,12 @@ public class SkillDraftDTO {
     @Schema(description = "Confirmation expiry time")
     private Instant expiresAt;
 
+    @Schema(description = "Resolved source URL of the imported skill, when installed from a link")
+    private String sourceUrl;
+
+    @Schema(description = "Pinned repository commit or registry version of the imported bundle")
+    private String sourceRevision;
+
     public static SkillDraftDTO from(SkillService.Draft value) {
         SkillDraftDTO result = new SkillDraftDTO();
         result.setDraftId(value.draftId());

@@ -6,11 +6,11 @@ import static fun.freechat.service.skills.SkillException.Code.SKILL_UNSAFE_INSTR
 import static fun.freechat.service.skills.SkillException.Code.SKILL_UNSUPPORTED_CONTENT;
 
 import com.google.re2j.Pattern;
-import java.io.StringReader;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.Normalizer;
 import java.util.HashSet;
 import java.util.HexFormat;
 import java.util.Locale;
@@ -21,16 +21,7 @@ import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
-import org.yaml.snakeyaml.events.AliasEvent;
-import org.yaml.snakeyaml.events.CollectionStartEvent;
-import org.yaml.snakeyaml.events.DocumentEndEvent;
-import org.yaml.snakeyaml.events.DocumentStartEvent;
-import org.yaml.snakeyaml.events.Event;
-import org.yaml.snakeyaml.events.MappingStartEvent;
-import org.yaml.snakeyaml.events.NodeEvent;
-import org.yaml.snakeyaml.events.ScalarEvent;
 
-/** A deliberately small, inert document format; never an execution or permission boundary on its own. */
 @Component
 public final class SkillBundleValidator {
     public static final int MAX_FILES = 16;
@@ -38,13 +29,11 @@ public final class SkillBundleValidator {
     public static final int MAX_REFERENCE_BYTES = 64 * 1024;
     public static final int MAX_TOTAL_BYTES = 256 * 1024;
     private static final int MAX_FRONTMATTER_BYTES = 4096;
-    private static final Pattern FILE_NAME = Pattern.compile("[A-Za-z0-9][A-Za-z0-9_-]{0,63}\\.(md|txt)");
-    private static final Pattern SKILL_NAME = Pattern.compile("[a-z0-9]+(?:-[a-z0-9]+)*");
     private static final Pattern DEVICE_NAME = Pattern.compile("(?i)(con|prn|aux|nul|com[0-9]|lpt[0-9])");
-    private static final Pattern FENCE =
-            Pattern.compile("^[ \\t>]*(?:(?:[-+*]|[0-9]{1,9}[.)])[ \\t]+)?(`{3,}|~{3,})(.*)$");
-    private static final Set<String> DATA_FENCES =
-            Set.of("", "text", "txt", "plaintext", "markdown", "md", "json", "yaml", "yml", "csv");
+    private static final Pattern HEADING = Pattern.compile("(?m)^#{1,6}[ \\t]+(.+)$");
+    private static final Pattern SCRIPT_FENCE = Pattern.compile(
+            "(?im)^[ \\t>]*(?:(?:[-+*]|[0-9]{1,9}[.)])[ \\t]+)?(?:`{3,}|~{3,})[ \\t]*(?:\\{\\.)?"
+                    + "(?:bash|sh|zsh|fish|shell|console|powershell|pwsh|ps1|cmd|bat|batch|python[23]?|py|javascript|js|typescript|ts|node|deno|perl|php|ruby|rb|lua)(?:$|[ \\t}])");
     private static final Pattern ENCODED_BINARY =
             Pattern.compile("(?m)^\\s*(?:UEsDB|H4sI|f0VMRg|TVqQAAM|JVBERi0|iVBORw0KGgo)[A-Za-z0-9+/=]{32,}\\s*$");
     private static final Pattern ACTIVE_HTML = Pattern.compile(
@@ -76,21 +65,14 @@ public final class SkillBundleValidator {
         if (files.size() > MAX_FILES) {
             throw new SkillException(SKILL_LIMIT_EXCEEDED);
         }
+        validateFilePaths(files.keySet());
         Map<String, String> snapshot = new TreeMap<>();
-        Set<String> names = new HashSet<>();
         long total = DIGEST_DOMAIN.length + Integer.BYTES;
         for (Map.Entry<String, String> file : files.entrySet()) {
             String path = file.getKey();
-            validatePath(path);
-            if (!names.add(path.toLowerCase(Locale.ROOT))) {
-                throw new SkillException(SKILL_INVALID_FORMAT);
-            }
-            if (snapshot.size() >= MAX_FILES) {
-                throw new SkillException(SKILL_LIMIT_EXCEEDED);
-            }
             String content = file.getValue();
             byte[] bytes = textBytes(content, path.equals("SKILL.md") ? MAX_SKILL_BYTES : MAX_REFERENCE_BYTES);
-            total += 2L * Integer.BYTES + path.length() + bytes.length;
+            total += 2L * Integer.BYTES + path.getBytes(StandardCharsets.UTF_8).length + bytes.length;
             requireTotal(total);
             snapshot.put(path, content);
         }
@@ -101,7 +83,7 @@ public final class SkillBundleValidator {
         String name = metadata.get("name");
         String description = metadata.get("description");
         // Count derived metadata, fixed classification and digest as well as filenames, contents and framing.
-        total += textBytes(name, 64).length
+        total += textBytes(name, 512).length
                 + textBytes(description, 4 * 1024).length
                 + "user".length()
                 + "prompt-only".length()
@@ -117,28 +99,66 @@ public final class SkillBundleValidator {
         return new SkillBundle(name, description, snapshot, digest(snapshot));
     }
 
-    private static void validatePath(String path) {
+    public static boolean isHiddenPath(String path) {
+        if (path == null || path.indexOf('\\') >= 0) {
+            return false;
+        }
+        boolean hidden = false;
+        for (String part : path.split("/", -1)) {
+            if (part.isEmpty() || part.equals(".") || part.equals("..")) {
+                return false;
+            }
+            hidden |= part.startsWith(".");
+        }
+        return hidden;
+    }
+
+    public static void validatePath(String path) {
+        // Generated JavaScript map serializers cannot preserve this own-property name.
+        if ("__proto__".equals(path)) throw new SkillException(SKILL_INVALID_FORMAT);
         if (path == null
                 || path.isEmpty()
                 || path.length() > 128
-                || path.indexOf('\\') >= 0
-                || path.startsWith("/")
-                || path.contains("..")) {
+                || path.codePoints()
+                        .anyMatch(c -> Character.isISOControl(c)
+                                || Character.getType(c) == Character.FORMAT
+                                || "\\:%<>\"|?*".indexOf(c) >= 0)) {
             throw new SkillException(SKILL_INVALID_FORMAT);
         }
-        if (path.equals("SKILL.md")) {
-            return;
+        textBytes(path, 512);
+        String[] parts = path.split("/", -1);
+        if (parts.length > 8) throw new SkillException(SKILL_INVALID_FORMAT);
+        for (String part : parts) {
+            String base = part.split("\\.", 2)[0];
+            if (part.isEmpty()
+                    || part.startsWith(".")
+                    || part.endsWith(".")
+                    || part.endsWith(" ")
+                    || part.getBytes(StandardCharsets.UTF_8).length > 255
+                    || DEVICE_NAME.matcher(base).matches()) {
+                throw new SkillException(SKILL_INVALID_FORMAT);
+            }
         }
-        String leaf = path.startsWith("references/") ? path.substring("references/".length()) : path;
-        if (leaf.indexOf('/') >= 0 || leaf.startsWith(".") || !leaf.matches("[A-Za-z0-9_.-]+")) {
-            throw new SkillException(SKILL_INVALID_FORMAT);
+    }
+
+    public static String pathKey(String path) {
+        return Normalizer.normalize(path, Normalizer.Form.NFC).toLowerCase(Locale.ROOT);
+    }
+
+    public static void validateFilePaths(Set<String> paths) {
+        Set<String> keys = new HashSet<>();
+        for (String path : paths) {
+            validatePath(path);
+            if (!keys.add(pathKey(path))) {
+                throw new SkillException(SKILL_INVALID_FORMAT);
+            }
         }
-        if (!FILE_NAME.matcher(leaf).matches()) {
-            throw new SkillException(SKILL_UNSUPPORTED_CONTENT);
-        }
-        if (DEVICE_NAME.matcher(leaf.substring(0, leaf.lastIndexOf('.'))).matches()
-                || leaf.equalsIgnoreCase("SKILL.md")) {
-            throw new SkillException(SKILL_INVALID_FORMAT);
+        for (String key : keys) {
+            for (int slash = key.indexOf('/'); slash >= 0; slash = key.indexOf('/', slash + 1)) {
+                if (keys.contains(key.substring(0, slash))) {
+                    throw new SkillException(SKILL_INVALID_FORMAT);
+                }
+            }
         }
     }
 
@@ -162,7 +182,10 @@ public final class SkillBundleValidator {
                 throw new SkillException(SKILL_UNSUPPORTED_CONTENT);
             }
             if ((Character.isISOControl(point) && point != '\n' && point != '\r' && point != '\t')
-                    || (Character.getType(point) == Character.FORMAT && point != 0x200c && point != 0x200d)) {
+                    || (Character.getType(point) == Character.FORMAT
+                            && point != 0x200c
+                            && point != 0x200d
+                            && point != 0xfeff)) {
                 throw new SkillException(SKILL_UNSUPPORTED_CONTENT);
             }
         }
@@ -174,82 +197,47 @@ public final class SkillBundleValidator {
     }
 
     private static Map<String, String> metadata(String skill) {
+        Map<?, ?> values = Map.of();
         String[] lines = skill.split("\\r?\\n", -1);
-        if (!lines[0].equals("---")) {
-            throw new SkillException(SKILL_INVALID_FORMAT);
-        }
-        StringBuilder header = new StringBuilder();
-        int end = 1;
-        while (end < lines.length && !lines[end].equals("---")) {
-            header.append(lines[end++]).append('\n');
-            if (header.length() > MAX_FRONTMATTER_BYTES) {
-                throw new SkillException(SKILL_LIMIT_EXCEEDED);
+        if (lines[0].equals("---")) {
+            StringBuilder header = new StringBuilder();
+            int end = 1;
+            while (end < lines.length && !lines[end].equals("---") && header.length() <= MAX_FRONTMATTER_BYTES) {
+                header.append(lines[end++]).append('\n');
             }
-        }
-        if (end == lines.length || java.util.Arrays.stream(lines).skip(end + 1L).allMatch(String::isBlank)) {
-            throw new SkillException(SKILL_INVALID_FORMAT);
-        }
-        textBytes(header.toString(), MAX_FRONTMATTER_BYTES);
-        LoaderOptions options = new LoaderOptions();
-        options.setAllowDuplicateKeys(false);
-        options.setWarnOnDuplicateKeys(false);
-        options.setAllowRecursiveKeys(false);
-        options.setMaxAliasesForCollections(0);
-        options.setNestingDepthLimit(2);
-        options.setCodePointLimit(MAX_FRONTMATTER_BYTES);
-        options.setTagInspector(tag -> false);
-        Yaml yaml = new Yaml(new SafeConstructor(options));
-        try {
-            int collections = 0;
-            int scalars = 0;
-            for (Event event : yaml.parse(new StringReader(header.toString()))) {
-                if (event instanceof AliasEvent
-                        || event instanceof NodeEvent node && node.getAnchor() != null
-                        || event instanceof DocumentStartEvent start && start.getExplicit()
-                        || event instanceof DocumentEndEvent finish && finish.getExplicit()) {
-                    throw new SkillException(SKILL_INVALID_FORMAT);
-                }
-                if (event instanceof CollectionStartEvent collection) {
-                    if (!(event instanceof MappingStartEvent) || ++collections != 1 || collection.getTag() != null) {
-                        throw new SkillException(SKILL_INVALID_FORMAT);
-                    }
-                }
-                if (event instanceof ScalarEvent scalar) {
-                    if (++scalars > 4
-                            || scalar.getTag() != null
-                            || scalar.isLiteral()
-                            || scalar.isFolded()
-                            || scalar.getStartMark().getLine()
-                                    != scalar.getEndMark().getLine()) {
-                        throw new SkillException(SKILL_INVALID_FORMAT);
-                    }
+            if (end < lines.length
+                    && lines[end].equals("---")
+                    && header.toString().getBytes(StandardCharsets.UTF_8).length <= MAX_FRONTMATTER_BYTES) {
+                LoaderOptions options = new LoaderOptions();
+                options.setAllowDuplicateKeys(false);
+                options.setWarnOnDuplicateKeys(false);
+                options.setAllowRecursiveKeys(false);
+                options.setMaxAliasesForCollections(0);
+                options.setNestingDepthLimit(8);
+                options.setCodePointLimit(MAX_FRONTMATTER_BYTES);
+                options.setTagInspector(tag -> false);
+                try {
+                    Object parsed = new Yaml(new SafeConstructor(options)).load(header.toString());
+                    if (parsed instanceof Map<?, ?> map) values = map;
+                } catch (RuntimeException ignored) {
+                    // Frontmatter is optional display metadata, never executable configuration.
                 }
             }
-            Object parsed = yaml.load(header.toString());
-            if (!(parsed instanceof Map<?, ?> map)
-                    || map.size() != 2
-                    || !(map.get("name") instanceof String name)
-                    || !(map.get("description") instanceof String description)) {
-                throw new SkillException(SKILL_INVALID_FORMAT);
-            }
-            textBytes(name, MAX_FRONTMATTER_BYTES);
-            textBytes(description, MAX_FRONTMATTER_BYTES);
-            if (name.length() > 64 || description.length() > 1024) {
-                throw new SkillException(SKILL_LIMIT_EXCEEDED);
-            }
-            if (!SKILL_NAME.matcher(name).matches()
-                    || description.isBlank()
-                    || description
-                            .codePoints()
-                            .anyMatch(c -> c == '\n' || c == '\r' || c == 0x85 || c == 0x2028 || c == 0x2029)) {
-                throw new SkillException(SKILL_INVALID_FORMAT);
-            }
-            return Map.of("name", name, "description", description);
-        } catch (SkillException failure) {
-            throw failure;
-        } catch (RuntimeException ignored) {
-            throw new SkillException(SKILL_INVALID_FORMAT);
         }
+        var heading = HEADING.matcher(skill);
+        String fallbackName = heading.find() ? heading.group(1).strip() : "Imported skill";
+        return Map.of(
+                "name", displayText(values.get("name"), fallbackName, 128),
+                "description", displayText(values.get("description"), "", 1024));
+    }
+
+    private static String displayText(Object value, String fallback, int limit) {
+        String text = value instanceof String string && !string.isBlank() ? string : fallback;
+        textBytes(text, MAX_SKILL_BYTES);
+        scan(text);
+        int end = Math.min(text.length(), limit);
+        if (end < text.length() && Character.isHighSurrogate(text.charAt(end - 1))) end--;
+        return text.substring(0, end);
     }
 
     private static void scan(String text) {
@@ -257,7 +245,8 @@ public final class SkillBundleValidator {
         text = text.replace("\r\n", "\n")
                 .replace('\r', '\n')
                 .replace('\u2028', '\n')
-                .replace('\u2029', '\n');
+                .replace('\u2029', '\n')
+                .replace("\uFEFF", "");
         if (ENCODED_BINARY.matcher(text).find()) {
             throw new SkillException(SKILL_UNSUPPORTED_CONTENT);
         }
@@ -267,27 +256,8 @@ public final class SkillBundleValidator {
                 || EXECUTION.matcher(text).find()) {
             throw new SkillException(SKILL_UNSAFE_INSTRUCTIONS);
         }
-        char fenceChar = 0;
-        int fenceLength = 0;
-        for (String line : text.split("\\r?\\n", -1)) {
-            var fence = FENCE.matcher(line);
-            if (!fence.matches()) {
-                continue;
-            }
-            String marker = fence.group(1);
-            String language = fence.group(2).strip().toLowerCase(Locale.ROOT);
-            if (fenceChar == 0) {
-                if (!DATA_FENCES.contains(language)) {
-                    throw new SkillException(SKILL_UNSUPPORTED_CONTENT);
-                }
-                fenceChar = marker.charAt(0);
-                fenceLength = marker.length();
-            } else if (marker.charAt(0) == fenceChar && marker.length() >= fenceLength && language.isEmpty()) {
-                fenceChar = 0;
-            }
-        }
-        if (fenceChar != 0) {
-            throw new SkillException(SKILL_INVALID_FORMAT);
+        if (SCRIPT_FENCE.matcher(text).find()) {
+            throw new SkillException(SKILL_UNSUPPORTED_CONTENT);
         }
         // These are only signatures for obvious active payloads, not proof that prose is benign.
         // Every accepted snapshot still needs the independent, tool-free semantic review.

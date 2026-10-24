@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,6 +37,16 @@ public class SkillApi {
                 .toList();
     }
 
+    @GetMapping("/sources/allowed-hosts")
+    @Operation(
+            operationId = "getSkillAllowedHosts",
+            summary = "Get Allowed Skill Source Hosts",
+            description =
+                    "Return the effective source hostname allowlist for skill imports. An empty list disables URL imports. GitHub repository and ClawHub skill links use fixed provider APIs to import a pinned document bundle; other allowed sources must return raw text or Markdown.")
+    public List<String> allowedHosts() {
+        return sources.allowedHosts();
+    }
+
     @GetMapping("/{skillId}")
     @PreAuthorize("hasPermission(#p0, 'skillDefaultOp')")
     @Operation(
@@ -53,16 +62,26 @@ public class SkillApi {
             operationId = "prepareSkill",
             summary = "Prepare Skill Installation",
             description =
-                    "Validate and review pasted/uploaded text documents or a raw document from an operator-approved HTTPS host. Publication requires explicit confirmation of the returned digest.")
+                    "Analyze an approved source URL with the server-configured LLM, import a pinned GitHub or ClawHub skill bundle or a raw document, and validate and review every file. Also accepts pasted/uploaded text bundles. Publication requires explicit confirmation of the returned digest.")
     public SkillDraftDTO prepare(@RequestBody @Valid SkillInstallDTO request) {
         if ((request.getFiles() == null) == (request.getSourceUrl() == null)) {
             throw new SkillException(SkillException.Code.SKILL_INVALID_FORMAT);
         }
         String owner = AccountUtils.currentUser().getUserId();
-        Map<String, String> files = request.getFiles() != null
-                ? request.getFiles()
-                : Map.of("SKILL.md", sources.fetch(owner, request.getSourceUrl()));
-        return SkillDraftDTO.from(skills.prepare(owner, null, null, files));
+        if (request.getFiles() != null) {
+            return SkillDraftDTO.from(skills.prepare(owner, null, null, request.getFiles()));
+        }
+        var resolved =
+                new java.util.concurrent.atomic.AtomicReference<fun.freechat.service.tools.network.SkillSourceBundle>();
+        var draft = skills.prepareSource(owner, () -> {
+            var bundle = sources.fetch(owner, request.getSourceUrl());
+            resolved.set(bundle);
+            return bundle.files();
+        });
+        var result = SkillDraftDTO.from(draft);
+        result.setSourceUrl(resolved.get().source().toASCIIString());
+        result.setSourceRevision(resolved.get().revision());
+        return result;
     }
 
     @PostMapping("/install/{draftId}")

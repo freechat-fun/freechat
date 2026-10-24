@@ -477,6 +477,7 @@ case $state in
             "updateRagTask[Update RAG Task]"             "confirmSkill[Confirm Skill Installation]" \
             "deleteSkill[Delete My Skill]" \
             "getSkill[Get My Skill]" \
+            "getSkillAllowedHosts[Get Allowed Skill Source Hosts]" \
             "listSkills[List My Skills]" \
             "prepareSkill[Prepare Skill Installation]" \
             "updateSkill[Update My Skill]"             "listTtsBuiltinSpeakers[List Builtin Speakers]" \
@@ -1851,6 +1852,12 @@ case $state in
         _op_arguments=(
           "skillId=:[PATH] "
                     )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getSkillAllowedHosts)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
         _describe -t actions 'operations' _op_arguments -S '' && ret=0
         ;;
       listSkills)

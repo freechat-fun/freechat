@@ -16,6 +16,8 @@ Reviewed installation preview; confirmation is bound to its exact digest
 |**files** | **Map&lt;String, String&gt;** | Complete staged document set for confirmation |  [optional] |
 |**digest** | **String** | Digest to supply when confirming this preview |  [optional] |
 |**expiresAt** | **OffsetDateTime** | Confirmation expiry time |  [optional] |
+|**sourceUrl** | **String** | Resolved source URL of the imported skill, when installed from a link |  [optional] |
+|**sourceRevision** | **String** | Pinned repository commit or registry version of the imported bundle |  [optional] |
 
 
 

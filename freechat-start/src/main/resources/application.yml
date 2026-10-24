@@ -54,7 +54,8 @@ auth:
     limits: 3
 skills:
   sources:
-    allowed-hosts: ""
+    allowed-hosts: github.com,clawhub.ai
+    github-token: ""
   review:
     model-id: ""
     api-key: ""

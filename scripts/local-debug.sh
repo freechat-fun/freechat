@@ -4,6 +4,16 @@ set -e
 
 source "$(dirname "${BASH_SOURCE[0]}")/setenv.sh"
 
+if [[ -f "${PROJECT_PATH}/.env" ]]; then
+  ENV_SHELL_FLAGS=$-
+  set +x
+  set -a
+  source "${PROJECT_PATH}/.env"
+  [[ "${ENV_SHELL_FLAGS}" == *a* ]] || set +a
+  [[ "${ENV_SHELL_FLAGS}" != *x* ]] || set -x
+  unset ENV_SHELL_FLAGS
+fi
+
 APP_HOME="${PROJECT_PATH}/local-data/${PROJECT_NAME}"
 LOG_DIR="${APP_HOME}/logs"
 STARTUP_LOG="${LOG_DIR}/local-debug.log"
@@ -21,6 +31,8 @@ prepare_logging() {
 
 check_environment() {
   command -v curl >/dev/null || die "ERROR: curl is required to check whether FreeChat is ready."
+  command -v node >/dev/null || die "ERROR: Node.js is required to build the FreeChat web interface."
+  command -v npm >/dev/null || die "ERROR: npm is required to build the FreeChat web interface."
 
   local port
   for port in 8080 8081; do
@@ -43,6 +55,16 @@ stop_dependencies() {
     return 1
   fi
   printf 'Local dependencies stopped.\n'
+}
+
+build_web() {
+  printf '\nBuilding the TypeScript SDK and web interface...\n'
+  npm --prefix "${PROJECT_PATH}/${SDK_MODULE}/typescript" ci --no-audit --no-fund >>"${STARTUP_LOG}" 2>&1 \
+    || die "ERROR: Failed to install and build the TypeScript SDK. Check ${STARTUP_LOG}."
+  npm --prefix "${PROJECT_PATH}/${WEB_MODULE}" ci --no-audit --no-fund >>"${STARTUP_LOG}" 2>&1 \
+    || die "ERROR: Failed to install web dependencies. Check ${STARTUP_LOG}."
+  bash "${SCRIPTS_PATH}/build-web.sh" --assets-only >>"${STARTUP_LOG}" 2>&1 \
+    || die "ERROR: Failed to build and copy web assets. Check ${STARTUP_LOG}."
 }
 
 build_app() {
@@ -142,6 +164,7 @@ main() {
   trap 'handle_signal 143' TERM
 
   start_dependencies
+  build_web
   build_app
   start_app
   wait_for_readiness

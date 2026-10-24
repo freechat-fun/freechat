@@ -1607,6 +1607,7 @@ read -r -d '' ops <<EOF
   ${CYAN}confirmSkill${OFF};Confirm Skill Installation (AUTH)
   ${CYAN}deleteSkill${OFF};Delete My Skill (AUTH)
   ${CYAN}getSkill${OFF};Get My Skill (AUTH)
+  ${CYAN}getSkillAllowedHosts${OFF};Get Allowed Skill Source Hosts (AUTH)
   ${CYAN}listSkills${OFF};List My Skills (AUTH)
   ${CYAN}prepareSkill${OFF};Prepare Skill Installation (AUTH)
   ${CYAN}updateSkill${OFF};Update My Skill (AUTH)
@@ -5687,6 +5688,22 @@ print_getSkill_help() {
 }
 ##############################################################################
 #
+# Print help for getSkillAllowedHosts operation
+#
+##############################################################################
+print_getSkillAllowedHosts_help() {
+    echo ""
+    echo -e "${BOLD}${WHITE}getSkillAllowedHosts - Get Allowed Skill Source Hosts${OFF}${BLUE}(AUTH - )${OFF}" | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
+    echo -e ""
+    echo -e "Return the effective source hostname allowlist for skill imports. An empty list disables URL imports. GitHub repository and ClawHub skill links use fixed provider APIs to import a pinned document bundle; other allowed sources must return raw text or Markdown." | paste -sd' ' - | fold -sw 80
+    echo -e ""
+    echo ""
+    echo -e "${BOLD}${WHITE}Responses${OFF}"
+    code=200
+    echo -e "${result_color_table[${code:0:1}]}  200;OK${OFF}" | paste -sd' ' - | column -t -s ';' | fold -sw 80 | sed '2,$s/^/       /'
+}
+##############################################################################
+#
 # Print help for listSkills operation
 #
 ##############################################################################
@@ -5710,7 +5727,7 @@ print_prepareSkill_help() {
     echo ""
     echo -e "${BOLD}${WHITE}prepareSkill - Prepare Skill Installation${OFF}${BLUE}(AUTH - )${OFF}" | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
     echo -e ""
-    echo -e "Validate and review pasted/uploaded text documents or a raw document from an operator-approved HTTPS host. Publication requires explicit confirmation of the returned digest." | paste -sd' ' - | fold -sw 80
+    echo -e "Analyze an approved source URL with the server-configured LLM, import a pinned GitHub or ClawHub skill bundle or a raw document, and validate and review every file. Also accepts pasted/uploaded text bundles. Publication requires explicit confirmation of the returned digest." | paste -sd' ' - | fold -sw 80
     echo -e ""
     echo -e "${BOLD}${WHITE}Parameters${OFF}"
     echo -e "  * ${GREEN}body${OFF} ${BLUE}[application/json]${OFF} ${RED}(required)${OFF}${OFF} - " | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
@@ -15551,6 +15568,42 @@ call_getSkill() {
 
 ##############################################################################
 #
+# Call getSkillAllowedHosts operation
+#
+##############################################################################
+call_getSkillAllowedHosts() {
+    # ignore error about 'path_parameter_names' being unused; passed by reference
+    # shellcheck disable=SC2034
+    local path_parameter_names=()
+    # ignore error about 'query_parameter_names' being unused; passed by reference
+    # shellcheck disable=SC2034
+    local query_parameter_names=(  )
+    local path
+
+    if ! path=$(build_request_path "/api/v2/skill/sources/allowed-hosts" path_parameter_names query_parameter_names); then
+        ERROR_MSG=$path
+        exit 1
+    fi
+    local method="GET"
+    local headers_curl
+    headers_curl=$(header_arguments_to_curl)
+    if [[ -n $header_accept ]]; then
+        headers_curl="${headers_curl} -H 'Accept: ${header_accept}'"
+    fi
+
+    local basic_auth_option=""
+    if [[ -n $basic_auth_credential ]]; then
+        basic_auth_option="-u ${basic_auth_credential}"
+    fi
+    if [[ "$print_curl" = true ]]; then
+        echo "curl -d '' ${basic_auth_option} ${curl_arguments} ${headers_curl} -X ${method} \"${host}${path}\""
+    else
+        eval "curl -d '' ${basic_auth_option} ${curl_arguments} ${headers_curl} -X ${method} \"${host}${path}\""
+    fi
+}
+
+##############################################################################
+#
 # Call listSkills operation
 #
 ##############################################################################
@@ -16675,6 +16728,9 @@ case $key in
     getSkill)
     operation="getSkill"
     ;;
+    getSkillAllowedHosts)
+    operation="getSkillAllowedHosts"
+    ;;
     listSkills)
     operation="listSkills"
     ;;
@@ -17376,6 +17432,9 @@ case $operation in
     ;;
     getSkill)
     call_getSkill
+    ;;
+    getSkillAllowedHosts)
+    call_getSkillAllowedHosts
     ;;
     listSkills)
     call_listSkills

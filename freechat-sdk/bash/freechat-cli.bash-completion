@@ -264,6 +264,7 @@ _freechat-cli()
     operations["confirmSkill"]=1
     operations["deleteSkill"]=1
     operations["getSkill"]=1
+    operations["getSkillAllowedHosts"]=1
     operations["listSkills"]=1
     operations["prepareSkill"]=1
     operations["updateSkill"]=1
@@ -473,6 +474,7 @@ _freechat-cli()
     operation_parameters["confirmSkill"]="draftId= "
     operation_parameters["deleteSkill"]="skillId= expectedRevision= "
     operation_parameters["getSkill"]="skillId= "
+    operation_parameters["getSkillAllowedHosts"]=""
     operation_parameters["listSkills"]=""
     operation_parameters["prepareSkill"]=""
     operation_parameters["updateSkill"]="skillId= "

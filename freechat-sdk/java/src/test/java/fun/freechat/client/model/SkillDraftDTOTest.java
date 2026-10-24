@@ -104,4 +104,20 @@ public class SkillDraftDTOTest {
         // TODO: test expiresAt
     }
 
+    /**
+     * Test the property 'sourceUrl'
+     */
+    @Test
+    public void sourceUrlTest() {
+        // TODO: test sourceUrl
+    }
+
+    /**
+     * Test the property 'sourceRevision'
+     */
+    @Test
+    public void sourceRevisionTest() {
+        // TODO: test sourceRevision
+    }
+
 }

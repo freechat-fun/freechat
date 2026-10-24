@@ -27,6 +27,10 @@ final class NetworkPolicy {
         return !hosts.isEmpty();
     }
 
+    Set<String> allowedHosts() {
+        return hosts;
+    }
+
     URI url(String value) {
         URI url = httpsUrl(value);
         if (!hosts.contains(url.getHost())) {

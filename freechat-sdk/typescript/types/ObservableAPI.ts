@@ -7125,6 +7125,38 @@ export class ObservableSkillApi {
     }
 
     /**
+     * Return the effective source hostname allowlist for skill imports. An empty list disables URL imports. GitHub repository and ClawHub skill links use fixed provider APIs to import a pinned document bundle; other allowed sources must return raw text or Markdown.
+     * Get Allowed Skill Source Hosts
+     */
+    public getSkillAllowedHostsWithHttpInfo(_options?: ConfigurationOptions): Observable<HttpInfo<Array<string>>> {
+        const _config = mergeConfiguration(this.configuration, _options);
+
+        const requestContextPromise = this.requestFactory.getSkillAllowedHosts(_config);
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of _config.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => _config.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of _config.middleware.reverse()) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getSkillAllowedHostsWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Return the effective source hostname allowlist for skill imports. An empty list disables URL imports. GitHub repository and ClawHub skill links use fixed provider APIs to import a pinned document bundle; other allowed sources must return raw text or Markdown.
+     * Get Allowed Skill Source Hosts
+     */
+    public getSkillAllowedHosts(_options?: ConfigurationOptions): Observable<Array<string>> {
+        return this.getSkillAllowedHostsWithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
+    }
+
+    /**
      * List only the authenticated user\'s installed skills.
      * List My Skills
      */
@@ -7157,7 +7189,7 @@ export class ObservableSkillApi {
     }
 
     /**
-     * Validate and review pasted/uploaded text documents or a raw document from an operator-approved HTTPS host. Publication requires explicit confirmation of the returned digest.
+     * Analyze an approved source URL with the server-configured LLM, import a pinned GitHub or ClawHub skill bundle or a raw document, and validate and review every file. Also accepts pasted/uploaded text bundles. Publication requires explicit confirmation of the returned digest.
      * Prepare Skill Installation
      * @param skillInstallDTO
      */
@@ -7182,7 +7214,7 @@ export class ObservableSkillApi {
     }
 
     /**
-     * Validate and review pasted/uploaded text documents or a raw document from an operator-approved HTTPS host. Publication requires explicit confirmation of the returned digest.
+     * Analyze an approved source URL with the server-configured LLM, import a pinned GitHub or ClawHub skill bundle or a raw document, and validate and review every file. Also accepts pasted/uploaded text bundles. Publication requires explicit confirmation of the returned digest.
      * Prepare Skill Installation
      * @param skillInstallDTO
      */

@@ -17,6 +17,8 @@ public interface SkillService {
 
     Draft prepare(String ownerId, String skillId, String expectedRevision, Map<String, String> files);
 
+    Draft prepareSource(String ownerId, java.util.function.Supplier<Map<String, String>> source);
+
     Installed confirm(String ownerId, String draftId, String digest);
 
     default Installed update(String ownerId, String skillId, String expectedRevision, Map<String, String> files) {
