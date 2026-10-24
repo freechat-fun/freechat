@@ -962,7 +962,7 @@ class ChatServiceMemoryTest {
     private static final class SkillSetup {
         private static final Set<String> ALLOWED =
                 Set.of("skill", "read_skill_resource", "search_memory", "read_memory", "find_image");
-        final ToolRegistry registry = new ChatToolsConfiguration("", "", "", "").toolRegistry();
+        final ToolRegistry registry = new ChatToolsConfiguration("", "", "").toolRegistry();
         final AtomicInteger binds = new AtomicInteger();
         final AtomicInteger toolBinds = new AtomicInteger();
         final AtomicReference<List<ChatMessage>> measured = new AtomicReference<>();

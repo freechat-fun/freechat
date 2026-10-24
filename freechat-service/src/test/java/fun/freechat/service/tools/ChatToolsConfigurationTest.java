@@ -26,7 +26,7 @@ class ChatToolsConfigurationTest {
                     application.getBeansOfType(ToolRuntime.class).keySet());
             var selected = application.getBean(ToolRuntimeBroker.class).bind(context(), Map.of());
             assertEquals(
-                    Set.of("calculate", "get_current_time", "roll_dice"),
+                    Set.of("calculate", "get_current_time", "roll_dice", "web_fetch"),
                     selected.keySet().stream()
                             .map(specification -> specification.name())
                             .collect(Collectors.toSet()));

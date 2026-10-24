@@ -201,11 +201,11 @@ class NetworkPolicyTest {
         NetworkPolicy policy = new NetworkPolicy(Set.of(host));
         assertEquals(URI.create("https://" + host + "/a"), policy.url("https://" + host + "/a"));
         AtomicInteger sends = new AtomicInteger();
-        WebFetchTool tool = new WebFetchTool(Set.of(host), request -> {
+        var http = new NetworkHttp(policy, request -> {
             sends.incrementAndGet();
             throw new AssertionError("Configuration must not send a request");
         });
-        assertTrue(tool.configured());
+        assertNotNull(http);
         assertEquals(0, sends.get());
     }
 

@@ -7,18 +7,20 @@ import fun.freechat.service.tools.BuiltinTool;
 import fun.freechat.service.tools.ToolArguments;
 import fun.freechat.service.tools.ToolContext;
 import fun.freechat.service.tools.ToolDefinition;
+import fun.freechat.util.HttpUtils;
+import java.net.URI;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
-/** Opt-in HTTPS text fetching. Construct explicitly; an empty host allowlist disables availability. */
 public final class WebFetchTool implements BuiltinTool {
     private static final ToolDefinition DEFINITION = new ToolDefinition(
             ToolSpecification.builder()
                     .name("web_fetch")
                     .description(
-                            "Read untrusted UTF-8 text from an explicitly allowed HTTPS source. No redirects, compression, chunked transfer or page actions.")
+                            "Read untrusted UTF-8 text from a safety-checked public HTTP or HTTPS URL. No redirects, compression, chunked transfer or page actions.")
                     .parameters(JsonObjectSchema.builder()
-                            .addStringProperty("url", "HTTPS source URL on a server-allowed host")
+                            .addStringProperty("url", "Public HTTP or HTTPS source URL")
                             .required("url")
                             .additionalProperties(false)
                             .build())
@@ -26,20 +28,25 @@ public final class WebFetchTool implements BuiltinTool {
             Set.of("network", "web", "read"),
             ToolDefinition.Boundary.NETWORK,
             false);
-    private final NetworkPolicy policy;
     private final NetworkHttp http;
 
-    public WebFetchTool(Set<String> allowedHosts) {
-        this(allowedHosts, null);
+    public WebFetchTool() {
+        this(null);
     }
 
-    WebFetchTool(Set<String> allowedHosts, NetworkHttp.Transport transport) {
-        policy = new NetworkPolicy(allowedHosts);
-        http = new NetworkHttp(policy, transport);
+    WebFetchTool(NetworkHttp.Transport transport) {
+        this(transport, HttpUtils::isSafeUrl);
     }
 
-    public boolean configured() {
-        return policy.configured();
+    WebFetchTool(NetworkHttp.Transport transport, Predicate<String> safetyCheck) {
+        http = new NetworkHttp(
+                source -> {
+                    if (!safetyCheck.test(source)) {
+                        throw new IllegalArgumentException("Unsafe web fetch URL");
+                    }
+                    return URI.create(source);
+                },
+                transport);
     }
 
     @Override
@@ -52,10 +59,12 @@ public final class WebFetchTool implements BuiltinTool {
         NetworkHttp.Deadline deadline = new NetworkHttp.Deadline(context);
         ToolArguments.only(arguments, "url");
         String source = ToolArguments.text(arguments, "url", 2048);
-        if (!configured()) {
-            throw new IllegalStateException("Web fetch is not configured");
+        URI url;
+        try {
+            url = URI.create(source);
+        } catch (IllegalArgumentException ignored) {
+            throw ToolArguments.invalid();
         }
-        var url = policy.url(source);
         NetworkHttp.Payload payload =
                 http.exchange(url, null, null, Set.of("text/plain", "text/html"), 262_144, deadline);
         String text = NetworkContent.text(payload.text(), payload.mediaType().equals("text/html"));

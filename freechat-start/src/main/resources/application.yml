@@ -63,12 +63,10 @@ skills:
 chat:
   tools:
     allowed: get_current_time,calculate,roll_dice,search_memory,read_memory,find_image,skill,read_skill_resource,read_file,write_file,edit,list_directory,glob,grep_search,run_shell_command,web_fetch,web_search
-    webFetch:
-      allowedHosts: ""
     webSearch:
-      endpoint: ""
+      baseUrl: ""
       apiKey: ""
-      model: ""
+      modelId: ""
   memory:
     maxMessageSize: 1000
     maxMessageWindowSize: 500

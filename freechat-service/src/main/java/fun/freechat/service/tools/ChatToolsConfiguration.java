@@ -25,21 +25,18 @@ public class ChatToolsConfiguration {
     private final List<BuiltinTool> available;
 
     public ChatToolsConfiguration(
-            @Value("${chat.tools.webFetch.allowedHosts:}") String hosts,
-            @Value("${chat.tools.webSearch.endpoint:}") String endpoint,
+            @Value("${chat.tools.webSearch.baseUrl:}") String baseUrl,
             @Value("${chat.tools.webSearch.apiKey:}") String apiKey,
-            @Value("${chat.tools.webSearch.model:}") String model) {
+            @Value("${chat.tools.webSearch.modelId:}") String modelId) {
         List<BuiltinTool> roleplay = RoleplayTools.create();
-        WebFetchTool fetch = new WebFetchTool(names(hosts));
-        WebSearchTool search = new WebSearchTool(endpoint, apiKey, model);
+        WebFetchTool fetch = new WebFetchTool();
+        WebSearchTool search = new WebSearchTool(baseUrl, apiKey, modelId);
         List<BuiltinTool> all = new ArrayList<>(roleplay);
         all.add(fetch);
         all.add(search);
         catalog = List.copyOf(all);
         List<BuiltinTool> ready = new ArrayList<>(roleplay);
-        if (fetch.configured()) {
-            ready.add(fetch);
-        }
+        ready.add(fetch);
         if (search.configured()) {
             ready.add(search);
         }
