@@ -1,29 +1,38 @@
 #!/usr/bin/env bash
 
-source $(dirname "${BASH_SOURCE[0]}")/setenv.sh
+set -e
 
-check_docker
+source "$(dirname "${BASH_SOURCE[0]}")/setenv.sh"
 
-COMPOSE_CONFIG=$(mktemp -d)/build-web.yml
+ASSETS_ONLY=false
+if [[ " ${ARGS[*]} " == *" --assets-only "* ]]; then
+  ASSETS_ONLY=true
+else
+  check_docker
+fi
 
-cd ${PROJECT_PATH}/"${WEB_MODULE}" || exit
+cd "${PROJECT_PATH}/${WEB_MODULE}" || exit
 rm -rf dist
-npm run build;ret=$?
-test ${ret} -eq 0 || die "ERROR: Failed to build ${WEB_MODULE}!"
+npm run build || die "ERROR: Failed to build ${WEB_MODULE}!"
 
 web_version=$(awk -F'"' '/"version":/ {print $4}' package.json)
 if [[ -n "${web_version}" ]]; then
   cp -f dist/assets/index.js dist/assets/index-${web_version}.js
 fi
 
+rm -rf "${PROJECT_PATH}/${STARTER_MODULE}/src/main/resources/static/assets"
+rm -rf "${PROJECT_PATH}/${STARTER_MODULE}/src/main/resources/static/img"
+cp -R -f "${PROJECT_PATH}/${WEB_MODULE}/dist/assets" "${PROJECT_PATH}/${STARTER_MODULE}/src/main/resources/static/assets"
+cp -R -f "${PROJECT_PATH}/${WEB_MODULE}/dist/img" "${PROJECT_PATH}/${STARTER_MODULE}/src/main/resources/static/img"
+
+if [[ "${ASSETS_ONLY}" == true ]]; then
+  exit 0
+fi
+
+COMPOSE_CONFIG=$(mktemp -d)/build-web.yml
 cd "${DOCKER_CONFIG_HOME}" || exit
 rm -rf web
-cp -R -f ${PROJECT_PATH}/${WEB_MODULE}/dist web
-
-rm -rf ${PROJECT_PATH}/${STARTER_MODULE}/src/main/resources/static/assets
-rm -rf ${PROJECT_PATH}/${STARTER_MODULE}/src/main/resources/static/img
-cp -R -f ${PROJECT_PATH}/${WEB_MODULE}/dist/assets ${PROJECT_PATH}/${STARTER_MODULE}/src/main/resources/static/assets
-cp -R -f ${PROJECT_PATH}/${WEB_MODULE}/dist/img ${PROJECT_PATH}/${STARTER_MODULE}/src/main/resources/static/img
+cp -R -f "${PROJECT_PATH}/${WEB_MODULE}/dist" web
 
 # compose config
 cat > ${COMPOSE_CONFIG} <<EOF

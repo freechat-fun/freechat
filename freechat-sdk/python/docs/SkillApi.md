@@ -7,6 +7,7 @@ Method | HTTP request | Description
 [**confirm_skill**](SkillApi.md#confirm_skill) | **POST** /api/v2/skill/install/{draftId} | Confirm Skill Installation
 [**delete_skill**](SkillApi.md#delete_skill) | **DELETE** /api/v2/skill/{skillId} | Delete My Skill
 [**get_skill**](SkillApi.md#get_skill) | **GET** /api/v2/skill/{skillId} | Get My Skill
+[**get_skill_allowed_hosts**](SkillApi.md#get_skill_allowed_hosts) | **GET** /api/v2/skill/sources/allowed-hosts | Get Allowed Skill Source Hosts
 [**list_skills**](SkillApi.md#list_skills) | **GET** /api/v2/skill | List My Skills
 [**prepare_skill**](SkillApi.md#prepare_skill) | **POST** /api/v2/skill/install | Prepare Skill Installation
 [**update_skill**](SkillApi.md#update_skill) | **PUT** /api/v2/skill/{skillId} | Update My Skill
@@ -248,6 +249,79 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **get_skill_allowed_hosts**
+> List[str] get_skill_allowed_hosts()
+
+Get Allowed Skill Source Hosts
+
+Return the effective source hostname allowlist for skill imports. An empty list disables URL imports. GitHub repository and ClawHub skill links use fixed provider APIs to import a pinned document bundle; other allowed sources must return raw text or Markdown.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import freechat_sdk
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.SkillApi(api_client)
+
+    try:
+        # Get Allowed Skill Source Hosts
+        api_response = api_instance.get_skill_allowed_hosts()
+        print("The response of SkillApi->get_skill_allowed_hosts:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling SkillApi->get_skill_allowed_hosts: %s\n" % e)
+```
+
+
+
+### Parameters
+
+This endpoint does not need any parameter.
+
+### Return type
+
+**List[str]**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **list_skills**
 > List[SkillSummaryDTO] list_skills()
 
@@ -327,7 +401,7 @@ This endpoint does not need any parameter.
 
 Prepare Skill Installation
 
-Validate and review pasted/uploaded text documents or a raw document from an operator-approved HTTPS host. Publication requires explicit confirmation of the returned digest.
+Analyze an approved source URL with the server-configured LLM, import a pinned GitHub or ClawHub skill bundle or a raw document, and validate and review every file. Also accepts pasted/uploaded text bundles. Publication requires explicit confirmation of the returned digest.
 
 ### Example
 

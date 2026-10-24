@@ -7,6 +7,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 | [**confirmSkill**](SkillApi.md#confirmSkill) | **POST** /api/v2/skill/install/{draftId} | Confirm Skill Installation |
 | [**deleteSkill**](SkillApi.md#deleteSkill) | **DELETE** /api/v2/skill/{skillId} | Delete My Skill |
 | [**getSkill**](SkillApi.md#getSkill) | **GET** /api/v2/skill/{skillId} | Get My Skill |
+| [**getSkillAllowedHosts**](SkillApi.md#getSkillAllowedHosts) | **GET** /api/v2/skill/sources/allowed-hosts | Get Allowed Skill Source Hosts |
 | [**listSkills**](SkillApi.md#listSkills) | **GET** /api/v2/skill | List My Skills |
 | [**prepareSkill**](SkillApi.md#prepareSkill) | **POST** /api/v2/skill/install | Prepare Skill Installation |
 | [**updateSkill**](SkillApi.md#updateSkill) | **PUT** /api/v2/skill/{skillId} | Update My Skill |
@@ -216,6 +217,69 @@ public class Example {
 |-------------|-------------|------------------|
 | **200** | OK |  -  |
 
+<a id="getSkillAllowedHosts"></a>
+# **getSkillAllowedHosts**
+> List&lt;String&gt; getSkillAllowedHosts()
+
+Get Allowed Skill Source Hosts
+
+Return the effective source hostname allowlist for skill imports. An empty list disables URL imports. GitHub repository and ClawHub skill links use fixed provider APIs to import a pinned document bundle; other allowed sources must return raw text or Markdown.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.SkillApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    SkillApi apiInstance = new SkillApi(defaultClient);
+    try {
+      List<String> result = apiInstance.getSkillAllowedHosts();
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling SkillApi#getSkillAllowedHosts");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+**List&lt;String&gt;**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
 <a id="listSkills"></a>
 # **listSkills**
 > List&lt;SkillSummaryDTO&gt; listSkills()
@@ -285,7 +349,7 @@ This endpoint does not need any parameter.
 
 Prepare Skill Installation
 
-Validate and review pasted/uploaded text documents or a raw document from an operator-approved HTTPS host. Publication requires explicit confirmation of the returned digest.
+Analyze an approved source URL with the server-configured LLM, import a pinned GitHub or ClawHub skill bundle or a raw document, and validate and review every file. Also accepts pasted/uploaded text bundles. Publication requires explicit confirmation of the returned digest.
 
 ### Example
 ```java

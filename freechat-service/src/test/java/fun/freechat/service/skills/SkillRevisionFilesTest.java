@@ -45,6 +45,112 @@ class SkillRevisionFilesTest {
     }
 
     @Test
+    void hiddenFilesNeverEnterStagingManifestsOrReviewedBundles() {
+        var input = new HashMap<>(INPUT);
+        input.put(".gitignore", null);
+        input.put("references/.hidden.md", "broken\ud800");
+        input.put(".config/install.sh", "bash secret-command");
+        input.put("references/.cache/content.bin", "x".repeat(SkillRevisionFiles.MAX_TOTAL_BYTES + 1));
+        for (int i = 0; i < 20; i++) {
+            input.put(".hidden" + i + "/SKILL.md", "hidden instructions");
+        }
+        var snapshot = SkillRevisionFiles.snapshot(input);
+        assertEquals(INPUT.keySet(), snapshot.bytes().keySet());
+        assertEquals(SkillRevisionFiles.snapshot(INPUT).manifest(), snapshot.manifest());
+        var remote = new RemoteFiles();
+        var files = new SkillRevisionFiles(remote);
+        files.stage(OWNER, SKILL, REVISION, snapshot, () -> {});
+        var read = files.read(OWNER, SKILL, REVISION, snapshot.manifest());
+        assertEquals(INPUT, read);
+        assertEquals(INPUT.size(), remote.objects.size());
+        var validator = new SkillBundleValidator();
+        assertEquals(validator.validate(INPUT), validator.validate(read));
+    }
+
+    @Test
+    void visibleFilesStillObeyLimitsAndScriptRejectionAfterFiltering() {
+        var input = new HashMap<>(INPUT);
+        input.put(".env", "hidden");
+        for (int i = INPUT.size(); i < SkillRevisionFiles.MAX_FILES; i++) {
+            input.put("ref" + i + ".txt", "text");
+        }
+        assertEquals(
+                SkillRevisionFiles.MAX_FILES,
+                SkillRevisionFiles.snapshot(input).bytes().size());
+        input.put("extra.txt", "text");
+        assertCode(SKILL_INVALID_FORMAT, () -> SkillRevisionFiles.snapshot(input));
+        var scripts = SkillRevisionFiles.snapshot(
+                Map.of("SKILL.md", INPUT.get("SKILL.md"), ".gitignore", "ignored", "run.sh", "bash run"));
+        var remote = new RemoteFiles();
+        var files = new SkillRevisionFiles(remote);
+        files.stage(OWNER, SKILL, REVISION, scripts, () -> {});
+        assertCode(
+                SKILL_UNSAFE_INSTRUCTIONS,
+                () -> new SkillBundleValidator().validate(files.read(OWNER, SKILL, REVISION, scripts.manifest())));
+        assertCode(
+                SKILL_INVALID_FORMAT,
+                () -> SkillRevisionFiles.snapshot(
+                        Map.of("SKILL.md", INPUT.get("SKILL.md"), ".env", "ignored", "large.txt", "x".repeat(65537))));
+    }
+
+    @Test
+    void hiddenOnlyInputsCannotProduceAnEmptyInstallableSnapshot() {
+        assertCode(SKILL_INVALID_FORMAT, () -> SkillRevisionFiles.snapshot(Map.of(".hidden/SKILL.md", "text")));
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+            strings = {
+                ".hidden/../run.sh",
+                ".hidden/./file.txt",
+                ".hidden//file.txt",
+                "/.hidden/file.txt",
+                ".hidden\\file.txt"
+            })
+    void malformedPathsCannotHideBehindAHiddenComponent(String path) {
+        assertFalse(SkillBundleValidator.isHiddenPath(path));
+        assertCode(
+                SKILL_INVALID_FORMAT,
+                () -> SkillRevisionFiles.snapshot(Map.of("SKILL.md", INPUT.get("SKILL.md"), path, "text")));
+    }
+
+    @Test
+    void arbitraryTextFileNamesSurviveStorageAndCleanupUnchanged() {
+        var input = Map.of(
+                "SKILL.md",
+                "# Plain instructions\nUse concise prose.",
+                "LICENSE",
+                "Copyright Example",
+                "README.zh-CN.md",
+                "说明",
+                "config/rclone.conf.example",
+                "[notes]\nkind = local",
+                "references/写作 指南 (v2).data",
+                "保持简洁。",
+                "cafe\u0301.txt",
+                "Text");
+        var snapshot = SkillRevisionFiles.snapshot(input);
+        var remote = new RemoteFiles();
+        var files = new SkillRevisionFiles(remote);
+        files.stage(OWNER, SKILL, REVISION, snapshot, () -> {});
+        var read = files.read(OWNER, SKILL, REVISION, snapshot.manifest());
+        assertEquals(input, read);
+        assertEquals(input, new SkillBundleValidator().validate(read).files());
+        files.delete(OWNER, SKILL, REVISION, snapshot.manifest());
+        assertTrue(remote.objects.isEmpty());
+    }
+
+    @Test
+    void aliasAndFileDirectoryCollisionsFailBeforeStorage() {
+        for (var input : List.of(
+                Map.of("Café", "one", "Cafe\u0301", "two"),
+                Map.of("Guide", "one", "guide/notes", "two"),
+                Map.of("café", "one", "cafe\u0301/notes", "two"))) {
+            assertCode(SKILL_INVALID_FORMAT, () -> SkillRevisionFiles.snapshot(input));
+        }
+    }
+
+    @Test
     void rejectsSameLengthTamperExtraBytesAndMissingFile() {
         for (int mode = 0; mode < 3; mode++) {
             RemoteFiles remote = new RemoteFiles();
@@ -98,12 +204,7 @@ class SkillRevisionFilesTest {
                 "references//x.md",
                 "references\\x.md",
                 "references/%2e%2e.txt",
-                "references/CON.txt",
-                "references/.hidden.md",
-                "references/x.md/other.txt",
-                "references/a..txt",
-                "skill.md",
-                "x.sh"
+                "references/CON.txt"
             })
     void refusesTraversalAndUnsupportedPathsBeforeIo(String filename) {
         assertCode(SKILL_INVALID_FORMAT, () -> SkillRevisionFiles.snapshot(Map.of(filename, "text")));
@@ -122,12 +223,60 @@ class SkillRevisionFilesTest {
         files.stage(OWNER, SKILL, REVISION, snapshot, () -> {});
         for (String bad : List.of(
                 snapshot.manifest().replace("references/guide.txt", "../guide.txt"),
+                snapshot.manifest().replace("references/guide.txt", ".hidden/guide.txt"),
                 snapshot.manifest().replace("\"length\":", "\"length\":999999999,\"ignored\":"),
                 "{\"SKILL.md\":{\"length\":-1,\"sha256\":\"" + "a".repeat(64) + "\"}}")) {
             assertCode(SKILL_STORAGE_UNAVAILABLE, () -> files.delete(OWNER, SKILL, REVISION, bad));
         }
         assertTrue(remote.deleted.isEmpty());
         assertCode(SKILL_STORAGE_UNAVAILABLE, () -> files.delete(OWNER, "../escape", REVISION, snapshot.manifest()));
+    }
+
+    @Test
+    void cleanupOrdersUnicodeDirectoryAliasesByDepthRatherThanStringLength() {
+        String root = SkillRevisionFiles.root(OWNER, SKILL, REVISION);
+        var remote = new RemoteFiles() {
+            private final java.util.Set<String> directories = new java.util.HashSet<>();
+
+            private String canonical(String path) {
+                return java.text.Normalizer.normalize(path, java.text.Normalizer.Form.NFC);
+            }
+
+            @Override
+            public void createDirectories(String path) {
+                String normalized = canonical(path);
+                for (int end = normalized.length();
+                        end >= root.length() - 1;
+                        end = normalized.lastIndexOf('/', end - 1)) {
+                    directories.add(normalized.substring(0, end));
+                }
+            }
+
+            @Override
+            public boolean exists(String path) {
+                return super.exists(path) || directories.contains(canonical(path));
+            }
+
+            @Override
+            public void delete(String path) {
+                String normalized = canonical(path);
+                if (directories.contains(normalized)) {
+                    if (directories.stream().anyMatch(child -> child.startsWith(normalized + "/"))) {
+                        throw new IllegalStateException("Directory is not empty");
+                    }
+                    directories.remove(normalized);
+                }
+                super.delete(path);
+            }
+        };
+        var files = new SkillRevisionFiles(remote);
+        var snapshot = SkillRevisionFiles.snapshot(
+                Map.of("SKILL.md", "Plain instructions", "e\u0301e\u0301e\u0301/a", "One", "ééé/b/c", "Two"));
+        files.stage(OWNER, SKILL, REVISION, snapshot, () -> {});
+        assertDoesNotThrow(() -> files.delete(OWNER, SKILL, REVISION, snapshot.manifest()));
+        assertTrue(remote.objects.isEmpty());
+        assertFalse(remote.exists(root.substring(0, root.length() - 1)));
+        assertDoesNotThrow(() -> files.delete(OWNER, SKILL, REVISION, snapshot.manifest()));
     }
 
     @Test
@@ -154,7 +303,7 @@ class SkillRevisionFilesTest {
     }
 
     /** Object-store semantics: no local paths, rename, listing, compression, or directory objects. */
-    private static final class RemoteFiles implements FileStore {
+    private static class RemoteFiles implements FileStore {
         final Map<String, byte[]> objects = new HashMap<>();
         final List<String> deleted = new ArrayList<>();
         boolean corruptWrites;

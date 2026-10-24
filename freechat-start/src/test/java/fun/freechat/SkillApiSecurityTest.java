@@ -55,6 +55,7 @@ class SkillApiSecurityTest {
     @Test
     void anonymousCallsCannotListOrPrepareOrConfirm() {
         assertThrows(AuthenticationCredentialsNotFoundException.class, () -> api.list());
+        assertThrows(AuthenticationCredentialsNotFoundException.class, () -> api.allowedHosts());
         assertThrows(AuthenticationCredentialsNotFoundException.class, () -> api.prepare(new SkillInstallDTO()));
         assertThrows(AuthenticationCredentialsNotFoundException.class, () -> api.confirm(ID, new SkillConfirmDTO()));
         verifyNoInteractions(service);
@@ -70,6 +71,13 @@ class SkillApiSecurityTest {
         assertThrows(AccessDeniedException.class, () -> api.delete(ID, "revision"));
         verify(service, never()).get(anyString(), anyString());
         verify(service, never()).delete(anyString(), anyString(), anyString());
+    }
+
+    @Test
+    void authenticatedUsersCanReadOnlyTheEffectiveSourceHostList() {
+        authenticate("owner", "ROLE_USER");
+        assertEquals(List.of("clawhub.ai", "github.com"), api.allowedHosts());
+        verifyNoInteractions(service);
     }
 
     @Test
@@ -107,11 +115,18 @@ class SkillApiSecurityTest {
         assertEquals(
                 SkillException.Code.SKILL_INVALID_FORMAT,
                 assertThrows(SkillException.class, () -> api.prepare(input)).code());
+        verifyNoInteractions(service);
+        when(service.prepareSource(eq("owner"), any())).thenAnswer(invocation -> {
+            invocation
+                    .<java.util.function.Supplier<Map<String, String>>>getArgument(1)
+                    .get();
+            throw new AssertionError("Unapproved source must not resolve");
+        });
         input.setFiles(null);
         assertEquals(
                 SkillException.Code.SKILL_SOURCE_NOT_ALLOWED,
                 assertThrows(SkillException.class, () -> api.prepare(input)).code());
-        verifyNoInteractions(service);
+        verify(service).prepareSource(eq("owner"), any());
     }
 
     @Test
@@ -120,6 +135,15 @@ class SkillApiSecurityTest {
         assertEquals(422, response.getStatusCode().value());
         assertEquals("no-store", response.getHeaders().getCacheControl());
         assertEquals("SKILL_UNSAFE_INSTRUCTIONS", response.getBody().get("errorCode"));
+        var configuration =
+                new SkillApiErrors().handle(new SkillException(SkillException.Code.SKILL_MODEL_NOT_CONFIGURED));
+        assertEquals(503, configuration.getStatusCode().value());
+        assertEquals("SKILL_MODEL_NOT_CONFIGURED", configuration.getBody().get("errorCode"));
+        var rateLimited =
+                new SkillApiErrors().handle(new SkillException(SkillException.Code.SKILL_SOURCE_RATE_LIMITED));
+        assertEquals(429, rateLimited.getStatusCode().value());
+        assertEquals("no-store", rateLimited.getHeaders().getCacheControl());
+        assertEquals("SKILL_SOURCE_RATE_LIMITED", rateLimited.getBody().get("errorCode"));
         assertEquals(
                 409,
                 new SkillApiErrors()
@@ -144,7 +168,7 @@ class SkillApiSecurityTest {
 
         @Bean
         SkillSourceFetcher sources() {
-            return new SkillSourceFetcher("");
+            return new SkillSourceFetcher("github.com,clawhub.ai", "", (input, candidates) -> 0);
         }
 
         @Bean

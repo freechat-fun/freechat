@@ -93,6 +93,16 @@ public class SkillDraftDTO {
   @javax.annotation.Nullable
   private OffsetDateTime expiresAt;
 
+  public static final String SERIALIZED_NAME_SOURCE_URL = "sourceUrl";
+  @SerializedName(SERIALIZED_NAME_SOURCE_URL)
+  @javax.annotation.Nullable
+  private String sourceUrl;
+
+  public static final String SERIALIZED_NAME_SOURCE_REVISION = "sourceRevision";
+  @SerializedName(SERIALIZED_NAME_SOURCE_REVISION)
+  @javax.annotation.Nullable
+  private String sourceRevision;
+
   public SkillDraftDTO() {
   }
 
@@ -255,6 +265,44 @@ public class SkillDraftDTO {
     this.expiresAt = expiresAt;
   }
 
+
+  public SkillDraftDTO sourceUrl(@javax.annotation.Nullable String sourceUrl) {
+    this.sourceUrl = sourceUrl;
+    return this;
+  }
+
+  /**
+   * Resolved source URL of the imported skill, when installed from a link
+   * @return sourceUrl
+   */
+  @javax.annotation.Nullable
+  public String getSourceUrl() {
+    return sourceUrl;
+  }
+
+  public void setSourceUrl(@javax.annotation.Nullable String sourceUrl) {
+    this.sourceUrl = sourceUrl;
+  }
+
+
+  public SkillDraftDTO sourceRevision(@javax.annotation.Nullable String sourceRevision) {
+    this.sourceRevision = sourceRevision;
+    return this;
+  }
+
+  /**
+   * Pinned repository commit or registry version of the imported bundle
+   * @return sourceRevision
+   */
+  @javax.annotation.Nullable
+  public String getSourceRevision() {
+    return sourceRevision;
+  }
+
+  public void setSourceRevision(@javax.annotation.Nullable String sourceRevision) {
+    this.sourceRevision = sourceRevision;
+  }
+
   /**
    * A container for additional, undeclared properties.
    * This is a holder for any undeclared properties as specified with
@@ -317,13 +365,15 @@ public class SkillDraftDTO {
         Objects.equals(this.description, skillDraftDTO.description) &&
         Objects.equals(this.files, skillDraftDTO.files) &&
         Objects.equals(this.digest, skillDraftDTO.digest) &&
-        Objects.equals(this.expiresAt, skillDraftDTO.expiresAt)&&
+        Objects.equals(this.expiresAt, skillDraftDTO.expiresAt) &&
+        Objects.equals(this.sourceUrl, skillDraftDTO.sourceUrl) &&
+        Objects.equals(this.sourceRevision, skillDraftDTO.sourceRevision)&&
         Objects.equals(this.additionalProperties, skillDraftDTO.additionalProperties);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(draftId, skillId, expectedRevision, name, description, files, digest, expiresAt, additionalProperties);
+    return Objects.hash(draftId, skillId, expectedRevision, name, description, files, digest, expiresAt, sourceUrl, sourceRevision, additionalProperties);
   }
 
   @Override
@@ -338,6 +388,8 @@ public class SkillDraftDTO {
     sb.append("    files: ").append(toIndentedString(files)).append("\n");
     sb.append("    digest: ").append(toIndentedString(digest)).append("\n");
     sb.append("    expiresAt: ").append(toIndentedString(expiresAt)).append("\n");
+    sb.append("    sourceUrl: ").append(toIndentedString(sourceUrl)).append("\n");
+    sb.append("    sourceRevision: ").append(toIndentedString(sourceRevision)).append("\n");
     sb.append("    additionalProperties: ").append(toIndentedString(additionalProperties)).append("\n");
     sb.append("}");
     return sb.toString();
@@ -357,7 +409,7 @@ public class SkillDraftDTO {
 
   static {
     // a set of all properties/fields (JSON key names)
-    openapiFields = new HashSet<String>(Arrays.asList("draftId", "skillId", "expectedRevision", "name", "description", "files", "digest", "expiresAt"));
+    openapiFields = new HashSet<String>(Arrays.asList("draftId", "skillId", "expectedRevision", "name", "description", "files", "digest", "expiresAt", "sourceUrl", "sourceRevision"));
 
     // a set of required properties/fields (JSON key names)
     openapiRequiredFields = new HashSet<String>(0);
@@ -393,6 +445,12 @@ public class SkillDraftDTO {
       }
       if ((jsonObj.get("digest") != null && !jsonObj.get("digest").isJsonNull()) && !jsonObj.get("digest").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format(java.util.Locale.ROOT, "Expected the field `digest` to be a primitive type in the JSON string but got `%s`", jsonObj.get("digest").toString()));
+      }
+      if ((jsonObj.get("sourceUrl") != null && !jsonObj.get("sourceUrl").isJsonNull()) && !jsonObj.get("sourceUrl").isJsonPrimitive()) {
+        throw new IllegalArgumentException(String.format(java.util.Locale.ROOT, "Expected the field `sourceUrl` to be a primitive type in the JSON string but got `%s`", jsonObj.get("sourceUrl").toString()));
+      }
+      if ((jsonObj.get("sourceRevision") != null && !jsonObj.get("sourceRevision").isJsonNull()) && !jsonObj.get("sourceRevision").isJsonPrimitive()) {
+        throw new IllegalArgumentException(String.format(java.util.Locale.ROOT, "Expected the field `sourceRevision` to be a primitive type in the JSON string but got `%s`", jsonObj.get("sourceRevision").toString()));
       }
   }
 

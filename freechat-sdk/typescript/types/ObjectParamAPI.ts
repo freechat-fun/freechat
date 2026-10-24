@@ -6108,6 +6108,9 @@ export interface SkillApiGetSkillRequest {
     skillId: string
 }
 
+export interface SkillApiGetSkillAllowedHostsRequest {
+}
+
 export interface SkillApiListSkillsRequest {
 }
 
@@ -6198,6 +6201,24 @@ export class ObjectSkillApi {
     }
 
     /**
+     * Return the effective source hostname allowlist for skill imports. An empty list disables URL imports. GitHub repository and ClawHub skill links use fixed provider APIs to import a pinned document bundle; other allowed sources must return raw text or Markdown.
+     * Get Allowed Skill Source Hosts
+     * @param param the request object
+     */
+    public getSkillAllowedHostsWithHttpInfo(param: SkillApiGetSkillAllowedHostsRequest = {}, options?: ConfigurationOptions): Promise<HttpInfo<Array<string>>> {
+        return this.api.getSkillAllowedHostsWithHttpInfo( options).toPromise();
+    }
+
+    /**
+     * Return the effective source hostname allowlist for skill imports. An empty list disables URL imports. GitHub repository and ClawHub skill links use fixed provider APIs to import a pinned document bundle; other allowed sources must return raw text or Markdown.
+     * Get Allowed Skill Source Hosts
+     * @param param the request object
+     */
+    public getSkillAllowedHosts(param: SkillApiGetSkillAllowedHostsRequest = {}, options?: ConfigurationOptions): Promise<Array<string>> {
+        return this.api.getSkillAllowedHosts( options).toPromise();
+    }
+
+    /**
      * List only the authenticated user\'s installed skills.
      * List My Skills
      * @param param the request object
@@ -6216,7 +6237,7 @@ export class ObjectSkillApi {
     }
 
     /**
-     * Validate and review pasted/uploaded text documents or a raw document from an operator-approved HTTPS host. Publication requires explicit confirmation of the returned digest.
+     * Analyze an approved source URL with the server-configured LLM, import a pinned GitHub or ClawHub skill bundle or a raw document, and validate and review every file. Also accepts pasted/uploaded text bundles. Publication requires explicit confirmation of the returned digest.
      * Prepare Skill Installation
      * @param param the request object
      */
@@ -6225,7 +6246,7 @@ export class ObjectSkillApi {
     }
 
     /**
-     * Validate and review pasted/uploaded text documents or a raw document from an operator-approved HTTPS host. Publication requires explicit confirmation of the returned digest.
+     * Analyze an approved source URL with the server-configured LLM, import a pinned GitHub or ClawHub skill bundle or a raw document, and validate and review every file. Also accepts pasted/uploaded text bundles. Publication requires explicit confirmation of the returned digest.
      * Prepare Skill Installation
      * @param param the request object
      */

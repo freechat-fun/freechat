@@ -47,6 +47,13 @@ class TestSkillApi(unittest.TestCase):
         """
         pass
 
+    def test_get_skill_allowed_hosts(self) -> None:
+        """Test case for get_skill_allowed_hosts
+
+        Get Allowed Skill Source Hosts
+        """
+        pass
+
     def test_list_skills(self) -> None:
         """Test case for list_skills
 

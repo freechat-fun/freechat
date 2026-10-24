@@ -17,9 +17,12 @@ public class SkillApiErrors {
                     case SKILL_NOT_FOUND -> HttpStatus.NOT_FOUND;
                     case SKILL_ACCESS_DENIED -> HttpStatus.FORBIDDEN;
                     case SKILL_VERSION_CONFLICT, SKILL_DRAFT_EXPIRED -> HttpStatus.CONFLICT;
-                    case SKILL_LIMIT_EXCEEDED -> HttpStatus.TOO_MANY_REQUESTS;
-                    case SKILL_REVIEW_UNAVAILABLE, SKILL_SOURCE_UNAVAILABLE, SKILL_STORAGE_UNAVAILABLE ->
-                        HttpStatus.SERVICE_UNAVAILABLE;
+                    case SKILL_LIMIT_EXCEEDED, SKILL_SOURCE_RATE_LIMITED -> HttpStatus.TOO_MANY_REQUESTS;
+                    case SKILL_REVIEW_UNAVAILABLE,
+                            SKILL_MODEL_NOT_CONFIGURED,
+                            SKILL_SOURCE_UNAVAILABLE,
+                            SKILL_SOURCE_ANALYSIS_UNAVAILABLE,
+                            SKILL_STORAGE_UNAVAILABLE -> HttpStatus.SERVICE_UNAVAILABLE;
                     default -> HttpStatus.UNPROCESSABLE_CONTENT;
                 };
         return ResponseEntity.status(status)

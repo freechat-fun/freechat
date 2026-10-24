@@ -44,7 +44,9 @@ class TestSkillDraftDTO(unittest.TestCase):
                     'key' : ''
                     },
                 digest = '',
-                expires_at = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f')
+                expires_at = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
+                source_url = '',
+                source_revision = ''
             )
         else:
             return SkillDraftDTO(

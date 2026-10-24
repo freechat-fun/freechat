@@ -14,6 +14,8 @@ Name | Type | Description | Notes
 **files** | **Dict[str, str]** | Complete staged document set for confirmation | [optional]
 **digest** | **str** | Digest to supply when confirming this preview | [optional]
 **expires_at** | **datetime** | Confirmation expiry time | [optional]
+**source_url** | **str** | Resolved source URL of the imported skill, when installed from a link | [optional]
+**source_revision** | **str** | Pinned repository commit or registry version of the imported bundle | [optional]
 
 ## Example
 

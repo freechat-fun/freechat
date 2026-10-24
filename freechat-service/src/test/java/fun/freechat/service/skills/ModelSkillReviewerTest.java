@@ -65,6 +65,34 @@ class ModelSkillReviewerTest {
     }
 
     @Test
+    void ordinaryRepositoryFilesAndLooseMarkdownReachSafetyReviewUnchanged() {
+        var files = Map.of(
+                "SKILL.md",
+                "# Writing guide\nKeep sentences short.\n```mermaid\ngraph LR",
+                "LICENSE",
+                "Copyright Example",
+                "README.zh-CN.md",
+                "说明",
+                "config/rclone.conf.example",
+                "[local]\ntype = local");
+        var relaxed = new SkillBundleValidator().validate(files);
+        AtomicInteger calls = new AtomicInteger();
+        reviewer(request -> {
+                    calls.incrementAndGet();
+                    var system = (SystemMessage) request.messages().getFirst();
+                    assertTrue(system.text().contains("missing or malformed frontmatter"));
+                    var message = (UserMessage) request.messages().get(1);
+                    assertEquals(
+                            new ObjectMapper().valueToTree(files),
+                            assertDoesNotThrow(() -> snapshot(message.singleText()))
+                                    .get("files"));
+                    return response("{\"allowed\":true}");
+                })
+                .review(relaxed);
+        assertEquals(1, calls.get());
+    }
+
+    @Test
     void fullSnapshotAndTrustedClasspathResourceAreTheOnlyMessages() throws Exception {
         AtomicReference<ChatRequest> captured = new AtomicReference<>();
         reviewer(request -> {
@@ -222,22 +250,22 @@ class ModelSkillReviewerTest {
     @Test
     void unconfiguredReviewerNeverInheritsAnotherKey() {
         ModelSkillReviewer reviewer = register(new ModelSkillReviewer("", "", ""));
-        assertError(SKILL_REVIEW_UNAVAILABLE, reviewer, bundle);
-        assertError(SKILL_REVIEW_UNAVAILABLE, register(new ModelSkillReviewer((ChatModel) null)), bundle);
+        assertError(SKILL_MODEL_NOT_CONFIGURED, reviewer, bundle);
+        assertError(SKILL_MODEL_NOT_CONFIGURED, register(new ModelSkillReviewer((ChatModel) null)), bundle);
         assertError(
-                SKILL_REVIEW_UNAVAILABLE,
+                SKILL_MODEL_NOT_CONFIGURED,
                 register(new ModelSkillReviewer("[open_ai]review", "", "https://example.invalid/v1")),
                 bundle);
         assertError(
-                SKILL_REVIEW_UNAVAILABLE,
+                SKILL_MODEL_NOT_CONFIGURED,
                 register(new ModelSkillReviewer("[open_ai]review", "server-key", "")),
                 bundle);
         assertError(
-                SKILL_REVIEW_UNAVAILABLE,
+                SKILL_MODEL_NOT_CONFIGURED,
                 register(new ModelSkillReviewer("[unknown]review", "server-key", "https://example.invalid")),
                 bundle);
         assertError(
-                SKILL_REVIEW_UNAVAILABLE,
+                SKILL_MODEL_NOT_CONFIGURED,
                 register(new ModelSkillReviewer("[open_ai]review|image2text", "server-key", "https://example.invalid")),
                 bundle);
     }
@@ -389,9 +417,11 @@ class ModelSkillReviewerTest {
     }
 
     private ChatModel configuredModel(String id, String key, String url) throws Exception {
-        var field = ModelSkillReviewer.class.getDeclaredField("model");
-        field.setAccessible(true);
-        return (ChatModel) field.get(register(new ModelSkillReviewer(id, key, url)));
+        var management = ModelSkillReviewer.class.getDeclaredField("managementModel");
+        management.setAccessible(true);
+        var model = SkillManagementModel.class.getDeclaredField("model");
+        model.setAccessible(true);
+        return (ChatModel) model.get(management.get(register(new ModelSkillReviewer(id, key, url))));
     }
 
     private static ChatModel fake(Function<ChatRequest, ChatResponse> behavior) {

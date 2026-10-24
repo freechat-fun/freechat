@@ -48,6 +48,14 @@ export class SkillDraftDTO {
     * Confirmation expiry time
     */
     'expiresAt'?: Date;
+    /**
+    * Resolved source URL of the imported skill, when installed from a link
+    */
+    'sourceUrl'?: string;
+    /**
+    * Pinned repository commit or registry version of the imported bundle
+    */
+    'sourceRevision'?: string;
 
     static readonly discriminator: string | undefined = undefined;
 
@@ -101,6 +109,18 @@ export class SkillDraftDTO {
             "baseName": "expiresAt",
             "type": "Date",
             "format": "date-time"
+        },
+        {
+            "name": "sourceUrl",
+            "baseName": "sourceUrl",
+            "type": "string",
+            "format": ""
+        },
+        {
+            "name": "sourceRevision",
+            "baseName": "sourceRevision",
+            "type": "string",
+            "format": ""
         }    ];
 
     static getAttributeTypeMap() {

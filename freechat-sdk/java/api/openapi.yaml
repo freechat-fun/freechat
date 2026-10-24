@@ -1652,9 +1652,10 @@ paths:
       - application/json
   /api/v2/skill/install:
     post:
-      description: Validate and review pasted/uploaded text documents or a raw document
-        from an operator-approved HTTPS host. Publication requires explicit confirmation
-        of the returned digest.
+      description: "Analyze an approved source URL with the server-configured LLM,\
+        \ import a pinned GitHub or ClawHub skill bundle or a raw document, and validate\
+        \ and review every file. Also accepts pasted/uploaded text bundles. Publication\
+        \ requires explicit confirmation of the returned digest."
       operationId: prepareSkill
       requestBody:
         content:
@@ -4512,6 +4513,27 @@ paths:
                 type: array
           description: OK
       summary: List My Skills
+      tags:
+      - Skill
+      x-accepts:
+      - application/json
+  /api/v2/skill/sources/allowed-hosts:
+    get:
+      description: Return the effective source hostname allowlist for skill imports.
+        An empty list disables URL imports. GitHub repository and ClawHub skill links
+        use fixed provider APIs to import a pinned document bundle; other allowed
+        sources must return raw text or Markdown.
+      operationId: getSkillAllowedHosts
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+          description: OK
+      summary: Get Allowed Skill Source Hosts
       tags:
       - Skill
       x-accepts:
@@ -7971,8 +7993,8 @@ components:
         address:
           type: string
     SkillInstallDTO:
-      description: Install a prompt-only skill from either text documents or an operator-approved
-        HTTPS source
+      description: Install a prompt-only skill bundle from text documents or an LLM-analyzed
+        approved source link
       example:
         sourceUrl: sourceUrl
         files:
@@ -7984,8 +8006,11 @@ components:
           description: Uploaded or pasted text documents including SKILL.md; mutually
             exclusive with sourceUrl
         sourceUrl:
-          description: Approved HTTPS URL of a raw SKILL.md document; no recursive
-            fetching or redirects
+          description: "GitHub repository/skill-directory URL, ClawHub skill-page\
+            \ URL, or raw document URL from an allowed host. May include surrounding\
+            \ text or omit the HTTPS scheme; the LLM selects only independently validated\
+            \ source candidates. Provider bundles are pinned and fully validated,\
+            \ not recursively crawled."
           maxLength: 2048
           minLength: 0
           type: string
@@ -7993,6 +8018,7 @@ components:
       description: Reviewed installation preview; confirmation is bound to its exact
         digest
       example:
+        sourceUrl: sourceUrl
         skillId: skillId
         draftId: draftId
         name: name
@@ -8000,6 +8026,7 @@ components:
         description: description
         files:
           key: files
+        sourceRevision: sourceRevision
         expectedRevision: expectedRevision
         expiresAt: 2000-01-23T04:56:07.000+00:00
       properties:
@@ -8028,6 +8055,14 @@ components:
         expiresAt:
           description: Confirmation expiry time
           format: date-time
+          type: string
+        sourceUrl:
+          description: "Resolved source URL of the imported skill, when installed\
+            \ from a link"
+          type: string
+        sourceRevision:
+          description: Pinned repository commit or registry version of the imported
+            bundle
           type: string
     SkillConfirmDTO:
       description: Confirm publication of the exact reviewed installation preview

@@ -41,14 +41,18 @@ final class SkillRevisionFiles {
     }
 
     static Snapshot snapshot(Map<String, String> input) {
-        if (input == null || input.isEmpty() || input.size() > MAX_FILES) {
+        if (input == null || input.isEmpty()) {
             throw new SkillException(SKILL_INVALID_FORMAT);
         }
         var bytes = new TreeMap<String, byte[]>();
         var entries = new TreeMap<String, Entry>();
         int total = 0;
         for (var file : input.entrySet()) {
-            if (!safeFilename(file.getKey())
+            if (SkillBundleValidator.isHiddenPath(file.getKey())) {
+                continue;
+            }
+            if (bytes.size() >= MAX_FILES
+                    || !safeFilename(file.getKey())
                     || file.getValue() == null
                     || file.getValue().length() > MAX_FILE_BYTES) {
                 throw new SkillException(SKILL_INVALID_FORMAT);
@@ -64,6 +68,10 @@ final class SkillRevisionFiles {
             bytes.put(file.getKey(), content);
             entries.put(file.getKey(), new Entry(content.length, hash(content)));
         }
+        if (bytes.isEmpty()) {
+            throw new SkillException(SKILL_INVALID_FORMAT);
+        }
+        SkillBundleValidator.validateFilePaths(bytes.keySet());
         try {
             return new Snapshot(Collections.unmodifiableMap(bytes), JSON.writeValueAsString(entries));
         } catch (IOException ignored) {
@@ -126,10 +134,13 @@ final class SkillRevisionFiles {
 
     void delete(String owner, String skill, String revision, String manifest) {
         String root = root(owner, skill, revision);
+        if ("{}".equals(manifest)) return;
         var entries = manifest(manifest); // Validate the entire manifest before touching any files.
         try {
-            var directories = new TreeSet<String>(
-                    Comparator.comparingInt(String::length).reversed().thenComparing(Comparator.naturalOrder()));
+            var directories = new TreeSet<String>(Comparator.comparingLong(
+                            (String path) -> path.chars().filter(c -> c == '/').count())
+                    .reversed()
+                    .thenComparing(Comparator.naturalOrder()));
             for (String name : entries.keySet()) {
                 String path = root + name;
                 // FileStore implementations may differ on deleting a missing object.
@@ -165,16 +176,12 @@ final class SkillRevisionFiles {
     }
 
     static boolean safeFilename(String name) {
-        if (name == null || name.length() > 240) {
+        try {
+            SkillBundleValidator.validatePath(name);
+            return true;
+        } catch (SkillException ignored) {
             return false;
         }
-        if ("SKILL.md".equals(name)) {
-            return true;
-        }
-        String leaf = name.startsWith("references/") ? name.substring("references/".length()) : name;
-        return leaf.matches("[A-Za-z0-9][A-Za-z0-9_-]{0,63}\\.(md|txt)")
-                && !leaf.equalsIgnoreCase("SKILL.md")
-                && !leaf.substring(0, leaf.lastIndexOf('.')).matches("(?i)(con|prn|aux|nul|com[0-9]|lpt[0-9])");
     }
 
     private static Map<String, Entry> manifest(String text) {
@@ -186,6 +193,7 @@ final class SkillRevisionFiles {
             if (entries == null || entries.isEmpty() || entries.size() > MAX_FILES) {
                 throw unavailable();
             }
+            SkillBundleValidator.validateFilePaths(entries.keySet());
             long total = 0;
             for (var entry : entries.entrySet()) {
                 Entry value = entry.getValue();

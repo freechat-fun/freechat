@@ -21,10 +21,13 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
 
 final class NetworkHttp {
+    private static final Logger LOG = LoggerFactory.getLogger(NetworkHttp.class);
     private static final HttpClient CLIENT = client();
     // A blocked resolver or server must not create unbounded work across sessions.
     private static final ThreadPoolExecutor WORKERS =
@@ -35,6 +38,7 @@ final class NetworkHttp {
             });
     private final NetworkPolicy policy;
     private final Transport transport;
+    private final boolean allowChunked;
 
     @FunctionalInterface
     interface Transport {
@@ -42,13 +46,44 @@ final class NetworkHttp {
     }
 
     NetworkHttp(NetworkPolicy policy, Transport transport) {
+        this(policy, transport, false);
+    }
+
+    NetworkHttp(NetworkPolicy policy, Transport transport, boolean allowChunked) {
         this.policy = policy;
         this.transport = transport == null
                 ? request -> CLIENT.send(request, HttpResponse.BodyHandlers.ofInputStream())
                 : transport;
+        this.allowChunked = allowChunked;
     }
 
     record Payload(String mediaType, String text) {}
+
+    static final class HttpFailure extends IOException {
+        private final int status;
+        private final String remaining;
+        private final String reset;
+        private final String retryAfter;
+
+        private HttpFailure(HttpResponse<?> response) {
+            super("Network request failed with HTTP " + response.statusCode());
+            status = response.statusCode();
+            remaining = numericHeader(response, "X-RateLimit-Remaining");
+            reset = numericHeader(response, "X-RateLimit-Reset");
+            retryAfter = numericHeader(response, "Retry-After");
+        }
+
+        boolean rateLimited() {
+            return status == 429 || status == 403 && (remaining.equals("0") || !retryAfter.equals("unknown"));
+        }
+
+        private static String numericHeader(HttpResponse<?> response, String name) {
+            return response.headers()
+                    .firstValue(name)
+                    .filter(value -> value.matches("[0-9]{1,12}"))
+                    .orElse("unknown");
+        }
+    }
 
     static final class Deadline {
         private final ToolContext context;
@@ -85,7 +120,7 @@ final class NetworkHttp {
         URI uri = policy.url(destination.toString());
         HttpRequest.Builder builder = HttpRequest.newBuilder(uri)
                 .timeout(Duration.ofNanos(deadline.remaining()))
-                .header("Accept", String.join(", ", mediaTypes))
+                .header("Accept", mediaTypes.isEmpty() ? "*/*" : String.join(", ", mediaTypes))
                 .header("Accept-Encoding", "identity")
                 .header("User-Agent", "FreeChat-Network-Tools/1.0");
         if (jsonBody != null) {
@@ -105,7 +140,7 @@ final class NetworkHttp {
                 HttpResponse<InputStream> response = transport.send(request);
                 try (InputStream body = response.body()) {
                     activeBody.set(body);
-                    return read(response, mediaTypes, maxBytes, deadline);
+                    return read(response, mediaTypes, maxBytes, deadline, allowChunked);
                 } finally {
                     activeBody.set(null);
                 }
@@ -116,7 +151,27 @@ final class NetworkHttp {
         } catch (InterruptedException ignored) {
             Thread.currentThread().interrupt();
             throw failure();
-        } catch (ExecutionException | TimeoutException | RejectedExecutionException ignored) {
+        } catch (ExecutionException error) {
+            if (error.getCause() instanceof HttpFailure rejected) {
+                LOG.warn(
+                        "Network request rejected: host={}, status={}, rateLimitRemaining={}, rateLimitReset={}, retryAfter={}",
+                        uri.getHost(),
+                        rejected.status,
+                        rejected.remaining,
+                        rejected.reset,
+                        rejected.retryAfter);
+                throw rejected;
+            }
+            LOG.warn(
+                    "Network request failed: host={}, exception={}",
+                    uri.getHost(),
+                    error.getCause().getClass().getSimpleName());
+            throw failure();
+        } catch (TimeoutException | RejectedExecutionException error) {
+            LOG.warn(
+                    "Network request failed: host={}, exception={}",
+                    uri.getHost(),
+                    error.getClass().getSimpleName());
             throw failure();
         } finally {
             if (pending != null) {
@@ -134,13 +189,23 @@ final class NetworkHttp {
     }
 
     private static Payload read(
-            HttpResponse<InputStream> response, Set<String> mediaTypes, int maxBytes, Deadline deadline)
+            HttpResponse<InputStream> response,
+            Set<String> mediaTypes,
+            int maxBytes,
+            Deadline deadline,
+            boolean allowChunked)
             throws IOException {
         deadline.remaining();
         var headers = response.headers();
-        if (response.statusCode() != 200
-                || response.body() == null
-                || !headers.allValues("Transfer-Encoding").isEmpty()) {
+        var transfer = headers.allValues("Transfer-Encoding");
+        boolean chunked = allowChunked
+                && transfer.size() == 1
+                && "chunked".equalsIgnoreCase(transfer.getFirst())
+                && headers.allValues("Content-Length").isEmpty();
+        if (response.statusCode() != 200) {
+            throw new HttpFailure(response);
+        }
+        if (response.body() == null || !transfer.isEmpty() && !chunked) {
             throw failure();
         }
         int headerCount = 0;
@@ -164,7 +229,7 @@ final class NetworkHttp {
         try {
             type = MimeTypeUtils.parseMimeType(
                     headers.firstValue("Content-Type").orElseThrow());
-            if (!mediaTypes.contains(type.getType() + "/" + type.getSubtype())
+            if ((!mediaTypes.isEmpty() && !mediaTypes.contains(type.getType() + "/" + type.getSubtype()))
                     || type.getCharset() != null && !type.getCharset().equals(StandardCharsets.UTF_8)) {
                 throw failure();
             }

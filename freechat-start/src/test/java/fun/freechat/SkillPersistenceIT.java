@@ -24,6 +24,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,6 +32,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 import org.apache.ibatis.logging.nologging.NoLoggingImpl;
 import org.apache.ibatis.session.Configuration;
 import org.junit.jupiter.api.AfterAll;
@@ -39,11 +41,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.annotation.AnnotationTransactionAttributeSource;
+import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -112,6 +120,86 @@ class SkillPersistenceIT {
         bob = seedUser();
         files = new RemoteFiles();
         service = replica(bundle -> assertNoTransaction());
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void hiddenFilesAreAbsentFromReviewsPreviewsAndInstalledRevisions(boolean sourceImport) {
+        var visible = input("visible");
+        var submitted = new TreeMap<>(visible);
+        submitted.put(".env", "hidden-secret");
+        submitted.put("references/.cache/data.bin", "x".repeat(SkillBundleValidator.MAX_TOTAL_BYTES + 1));
+        for (int i = 0; i < 20; i++) {
+            submitted.put(".hidden" + i + "/install.sh", "bash ignored");
+        }
+        var reviews = new AtomicInteger();
+        service = replica(bundle -> {
+            assertNoTransaction();
+            assertEquals(visible.keySet(), bundle.files().keySet());
+            assertFalse(bundle.files().values().stream().anyMatch(text -> text.contains("hidden-secret")));
+            reviews.incrementAndGet();
+        });
+        var draft = sourceImport
+                ? service.prepareSource(alice, () -> submitted)
+                : service.prepare(alice, null, null, submitted);
+        assertEquals(visible, draft.bundle().files());
+        assertEquals(
+                new SkillBundleValidator().validate(visible).digest(),
+                draft.bundle().digest());
+        var installed = service.confirm(alice, draft.draftId(), draft.bundle().digest());
+        assertEquals(visible, service.get(alice, installed.skillId()).bundle().files());
+        submitted.put("SKILL.md", input("updated").get("SKILL.md"));
+        var updated = service.update(alice, installed.skillId(), installed.revision(), submitted);
+        assertEquals(submitted.get("SKILL.md"), updated.bundle().files().get("SKILL.md"));
+        assertEquals(2, reviews.get());
+        assertTrue(files.objects.keySet().stream()
+                .allMatch(path -> path.endsWith("/SKILL.md") || path.endsWith("/references/guide.txt")));
+        assertEquals(
+                visible.keySet(),
+                replica(bundle -> {})
+                        .get(alice, installed.skillId())
+                        .bundle()
+                        .files()
+                        .keySet());
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void ordinaryTextNamesAndLooseMarkdownReachReviewAndPersist(boolean sourceImport) {
+        var input = new TreeMap<>(Map.of(
+                "SKILL.md",
+                "# Writing guide\nUse concise prose.\n```unknown\nunfinished",
+                "LICENSE",
+                "Copyright Example",
+                "README.zh-CN.md",
+                "说明",
+                "config/rclone.conf.example",
+                "[local]\ntype = local",
+                "references/写作 指南.data",
+                "短句。"));
+        var reviews = new AtomicInteger();
+        service = replica(bundle -> {
+            assertNoTransaction();
+            assertEquals(input, bundle.files());
+            reviews.incrementAndGet();
+        });
+        var draft =
+                sourceImport ? service.prepareSource(alice, () -> input) : service.prepare(alice, null, null, input);
+        assertEquals("Writing guide", draft.bundle().name());
+        var installed = service.confirm(alice, draft.draftId(), draft.bundle().digest());
+        assertEquals(
+                input,
+                replica(bundle -> {}).get(alice, installed.skillId()).bundle().files());
+        input.put("SKILL.md", "---\nthis header is not: [valid YAML\n---\nKeep instructions concise.");
+        var updated = service.update(alice, installed.skillId(), installed.revision(), input);
+        assertEquals("Imported skill", updated.bundle().name());
+        assertEquals(input, service.get(alice, installed.skillId()).bundle().files());
+        assertEquals(2, reviews.get());
+        input.put("notes.anything", "#!/bin/sh\nrm -rf /tmp/example");
+        assertCode(
+                SKILL_UNSAFE_INSTRUCTIONS, () -> service.update(alice, updated.skillId(), updated.revision(), input));
+        assertEquals(2, reviews.get());
+        assertFalse(service.get(alice, updated.skillId()).bundle().files().containsKey("notes.anything"));
     }
 
     @Test
@@ -248,6 +336,303 @@ class SkillPersistenceIT {
         sql.update(
                 "UPDATE skill_draft SET gmt_create = UTC_TIMESTAMP(6) - INTERVAL 31 MINUTE WHERE user_id = ?", alice);
         assertNotNull(service.prepare(alice, null, null, input("new-window")));
+    }
+
+    @Test
+    void failedSourcesConsumeAttemptsBeforeNinthCallbackAndEmptyManifestsAreCollectible() {
+        AtomicInteger callbacks = new AtomicInteger();
+        var sourceFailure = new SkillException(SKILL_SOURCE_AMBIGUOUS);
+        Supplier<Map<String, String>> source = () -> {
+            assertNoTransaction();
+            callbacks.incrementAndGet();
+            assertEquals(
+                    1,
+                    count(
+                            "SELECT COUNT(*) FROM skill_draft WHERE user_id = ? AND status = 'staging' AND manifest = JSON_OBJECT()",
+                            alice));
+            throw sourceFailure;
+        };
+        for (int i = 0; i < 8; i++) {
+            assertSame(sourceFailure, assertThrows(SkillException.class, () -> service.prepareSource(alice, source)));
+        }
+        assertCode(SKILL_LIMIT_EXCEEDED, () -> service.prepareSource(alice, source));
+        assertEquals(8, callbacks.get());
+        assertEquals(
+                8,
+                count(
+                        "SELECT COUNT(*) FROM skill_draft WHERE user_id = ? AND status = 'rejected' AND manifest = JSON_OBJECT()",
+                        alice));
+        assertEquals(0, files.writes.get());
+        assertEquals(0, files.reads.get());
+        assertTrue(service.list(alice).isEmpty());
+        files.objects.put("private/unrelated.txt", new byte[] {7});
+        files.failDeletes = true;
+        sql.update("UPDATE skill_draft SET gc_after = UTC_TIMESTAMP(6) - INTERVAL 1 SECOND WHERE user_id = ?", alice);
+        service.sweepExpired();
+        assertEquals(8, count("SELECT COUNT(*) FROM skill_draft WHERE user_id = ? AND status = 'cleaned'", alice));
+        assertEquals(0, files.exists.get());
+        assertEquals(0, files.deletes.get());
+        assertCode(SKILL_LIMIT_EXCEEDED, () -> service.prepareSource(alice, source));
+        assertEquals(8, callbacks.get());
+        sql.update("UPDATE skill_draft SET gc_after = UTC_TIMESTAMP(6) - INTERVAL 1 SECOND WHERE user_id = ?", alice);
+        service.sweepExpired();
+        assertEquals(0, count("SELECT COUNT(*) FROM skill_draft WHERE user_id = ?", alice));
+        assertEquals(1, files.objects.size());
+        assertTrue(files.objects.containsKey("private/unrelated.txt"));
+    }
+
+    @Test
+    void inaccessibleOwnersAreRejectedBeforeSourceResolution() {
+        sql.update("UPDATE user SET enabled = 0 WHERE user_id = ?", alice);
+        sql.update("UPDATE user SET locked = 1 WHERE user_id = ?", bob);
+        AtomicInteger callbacks = new AtomicInteger();
+        for (String owner : List.of(alice, bob, uuid())) {
+            assertCode(
+                    SKILL_ACCESS_DENIED,
+                    () -> service.prepareSource(owner, () -> {
+                        callbacks.incrementAndGet();
+                        return input("not-resolved");
+                    }));
+        }
+        assertEquals(0, callbacks.get());
+        assertEquals(0, count("SELECT COUNT(*) FROM skill_draft"));
+        assertEquals(0, files.writes.get());
+    }
+
+    @Test
+    void slowSourceSuspendsCallerTransactionAndDoesNotHoldOwnerLock() throws Exception {
+        var advice = new TransactionInterceptor();
+        advice.setTransactionManager(transactions);
+        advice.setTransactionAttributeSource(new AnnotationTransactionAttributeSource());
+        var proxy = new ProxyFactory(service);
+        proxy.addAdvice(advice);
+        var transactional = (SkillService) proxy.getProxy();
+        var resolving = new CountDownLatch(1);
+        var release = new CountDownLatch(1);
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            var pending = executor.submit(() -> new TransactionTemplate(transactions).execute(status -> {
+                assertTrue(TransactionSynchronizationManager.isActualTransactionActive());
+                var draft = transactional.prepareSource(alice, () -> {
+                    assertNoTransaction();
+                    resolving.countDown();
+                    await(release);
+                    assertNoTransaction();
+                    return input("slow-source");
+                });
+                assertTrue(TransactionSynchronizationManager.isActualTransactionActive());
+                return draft;
+            }));
+            try {
+                assertTrue(resolving.await(20, TimeUnit.SECONDS));
+                assertEquals(
+                        1,
+                        count(
+                                "SELECT COUNT(*) FROM skill_draft WHERE user_id = ? AND status = 'staging' AND manifest = JSON_OBJECT()",
+                                alice));
+                assertEquals(0, files.writes.get());
+                // A second replica must acquire the same owner lock while the source remains blocked.
+                var independent = executor.submit(
+                        () -> replica(bundle -> assertNoTransaction()).prepare(alice, null, null, input("same-owner")));
+                assertNotNull(independent.get(10, TimeUnit.SECONDS));
+                assertFalse(pending.isDone());
+            } finally {
+                release.countDown();
+            }
+            var draft = pending.get(20, TimeUnit.SECONDS);
+            assertEquals(
+                    input("slow-source"),
+                    service.confirm(alice, draft.draftId(), draft.bundle().digest())
+                            .bundle()
+                            .files());
+        }
+    }
+
+    @Test
+    void sourceSnapshotManifestPrecedesWritesAndReviewAndConfirmationUseExactMultipleFiles() {
+        Map<String, String> resolved = new TreeMap<>(input("source-bundle"));
+        resolved.put("notes.md", "Keep punctuation and line endings.\r\nRésumé 中文\r\n");
+        Map<String, String> expected = Map.copyOf(resolved);
+        AtomicInteger callbacks = new AtomicInteger();
+        AtomicInteger reviews = new AtomicInteger();
+        files.beforeWrite = () -> {
+            String manifest = sql.queryForObject(
+                    "SELECT manifest FROM skill_draft WHERE user_id = ? AND status = 'staging'", String.class, alice);
+            assertNotEquals("{}", manifest);
+            for (String path : expected.keySet()) {
+                assertTrue(manifest.contains("\"" + path + "\""));
+            }
+            // Mutation after snapshotting must not affect any later staged or reviewed bytes.
+            resolved.clear();
+        };
+        var draft = replica(bundle -> {
+                    assertNoTransaction();
+                    reviews.incrementAndGet();
+                    assertEquals(expected, bundle.files());
+                    assertEquals(expected.size(), files.objects.size());
+                    expected.forEach((path, content) -> {
+                        byte[] stored = files.objects.entrySet().stream()
+                                .filter(entry -> entry.getKey().endsWith("/" + path))
+                                .findFirst()
+                                .orElseThrow()
+                                .getValue();
+                        assertArrayEquals(content.getBytes(java.nio.charset.StandardCharsets.UTF_8), stored);
+                    });
+                })
+                .prepareSource(alice, () -> {
+                    assertNoTransaction();
+                    callbacks.incrementAndGet();
+                    return resolved;
+                });
+        assertEquals(1, callbacks.get());
+        assertEquals(1, reviews.get());
+        assertEquals(expected.size(), files.writes.get());
+        assertNull(draft.expectedRevision());
+        assertEquals(expected, draft.bundle().files());
+        var installed = service.confirm(alice, draft.draftId(), draft.bundle().digest());
+        assertEquals(draft.bundle(), installed.bundle());
+        assertEquals(installed, replica(bundle -> {}).get(alice, installed.skillId()));
+    }
+
+    @Test
+    void sourceErrorsAndInvalidSnapshotsAreRejectedWithoutWritesOrChangingPriorSkills() {
+        var first = install("original");
+        int writes = files.writes.get();
+        int reads = files.reads.get();
+        var noReview = replica(bundle -> fail("Unresolved sources must never be reviewed"));
+        assertCode(
+                SKILL_SOURCE_UNAVAILABLE,
+                () -> noReview.prepareSource(alice, () -> {
+                    throw new IllegalStateException("private source URL and response body");
+                }));
+        assertCode(
+                SKILL_SOURCE_ANALYSIS_UNAVAILABLE,
+                () -> noReview.prepareSource(alice, () -> {
+                    throw new SkillException(SKILL_SOURCE_ANALYSIS_UNAVAILABLE);
+                }));
+        assertCode(SKILL_INVALID_FORMAT, () -> noReview.prepareSource(alice, () -> null));
+        assertCode(SKILL_INVALID_FORMAT, () -> noReview.prepareSource(alice, () -> Map.of("../SKILL.md", "invalid")));
+        assertEquals(writes, files.writes.get());
+        assertEquals(reads, files.reads.get());
+        assertEquals(
+                4,
+                count(
+                        "SELECT COUNT(*) FROM skill_draft WHERE user_id = ? AND status = 'rejected' AND manifest = JSON_OBJECT()",
+                        alice));
+        assertEquals(first, service.get(alice, first.skillId()));
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+            strings = {"expired", "rejected", "collecting", "missing", "owner-disabled", "owner-locked", "owner-deleted"
+            })
+    void lateSourceResultsCannotStageOrPublishAfterReservationOrOwnerRevocation(String change) {
+        var first = install("original");
+        int writes = files.writes.get();
+        int reads = files.reads.get();
+        SkillException.Code expected =
+                switch (change) {
+                    case "expired" -> SKILL_DRAFT_EXPIRED;
+                    case "missing" -> SKILL_NOT_FOUND;
+                    case "owner-disabled", "owner-locked", "owner-deleted" -> SKILL_ACCESS_DENIED;
+                    default -> SKILL_VERSION_CONFLICT;
+                };
+        var noReview = replica(bundle -> fail("Late source results must never be reviewed"));
+        assertCode(
+                expected,
+                () -> noReview.prepareSource(alice, () -> {
+                    assertNoTransaction();
+                    String draftId = sql.queryForObject(
+                            "SELECT draft_id FROM skill_draft WHERE user_id = ? AND status = 'staging'",
+                            String.class,
+                            alice);
+                    switch (change) {
+                        case "expired" ->
+                            sql.update(
+                                    "UPDATE skill_draft SET expires_at = UTC_TIMESTAMP(6) - INTERVAL 1 SECOND WHERE draft_id = ?",
+                                    draftId);
+                        case "rejected", "collecting" ->
+                            sql.update("UPDATE skill_draft SET status = ? WHERE draft_id = ?", change, draftId);
+                        case "missing" -> sql.update("DELETE FROM skill_draft WHERE draft_id = ?", draftId);
+                        case "owner-disabled" -> sql.update("UPDATE user SET enabled = 0 WHERE user_id = ?", alice);
+                        case "owner-locked" -> sql.update("UPDATE user SET locked = 1 WHERE user_id = ?", alice);
+                        case "owner-deleted" -> sql.update("DELETE FROM user WHERE user_id = ?", alice);
+                        default -> fail("Unknown revocation");
+                    }
+                    return input("too-late");
+                }));
+        assertEquals(writes, files.writes.get());
+        assertEquals(reads, files.reads.get());
+        assertEquals(
+                1,
+                count(
+                        "SELECT COUNT(*) FROM skill_draft WHERE user_id = ? AND status = 'rejected' AND manifest = JSON_OBJECT()",
+                        alice));
+        assertEquals(
+                1,
+                count("SELECT COUNT(*) FROM skill_info WHERE user_id = ? AND revision = ?", alice, first.revision()));
+        String rejectedId = sql.queryForObject(
+                "SELECT draft_id FROM skill_draft WHERE user_id = ? AND status = 'rejected'", String.class, alice);
+        assertCode(
+                change.equals("expired")
+                        ? SKILL_DRAFT_EXPIRED
+                        : change.startsWith("owner-") ? SKILL_ACCESS_DENIED : SKILL_VERSION_CONFLICT,
+                () -> service.confirm(alice, rejectedId, "0".repeat(64)));
+        assertEquals(first, service.get(alice, first.skillId()));
+    }
+
+    @Test
+    void concurrentSourceFailuresRespectOwnerAttemptQuotaAcrossReplicas() throws Exception {
+        AtomicInteger callbacks = new AtomicInteger();
+        var results = race(
+                12,
+                () -> replica(bundle -> fail("Failed sources must never be reviewed"))
+                        .prepareSource(alice, () -> {
+                            assertNoTransaction();
+                            callbacks.incrementAndGet();
+                            throw new SkillException(SKILL_SOURCE_UNAVAILABLE);
+                        }));
+        assertEquals(8, callbacks.get());
+        assertEquals(8, codes(results, SKILL_SOURCE_UNAVAILABLE));
+        assertEquals(4, codes(results, SKILL_LIMIT_EXCEEDED));
+        assertEquals(
+                8,
+                count(
+                        "SELECT COUNT(*) FROM skill_draft WHERE user_id = ? AND status = 'rejected' AND manifest = JSON_OBJECT()",
+                        alice));
+        assertEquals(0, files.writes.get());
+        sql.update(
+                "UPDATE skill_draft SET gmt_create = UTC_TIMESTAMP(6) - INTERVAL 31 MINUTE WHERE user_id = ?", alice);
+        assertNotNull(service.prepareSource(alice, () -> input("new-window")));
+    }
+
+    @Test
+    void concurrentSourceReservationsConsumeLastInstalledSlotBeforeCallbacks() throws Exception {
+        var first = install("seed");
+        for (int i = 0; i < 62; i++) {
+            sql.update("""
+                    INSERT INTO skill_info (skill_id, user_id, revision, name, description, digest, manifest, gmt_create, gmt_modified)
+                    SELECT ?, user_id, revision, name, description, digest, manifest, gmt_create, gmt_modified
+                    FROM skill_info WHERE skill_id = ?
+                    """, uuid(), first.skillId());
+        }
+        AtomicInteger callbacks = new AtomicInteger();
+        Supplier<Map<String, String>> source = () -> {
+            assertNoTransaction();
+            callbacks.incrementAndGet();
+            return input("last-source-slot");
+        };
+        var results = race(4, () -> replica(bundle -> assertNoTransaction()).prepareSource(alice, source));
+        assertEquals(1, callbacks.get());
+        assertEquals(3, codes(results, SKILL_LIMIT_EXCEEDED));
+        var draft = (SkillService.Draft) results.stream()
+                .filter(SkillService.Draft.class::isInstance)
+                .findFirst()
+                .orElseThrow();
+        service.confirm(alice, draft.draftId(), draft.bundle().digest());
+        assertEquals(64, service.list(alice).size());
+        assertCode(SKILL_LIMIT_EXCEEDED, () -> service.prepareSource(alice, source));
+        assertEquals(1, callbacks.get());
+        assertNotNull(service.prepareSource(bob, () -> input("other-owner")));
     }
 
     @Test
@@ -466,15 +851,28 @@ class SkillPersistenceIT {
         assertNull(failure.getCause());
     }
 
+    private static void await(CountDownLatch latch) {
+        try {
+            assertTrue(latch.await(20, TimeUnit.SECONDS));
+        } catch (InterruptedException failure) {
+            Thread.currentThread().interrupt();
+            throw new AssertionError(failure);
+        }
+    }
+
     private static void assertNoTransaction() {
         assertFalse(
                 TransactionSynchronizationManager.isActualTransactionActive(),
-                "No SQL lock may span file/reviewer I/O");
+                "No SQL lock may span source/file/reviewer I/O");
     }
 
     private static final class RemoteFiles implements FileStore {
         final Map<String, byte[]> objects = new ConcurrentHashMap<>();
         final AtomicInteger reads = new AtomicInteger();
+        final AtomicInteger writes = new AtomicInteger();
+        final AtomicInteger exists = new AtomicInteger();
+        final AtomicInteger deletes = new AtomicInteger();
+        volatile Runnable beforeWrite = () -> {};
         volatile boolean failWrites;
         volatile boolean failDeletes;
 
@@ -509,6 +907,8 @@ class SkillPersistenceIT {
         @Override
         public long write(String path, byte[] bytes, Instant modified) throws IOException {
             assertNoTransaction();
+            writes.incrementAndGet();
+            beforeWrite.run();
             if (failWrites) {
                 throw new IOException("private backend diagnostics");
             }
@@ -537,12 +937,14 @@ class SkillPersistenceIT {
         @Override
         public boolean exists(String path) {
             assertNoTransaction();
+            exists.incrementAndGet();
             return objects.containsKey(path);
         }
 
         @Override
         public void delete(String path) throws IOException {
             assertNoTransaction();
+            deletes.incrementAndGet();
             if (failDeletes) {
                 throw new IOException("private delete failure");
             }

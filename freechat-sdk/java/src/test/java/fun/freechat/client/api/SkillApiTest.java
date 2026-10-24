@@ -81,6 +81,19 @@ public class SkillApiTest {
     }
 
     /**
+     * Get Allowed Skill Source Hosts
+     *
+     * Return the effective source hostname allowlist for skill imports. An empty list disables URL imports. GitHub repository and ClawHub skill links use fixed provider APIs to import a pinned document bundle; other allowed sources must return raw text or Markdown.
+     *
+     * @throws ApiException if the Api call fails
+     */
+    @Test
+    public void getSkillAllowedHostsTest() throws ApiException {
+        List<String> response = api.getSkillAllowedHosts();
+        // TODO: test validations
+    }
+
+    /**
      * List My Skills
      *
      * List only the authenticated user&#39;s installed skills.
@@ -96,7 +109,7 @@ public class SkillApiTest {
     /**
      * Prepare Skill Installation
      *
-     * Validate and review pasted/uploaded text documents or a raw document from an operator-approved HTTPS host. Publication requires explicit confirmation of the returned digest.
+     * Analyze an approved source URL with the server-configured LLM, import a pinned GitHub or ClawHub skill bundle or a raw document, and validate and review every file. Also accepts pasted/uploaded text bundles. Publication requires explicit confirmation of the returned digest.
      *
      * @throws ApiException if the Api call fails
      */

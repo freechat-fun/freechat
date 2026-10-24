@@ -36,8 +36,10 @@ class SkillDraftDTO(BaseModel):
     files: Optional[Dict[str, StrictStr]] = Field(default=None, description="Complete staged document set for confirmation")
     digest: Optional[StrictStr] = Field(default=None, description="Digest to supply when confirming this preview")
     expires_at: Optional[datetime] = Field(default=None, description="Confirmation expiry time", alias="expiresAt")
+    source_url: Optional[StrictStr] = Field(default=None, description="Resolved source URL of the imported skill, when installed from a link", alias="sourceUrl")
+    source_revision: Optional[StrictStr] = Field(default=None, description="Pinned repository commit or registry version of the imported bundle", alias="sourceRevision")
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["draftId", "skillId", "expectedRevision", "name", "description", "files", "digest", "expiresAt"]
+    __properties: ClassVar[List[str]] = ["draftId", "skillId", "expectedRevision", "name", "description", "files", "digest", "expiresAt", "sourceUrl", "sourceRevision"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -104,7 +106,9 @@ class SkillDraftDTO(BaseModel):
             "description": obj.get("description"),
             "files": obj.get("files"),
             "digest": obj.get("digest"),
-            "expiresAt": obj.get("expiresAt")
+            "expiresAt": obj.get("expiresAt"),
+            "sourceUrl": obj.get("sourceUrl"),
+            "sourceRevision": obj.get("sourceRevision")
         })
         # store additional fields in additional_properties
         for _key in obj.keys():
