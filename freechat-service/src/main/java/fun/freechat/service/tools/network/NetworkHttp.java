@@ -21,6 +21,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MimeType;
@@ -36,7 +37,7 @@ final class NetworkHttp {
                 thread.setDaemon(true);
                 return thread;
             });
-    private final NetworkPolicy policy;
+    private final Function<String, URI> validateUrl;
     private final Transport transport;
     private final boolean allowChunked;
 
@@ -50,7 +51,15 @@ final class NetworkHttp {
     }
 
     NetworkHttp(NetworkPolicy policy, Transport transport, boolean allowChunked) {
-        this.policy = policy;
+        this(policy::url, transport, allowChunked);
+    }
+
+    NetworkHttp(Function<String, URI> validateUrl, Transport transport) {
+        this(validateUrl, transport, false);
+    }
+
+    private NetworkHttp(Function<String, URI> validateUrl, Transport transport, boolean allowChunked) {
+        this.validateUrl = validateUrl;
         this.transport = transport == null
                 ? request -> CLIENT.send(request, HttpResponse.BodyHandlers.ofInputStream())
                 : transport;
@@ -117,25 +126,27 @@ final class NetworkHttp {
     Payload exchange(
             URI destination, String jsonBody, String apiKey, Set<String> mediaTypes, int maxBytes, Deadline deadline)
             throws IOException {
-        URI uri = policy.url(destination.toString());
-        HttpRequest.Builder builder = HttpRequest.newBuilder(uri)
-                .timeout(Duration.ofNanos(deadline.remaining()))
-                .header("Accept", mediaTypes.isEmpty() ? "*/*" : String.join(", ", mediaTypes))
-                .header("Accept-Encoding", "identity")
-                .header("User-Agent", "FreeChat-Network-Tools/1.0");
-        if (jsonBody != null) {
-            builder.header("Content-Type", "application/json; charset=utf-8")
-                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody, StandardCharsets.UTF_8));
-        }
-        if (apiKey != null) {
-            builder.header("Authorization", "Bearer " + apiKey);
-        }
-        HttpRequest request = builder.build();
         AtomicReference<InputStream> activeBody = new AtomicReference<>();
         Future<Payload> pending = null;
         try {
             deadline.remaining();
             pending = WORKERS.submit(() -> {
+                deadline.remaining();
+                // URL safety may resolve DNS; keep it within the same bounded worker and deadline as HTTP.
+                URI uri = validateUrl.apply(destination.toString());
+                HttpRequest.Builder builder = HttpRequest.newBuilder(uri)
+                        .timeout(Duration.ofNanos(deadline.remaining()))
+                        .header("Accept", mediaTypes.isEmpty() ? "*/*" : String.join(", ", mediaTypes))
+                        .header("Accept-Encoding", "identity")
+                        .header("User-Agent", "FreeChat-Network-Tools/1.0");
+                if (jsonBody != null) {
+                    builder.header("Content-Type", "application/json; charset=utf-8")
+                            .POST(HttpRequest.BodyPublishers.ofString(jsonBody, StandardCharsets.UTF_8));
+                }
+                if (apiKey != null) {
+                    builder.header("Authorization", "Bearer " + apiKey);
+                }
+                HttpRequest request = builder.build();
                 deadline.remaining();
                 HttpResponse<InputStream> response = transport.send(request);
                 try (InputStream body = response.body()) {
@@ -155,7 +166,7 @@ final class NetworkHttp {
             if (error.getCause() instanceof HttpFailure rejected) {
                 LOG.warn(
                         "Network request rejected: host={}, status={}, rateLimitRemaining={}, rateLimitReset={}, retryAfter={}",
-                        uri.getHost(),
+                        destination.getHost(),
                         rejected.status,
                         rejected.remaining,
                         rejected.reset,
@@ -164,13 +175,13 @@ final class NetworkHttp {
             }
             LOG.warn(
                     "Network request failed: host={}, exception={}",
-                    uri.getHost(),
+                    destination.getHost(),
                     error.getCause().getClass().getSimpleName());
             throw failure();
         } catch (TimeoutException | RejectedExecutionException error) {
             LOG.warn(
                     "Network request failed: host={}, exception={}",
-                    uri.getHost(),
+                    destination.getHost(),
                     error.getClass().getSimpleName());
             throw failure();
         } finally {

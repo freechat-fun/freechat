@@ -29,29 +29,37 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class ToolConfigurationTest {
     @ParameterizedTest
-    @ValueSource(booleans = {false, true})
-    void networkToolsBindCamelCaseSettingsAndEnvironmentVariables(boolean environmentVariables) throws Exception {
+    @CsvSource({"false,dash_scope", "true,dash_scope", "false,open_ai", "true,open_ai"})
+    void networkToolsBindCamelCaseSettingsAndEnvironmentVariables(boolean environmentVariables, String provider)
+            throws Exception {
         try (var context = new org.springframework.context.annotation.AnnotationConfigApplicationContext()) {
             var sources = context.getEnvironment().getPropertySources();
             sources.remove(org.springframework.core.env.StandardEnvironment.SYSTEM_PROPERTIES_PROPERTY_SOURCE_NAME);
             sources.remove(org.springframework.core.env.StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME);
-            String endpoint = "https://dashscope.aliyuncs.com/compatible-mode/v1";
+            String baseUrl = provider.equals("open_ai")
+                    ? "https://api.openai.com/v1"
+                    : "https://workspace.cn-beijing.maas.aliyuncs.com/compatible-mode/v1";
+            String modelId = "[" + provider + "]test-model";
             if (environmentVariables) {
                 sources.addFirst(new org.springframework.core.env.SystemEnvironmentPropertySource(
                         "systemEnvironment",
                         Map.of(
-                                "CHAT_TOOLS_WEBFETCH_ALLOWEDHOSTS", "example.com",
-                                "CHAT_TOOLS_WEBSEARCH_ENDPOINT", endpoint,
-                                "CHAT_TOOLS_WEBSEARCH_APIKEY", "test-only-key",
-                                "CHAT_TOOLS_WEBSEARCH_MODEL", "test-model")));
+                                "CHAT_TOOLS_WEBSEARCH_BASEURL",
+                                baseUrl,
+                                "CHAT_TOOLS_WEBSEARCH_APIKEY",
+                                "test-only-key",
+                                "CHAT_TOOLS_WEBSEARCH_MODELID",
+                                modelId)));
             } else {
                 sources.addFirst(new org.springframework.core.env.MapPropertySource(
                         "explicit-settings",
                         Map.of(
-                                "chat.tools.webFetch.allowedHosts", "example.com",
-                                "chat.tools.webSearch.endpoint", endpoint,
-                                "chat.tools.webSearch.apiKey", "test-only-key",
-                                "chat.tools.webSearch.model", "test-model")));
+                                "chat.tools.webSearch.baseUrl",
+                                baseUrl,
+                                "chat.tools.webSearch.apiKey",
+                                "test-only-key",
+                                "chat.tools.webSearch.modelId",
+                                modelId)));
             }
             for (var defaults : new org.springframework.boot.env.YamlPropertySourceLoader()
                     .load(
@@ -67,11 +75,58 @@ class ToolConfigurationTest {
                     (List<?>) org.springframework.test.util.ReflectionTestUtils.getField(configuration, "available");
             assertNotNull(available);
             assertTrue(available.stream()
-                    .anyMatch(tool -> tool instanceof fun.freechat.service.tools.network.WebFetchTool fetch
-                            && fetch.configured()));
+                    .anyMatch(tool -> tool instanceof fun.freechat.service.tools.network.WebFetchTool));
             assertTrue(available.stream()
                     .anyMatch(tool -> tool instanceof fun.freechat.service.tools.network.WebSearchTool search
                             && search.configured()));
+        }
+    }
+
+    @Test
+    void webFetchNeedsNoHostConfigurationButStillRequiresCharacterPermission() {
+        var configuration = new ChatToolsConfiguration("", "", "");
+        var registry = configuration.toolRegistry();
+        var runtime = configuration.inProcessToolRuntime();
+        var context = new ToolContext("chat", "owner", "character", "backend", Duration.ofSeconds(5));
+        assertTrue(runtime.supports(registry.find("web_fetch").orElseThrow(), context));
+        for (Set<String> enabled : List.of(Set.<String>of(), Set.of("web_fetch"))) {
+            var broker = new ToolRuntimeBroker(
+                    registry,
+                    ignored -> new ToolPolicySource.Policy("owner", "character", "backend", enabled, false, false),
+                    List.of(runtime),
+                    Set.of("web_fetch"));
+            assertEquals(enabled.size(), broker.bind(context, Map.of()).size());
+        }
+        assertFalse(CharacterToolConfiguration.parse(null).enabled().contains("web_fetch"));
+    }
+
+    @Test
+    void legacyModelNameSettingDoesNotEnableSearchWithoutAProviderId() throws Exception {
+        try (var context = new org.springframework.context.annotation.AnnotationConfigApplicationContext()) {
+            var sources = context.getEnvironment().getPropertySources();
+            sources.remove(org.springframework.core.env.StandardEnvironment.SYSTEM_PROPERTIES_PROPERTY_SOURCE_NAME);
+            sources.remove(org.springframework.core.env.StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME);
+            sources.addFirst(new org.springframework.core.env.MapPropertySource(
+                    "legacy-settings",
+                    Map.of(
+                            "chat.tools.webSearch.baseUrl", "https://api.openai.com/v1",
+                            "chat.tools.webSearch.apiKey", "test-only-key",
+                            "chat.tools.webSearch.model", "gpt-4.1-mini")));
+            for (var defaults : new org.springframework.boot.env.YamlPropertySourceLoader()
+                    .load(
+                            "application-defaults",
+                            new org.springframework.core.io.ClassPathResource("application.yml"))) {
+                sources.addLast(defaults);
+            }
+            org.springframework.boot.context.properties.source.ConfigurationPropertySources.attach(
+                    context.getEnvironment());
+            context.refresh();
+            var configuration = context.getAutowireCapableBeanFactory().createBean(ChatToolsConfiguration.class);
+            var available =
+                    (List<?>) org.springframework.test.util.ReflectionTestUtils.getField(configuration, "available");
+            assertNotNull(available);
+            assertTrue(available.stream()
+                    .noneMatch(tool -> tool instanceof fun.freechat.service.tools.network.WebSearchTool));
         }
     }
 
@@ -90,7 +145,7 @@ class ToolConfigurationTest {
         ChatSession session =
                 ChatSession.builder().objectsWithTools(List.of(album)).build();
         ToolSpecification registered = session.getToolSpecifications().getFirst();
-        ToolSpecification catalog = new ChatToolsConfiguration("", "", "", "")
+        ToolSpecification catalog = new ChatToolsConfiguration("", "", "")
                 .toolRegistry()
                 .find("find_image")
                 .orElseThrow()

@@ -10,14 +10,15 @@ import java.util.List;
 import java.util.Map;
 
 /** Parses provider tool evidence, never treating message annotations or model-authored links as sources. */
-final class DashScopeSearchResponse {
-    private DashScopeSearchResponse() {}
+final class WebSearchResponse {
+    private WebSearchResponse() {}
 
     private record Parsed(List<JsonNode> items, String fallback) {}
 
     private record Source(String url, boolean opened) {}
 
-    static String result(NetworkHttp.Payload payload, int maxResults, NetworkHttp.Deadline deadline)
+    static String result(
+            NetworkHttp.Payload payload, int maxResults, NetworkHttp.Deadline deadline, WebSearchTool.Provider provider)
             throws IOException {
         Parsed parsed = payload.mediaType().equals("text/event-stream")
                 ? stream(payload.text(), deadline)
@@ -30,18 +31,31 @@ final class DashScopeSearchResponse {
             deadline.remaining();
             switch (item.path("type").asText()) {
                 case "web_search_call" -> {
-                    if (!item.path("status").asText().equals("completed")) {
+                    JsonNode action = item.path("action");
+                    if (!item.path("status").asText().equals("completed") || !action.isObject()) {
                         continue;
                     }
-                    searchCount++;
-                    JsonNode candidates = item.path("action").path("sources");
-                    checkArray(candidates, 128);
-                    for (JsonNode source : candidates) {
-                        addSource(sources, source.path("url"), false);
+                    String actionType = action.path("type").asText();
+                    if (provider == WebSearchTool.Provider.DASH_SCOPE
+                            && action.path("type").isMissingNode()) {
+                        actionType = "search";
+                    }
+                    if (actionType.equals("search")) {
+                        searchCount++;
+                        JsonNode candidates = action.path("sources");
+                        checkArray(candidates, 128);
+                        for (JsonNode source : candidates) {
+                            addSource(sources, source.path("url"), false);
+                        }
+                    } else if (provider == WebSearchTool.Provider.OPEN_AI
+                            && (actionType.equals("open_page") || actionType.equals("find_in_page"))) {
+                        // Reading a page is evidence, but never substitutes for an actual completed search.
+                        addSource(sources, action.path("url"), true);
                     }
                 }
                 case "web_extractor_call" -> {
-                    if (!item.path("status").asText().equals("completed")) {
+                    if (provider != WebSearchTool.Provider.DASH_SCOPE
+                            || !item.path("status").asText().equals("completed")) {
                         continue;
                     }
                     JsonNode urls = item.path("urls");
