@@ -38,7 +38,7 @@ export class ChatApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/chat/memory/{chatId}'
-            .replace('{' + 'chatId' + '}', encodeURIComponent(String(chatId)));
+            .replace('{chatId}', encodeURIComponent(String(chatId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -76,7 +76,7 @@ export class ChatApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/chat/{chatId}'
-            .replace('{' + 'chatId' + '}', encodeURIComponent(String(chatId)));
+            .replace('{chatId}', encodeURIComponent(String(chatId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -114,7 +114,7 @@ export class ChatApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/chat/{characterUid}'
-            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
+            .replace('{characterUid}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -152,7 +152,7 @@ export class ChatApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/chat/memory/usage/{chatId}'
-            .replace('{' + 'chatId' + '}', encodeURIComponent(String(chatId)));
+            .replace('{chatId}', encodeURIComponent(String(chatId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -227,8 +227,8 @@ export class ChatApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/chat/messages/debug/{chatId}/{limit}'
-            .replace('{' + 'chatId' + '}', encodeURIComponent(String(chatId)))
-            .replace('{' + 'limit' + '}', encodeURIComponent(String(limit)));
+            .replace('{chatId}', encodeURIComponent(String(chatId)))
+            .replace('{limit}', encodeURIComponent(String(limit)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -280,9 +280,9 @@ export class ChatApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/chat/messages/debug/{chatId}/{limit}/{offset}'
-            .replace('{' + 'chatId' + '}', encodeURIComponent(String(chatId)))
-            .replace('{' + 'limit' + '}', encodeURIComponent(String(limit)))
-            .replace('{' + 'offset' + '}', encodeURIComponent(String(offset)));
+            .replace('{chatId}', encodeURIComponent(String(chatId)))
+            .replace('{limit}', encodeURIComponent(String(limit)))
+            .replace('{offset}', encodeURIComponent(String(offset)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -320,7 +320,7 @@ export class ChatApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/chat/messages/debug/{chatId}'
-            .replace('{' + 'chatId' + '}', encodeURIComponent(String(chatId)));
+            .replace('{chatId}', encodeURIComponent(String(chatId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -365,8 +365,8 @@ export class ChatApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/chat/messages/{chatId}/{limit}'
-            .replace('{' + 'chatId' + '}', encodeURIComponent(String(chatId)))
-            .replace('{' + 'limit' + '}', encodeURIComponent(String(limit)));
+            .replace('{chatId}', encodeURIComponent(String(chatId)))
+            .replace('{limit}', encodeURIComponent(String(limit)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -418,9 +418,9 @@ export class ChatApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/chat/messages/{chatId}/{limit}/{offset}'
-            .replace('{' + 'chatId' + '}', encodeURIComponent(String(chatId)))
-            .replace('{' + 'limit' + '}', encodeURIComponent(String(limit)))
-            .replace('{' + 'offset' + '}', encodeURIComponent(String(offset)));
+            .replace('{chatId}', encodeURIComponent(String(chatId)))
+            .replace('{limit}', encodeURIComponent(String(limit)))
+            .replace('{offset}', encodeURIComponent(String(offset)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -458,7 +458,7 @@ export class ChatApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/chat/messages/{chatId}'
-            .replace('{' + 'chatId' + '}', encodeURIComponent(String(chatId)));
+            .replace('{chatId}', encodeURIComponent(String(chatId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -503,8 +503,8 @@ export class ChatApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/chat/messages/rollback/{chatId}/{count}'
-            .replace('{' + 'chatId' + '}', encodeURIComponent(String(chatId)))
-            .replace('{' + 'count' + '}', encodeURIComponent(String(count)));
+            .replace('{chatId}', encodeURIComponent(String(chatId)))
+            .replace('{count}', encodeURIComponent(String(count)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -549,8 +549,8 @@ export class ChatApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/chat/send/assistant/{chatId}/{assistantUid}'
-            .replace('{' + 'chatId' + '}', encodeURIComponent(String(chatId)))
-            .replace('{' + 'assistantUid' + '}', encodeURIComponent(String(assistantUid)));
+            .replace('{chatId}', encodeURIComponent(String(chatId)))
+            .replace('{assistantUid}', encodeURIComponent(String(assistantUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -595,7 +595,7 @@ export class ChatApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/chat/send/{chatId}'
-            .replace('{' + 'chatId' + '}', encodeURIComponent(String(chatId)));
+            .replace('{chatId}', encodeURIComponent(String(chatId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -699,8 +699,8 @@ export class ChatApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/chat/send/stream/assistant/{chatId}/{assistantUid}'
-            .replace('{' + 'chatId' + '}', encodeURIComponent(String(chatId)))
-            .replace('{' + 'assistantUid' + '}', encodeURIComponent(String(assistantUid)));
+            .replace('{chatId}', encodeURIComponent(String(chatId)))
+            .replace('{assistantUid}', encodeURIComponent(String(assistantUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -745,7 +745,7 @@ export class ChatApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/chat/send/stream/{chatId}'
-            .replace('{' + 'chatId' + '}', encodeURIComponent(String(chatId)));
+            .replace('{chatId}', encodeURIComponent(String(chatId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -801,7 +801,7 @@ export class ChatApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/chat/{chatId}'
-            .replace('{' + 'chatId' + '}', encodeURIComponent(String(chatId)));
+            .replace('{chatId}', encodeURIComponent(String(chatId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.PUT);

@@ -32,7 +32,7 @@ export class RagApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/rag/task/cancel/{taskId}'
-            .replace('{' + 'taskId' + '}', encodeURIComponent(String(taskId)));
+            .replace('{taskId}', encodeURIComponent(String(taskId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -77,7 +77,7 @@ export class RagApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/rag/task/{characterUid}'
-            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
+            .replace('{characterUid}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -126,7 +126,7 @@ export class RagApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/rag/task/{taskId}'
-            .replace('{' + 'taskId' + '}', encodeURIComponent(String(taskId)));
+            .replace('{taskId}', encodeURIComponent(String(taskId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -164,7 +164,7 @@ export class RagApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/rag/task/{taskId}'
-            .replace('{' + 'taskId' + '}', encodeURIComponent(String(taskId)));
+            .replace('{taskId}', encodeURIComponent(String(taskId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -202,7 +202,7 @@ export class RagApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/rag/task/status/{taskId}'
-            .replace('{' + 'taskId' + '}', encodeURIComponent(String(taskId)));
+            .replace('{taskId}', encodeURIComponent(String(taskId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -240,7 +240,7 @@ export class RagApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/rag/tasks/{characterUid}'
-            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
+            .replace('{characterUid}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -278,7 +278,7 @@ export class RagApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/rag/task/start/{taskId}'
-            .replace('{' + 'taskId' + '}', encodeURIComponent(String(taskId)));
+            .replace('{taskId}', encodeURIComponent(String(taskId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -323,7 +323,7 @@ export class RagApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/rag/task/{taskId}'
-            .replace('{' + 'taskId' + '}', encodeURIComponent(String(taskId)));
+            .replace('{taskId}', encodeURIComponent(String(taskId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.PUT);

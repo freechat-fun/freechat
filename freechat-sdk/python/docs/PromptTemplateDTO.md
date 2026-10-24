@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **template** | **str** | Prompt text template content, choose one between this and chatTemplate field, priority: template &gt; chatTemplate | [optional]
 **chat_template** | [**ChatPromptContentDTO**](ChatPromptContentDTO.md) | Prompt chat template content | [optional]
-**variables** | **Dict[str, object]** | Variables applied to the template, can be empty | [optional]
+**variables** | **Dict[str, Optional[object]]** | Variables applied to the template, can be empty | [optional]
 **format** | **str** | Prompt format: mustache (default) | f_string | [optional]
 
 ## Example

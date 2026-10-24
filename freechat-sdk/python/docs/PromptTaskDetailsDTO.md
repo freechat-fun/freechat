@@ -16,7 +16,7 @@ Name | Type | Description | Notes
 **model_id** | **str** | Model identifier | [optional]
 **api_key_name** | **str** | API-KEY name | [optional]
 **api_key_value** | **str** | API-KEY value | [optional]
-**params** | **Dict[str, object]** | Model call parameters | [optional]
+**params** | **Dict[str, Optional[object]]** | Model call parameters | [optional]
 **cron** | **str** | Task scheduling configuration which compatible with Quartz cron format | [optional]
 **status** | **str** | Task execution status: pending | running | succeeded | failed | canceled | [optional]
 **ext** | **str** | Additional information, JSON format | [optional]

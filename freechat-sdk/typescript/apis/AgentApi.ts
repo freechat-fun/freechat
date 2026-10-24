@@ -132,7 +132,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/agent/clone/{agentId}'
-            .replace('{' + 'agentId' + '}', encodeURIComponent(String(agentId)));
+            .replace('{agentId}', encodeURIComponent(String(agentId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -362,7 +362,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/agent/{agentId}'
-            .replace('{' + 'agentId' + '}', encodeURIComponent(String(agentId)));
+            .replace('{agentId}', encodeURIComponent(String(agentId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -448,7 +448,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/agent/details/{agentId}'
-            .replace('{' + 'agentId' + '}', encodeURIComponent(String(agentId)));
+            .replace('{agentId}', encodeURIComponent(String(agentId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -486,7 +486,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/agent/summary/{agentId}'
-            .replace('{' + 'agentId' + '}', encodeURIComponent(String(agentId)));
+            .replace('{agentId}', encodeURIComponent(String(agentId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -524,7 +524,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/agent/versions/{name}'
-            .replace('{' + 'name' + '}', encodeURIComponent(String(name)));
+            .replace('{name}', encodeURIComponent(String(name)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -569,8 +569,8 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/agent/publish/{agentId}/{visibility}'
-            .replace('{' + 'agentId' + '}', encodeURIComponent(String(agentId)))
-            .replace('{' + 'visibility' + '}', encodeURIComponent(String(visibility)));
+            .replace('{agentId}', encodeURIComponent(String(agentId)))
+            .replace('{visibility}', encodeURIComponent(String(visibility)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -711,7 +711,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/agent/{agentId}'
-            .replace('{' + 'agentId' + '}', encodeURIComponent(String(agentId)));
+            .replace('{agentId}', encodeURIComponent(String(agentId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.PUT);

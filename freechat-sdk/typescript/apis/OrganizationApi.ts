@@ -106,7 +106,7 @@ export class OrganizationApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/org/manage/{username}/owners'
-            .replace('{' + 'username' + '}', encodeURIComponent(String(username)));
+            .replace('{username}', encodeURIComponent(String(username)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -151,7 +151,7 @@ export class OrganizationApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/org/manage/{username}/subordinates'
-            .replace('{' + 'username' + '}', encodeURIComponent(String(username)));
+            .replace('{username}', encodeURIComponent(String(username)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -268,7 +268,7 @@ export class OrganizationApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/org/authority/{username}'
-            .replace('{' + 'username' + '}', encodeURIComponent(String(username)));
+            .replace('{username}', encodeURIComponent(String(username)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -306,7 +306,7 @@ export class OrganizationApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/org/manage/{username}/subordinates'
-            .replace('{' + 'username' + '}', encodeURIComponent(String(username)));
+            .replace('{username}', encodeURIComponent(String(username)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -351,7 +351,7 @@ export class OrganizationApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/org/authority/{username}'
-            .replace('{' + 'username' + '}', encodeURIComponent(String(username)));
+            .replace('{username}', encodeURIComponent(String(username)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.PUT);
@@ -407,7 +407,7 @@ export class OrganizationApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/org/manage/{username}/owners'
-            .replace('{' + 'username' + '}', encodeURIComponent(String(username)));
+            .replace('{username}', encodeURIComponent(String(username)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.PUT);
@@ -463,7 +463,7 @@ export class OrganizationApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/org/manage/{username}/subordinates'
-            .replace('{' + 'username' + '}', encodeURIComponent(String(username)));
+            .replace('{username}', encodeURIComponent(String(username)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.PUT);

@@ -1,8 +1,8 @@
 # freechat-sdk
 
 FreeChat OpenAPI Definition
-- API version: 2.10.0-beta
-  - Generator version: 7.21.0
+- API version: 2.10.0
+  - Generator version: 7.26.0
 
 # FreeChat: Create Friends for Yourself with AI
 
@@ -21,6 +21,7 @@ It is recommended to run [Ollama](https://ollama.com/) + FreeChat locally to tes
 - Extensively employs distributed technologies and caching to support **high concurrency** access.
 - Provides flexible character customization options, supports direct intervention in prompts, and supports **configuring multiple backends for each character**.
 - **Offers a comprehensive range of Open APIs**, with [more than 180 methods](https://freechat.fun/w/docs) and provides java/python/typescript SDKs. These methods enable easy construction of systems for end-users.
+- Supports **tools, skills** and **connectors(MCP)**.
 - Supports setting **RAG** (Retrieval Augmented Generation) for characters.
 - Supports **long-term memory, preset memory** for characters.
 - Supports characters evoking **proactive chat**.
@@ -279,7 +280,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>2.10.0-beta</version>
+  <version>2.10.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -295,7 +296,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:2.10.0-beta"
+     implementation "fun.freechat:freechat-sdk:2.10.0"
   }
 ```
 
@@ -309,7 +310,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-2.10.0-beta.jar`
+* `target/freechat-sdk-2.10.0.jar`
 * `target/lib/*.jar`
 
 ## Getting Started

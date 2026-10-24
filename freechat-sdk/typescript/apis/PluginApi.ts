@@ -275,7 +275,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/plugin/{pluginId}'
-            .replace('{' + 'pluginId' + '}', encodeURIComponent(String(pluginId)));
+            .replace('{pluginId}', encodeURIComponent(String(pluginId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -361,7 +361,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/plugin/details/{pluginId}'
-            .replace('{' + 'pluginId' + '}', encodeURIComponent(String(pluginId)));
+            .replace('{pluginId}', encodeURIComponent(String(pluginId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -399,7 +399,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/plugin/summary/{pluginId}'
-            .replace('{' + 'pluginId' + '}', encodeURIComponent(String(pluginId)));
+            .replace('{pluginId}', encodeURIComponent(String(pluginId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -437,7 +437,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/plugin/refresh/{pluginId}'
-            .replace('{' + 'pluginId' + '}', encodeURIComponent(String(pluginId)));
+            .replace('{pluginId}', encodeURIComponent(String(pluginId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.PUT);
@@ -578,7 +578,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/plugin/{pluginId}'
-            .replace('{' + 'pluginId' + '}', encodeURIComponent(String(pluginId)));
+            .replace('{pluginId}', encodeURIComponent(String(pluginId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.PUT);

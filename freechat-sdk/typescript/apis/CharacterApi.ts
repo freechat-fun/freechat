@@ -45,7 +45,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/backend/{characterUid}'
-            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
+            .replace('{characterUid}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -190,7 +190,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/clone/{characterId}'
-            .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)));
+            .replace('{characterId}', encodeURIComponent(String(characterId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -372,7 +372,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/{characterId}'
-            .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)));
+            .replace('{characterId}', encodeURIComponent(String(characterId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -410,7 +410,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/name/{name}'
-            .replace('{' + 'name' + '}', encodeURIComponent(String(name)));
+            .replace('{name}', encodeURIComponent(String(name)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -448,7 +448,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/uid/{characterUid}'
-            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
+            .replace('{characterUid}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -486,7 +486,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/document/{key}'
-            .replace('{' + 'key' + '}', encodeURIComponent(String(key)));
+            .replace('{key}', encodeURIComponent(String(key)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -524,7 +524,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/picture/{key}'
-            .replace('{' + 'key' + '}', encodeURIComponent(String(key)));
+            .replace('{key}', encodeURIComponent(String(key)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -562,7 +562,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/video/{key}'
-            .replace('{' + 'key' + '}', encodeURIComponent(String(key)));
+            .replace('{key}', encodeURIComponent(String(key)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -607,8 +607,8 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/voice/{characterBackendId}/{key}'
-            .replace('{' + 'characterBackendId' + '}', encodeURIComponent(String(characterBackendId)))
-            .replace('{' + 'key' + '}', encodeURIComponent(String(key)));
+            .replace('{characterBackendId}', encodeURIComponent(String(characterBackendId)))
+            .replace('{key}', encodeURIComponent(String(key)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -646,7 +646,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/exists/name/{name}'
-            .replace('{' + 'name' + '}', encodeURIComponent(String(name)));
+            .replace('{name}', encodeURIComponent(String(name)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -686,7 +686,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/export/{characterId}'
-            .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)));
+            .replace('{characterId}', encodeURIComponent(String(characterId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -729,7 +729,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/details/{characterId}'
-            .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)));
+            .replace('{characterId}', encodeURIComponent(String(characterId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -767,7 +767,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/latest/{name}'
-            .replace('{' + 'name' + '}', encodeURIComponent(String(name)));
+            .replace('{name}', encodeURIComponent(String(name)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -805,7 +805,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/summary/{characterId}'
-            .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)));
+            .replace('{characterId}', encodeURIComponent(String(characterId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -843,7 +843,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/backend/default/{characterUid}'
-            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
+            .replace('{characterUid}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -945,7 +945,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/backend/ids/{characterUid}'
-            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
+            .replace('{characterUid}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -983,7 +983,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/backends/{characterUid}'
-            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
+            .replace('{characterUid}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -1021,7 +1021,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/documents/{characterUid}'
-            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
+            .replace('{characterUid}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -1059,7 +1059,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/pictures/{characterUid}'
-            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
+            .replace('{characterUid}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -1097,7 +1097,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/versions/{name}'
-            .replace('{' + 'name' + '}', encodeURIComponent(String(name)));
+            .replace('{name}', encodeURIComponent(String(name)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -1135,7 +1135,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/videos/{characterUid}'
-            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
+            .replace('{characterUid}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -1173,7 +1173,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/voices/{characterBackendId}'
-            .replace('{' + 'characterBackendId' + '}', encodeURIComponent(String(characterBackendId)));
+            .replace('{characterBackendId}', encodeURIComponent(String(characterBackendId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -1211,7 +1211,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/create/name/{desired}'
-            .replace('{' + 'desired' + '}', encodeURIComponent(String(desired)));
+            .replace('{desired}', encodeURIComponent(String(desired)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -1256,8 +1256,8 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/publish/{characterId}/{visibility}'
-            .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)))
-            .replace('{' + 'visibility' + '}', encodeURIComponent(String(visibility)));
+            .replace('{characterId}', encodeURIComponent(String(characterId)))
+            .replace('{visibility}', encodeURIComponent(String(visibility)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -1295,7 +1295,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/publish/{characterId}'
-            .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)));
+            .replace('{characterId}', encodeURIComponent(String(characterId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -1333,7 +1333,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/backend/{characterBackendId}'
-            .replace('{' + 'characterBackendId' + '}', encodeURIComponent(String(characterBackendId)));
+            .replace('{characterBackendId}', encodeURIComponent(String(characterBackendId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -1515,7 +1515,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/backend/default/{characterBackendId}'
-            .replace('{' + 'characterBackendId' + '}', encodeURIComponent(String(characterBackendId)));
+            .replace('{characterBackendId}', encodeURIComponent(String(characterBackendId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.PUT);
@@ -1560,7 +1560,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/{characterId}'
-            .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)));
+            .replace('{characterId}', encodeURIComponent(String(characterId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.PUT);
@@ -1616,7 +1616,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/backend/{characterBackendId}'
-            .replace('{' + 'characterBackendId' + '}', encodeURIComponent(String(characterBackendId)));
+            .replace('{characterBackendId}', encodeURIComponent(String(characterBackendId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.PUT);
@@ -1672,7 +1672,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/avatar/{characterUid}'
-            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
+            .replace('{characterUid}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -1744,7 +1744,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/document/{characterUid}'
-            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
+            .replace('{characterUid}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -1816,7 +1816,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/picture/{characterUid}'
-            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
+            .replace('{characterUid}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -1888,7 +1888,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/video/{characterUid}'
-            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
+            .replace('{characterUid}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -1960,7 +1960,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v2/character/voice/{characterBackendId}'
-            .replace('{' + 'characterBackendId' + '}', encodeURIComponent(String(characterBackendId)));
+            .replace('{characterBackendId}', encodeURIComponent(String(characterBackendId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);

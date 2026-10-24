@@ -8,7 +8,7 @@
 # ! openapi-generator (https://openapi-generator.tech)
 # ! FROM OPENAPI SPECIFICATION IN JSON.
 # !
-# ! Generator version: 7.21.0
+# ! Generator version: 7.26.0
 # !
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -1330,7 +1330,7 @@ build_request_path() {
 print_help() {
 cat <<EOF
 
-${BOLD}${WHITE}FreeChat OpenAPI Definition command line client (API version 2.10.0-beta)${OFF}
+${BOLD}${WHITE}FreeChat OpenAPI Definition command line client (API version 2.10.0)${OFF}
 
 ${BOLD}${WHITE}Usage${OFF}
 
@@ -1700,7 +1700,7 @@ echo -e "              \\t\\t\\t\\t(e.g. 'https://127.0.0.1')"
 ##############################################################################
 print_about() {
     echo ""
-    echo -e "${BOLD}${WHITE}FreeChat OpenAPI Definition command line client (API version 2.10.0-beta)${OFF}"
+    echo -e "${BOLD}${WHITE}FreeChat OpenAPI Definition command line client (API version 2.10.0)${OFF}"
     echo ""
     echo -e "License: "
     echo -e "Contact: "
@@ -1724,6 +1724,7 @@ It is recommended to run [Ollama](https://ollama.com/) + FreeChat locally to tes
 - Extensively employs distributed technologies and caching to support **high concurrency** access.
 - Provides flexible character customization options, supports direct intervention in prompts, and supports **configuring multiple backends for each character**.
 - **Offers a comprehensive range of Open APIs**, with [more than 180 methods](https://freechat.fun/w/docs) and provides java/python/typescript SDKs. These methods enable easy construction of systems for end-users.
+- Supports **tools, skills** and **connectors(MCP)**.
 - Supports setting **RAG** (Retrieval Augmented Generation) for characters.
 - Supports **long-term memory, preset memory** for characters.
 - Supports characters evoking **proactive chat**.
@@ -1958,7 +1959,7 @@ echo "$appdescription" | paste -sd' ' - | fold -sw 80
 ##############################################################################
 print_version() {
     echo ""
-    echo -e "${BOLD}FreeChat OpenAPI Definition command line client (API version 2.10.0-beta)${OFF}"
+    echo -e "${BOLD}FreeChat OpenAPI Definition command line client (API version 2.10.0)${OFF}"
     echo ""
 }
 
