@@ -39,54 +39,54 @@ public class LongTermMemoryProperties implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        positive(idleTimeout, "idle-timeout");
-        positive(scanInterval, "scan-interval");
-        positive(turnLease, "turn-lease");
-        positive(leaseRenewInterval, "lease-renew-interval");
-        positive(turnMaxDuration, "turn-max-duration");
-        positive(jobMaxDuration, "job-max-duration");
-        positive(extractionClaimLease, "extraction-claim-lease");
-        positive(extractionTimeout, "extraction-timeout");
-        positive(foregroundTimeout, "foreground-timeout");
-        positive(retryInitialDelay, "retry-initial-delay");
-        positive(retryMaxDelay, "retry-max-delay");
-        positive(gcGracePeriod, "gc-grace-period");
-        positive(workersPerNode, "workers-per-node");
-        positive(dispatchBatchSize, "dispatch-batch-size");
-        positive(maxForegroundBatches, "max-foreground-batches");
-        positive(maxAttempts, "max-attempts");
-        positive(extractionMaxInputTokens, "extraction-max-input-tokens");
-        positive(maxInputTokens, "max-input-tokens");
-        positive(responseReserveTokens, "response-reserve-tokens");
-        positive(summaryMaxTokens, "summary-max-tokens");
-        positive(profileMaxTokens, "profile-max-tokens");
-        positive(profileMaxFacts, "profile-max-facts");
-        positive(searchQueryMaxChars, "search-query-max-chars");
-        positive(toolResultMaxTokens, "tool-result-max-tokens");
-        positive(toolTotalMaxTokens, "tool-total-max-tokens");
-        positive(maxToolRounds, "max-tool-rounds");
+        positive(idleTimeout, "idleTimeout");
+        positive(scanInterval, "scanInterval");
+        positive(turnLease, "turnLease");
+        positive(leaseRenewInterval, "leaseRenewInterval");
+        positive(turnMaxDuration, "turnMaxDuration");
+        positive(jobMaxDuration, "jobMaxDuration");
+        positive(extractionClaimLease, "extractionClaimLease");
+        positive(extractionTimeout, "extractionTimeout");
+        positive(foregroundTimeout, "foregroundTimeout");
+        positive(retryInitialDelay, "retryInitialDelay");
+        positive(retryMaxDelay, "retryMaxDelay");
+        positive(gcGracePeriod, "gcGracePeriod");
+        positive(workersPerNode, "workersPerNode");
+        positive(dispatchBatchSize, "dispatchBatchSize");
+        positive(maxForegroundBatches, "maxForegroundBatches");
+        positive(maxAttempts, "maxAttempts");
+        positive(extractionMaxInputTokens, "extractionMaxInputTokens");
+        positive(maxInputTokens, "maxInputTokens");
+        positive(responseReserveTokens, "responseReserveTokens");
+        positive(summaryMaxTokens, "summaryMaxTokens");
+        positive(profileMaxTokens, "profileMaxTokens");
+        positive(profileMaxFacts, "profileMaxFacts");
+        positive(searchQueryMaxChars, "searchQueryMaxChars");
+        positive(toolResultMaxTokens, "toolResultMaxTokens");
+        positive(toolTotalMaxTokens, "toolTotalMaxTokens");
+        positive(maxToolRounds, "maxToolRounds");
         require(
                 Double.isFinite(searchMinScore) && searchMinScore >= 0 && searchMinScore <= 1,
-                "search-min-score must be between zero and one");
+                "searchMinScore must be between zero and one");
         require(
                 leaseRenewInterval.compareTo(turnLease) < 0 && leaseRenewInterval.compareTo(extractionClaimLease) < 0,
-                "lease-renew-interval must be shorter than both leases");
-        require(turnLease.compareTo(turnMaxDuration) <= 0, "turn-lease exceeds turn-max-duration");
-        require(extractionTimeout.compareTo(jobMaxDuration) <= 0, "extraction-timeout exceeds job-max-duration");
-        require(foregroundTimeout.compareTo(turnMaxDuration) <= 0, "foreground-timeout exceeds turn-max-duration");
-        require(extractionTimeout.compareTo(foregroundTimeout) <= 0, "extraction-timeout exceeds foreground-timeout");
+                "leaseRenewInterval must be shorter than both leases");
+        require(turnLease.compareTo(turnMaxDuration) <= 0, "turnLease exceeds turnMaxDuration");
+        require(extractionTimeout.compareTo(jobMaxDuration) <= 0, "extractionTimeout exceeds jobMaxDuration");
+        require(foregroundTimeout.compareTo(turnMaxDuration) <= 0, "foregroundTimeout exceeds turnMaxDuration");
+        require(extractionTimeout.compareTo(foregroundTimeout) <= 0, "extractionTimeout exceeds foregroundTimeout");
         require(
                 gcGracePeriod.compareTo(turnMaxDuration) > 0 && gcGracePeriod.compareTo(jobMaxDuration) > 0,
-                "gc-grace-period must exceed both absolute lifetimes");
-        require(retryInitialDelay.compareTo(retryMaxDelay) <= 0, "retry-initial-delay exceeds retry-max-delay");
-        require(toolResultMaxTokens <= toolTotalMaxTokens, "tool-result-max-tokens exceeds tool-total-max-tokens");
+                "gcGracePeriod must exceed both absolute lifetimes");
+        require(retryInitialDelay.compareTo(retryMaxDelay) <= 0, "retryInitialDelay exceeds retryMaxDelay");
+        require(toolResultMaxTokens <= toolTotalMaxTokens, "toolResultMaxTokens exceeds toolTotalMaxTokens");
         require(
                 (long) summaryMaxTokens + 2L * profileMaxTokens < maxInputTokens,
                 "fixed memory must leave room for conversation input");
         require(
                 (long) summaryMaxTokens + 2L * profileMaxTokens < extractionMaxInputTokens,
                 "extraction budget must leave room for source evidence");
-        require(tokenEstimatorBean != null, "token-estimator-bean must not be null");
+        require(tokenEstimatorBean != null, "tokenEstimatorBean must not be null");
     }
 
     private static void positive(Duration value, String name) {
@@ -103,7 +103,7 @@ public class LongTermMemoryProperties implements InitializingBean {
 
     private static void require(boolean condition, String message) {
         if (!condition) {
-            throw new IllegalArgumentException("chat.memory.long-term." + message);
+            throw new IllegalArgumentException("chat.memory.longTerm." + message);
         }
     }
 }

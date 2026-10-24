@@ -3,19 +3,109 @@ package fun.freechat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import fun.freechat.service.skills.SkillManagementModel;
+import java.io.IOException;
 import java.util.Map;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
+import org.springframework.boot.env.YamlPropertySourceLoader;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.core.env.SystemEnvironmentPropertySource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.util.ReflectionTestUtils;
 
 class SkillModelConfigurationTest {
+    private static void loadApplicationDefaults(AnnotationConfigApplicationContext context) throws IOException {
+        for (var source :
+                new YamlPropertySourceLoader().load("application-defaults", new ClassPathResource("application.yml"))) {
+            context.getEnvironment().getPropertySources().addLast(source);
+        }
+        ConfigurationPropertySources.attach(context.getEnvironment());
+    }
+
     @org.junit.jupiter.api.Test
-    void githubTokenEnvironmentVariableOverridesBlankDefault() {
+    void allApplicationPropertyNamesUseLowerCamelCase() throws IOException {
+        for (var source :
+                new YamlPropertySourceLoader().load("application", new ClassPathResource("application.yml"))) {
+            var properties = (org.springframework.core.env.EnumerablePropertySource<?>) source;
+            for (String name : properties.getPropertyNames()) {
+                for (String part : name.replaceAll("\\[\\d+\\]", "").split("\\.")) {
+                    assertTrue(part.matches("[a-z][a-zA-Z0-9]*"), name);
+                }
+            }
+        }
+    }
+
+    @org.junit.jupiter.api.Test
+    void lowerCamelCasePropertiesOverrideDefaultsAndEnvironment() throws IOException {
+        try (var context = new AnnotationConfigApplicationContext()) {
+            var sources = context.getEnvironment().getPropertySources();
+            sources.remove(StandardEnvironment.SYSTEM_PROPERTIES_PROPERTY_SOURCE_NAME);
+            sources.replace(
+                    StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME,
+                    new SystemEnvironmentPropertySource(
+                            StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME,
+                            Map.of("SKILLS_REVIEW_MODELID", "[ollama]environment-model")));
+            sources.addFirst(new MapPropertySource(
+                    "explicit-settings",
+                    Map.of(
+                            "skills.review.modelId", "[ollama]camel-model",
+                            "skills.review.baseUrl", "http://127.0.0.1:11434",
+                            "skills.sources.allowedHosts", "clawhub.ai",
+                            "skills.sources.githubToken", "test-only-token")));
+            loadApplicationDefaults(context);
+            context.registerBean(fun.freechat.service.skills.SkillSourceAnalyzer.class, () -> (input, candidates) -> 0);
+            context.register(SkillManagementModel.class, fun.freechat.service.tools.network.SkillSourceFetcher.class);
+            context.refresh();
+            assertEquals("[ollama]camel-model", context.getEnvironment().getProperty("skills.review.modelId"));
+            assertNotNull(ReflectionTestUtils.getField(context.getBean(SkillManagementModel.class), "model"));
+            var fetcher = context.getBean(fun.freechat.service.tools.network.SkillSourceFetcher.class);
+            assertEquals(java.util.List.of("clawhub.ai"), fetcher.allowedHosts());
+            assertEquals("test-only-token", ReflectionTestUtils.getField(fetcher, "githubToken"));
+        }
+    }
+
+    @org.junit.jupiter.api.Test
+    void lowerCamelCaseMultipartLimitsBindToSpringProperties() throws IOException {
+        try (var context = new AnnotationConfigApplicationContext()) {
+            context.getEnvironment()
+                    .getPropertySources()
+                    .remove(StandardEnvironment.SYSTEM_PROPERTIES_PROPERTY_SOURCE_NAME);
+            context.getEnvironment()
+                    .getPropertySources()
+                    .remove(StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME);
+            loadApplicationDefaults(context);
+            var multipart = org.springframework.boot.context.properties.bind.Binder.get(context.getEnvironment())
+                    .bind(
+                            "spring.servlet.multipart",
+                            org.springframework.boot.servlet.autoconfigure.MultipartProperties.class)
+                    .get();
+            assertEquals(10L * 1024 * 1024, multipart.getMaxFileSize().toBytes());
+            assertEquals(20L * 1024 * 1024, multipart.getMaxRequestSize().toBytes());
+        }
+    }
+
+    @org.junit.jupiter.api.Test
+    void defaultsRemainUnconfiguredWithoutEnvironmentVariables() throws IOException {
+        try (var context = new AnnotationConfigApplicationContext()) {
+            var sources = context.getEnvironment().getPropertySources();
+            sources.remove(StandardEnvironment.SYSTEM_PROPERTIES_PROPERTY_SOURCE_NAME);
+            sources.remove(StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME);
+            loadApplicationDefaults(context);
+            context.registerBean(fun.freechat.service.skills.SkillSourceAnalyzer.class, () -> (input, candidates) -> 0);
+            context.register(SkillManagementModel.class, fun.freechat.service.tools.network.SkillSourceFetcher.class);
+            context.refresh();
+            assertNull(ReflectionTestUtils.getField(context.getBean(SkillManagementModel.class), "model"));
+            var fetcher = context.getBean(fun.freechat.service.tools.network.SkillSourceFetcher.class);
+            assertNull(ReflectionTestUtils.getField(fetcher, "githubToken"));
+            assertEquals(java.util.List.of("clawhub.ai", "github.com"), fetcher.allowedHosts());
+        }
+    }
+
+    @org.junit.jupiter.api.Test
+    void githubTokenEnvironmentVariableOverridesBlankDefault() throws IOException {
         try (var context = new AnnotationConfigApplicationContext()) {
             var environment = context.getEnvironment();
             environment.getPropertySources().remove(StandardEnvironment.SYSTEM_PROPERTIES_PROPERTY_SOURCE_NAME);
@@ -25,11 +115,12 @@ class SkillModelConfigurationTest {
                             StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME,
                             new SystemEnvironmentPropertySource(
                                     StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME,
-                                    Map.of("SKILLS_SOURCES_GITHUB_TOKEN", "test-only-token")));
-            environment
-                    .getPropertySources()
-                    .addLast(new MapPropertySource("application-defaults", Map.of("skills.sources.github-token", "")));
-            ConfigurationPropertySources.attach(environment);
+                                    Map.of(
+                                            "SKILLS_SOURCES_GITHUBTOKEN",
+                                            "test-only-token",
+                                            "SKILLS_SOURCES_ALLOWEDHOSTS",
+                                            "github.com")));
+            loadApplicationDefaults(context);
             context.registerBean(fun.freechat.service.skills.SkillSourceAnalyzer.class, () -> (input, candidates) -> 0);
             context.register(fun.freechat.service.tools.network.SkillSourceFetcher.class);
             context.refresh();
@@ -84,7 +175,7 @@ class SkillModelConfigurationTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"open_ai", "dash_scope", "ollama"})
-    void documentedEnvironmentVariablesOverrideEmptyApplicationDefaults(String provider) {
+    void documentedEnvironmentVariablesOverrideEmptyApplicationDefaults(String provider) throws IOException {
         try (var context = new AnnotationConfigApplicationContext()) {
             var environment = context.getEnvironment();
             environment.getPropertySources().remove(StandardEnvironment.SYSTEM_PROPERTIES_PROPERTY_SOURCE_NAME);
@@ -94,29 +185,18 @@ class SkillModelConfigurationTest {
                     .addFirst(new SystemEnvironmentPropertySource(
                             StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME,
                             Map.of(
-                                    "SKILLS_REVIEW_MODEL_ID",
+                                    "SKILLS_REVIEW_MODELID",
                                     "[" + provider + "]fixture",
-                                    "SKILLS_REVIEW_BASE_URL",
+                                    "SKILLS_REVIEW_BASEURL",
                                     provider.equals("ollama") ? "http://127.0.0.1:11434" : "https://example.invalid/v1",
-                                    "SKILLS_REVIEW_API_KEY",
+                                    "SKILLS_REVIEW_APIKEY",
                                     provider.equals("ollama") ? "" : "test-only-key")));
-            environment
-                    .getPropertySources()
-                    .addLast(new MapPropertySource(
-                            "application-defaults",
-                            Map.of(
-                                    "skills.review.model-id",
-                                    "",
-                                    "skills.review.base-url",
-                                    "",
-                                    "skills.review.api-key",
-                                    "")));
-            ConfigurationPropertySources.attach(environment);
+            loadApplicationDefaults(context);
             context.register(SkillManagementModel.class);
             context.refresh();
             assertNotNull(ReflectionTestUtils.getField(context.getBean(SkillManagementModel.class), "model"));
-            assertEquals("[" + provider + "]fixture", environment.getProperty("skills.review.model-id"));
-            if (provider.equals("ollama")) assertEquals("", environment.getProperty("skills.review.api-key"));
+            assertEquals("[" + provider + "]fixture", environment.getProperty("skills.review.modelId"));
+            if (provider.equals("ollama")) assertEquals("", environment.getProperty("skills.review.apiKey"));
         }
     }
 }

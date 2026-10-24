@@ -66,9 +66,9 @@ public final class SkillManagementModel implements DisposableBean {
 
     @Autowired
     public SkillManagementModel(
-            @Value("${skills.review.model-id:}") String modelId,
-            @Value("${skills.review.api-key:}") String apiKey,
-            @Value("${skills.review.base-url:}") String baseUrl) {
+            @Value("${skills.review.modelId:}") String modelId,
+            @Value("${skills.review.apiKey:}") String apiKey,
+            @Value("${skills.review.baseUrl:}") String baseUrl) {
         this(serverModel(modelId, apiKey, baseUrl), DEADLINE);
     }
 

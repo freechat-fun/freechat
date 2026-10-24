@@ -354,11 +354,11 @@ class ModelSkillSourceAnalyzerTest {
                     .addFirst(new org.springframework.core.env.SystemEnvironmentPropertySource(
                             "skill-env",
                             Map.of(
-                                    "SKILLS_REVIEW_MODEL_ID",
+                                    "SKILLS_REVIEW_MODELID",
                                     "[" + provider + "]configured-model",
-                                    "SKILLS_REVIEW_BASE_URL",
+                                    "SKILLS_REVIEW_BASEURL",
                                     "http://127.0.0.1:11434",
-                                    "SKILLS_REVIEW_API_KEY",
+                                    "SKILLS_REVIEW_APIKEY",
                                     provider.equals("ollama") ? "" : "test-only-key")));
             context.register(SkillManagementModel.class);
             context.refresh();

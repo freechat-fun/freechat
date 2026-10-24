@@ -3,17 +3,27 @@ package fun.freechat.config;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import fun.freechat.service.chat.memory.LongTermMemoryProperties;
+import java.beans.PropertyDescriptor;
+import java.io.IOException;
 import java.time.Duration;
+import java.util.Map;
+import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.convert.ApplicationConversionService;
+import org.springframework.boot.env.YamlPropertySourceLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.StandardEnvironment;
+import org.springframework.core.env.SystemEnvironmentPropertySource;
+import org.springframework.core.io.ClassPathResource;
 
 class LongTermMemoryConfigTest {
-    private static final String PREFIX = "chat.memory.long-term.";
+    private static final String PREFIX = "chat.memory.longTerm.";
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
             .withInitializer(context -> {
@@ -40,37 +50,87 @@ class LongTermMemoryConfigTest {
     }
 
     @Test
+    void bindsAllConfiguredValuesFromApplicationYaml() throws IOException {
+        var yamlSources =
+                new YamlPropertySourceLoader().load("applicationYaml", new ClassPathResource("application.yml"));
+        contextRunner
+                .withInitializer(context -> yamlSources.forEach(
+                        source -> context.getEnvironment().getPropertySources().addLast(source)))
+                .run(context -> {
+                    assertThat(context).hasNotFailed().hasSingleBean(LongTermMemoryProperties.class);
+                    BeanWrapper properties = new BeanWrapperImpl(context.getBean(LongTermMemoryProperties.class));
+                    for (PropertyDescriptor setting : properties.getPropertyDescriptors()) {
+                        if (setting.getWriteMethod() == null) {
+                            continue;
+                        }
+                        String propertyName = PREFIX + setting.getName();
+                        // Check raw YAML keys so matching Java defaults cannot hide a missing camel-case setting.
+                        Object configuredValue = yamlSources.stream()
+                                .map(source -> source.getProperty(propertyName))
+                                .filter(Objects::nonNull)
+                                .findFirst()
+                                .orElse(null);
+                        assertThat(configuredValue).as(propertyName).isNotNull();
+                        assertThat(properties.getPropertyValue(setting.getName()))
+                                .as(propertyName)
+                                .isEqualTo(ApplicationConversionService.getSharedInstance()
+                                        .convert(configuredValue, setting.getPropertyType()));
+                    }
+                });
+    }
+
+    @Test
+    void standardEnvironmentVariableOverridesApplicationYamlDefault() throws IOException {
+        var yamlSources =
+                new YamlPropertySourceLoader().load("applicationYaml", new ClassPathResource("application.yml"));
+        contextRunner
+                .withInitializer(context -> {
+                    var sources = context.getEnvironment().getPropertySources();
+                    yamlSources.forEach(sources::addLast);
+                    sources.addFirst(new SystemEnvironmentPropertySource(
+                            StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME,
+                            Map.of("CHAT_MEMORY_LONGTERM_IDLETIMEOUT", "PT2H")));
+                })
+                .run(context -> {
+                    assertThat(context).hasNotFailed().hasSingleBean(LongTermMemoryProperties.class);
+                    LongTermMemoryProperties properties = context.getBean(LongTermMemoryProperties.class);
+                    assertThat(properties.getIdleTimeout()).isEqualTo(Duration.ofHours(2));
+                    assertThat(properties.getScanInterval()).isEqualTo(Duration.ofSeconds(30));
+                });
+    }
+
+    @Test
     void bindsCustomDurationsAndAllOtherSettingsWithoutApplicationServices() {
         contextRunner
                 .withPropertyValues(
-                        PREFIX + "idle-timeout=PT2H",
-                        PREFIX + "scan-interval=750ms",
-                        PREFIX + "workers-per-node=3",
-                        PREFIX + "dispatch-batch-size=25",
-                        PREFIX + "turn-lease=40s",
-                        PREFIX + "lease-renew-interval=5s",
-                        PREFIX + "turn-max-duration=20m",
-                        PREFIX + "job-max-duration=PT15M",
-                        PREFIX + "extraction-claim-lease=3m",
-                        PREFIX + "extraction-timeout=PT25S",
-                        PREFIX + "foreground-timeout=45s",
-                        PREFIX + "max-foreground-batches=3",
-                        PREFIX + "max-attempts=7",
-                        PREFIX + "retry-initial-delay=2s",
-                        PREFIX + "retry-max-delay=PT2M",
-                        PREFIX + "extraction-max-input-tokens=7000",
-                        PREFIX + "max-input-tokens=10000",
-                        PREFIX + "response-reserve-tokens=1500",
-                        PREFIX + "summary-max-tokens=600",
-                        PREFIX + "profile-max-tokens=400",
-                        PREFIX + "profile-max-facts=20",
-                        PREFIX + "search-min-score=0.75",
-                        PREFIX + "search-query-max-chars=1500",
-                        PREFIX + "tool-result-max-tokens=800",
-                        PREFIX + "tool-total-max-tokens=2400",
-                        PREFIX + "max-tool-rounds=4",
-                        PREFIX + "gc-grace-period=2d",
-                        PREFIX + "token-estimator-bean=testTokenEstimator")
+                        PREFIX + "idleTimeout=PT2H",
+                        PREFIX + "scanInterval=750ms",
+                        PREFIX + "workersPerNode=3",
+                        PREFIX + "dispatchBatchSize=25",
+                        PREFIX + "turnLease=40s",
+                        PREFIX + "leaseRenewInterval=5s",
+                        PREFIX + "turnMaxDuration=20m",
+                        PREFIX + "jobMaxDuration=PT15M",
+                        PREFIX + "extractionClaimLease=3m",
+                        PREFIX + "extractionTimeout=PT25S",
+                        PREFIX + "foregroundTimeout=45s",
+                        PREFIX + "maxForegroundBatches=3",
+                        PREFIX + "maxAttempts=7",
+                        PREFIX + "retryInitialDelay=2s",
+                        PREFIX + "retryMaxDelay=PT2M",
+                        PREFIX + "extractionMaxInputTokens=7000",
+                        PREFIX + "maxInputTokens=10000",
+                        PREFIX + "responseReserveTokens=1500",
+                        PREFIX + "summaryMaxTokens=600",
+                        PREFIX + "profileMaxTokens=400",
+                        PREFIX + "profileMaxFacts=20",
+                        PREFIX + "searchMinScore=0.75",
+                        PREFIX + "searchQueryMaxChars=1500",
+                        PREFIX + "toolResultMaxTokens=800",
+                        PREFIX + "toolTotalMaxTokens=2400",
+                        PREFIX + "maxToolRounds=4",
+                        PREFIX + "gcGracePeriod=2d",
+                        PREFIX + "tokenEstimatorBean=testTokenEstimator")
                 .run(context -> {
                     assertThat(context).hasNotFailed().hasSingleBean(LongTermMemoryProperties.class);
                     LongTermMemoryProperties properties = context.getBean(LongTermMemoryProperties.class);
@@ -109,24 +169,24 @@ class LongTermMemoryConfigTest {
     @CsvSource(
             delimiter = '|',
             value = {
-                "idle-timeout=0ms|idle-timeout must be between one millisecond and one year",
-                "idle-timeout=-1ms|idle-timeout must be between one millisecond and one year",
-                "idle-timeout=PT0.000999999S|idle-timeout must be between one millisecond and one year",
-                "scan-interval=P366D|scan-interval must be between one millisecond and one year",
-                "workers-per-node=0|workers-per-node must be positive",
-                "max-attempts=-1|max-attempts must be positive",
-                "search-min-score=NaN|search-min-score must be between zero and one",
-                "search-min-score=Infinity|search-min-score must be between zero and one",
-                "search-min-score=-Infinity|search-min-score must be between zero and one",
-                "search-min-score=-0.01|search-min-score must be between zero and one",
-                "search-min-score=1.01|search-min-score must be between zero and one",
-                "lease-renew-interval=60s|lease-renew-interval must be shorter than both leases",
-                "extraction-claim-lease=15s|lease-renew-interval must be shorter than both leases",
-                "gc-grace-period=10m|gc-grace-period must exceed both absolute lifetimes",
-                "retry-initial-delay=31m|retry-initial-delay exceeds retry-max-delay",
-                "max-input-tokens=1792|fixed memory must leave room for conversation input",
-                "extraction-max-input-tokens=1792|extraction budget must leave room for source evidence",
-                "tool-result-max-tokens=4097|tool-result-max-tokens exceeds tool-total-max-tokens"
+                "idleTimeout=0ms|idleTimeout must be between one millisecond and one year",
+                "idleTimeout=-1ms|idleTimeout must be between one millisecond and one year",
+                "idleTimeout=PT0.000999999S|idleTimeout must be between one millisecond and one year",
+                "scanInterval=P366D|scanInterval must be between one millisecond and one year",
+                "workersPerNode=0|workersPerNode must be positive",
+                "maxAttempts=-1|maxAttempts must be positive",
+                "searchMinScore=NaN|searchMinScore must be between zero and one",
+                "searchMinScore=Infinity|searchMinScore must be between zero and one",
+                "searchMinScore=-Infinity|searchMinScore must be between zero and one",
+                "searchMinScore=-0.01|searchMinScore must be between zero and one",
+                "searchMinScore=1.01|searchMinScore must be between zero and one",
+                "leaseRenewInterval=60s|leaseRenewInterval must be shorter than both leases",
+                "extractionClaimLease=15s|leaseRenewInterval must be shorter than both leases",
+                "gcGracePeriod=10m|gcGracePeriod must exceed both absolute lifetimes",
+                "retryInitialDelay=31m|retryInitialDelay exceeds retryMaxDelay",
+                "maxInputTokens=1792|fixed memory must leave room for conversation input",
+                "extractionMaxInputTokens=1792|extraction budget must leave room for source evidence",
+                "toolResultMaxTokens=4097|toolResultMaxTokens exceeds toolTotalMaxTokens"
             })
     void invalidBoundSettingsFailContextInitialization(String property, String message) {
         contextRunner.withPropertyValues(PREFIX + property).run(context -> {
@@ -139,7 +199,7 @@ class LongTermMemoryConfigTest {
 
     @Test
     void malformedDurationFailsBinding() {
-        contextRunner.withPropertyValues(PREFIX + "idle-timeout=not-a-duration").run(context -> {
+        contextRunner.withPropertyValues(PREFIX + "idleTimeout=not-a-duration").run(context -> {
             assertThat(context).hasFailed();
             assertThat(context.getStartupFailure()).hasRootCauseInstanceOf(IllegalArgumentException.class);
         });
@@ -147,7 +207,7 @@ class LongTermMemoryConfigTest {
 
     @Test
     void acceptsExplicitEmptyEstimatorName() {
-        contextRunner.withPropertyValues(PREFIX + "token-estimator-bean=").run(context -> {
+        contextRunner.withPropertyValues(PREFIX + "tokenEstimatorBean=").run(context -> {
             assertThat(context).hasNotFailed().hasSingleBean(LongTermMemoryProperties.class);
             assertThat(context.getBean(LongTermMemoryProperties.class).getTokenEstimatorBean())
                     .isEmpty();

@@ -76,7 +76,7 @@ test('late responses retain locale-independent keys rather than stale translatio
 test('source rate limits preserve HTTP 429 and retranslate from messageKey', async () => {
   const i18n = await translations();
   const key =
-    'The skill source rate limit has been reached. Try again later. For GitHub, ask an administrator to configure skills.sources.github-token.';
+    'The skill source rate limit has been reached. Try again later. For GitHub, ask an administrator to configure skills.sources.githubToken.';
   for (const body of [
     { errorCode: 'SKILL_SOURCE_RATE_LIMITED' },
     JSON.stringify({ errorCode: 'SKILL_SOURCE_RATE_LIMITED' }),
@@ -152,7 +152,7 @@ test('missing management configuration has actionable bilingual guidance', async
     missing.message,
     /server-side skill management model is missing or invalid/
   );
-  assert.match(missing.message, /skills.review.model-id/);
+  assert.match(missing.message, /skills.review.modelId/);
   assert.doesNotMatch(missing.message, /temporarily/);
   await i18n.changeLanguage('zh');
   assert.match(i18n.t(missing.messageKey), /尚未配置或配置无效/);
