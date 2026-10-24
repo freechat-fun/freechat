@@ -18,6 +18,8 @@ import Chats from './pages/chat/Chats';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Skills from './pages/skill/Skills';
 import SkillInfo from './pages/skill/SkillInfo';
+import Connectors from './pages/connector/Connectors';
+import ConnectorInfo from './pages/connector/ConnectorInfo';
 
 const sidebarRoutes = [
   {
@@ -47,6 +49,14 @@ const sidebarRoutes = [
   {
     path: 'w/skill/:id',
     element: <SkillInfo />,
+  },
+  {
+    path: 'w/connectors',
+    element: <Connectors />,
+  },
+  {
+    path: 'w/connector/:id',
+    element: <ConnectorInfo />,
   },
   {
     path: 'w/prompt/:id',

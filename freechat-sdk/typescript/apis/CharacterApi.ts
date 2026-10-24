@@ -672,14 +672,16 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
      * Export character configuration in tar.gz format, including settings, documents and pictures.
      * Export Character Configuration
      * @param characterId Character identifier
+     * @param includeConnectors Include credentialless connector definitions (character owner only)
      */
-    public async exportCharacter(characterId: number, _options?: Configuration): Promise<RequestContext> {
+    public async exportCharacter(characterId: number, includeConnectors?: boolean, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'characterId' is not null or undefined
         if (characterId === null || characterId === undefined) {
             throw new RequiredError("CharacterApi", "exportCharacter", "characterId");
         }
+
 
 
         // Path Params
@@ -689,6 +691,11 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
         requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+        // Query Params
+        if (includeConnectors !== undefined) {
+            requestContext.setQueryParam("includeConnectors", ObjectSerializer.serialize(includeConnectors, "boolean", ""));
+        }
 
 
         let authMethod: SecurityAuthentication | undefined;

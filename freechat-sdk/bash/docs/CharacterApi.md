@@ -593,7 +593,7 @@ Export character configuration in tar.gz format, including settings, documents a
 ### Example
 
 ```bash
-freechat-cli exportCharacter characterId=value
+freechat-cli exportCharacter characterId=value  includeConnectors=value
 ```
 
 ### Parameters
@@ -602,6 +602,7 @@ freechat-cli exportCharacter characterId=value
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **characterId** | **integer** | Character identifier | [default to null]
+ **includeConnectors** | **boolean** | Include credentialless connector definitions (character owner only) | [optional] [default to false]
 
 ### Return type
 

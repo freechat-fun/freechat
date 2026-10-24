@@ -181,6 +181,12 @@ _freechat-cli()
     operations["streamSendAssistant"]=1
     operations["streamSendMessage"]=1
     operations["updateChat"]=1
+    operations["createConnector"]=1
+    operations["deleteConnector"]=1
+    operations["getConnector"]=1
+    operations["listConnectors"]=1
+    operations["testConnector"]=1
+    operations["updateConnector"]=1
     operations["encryptText"]=1
     operations["addStatistic"]=1
     operations["getScore"]=1
@@ -345,7 +351,7 @@ _freechat-cli()
     operation_parameters["deleteCharacterVideo"]="key= "
     operation_parameters["deleteCharacterVoice"]="characterBackendId= key= "
     operation_parameters["existsCharacterName"]="name= "
-    operation_parameters["exportCharacter"]="characterId= "
+    operation_parameters["exportCharacter"]="characterId= includeConnectors= "
     operation_parameters["getCharacterDetails"]="characterId= "
     operation_parameters["getCharacterLatestIdByName"]="name= "
     operation_parameters["getCharacterSummary"]="characterId= "
@@ -391,6 +397,12 @@ _freechat-cli()
     operation_parameters["streamSendAssistant"]="chatId= assistantUid= "
     operation_parameters["streamSendMessage"]="chatId= "
     operation_parameters["updateChat"]="chatId= "
+    operation_parameters["createConnector"]=""
+    operation_parameters["deleteConnector"]="connectorId= expectedRevision= "
+    operation_parameters["getConnector"]="connectorId= "
+    operation_parameters["listConnectors"]=""
+    operation_parameters["testConnector"]="connectorId= expectedRevision= "
+    operation_parameters["updateConnector"]="connectorId= "
     operation_parameters["encryptText"]="text= "
     operation_parameters["addStatistic"]="infoType= infoId= statsType= delta= "
     operation_parameters["getScore"]="infoType= infoId= "
@@ -488,6 +500,8 @@ _freechat-cli()
 
     # An associative array of possible values for enum parameters
     declare -A operation_parameters_enum_values
+    operation_parameters_enum_values["exportCharacter::includeConnectors"]="true false"
+    operation_parameters_enum_values["exportCharacter::includeConnectors"]="true false"
 
     #
     # Check if this is OSX and use special __osx_init_completion function

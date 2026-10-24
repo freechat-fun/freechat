@@ -122,13 +122,18 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
             var streaming = new MemoryStreamingModel(session.getStreamingChatModel(), memory, lifetime);
             ChatSession invocation = session.forInvocation(
                     memory, streaming, List.of(recall), properties.getMaxToolRounds(), lifetime::check);
-            memory.tools(invocation.getToolSpecifications());
-            memory.add(SystemMessage.from(prompts.apply(
-                    invocation.getPrompt().getSystem(), invocation.getVariables(), invocation.getPromptFormat())));
-            if (reconciliation.throughId() == 0) {
-                examples.forEach(memory::addExample);
+            try {
+                memory.tools(invocation.getToolSpecifications());
+                memory.add(SystemMessage.from(prompts.apply(
+                        invocation.getPrompt().getSystem(), invocation.getVariables(), invocation.getPromptFormat())));
+                if (reconciliation.throughId() == 0) {
+                    examples.forEach(memory::addExample);
+                }
+                return Optional.of(new Binding(invocation, memory, lifetime));
+            } catch (RuntimeException | Error failure) {
+                invocation.closeConnectors();
+                throw failure;
             }
-            return Optional.of(new Binding(invocation, memory, lifetime));
         } catch (Throwable failure) {
             try {
                 if (lifetime != null) {

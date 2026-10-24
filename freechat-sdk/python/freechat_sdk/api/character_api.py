@@ -16,7 +16,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 from typing_extensions import Annotated
 
 from pydantic import Field, StrictBool, StrictBytes, StrictInt, StrictStr
-from typing import List, Tuple, Union
+from typing import List, Optional, Tuple, Union
 from typing_extensions import Annotated
 from freechat_sdk.models.character_backend_dto import CharacterBackendDTO
 from freechat_sdk.models.character_backend_details_dto import CharacterBackendDetailsDTO
@@ -4074,6 +4074,7 @@ class CharacterApi:
     def export_character(
         self,
         character_id: Annotated[int, Field(strict=True, gt=0, description="Character identifier")],
+        include_connectors: Annotated[Optional[StrictBool], Field(description="Include credentialless connector definitions (character owner only)")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -4093,6 +4094,8 @@ class CharacterApi:
 
         :param character_id: Character identifier (required)
         :type character_id: int
+        :param include_connectors: Include credentialless connector definitions (character owner only)
+        :type include_connectors: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -4117,6 +4120,7 @@ class CharacterApi:
 
         _param = self._export_character_serialize(
             character_id=character_id,
+            include_connectors=include_connectors,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -4141,6 +4145,7 @@ class CharacterApi:
     def export_character_with_http_info(
         self,
         character_id: Annotated[int, Field(strict=True, gt=0, description="Character identifier")],
+        include_connectors: Annotated[Optional[StrictBool], Field(description="Include credentialless connector definitions (character owner only)")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -4160,6 +4165,8 @@ class CharacterApi:
 
         :param character_id: Character identifier (required)
         :type character_id: int
+        :param include_connectors: Include credentialless connector definitions (character owner only)
+        :type include_connectors: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -4184,6 +4191,7 @@ class CharacterApi:
 
         _param = self._export_character_serialize(
             character_id=character_id,
+            include_connectors=include_connectors,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -4208,6 +4216,7 @@ class CharacterApi:
     def export_character_without_preload_content(
         self,
         character_id: Annotated[int, Field(strict=True, gt=0, description="Character identifier")],
+        include_connectors: Annotated[Optional[StrictBool], Field(description="Include credentialless connector definitions (character owner only)")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -4227,6 +4236,8 @@ class CharacterApi:
 
         :param character_id: Character identifier (required)
         :type character_id: int
+        :param include_connectors: Include credentialless connector definitions (character owner only)
+        :type include_connectors: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -4251,6 +4262,7 @@ class CharacterApi:
 
         _param = self._export_character_serialize(
             character_id=character_id,
+            include_connectors=include_connectors,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -4270,6 +4282,7 @@ class CharacterApi:
     def _export_character_serialize(
         self,
         character_id,
+        include_connectors,
         _request_auth,
         _content_type,
         _headers,
@@ -4294,6 +4307,10 @@ class CharacterApi:
         if character_id is not None:
             _path_params['characterId'] = character_id
         # process the query parameters
+        if include_connectors is not None:
+
+            _query_params.append(('includeConnectors', include_connectors))
+
         # process the header parameters
         # process the form parameters
         # process the body parameter

@@ -12,6 +12,7 @@ import {
   AppMetaForAdminApi,
   CharacterApi,
   ChatApi,
+  ConnectorApi,
   EncryptionManagerForAdminApi,
   AgentApi,
   InteractiveStatisticsApi,
@@ -38,6 +39,7 @@ type FreeChatApiContextValue = {
   appMetaForAdminApi: AppMetaForAdminApi | undefined;
   characterApi: CharacterApi | undefined;
   chatApi: ChatApi | undefined;
+  connectorApi: ConnectorApi | undefined;
   encryptionManagerForAdminApi: EncryptionManagerForAdminApi | undefined;
   agentApi: AgentApi | undefined;
   interactiveStatisticsApi: InteractiveStatisticsApi | undefined;
@@ -60,6 +62,7 @@ const undefinedContext: FreeChatApiContextValue = {
   appMetaForAdminApi: undefined,
   characterApi: undefined,
   chatApi: undefined,
+  connectorApi: undefined,
   encryptionManagerForAdminApi: undefined,
   agentApi: undefined,
   interactiveStatisticsApi: undefined,
@@ -93,6 +96,7 @@ const FreeChatApiProvider: React.FC<
   const appMetaForAdminApi = new AppMetaForAdminApi(configuration);
   const characterApi = new CharacterApi(configuration);
   const chatApi = new ChatApi(configuration);
+  const connectorApi = new ConnectorApi(configuration);
   const encryptionManagerForAdminApi = new EncryptionManagerForAdminApi(
     configuration
   );
@@ -118,6 +122,7 @@ const FreeChatApiProvider: React.FC<
         appMetaForAdminApi,
         characterApi,
         chatApi,
+        connectorApi,
         encryptionManagerForAdminApi,
         agentApi,
         interactiveStatisticsApi,

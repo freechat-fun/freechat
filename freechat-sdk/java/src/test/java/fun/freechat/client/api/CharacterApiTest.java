@@ -261,7 +261,8 @@ public class CharacterApiTest {
     @Test
     public void exportCharacterTest() throws ApiException {
         Long characterId = null;
-        api.exportCharacter(characterId);
+        Boolean includeConnectors = null;
+        api.exportCharacter(characterId, includeConnectors);
         // TODO: test validations
     }
 

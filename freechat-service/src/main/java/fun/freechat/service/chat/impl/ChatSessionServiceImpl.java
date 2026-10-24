@@ -175,6 +175,9 @@ public class ChatSessionServiceImpl implements ChatSessionService {
     @Autowired
     private fun.freechat.service.skills.SkillRuntimeBinder skillRuntimeBinder;
 
+    @Autowired
+    private fun.freechat.service.connectors.ConnectorRuntimeBinder connectorRuntimeBinder;
+
     private synchronized Lock getLock(Cache cache, String chatId) {
         if (cache == null) {
             return new ReentrantLock();
@@ -474,6 +477,8 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     .toolBinder(
                             toolRuntimeBroker.binder(chatId, context.getUserId(), characterUid, backend.getBackendId()))
                     .skillBinder(skillRuntimeBinder.binder(
+                            chatId, context.getUserId(), characterUid, backend.getBackendId()))
+                    .connectorBinder(connectorRuntimeBinder.binder(
                             chatId, context.getUserId(), characterUid, backend.getBackendId()))
                     .build();
         } catch (RuntimeException | IOException e) {

@@ -1276,6 +1276,14 @@ class MemoryModelResolverTest {
         org.springframework.test.util.ReflectionTestUtils.setField(sessions, "memoryModels", resolver);
         org.springframework.test.util.ReflectionTestUtils.setField(
                 sessions, "skillRuntimeBinder", fake(fun.freechat.service.skills.SkillRuntimeBinder.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(
+                sessions,
+                "connectorRuntimeBinder",
+                new fun.freechat.service.connectors.ConnectorRuntimeBinder(
+                        ignored -> new fun.freechat.service.connectors.ConnectorPolicySource.Policy(
+                                "owner", java.util.Set.of(), false),
+                        fake(fun.freechat.service.connectors.ConnectorService.class),
+                        fake(fun.freechat.service.connectors.ConnectorClientFactory.class)));
         org.springframework.test.util.ReflectionTestUtils.setField(sessions, "chatMemoryService", memories);
         org.springframework.test.util.ReflectionTestUtils.setField(sessions, "homeUrl", "https://example.test");
         org.springframework.test.util.ReflectionTestUtils.setField(

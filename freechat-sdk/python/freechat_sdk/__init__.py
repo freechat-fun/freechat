@@ -26,6 +26,7 @@ __all__ = [
     "AppMetaForAdminApi",
     "CharacterApi",
     "ChatApi",
+    "ConnectorApi",
     "EncryptionManagerForAdminApi",
     "InteractiveStatisticsApi",
     "OrganizationApi",
@@ -78,6 +79,10 @@ __all__ = [
     "ChatSessionDTO",
     "ChatToolCallDTO",
     "ChatUpdateDTO",
+    "ConnectorDetailsDTO",
+    "ConnectorTestDTO",
+    "ConnectorToolDTO",
+    "ConnectorWriteDTO",
     "HotTagDTO",
     "InteractiveStatsDTO",
     "LlmResultDTO",
@@ -127,6 +132,7 @@ from freechat_sdk.api.app_config_for_admin_api import AppConfigForAdminApi as Ap
 from freechat_sdk.api.app_meta_for_admin_api import AppMetaForAdminApi as AppMetaForAdminApi
 from freechat_sdk.api.character_api import CharacterApi as CharacterApi
 from freechat_sdk.api.chat_api import ChatApi as ChatApi
+from freechat_sdk.api.connector_api import ConnectorApi as ConnectorApi
 from freechat_sdk.api.encryption_manager_for_admin_api import EncryptionManagerForAdminApi as EncryptionManagerForAdminApi
 from freechat_sdk.api.interactive_statistics_api import InteractiveStatisticsApi as InteractiveStatisticsApi
 from freechat_sdk.api.organization_api import OrganizationApi as OrganizationApi
@@ -183,6 +189,10 @@ from freechat_sdk.models.chat_prompt_content_dto import ChatPromptContentDTO as 
 from freechat_sdk.models.chat_session_dto import ChatSessionDTO as ChatSessionDTO
 from freechat_sdk.models.chat_tool_call_dto import ChatToolCallDTO as ChatToolCallDTO
 from freechat_sdk.models.chat_update_dto import ChatUpdateDTO as ChatUpdateDTO
+from freechat_sdk.models.connector_details_dto import ConnectorDetailsDTO as ConnectorDetailsDTO
+from freechat_sdk.models.connector_test_dto import ConnectorTestDTO as ConnectorTestDTO
+from freechat_sdk.models.connector_tool_dto import ConnectorToolDTO as ConnectorToolDTO
+from freechat_sdk.models.connector_write_dto import ConnectorWriteDTO as ConnectorWriteDTO
 from freechat_sdk.models.hot_tag_dto import HotTagDTO as HotTagDTO
 from freechat_sdk.models.interactive_stats_dto import InteractiveStatsDTO as InteractiveStatsDTO
 from freechat_sdk.models.llm_result_dto import LlmResultDTO as LlmResultDTO

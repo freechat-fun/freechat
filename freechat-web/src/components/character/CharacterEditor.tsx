@@ -73,7 +73,13 @@ import { HelpIcon } from '../../components/icon';
 import { createPromptForCharacter } from '../../libs/chat_utils';
 import { getCompressedImage } from '../../libs/ui_utils';
 import { objectsEqual } from '../../libs/js_utils';
-import { exportCharacter } from '../../libs/character_utils';
+import CharacterConnectorSelector from './CharacterConnectorSelector';
+import CharacterExportDialog from './CharacterExportDialog';
+import {
+  normalizeConnectorError,
+  parseCharacterConnectorExt,
+  setCharacterConnectorIds,
+} from '../../libs/connector_utils';
 import {
   normalizeSkillError,
   parseCharacterSkillExt,
@@ -92,6 +98,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
     'account',
     'button',
     'skill',
+    'connector',
   ]);
   const { accountApi, promptApi, promptTaskApi, characterApi, chatApi } =
     useFreeChatApiContext();
@@ -117,6 +124,10 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
   const [defaultScene, setDefaultScene] = useState('');
   const [ext, setExt] = useState<string>();
   const [enabledSkillIds, setEnabledSkillIds] = useState<string[]>([]);
+  const [enabledConnectorIds, setEnabledConnectorIds] = useState<string[]>([]);
+  const [toolFree, setToolFree] = useState(false);
+  const [connectorSaveErrorKey, setConnectorSaveErrorKey] = useState<string>();
+  const [exporting, setExporting] = useState(false);
   const [extError, setExtError] = useState(false);
   const [navigationTarget, setNavigationTarget] = useState<string>();
 
@@ -188,10 +199,17 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
       setExt(draftRecord.ext);
       try {
         parseCharacterSkillExt(origRecord.ext);
+        parseCharacterConnectorExt(origRecord.ext);
         setEnabledSkillIds(parseCharacterSkillExt(draftRecord.ext).enabled);
+        const connectors = parseCharacterConnectorExt(draftRecord.ext);
+        setEnabledConnectorIds(connectors.enabled);
+        setToolFree(connectors.toolFree);
+        setConnectorSaveErrorKey(undefined);
         setExtError(false);
       } catch {
         setEnabledSkillIds([]);
+        setEnabledConnectorIds([]);
+        setToolFree(true);
         setExtError(true);
       }
       setVisibility(draftRecord.visibility ?? 'private');
@@ -220,8 +238,31 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
     }
   }
 
+  function handleConnectorSelection(ids: string[]) {
+    if (extError) return;
+    try {
+      setExt(setCharacterConnectorIds(ext, ids));
+      setEnabledConnectorIds(ids);
+      setConnectorSaveErrorKey(undefined);
+    } catch {
+      setExtError(true);
+    }
+  }
+
   function handleSaveError(reason: unknown) {
-    handleError(normalizeSkillError(reason, (key) => t(key, { ns: 'skill' })));
+    const error = normalizeConnectorError(reason);
+    if (error.known) {
+      setConnectorSaveErrorKey(error.messageKey);
+      if (error.code === 401)
+        handleError({
+          code: 401,
+          message: t(error.messageKey, { ns: 'connector' }),
+        });
+    } else {
+      handleError(
+        normalizeSkillError(reason, (key) => t(key, { ns: 'skill' }))
+      );
+    }
   }
 
   function handleNameChange(): void {
@@ -376,16 +417,6 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
         }
       })
       .catch(handleSaveError);
-  }
-
-  function handleRecordExport(): void {
-    if (!id) {
-      return;
-    }
-    setEditEnabled(false);
-    exportCharacter(id)
-      .catch(handleError)
-      .finally(() => setEditEnabled(true));
   }
 
   function recordToUpdateRequest(
@@ -696,7 +727,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
           <Button
             disabled={!editEnabled}
             startIcon={<ImportExportRounded />}
-            onClick={handleRecordExport}
+            onClick={() => setExporting(true)}
             sx={{
               borderRadius: '16px',
             }}
@@ -994,6 +1025,19 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
               disabled={!editEnabled || extError}
               onChange={handleSkillSelection}
             />
+            <Divider sx={{ my: 2 }} />
+            {connectorSaveErrorKey && (
+              <Alert severity="error">
+                {t(connectorSaveErrorKey, { ns: 'connector' })}
+              </Alert>
+            )}
+            <CharacterConnectorSelector
+              enabled={enabledConnectorIds}
+              disabled={!editEnabled || extError}
+              skillsEnabled={enabledSkillIds.length > 0}
+              toolFree={toolFree}
+              onChange={handleConnectorSelection}
+            />
           </StyledStack>
           <LinePlaceholder />
 
@@ -1086,6 +1130,12 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
         </FormControl>
       </ConfirmModal>
 
+      {exporting && (
+        <CharacterExportDialog
+          characterId={id}
+          onClose={() => setExporting(false)}
+        />
+      )}
       <RouterBlocker
         when={!navigationTarget && !isSaved()}
         message={t(

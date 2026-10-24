@@ -163,6 +163,7 @@ operation_parameters_minimum_occurrences["deleteCharacterVoice:::characterBacken
 operation_parameters_minimum_occurrences["deleteCharacterVoice:::key"]=1
 operation_parameters_minimum_occurrences["existsCharacterName:::name"]=1
 operation_parameters_minimum_occurrences["exportCharacter:::characterId"]=1
+operation_parameters_minimum_occurrences["exportCharacter:::includeConnectors"]=0
 operation_parameters_minimum_occurrences["getCharacterDetails:::characterId"]=1
 operation_parameters_minimum_occurrences["getCharacterLatestIdByName:::name"]=1
 operation_parameters_minimum_occurrences["getCharacterSummary:::characterId"]=1
@@ -227,6 +228,14 @@ operation_parameters_minimum_occurrences["streamSendMessage:::chatId"]=1
 operation_parameters_minimum_occurrences["streamSendMessage:::ChatMessageDTO"]=1
 operation_parameters_minimum_occurrences["updateChat:::chatId"]=1
 operation_parameters_minimum_occurrences["updateChat:::ChatUpdateDTO"]=1
+operation_parameters_minimum_occurrences["createConnector:::ConnectorWriteDTO"]=1
+operation_parameters_minimum_occurrences["deleteConnector:::connectorId"]=1
+operation_parameters_minimum_occurrences["deleteConnector:::expectedRevision"]=1
+operation_parameters_minimum_occurrences["getConnector:::connectorId"]=1
+operation_parameters_minimum_occurrences["testConnector:::connectorId"]=1
+operation_parameters_minimum_occurrences["testConnector:::expectedRevision"]=1
+operation_parameters_minimum_occurrences["updateConnector:::connectorId"]=1
+operation_parameters_minimum_occurrences["updateConnector:::ConnectorWriteDTO"]=1
 operation_parameters_minimum_occurrences["encryptText:::text"]=1
 operation_parameters_minimum_occurrences["addStatistic:::infoType"]=1
 operation_parameters_minimum_occurrences["addStatistic:::infoId"]=1
@@ -450,6 +459,7 @@ operation_parameters_maximum_occurrences["deleteCharacterVoice:::characterBacken
 operation_parameters_maximum_occurrences["deleteCharacterVoice:::key"]=0
 operation_parameters_maximum_occurrences["existsCharacterName:::name"]=0
 operation_parameters_maximum_occurrences["exportCharacter:::characterId"]=0
+operation_parameters_maximum_occurrences["exportCharacter:::includeConnectors"]=0
 operation_parameters_maximum_occurrences["getCharacterDetails:::characterId"]=0
 operation_parameters_maximum_occurrences["getCharacterLatestIdByName:::name"]=0
 operation_parameters_maximum_occurrences["getCharacterSummary:::characterId"]=0
@@ -514,6 +524,14 @@ operation_parameters_maximum_occurrences["streamSendMessage:::chatId"]=0
 operation_parameters_maximum_occurrences["streamSendMessage:::ChatMessageDTO"]=0
 operation_parameters_maximum_occurrences["updateChat:::chatId"]=0
 operation_parameters_maximum_occurrences["updateChat:::ChatUpdateDTO"]=0
+operation_parameters_maximum_occurrences["createConnector:::ConnectorWriteDTO"]=0
+operation_parameters_maximum_occurrences["deleteConnector:::connectorId"]=0
+operation_parameters_maximum_occurrences["deleteConnector:::expectedRevision"]=0
+operation_parameters_maximum_occurrences["getConnector:::connectorId"]=0
+operation_parameters_maximum_occurrences["testConnector:::connectorId"]=0
+operation_parameters_maximum_occurrences["testConnector:::expectedRevision"]=0
+operation_parameters_maximum_occurrences["updateConnector:::connectorId"]=0
+operation_parameters_maximum_occurrences["updateConnector:::ConnectorWriteDTO"]=0
 operation_parameters_maximum_occurrences["encryptText:::text"]=0
 operation_parameters_maximum_occurrences["addStatistic:::infoType"]=0
 operation_parameters_maximum_occurrences["addStatistic:::infoId"]=0
@@ -734,6 +752,7 @@ operation_parameters_collection_type["deleteCharacterVoice:::characterBackendId"
 operation_parameters_collection_type["deleteCharacterVoice:::key"]=""
 operation_parameters_collection_type["existsCharacterName:::name"]=""
 operation_parameters_collection_type["exportCharacter:::characterId"]=""
+operation_parameters_collection_type["exportCharacter:::includeConnectors"]=""
 operation_parameters_collection_type["getCharacterDetails:::characterId"]=""
 operation_parameters_collection_type["getCharacterLatestIdByName:::name"]=""
 operation_parameters_collection_type["getCharacterSummary:::characterId"]=""
@@ -798,6 +817,14 @@ operation_parameters_collection_type["streamSendMessage:::chatId"]=""
 operation_parameters_collection_type["streamSendMessage:::ChatMessageDTO"]=""
 operation_parameters_collection_type["updateChat:::chatId"]=""
 operation_parameters_collection_type["updateChat:::ChatUpdateDTO"]=""
+operation_parameters_collection_type["createConnector:::ConnectorWriteDTO"]=""
+operation_parameters_collection_type["deleteConnector:::connectorId"]=""
+operation_parameters_collection_type["deleteConnector:::expectedRevision"]=""
+operation_parameters_collection_type["getConnector:::connectorId"]=""
+operation_parameters_collection_type["testConnector:::connectorId"]=""
+operation_parameters_collection_type["testConnector:::expectedRevision"]=""
+operation_parameters_collection_type["updateConnector:::connectorId"]=""
+operation_parameters_collection_type["updateConnector:::ConnectorWriteDTO"]=""
 operation_parameters_collection_type["encryptText:::text"]=""
 operation_parameters_collection_type["addStatistic:::infoType"]=""
 operation_parameters_collection_type["addStatistic:::infoId"]=""
@@ -1484,6 +1511,17 @@ read -r -d '' ops <<EOF
   ${CYAN}streamSendAssistant${OFF};Send Assistant for Chat Message by Streaming Back (AUTH)
   ${CYAN}streamSendMessage${OFF};Send Chat Message by Streaming Back (AUTH)
   ${CYAN}updateChat${OFF};Update Chat Session (AUTH)
+EOF
+echo "  $ops" | column -t -s ';'
+    echo ""
+    echo -e "${BOLD}${WHITE}[connector]${OFF}"
+read -r -d '' ops <<EOF
+  ${CYAN}createConnector${OFF};Create My Connector (AUTH)
+  ${CYAN}deleteConnector${OFF};Delete My Connector (AUTH)
+  ${CYAN}getConnector${OFF};Get My Connector (AUTH)
+  ${CYAN}listConnectors${OFF};List My Connectors (AUTH)
+  ${CYAN}testConnector${OFF};Test My Connector (AUTH)
+  ${CYAN}updateConnector${OFF};Update My Connector (AUTH)
 EOF
 echo "  $ops" | column -t -s ';'
     echo ""
@@ -3172,6 +3210,8 @@ print_exportCharacter_help() {
     echo -e ""
     echo -e "${BOLD}${WHITE}Parameters${OFF}"
     echo -e "  * ${GREEN}characterId${OFF} ${BLUE}[integer]${OFF} ${RED}(required)${OFF} ${CYAN}(default: null)${OFF} - Character identifier ${YELLOW}Specify as: characterId=value${OFF}" | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
+    echo -e "  * ${GREEN}includeConnectors${OFF} ${BLUE}[boolean]${OFF} ${CYAN}(default: false)${OFF} - Include credentialless connector definitions (character owner only)${YELLOW} Specify as: includeConnectors=value${OFF}" \
+        | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
     echo ""
     echo -e "${BOLD}${WHITE}Responses${OFF}"
     code=200
@@ -4022,6 +4062,115 @@ print_updateChat_help() {
     echo -e "${BOLD}${WHITE}Parameters${OFF}"
     echo -e "  * ${GREEN}chatId${OFF} ${BLUE}[string]${OFF} ${RED}(required)${OFF} ${CYAN}(default: null)${OFF} - Chat session identifier ${YELLOW}Specify as: chatId=value${OFF}" | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
     echo -e "  * ${GREEN}body${OFF} ${BLUE}[application/json]${OFF} ${RED}(required)${OFF}${OFF} - The chat session information to be updated" | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
+    echo -e ""
+    echo ""
+    echo -e "${BOLD}${WHITE}Responses${OFF}"
+    code=200
+    echo -e "${result_color_table[${code:0:1}]}  200;OK${OFF}" | paste -sd' ' - | column -t -s ';' | fold -sw 80 | sed '2,$s/^/       /'
+}
+##############################################################################
+#
+# Print help for createConnector operation
+#
+##############################################################################
+print_createConnector_help() {
+    echo ""
+    echo -e "${BOLD}${WHITE}createConnector - Create My Connector${OFF}${BLUE}(AUTH - )${OFF}" | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
+    echo -e ""
+    echo -e "Validates syntax and stores encrypted header values without contacting the endpoint. Public address checks run before network use." | paste -sd' ' - | fold -sw 80
+    echo -e ""
+    echo -e "${BOLD}${WHITE}Parameters${OFF}"
+    echo -e "  * ${GREEN}body${OFF} ${BLUE}[application/json]${OFF} ${RED}(required)${OFF}${OFF} - " | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
+    echo -e ""
+    echo ""
+    echo -e "${BOLD}${WHITE}Responses${OFF}"
+    code=200
+    echo -e "${result_color_table[${code:0:1}]}  200;OK${OFF}" | paste -sd' ' - | column -t -s ';' | fold -sw 80 | sed '2,$s/^/       /'
+}
+##############################################################################
+#
+# Print help for deleteConnector operation
+#
+##############################################################################
+print_deleteConnector_help() {
+    echo ""
+    echo -e "${BOLD}${WHITE}deleteConnector - Delete My Connector${OFF}${BLUE}(AUTH - )${OFF}" | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
+    echo -e ""
+    echo -e "${BOLD}${WHITE}Parameters${OFF}"
+    echo -e "  * ${GREEN}connectorId${OFF} ${BLUE}[string]${OFF} ${RED}(required)${OFF} ${CYAN}(default: null)${OFF} -  ${YELLOW}Specify as: connectorId=value${OFF}" | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
+    echo -e "  * ${GREEN}expectedRevision${OFF} ${BLUE}[string]${OFF} ${RED}(required)${OFF} ${CYAN}(default: null)${OFF} - ${YELLOW} Specify as: expectedRevision=value${OFF}" \
+        | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
+    echo ""
+    echo -e "${BOLD}${WHITE}Responses${OFF}"
+    code=204
+    echo -e "${result_color_table[${code:0:1}]}  204;No Content${OFF}" | paste -sd' ' - | column -t -s ';' | fold -sw 80 | sed '2,$s/^/       /'
+}
+##############################################################################
+#
+# Print help for getConnector operation
+#
+##############################################################################
+print_getConnector_help() {
+    echo ""
+    echo -e "${BOLD}${WHITE}getConnector - Get My Connector${OFF}${BLUE}(AUTH - )${OFF}" | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
+    echo -e ""
+    echo -e "Returns metadata and header names, never header values." | paste -sd' ' - | fold -sw 80
+    echo -e ""
+    echo -e "${BOLD}${WHITE}Parameters${OFF}"
+    echo -e "  * ${GREEN}connectorId${OFF} ${BLUE}[string]${OFF} ${RED}(required)${OFF} ${CYAN}(default: null)${OFF} -  ${YELLOW}Specify as: connectorId=value${OFF}" | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
+    echo ""
+    echo -e "${BOLD}${WHITE}Responses${OFF}"
+    code=200
+    echo -e "${result_color_table[${code:0:1}]}  200;OK${OFF}" | paste -sd' ' - | column -t -s ';' | fold -sw 80 | sed '2,$s/^/       /'
+}
+##############################################################################
+#
+# Print help for listConnectors operation
+#
+##############################################################################
+print_listConnectors_help() {
+    echo ""
+    echo -e "${BOLD}${WHITE}listConnectors - List My Connectors${OFF}${BLUE}(AUTH - )${OFF}" | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
+    echo -e ""
+    echo ""
+    echo -e "${BOLD}${WHITE}Responses${OFF}"
+    code=200
+    echo -e "${result_color_table[${code:0:1}]}  200;OK${OFF}" | paste -sd' ' - | column -t -s ';' | fold -sw 80 | sed '2,$s/^/       /'
+}
+##############################################################################
+#
+# Print help for testConnector operation
+#
+##############################################################################
+print_testConnector_help() {
+    echo ""
+    echo -e "${BOLD}${WHITE}testConnector - Test My Connector${OFF}${BLUE}(AUTH - )${OFF}" | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
+    echo -e ""
+    echo -e "Initialize an owned HTTP or SSE MCP server and list its tools without executing any tool. Private addresses and redirects are rejected. The stored configuration revision must match." | paste -sd' ' - | fold -sw 80
+    echo -e ""
+    echo -e "${BOLD}${WHITE}Parameters${OFF}"
+    echo -e "  * ${GREEN}connectorId${OFF} ${BLUE}[string]${OFF} ${RED}(required)${OFF} ${CYAN}(default: null)${OFF} -  ${YELLOW}Specify as: connectorId=value${OFF}" | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
+    echo -e "  * ${GREEN}expectedRevision${OFF} ${BLUE}[string]${OFF} ${RED}(required)${OFF} ${CYAN}(default: null)${OFF} - ${YELLOW} Specify as: expectedRevision=value${OFF}" \
+        | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
+    echo ""
+    echo -e "${BOLD}${WHITE}Responses${OFF}"
+    code=200
+    echo -e "${result_color_table[${code:0:1}]}  200;OK${OFF}" | paste -sd' ' - | column -t -s ';' | fold -sw 80 | sed '2,$s/^/       /'
+}
+##############################################################################
+#
+# Print help for updateConnector operation
+#
+##############################################################################
+print_updateConnector_help() {
+    echo ""
+    echo -e "${BOLD}${WHITE}updateConnector - Update My Connector${OFF}${BLUE}(AUTH - )${OFF}" | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
+    echo -e ""
+    echo -e "Replaces an expected revision. Explicitly retain unchanged header names; retained credentials cannot move to another origin." | paste -sd' ' - | fold -sw 80
+    echo -e ""
+    echo -e "${BOLD}${WHITE}Parameters${OFF}"
+    echo -e "  * ${GREEN}connectorId${OFF} ${BLUE}[string]${OFF} ${RED}(required)${OFF} ${CYAN}(default: null)${OFF} -  ${YELLOW}Specify as: connectorId=value${OFF}" | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
+    echo -e "  * ${GREEN}body${OFF} ${BLUE}[application/json]${OFF} ${RED}(required)${OFF}${OFF} - " | paste -sd' ' - | fold -sw 80 | sed '2,$s/^/    /'
     echo -e ""
     echo ""
     echo -e "${BOLD}${WHITE}Responses${OFF}"
@@ -9163,7 +9312,7 @@ call_exportCharacter() {
     local path_parameter_names=(characterId)
     # ignore error about 'query_parameter_names' being unused; passed by reference
     # shellcheck disable=SC2034
-    local query_parameter_names=(  )
+    local query_parameter_names=(includeConnectors  )
     local path
 
     if ! path=$(build_request_path "/api/v2/character/export/{characterId}" path_parameter_names query_parameter_names); then
@@ -11129,6 +11278,306 @@ call_updateChat() {
     local path
 
     if ! path=$(build_request_path "/api/v2/chat/{chatId}" path_parameter_names query_parameter_names); then
+        ERROR_MSG=$path
+        exit 1
+    fi
+    local method="PUT"
+    local headers_curl
+    headers_curl=$(header_arguments_to_curl)
+    if [[ -n $header_accept ]]; then
+        headers_curl="${headers_curl} -H 'Accept: ${header_accept}'"
+    fi
+
+    local basic_auth_option=""
+    if [[ -n $basic_auth_credential ]]; then
+        basic_auth_option="-u ${basic_auth_credential}"
+    fi
+    local body_json_curl=""
+
+    #
+    # Check if the user provided 'Content-type' headers in the
+    # command line. If not try to set them based on the OpenAPI specification
+    # if values produces and consumes are defined unambiguously
+    #
+    if [[ -z $header_content_type ]]; then
+        header_content_type="application/json"
+    fi
+
+
+    if [[ -z $header_content_type && "$force" = false ]]; then
+        :
+        echo "ERROR: Request's content-type not specified!!!"
+        echo "This operation expects content-type in one of the following formats:"
+        echo -e "\\t- application/json"
+        echo ""
+        echo "Use '--content-type' to set proper content type"
+        exit 1
+    else
+        headers_curl="${headers_curl} -H 'Content-type: ${header_content_type}'"
+    fi
+
+
+    #
+    # If we have received some body content over pipe, pass it from the
+    # temporary file to cURL
+    #
+    if [[ -n $body_content_temp_file ]]; then
+        if [[ "$print_curl" = true ]]; then
+            echo "cat ${body_content_temp_file} | curl ${basic_auth_option} ${curl_arguments} ${headers_curl} -X ${method} \"${host}${path}\" -d @-"
+        else
+            eval "cat ${body_content_temp_file} | curl ${basic_auth_option} ${curl_arguments} ${headers_curl} -X ${method} \"${host}${path}\" -d @-"
+        fi
+        rm "${body_content_temp_file}"
+    #
+    # If not, try to build the content body from arguments KEY==VALUE and KEY:=VALUE
+    #
+    else
+        body_json_curl=$(body_parameters_to_json)
+        if [[ "$print_curl" = true ]]; then
+            echo "curl ${basic_auth_option} ${curl_arguments} ${headers_curl} -X ${method} ${body_json_curl} \"${host}${path}\""
+        else
+            eval "curl ${basic_auth_option} ${curl_arguments} ${headers_curl} -X ${method} ${body_json_curl} \"${host}${path}\""
+        fi
+    fi
+}
+
+##############################################################################
+#
+# Call createConnector operation
+#
+##############################################################################
+call_createConnector() {
+    # ignore error about 'path_parameter_names' being unused; passed by reference
+    # shellcheck disable=SC2034
+    local path_parameter_names=()
+    # ignore error about 'query_parameter_names' being unused; passed by reference
+    # shellcheck disable=SC2034
+    local query_parameter_names=(  )
+    local path
+
+    if ! path=$(build_request_path "/api/v2/connector" path_parameter_names query_parameter_names); then
+        ERROR_MSG=$path
+        exit 1
+    fi
+    local method="POST"
+    local headers_curl
+    headers_curl=$(header_arguments_to_curl)
+    if [[ -n $header_accept ]]; then
+        headers_curl="${headers_curl} -H 'Accept: ${header_accept}'"
+    fi
+
+    local basic_auth_option=""
+    if [[ -n $basic_auth_credential ]]; then
+        basic_auth_option="-u ${basic_auth_credential}"
+    fi
+    local body_json_curl=""
+
+    #
+    # Check if the user provided 'Content-type' headers in the
+    # command line. If not try to set them based on the OpenAPI specification
+    # if values produces and consumes are defined unambiguously
+    #
+    if [[ -z $header_content_type ]]; then
+        header_content_type="application/json"
+    fi
+
+
+    if [[ -z $header_content_type && "$force" = false ]]; then
+        :
+        echo "ERROR: Request's content-type not specified!!!"
+        echo "This operation expects content-type in one of the following formats:"
+        echo -e "\\t- application/json"
+        echo ""
+        echo "Use '--content-type' to set proper content type"
+        exit 1
+    else
+        headers_curl="${headers_curl} -H 'Content-type: ${header_content_type}'"
+    fi
+
+
+    #
+    # If we have received some body content over pipe, pass it from the
+    # temporary file to cURL
+    #
+    if [[ -n $body_content_temp_file ]]; then
+        if [[ "$print_curl" = true ]]; then
+            echo "cat ${body_content_temp_file} | curl ${basic_auth_option} ${curl_arguments} ${headers_curl} -X ${method} \"${host}${path}\" -d @-"
+        else
+            eval "cat ${body_content_temp_file} | curl ${basic_auth_option} ${curl_arguments} ${headers_curl} -X ${method} \"${host}${path}\" -d @-"
+        fi
+        rm "${body_content_temp_file}"
+    #
+    # If not, try to build the content body from arguments KEY==VALUE and KEY:=VALUE
+    #
+    else
+        body_json_curl=$(body_parameters_to_json)
+        if [[ "$print_curl" = true ]]; then
+            echo "curl ${basic_auth_option} ${curl_arguments} ${headers_curl} -X ${method} ${body_json_curl} \"${host}${path}\""
+        else
+            eval "curl ${basic_auth_option} ${curl_arguments} ${headers_curl} -X ${method} ${body_json_curl} \"${host}${path}\""
+        fi
+    fi
+}
+
+##############################################################################
+#
+# Call deleteConnector operation
+#
+##############################################################################
+call_deleteConnector() {
+    # ignore error about 'path_parameter_names' being unused; passed by reference
+    # shellcheck disable=SC2034
+    local path_parameter_names=(connectorId)
+    # ignore error about 'query_parameter_names' being unused; passed by reference
+    # shellcheck disable=SC2034
+    local query_parameter_names=(expectedRevision  )
+    local path
+
+    if ! path=$(build_request_path "/api/v2/connector/{connectorId}" path_parameter_names query_parameter_names); then
+        ERROR_MSG=$path
+        exit 1
+    fi
+    local method="DELETE"
+    local headers_curl
+    headers_curl=$(header_arguments_to_curl)
+    if [[ -n $header_accept ]]; then
+        headers_curl="${headers_curl} -H 'Accept: ${header_accept}'"
+    fi
+
+    local basic_auth_option=""
+    if [[ -n $basic_auth_credential ]]; then
+        basic_auth_option="-u ${basic_auth_credential}"
+    fi
+    if [[ "$print_curl" = true ]]; then
+        echo "curl -d '' ${basic_auth_option} ${curl_arguments} ${headers_curl} -X ${method} \"${host}${path}\""
+    else
+        eval "curl -d '' ${basic_auth_option} ${curl_arguments} ${headers_curl} -X ${method} \"${host}${path}\""
+    fi
+}
+
+##############################################################################
+#
+# Call getConnector operation
+#
+##############################################################################
+call_getConnector() {
+    # ignore error about 'path_parameter_names' being unused; passed by reference
+    # shellcheck disable=SC2034
+    local path_parameter_names=(connectorId)
+    # ignore error about 'query_parameter_names' being unused; passed by reference
+    # shellcheck disable=SC2034
+    local query_parameter_names=(  )
+    local path
+
+    if ! path=$(build_request_path "/api/v2/connector/{connectorId}" path_parameter_names query_parameter_names); then
+        ERROR_MSG=$path
+        exit 1
+    fi
+    local method="GET"
+    local headers_curl
+    headers_curl=$(header_arguments_to_curl)
+    if [[ -n $header_accept ]]; then
+        headers_curl="${headers_curl} -H 'Accept: ${header_accept}'"
+    fi
+
+    local basic_auth_option=""
+    if [[ -n $basic_auth_credential ]]; then
+        basic_auth_option="-u ${basic_auth_credential}"
+    fi
+    if [[ "$print_curl" = true ]]; then
+        echo "curl -d '' ${basic_auth_option} ${curl_arguments} ${headers_curl} -X ${method} \"${host}${path}\""
+    else
+        eval "curl -d '' ${basic_auth_option} ${curl_arguments} ${headers_curl} -X ${method} \"${host}${path}\""
+    fi
+}
+
+##############################################################################
+#
+# Call listConnectors operation
+#
+##############################################################################
+call_listConnectors() {
+    # ignore error about 'path_parameter_names' being unused; passed by reference
+    # shellcheck disable=SC2034
+    local path_parameter_names=()
+    # ignore error about 'query_parameter_names' being unused; passed by reference
+    # shellcheck disable=SC2034
+    local query_parameter_names=(  )
+    local path
+
+    if ! path=$(build_request_path "/api/v2/connector" path_parameter_names query_parameter_names); then
+        ERROR_MSG=$path
+        exit 1
+    fi
+    local method="GET"
+    local headers_curl
+    headers_curl=$(header_arguments_to_curl)
+    if [[ -n $header_accept ]]; then
+        headers_curl="${headers_curl} -H 'Accept: ${header_accept}'"
+    fi
+
+    local basic_auth_option=""
+    if [[ -n $basic_auth_credential ]]; then
+        basic_auth_option="-u ${basic_auth_credential}"
+    fi
+    if [[ "$print_curl" = true ]]; then
+        echo "curl -d '' ${basic_auth_option} ${curl_arguments} ${headers_curl} -X ${method} \"${host}${path}\""
+    else
+        eval "curl -d '' ${basic_auth_option} ${curl_arguments} ${headers_curl} -X ${method} \"${host}${path}\""
+    fi
+}
+
+##############################################################################
+#
+# Call testConnector operation
+#
+##############################################################################
+call_testConnector() {
+    # ignore error about 'path_parameter_names' being unused; passed by reference
+    # shellcheck disable=SC2034
+    local path_parameter_names=(connectorId)
+    # ignore error about 'query_parameter_names' being unused; passed by reference
+    # shellcheck disable=SC2034
+    local query_parameter_names=(expectedRevision  )
+    local path
+
+    if ! path=$(build_request_path "/api/v2/connector/{connectorId}/test" path_parameter_names query_parameter_names); then
+        ERROR_MSG=$path
+        exit 1
+    fi
+    local method="POST"
+    local headers_curl
+    headers_curl=$(header_arguments_to_curl)
+    if [[ -n $header_accept ]]; then
+        headers_curl="${headers_curl} -H 'Accept: ${header_accept}'"
+    fi
+
+    local basic_auth_option=""
+    if [[ -n $basic_auth_credential ]]; then
+        basic_auth_option="-u ${basic_auth_credential}"
+    fi
+    if [[ "$print_curl" = true ]]; then
+        echo "curl -d '' ${basic_auth_option} ${curl_arguments} ${headers_curl} -X ${method} \"${host}${path}\""
+    else
+        eval "curl -d '' ${basic_auth_option} ${curl_arguments} ${headers_curl} -X ${method} \"${host}${path}\""
+    fi
+}
+
+##############################################################################
+#
+# Call updateConnector operation
+#
+##############################################################################
+call_updateConnector() {
+    # ignore error about 'path_parameter_names' being unused; passed by reference
+    # shellcheck disable=SC2034
+    local path_parameter_names=(connectorId)
+    # ignore error about 'query_parameter_names' being unused; passed by reference
+    # shellcheck disable=SC2034
+    local query_parameter_names=(  )
+    local path
+
+    if ! path=$(build_request_path "/api/v2/connector/{connectorId}" path_parameter_names query_parameter_names); then
         ERROR_MSG=$path
         exit 1
     fi
@@ -16479,6 +16928,24 @@ case $key in
     updateChat)
     operation="updateChat"
     ;;
+    createConnector)
+    operation="createConnector"
+    ;;
+    deleteConnector)
+    operation="deleteConnector"
+    ;;
+    getConnector)
+    operation="getConnector"
+    ;;
+    listConnectors)
+    operation="listConnectors"
+    ;;
+    testConnector)
+    operation="testConnector"
+    ;;
+    updateConnector)
+    operation="updateConnector"
+    ;;
     encryptText)
     operation="encryptText"
     ;;
@@ -17183,6 +17650,24 @@ case $operation in
     ;;
     updateChat)
     call_updateChat
+    ;;
+    createConnector)
+    call_createConnector
+    ;;
+    deleteConnector)
+    call_deleteConnector
+    ;;
+    getConnector)
+    call_getConnector
+    ;;
+    listConnectors)
+    call_listConnectors
+    ;;
+    testConnector)
+    call_testConnector
+    ;;
+    updateConnector)
+    call_updateConnector
     ;;
     encryptText)
     call_encryptText

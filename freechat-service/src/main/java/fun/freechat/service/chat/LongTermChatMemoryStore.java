@@ -12,7 +12,11 @@ public interface LongTermChatMemoryStore {
     record Binding(ChatSession session, MemoryInvocation memory, MemoryTurnLifetime lifetime) implements AutoCloseable {
         @Override
         public void close() {
-            lifetime.close();
+            try {
+                lifetime.close();
+            } finally {
+                session.closeConnectors();
+            }
         }
     }
 }

@@ -945,6 +945,8 @@ const apiInstance = new CharacterApi(configuration);
 const request: CharacterApiExportCharacterRequest = {
     // Character identifier
   characterId: 0,
+    // Include credentialless connector definitions (character owner only) (optional)
+  includeConnectors: false,
 };
 
 const data = await apiInstance.exportCharacter(request);
@@ -957,6 +959,7 @@ console.log('API called successfully. Returned data:', data);
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **characterId** | [**number**] | Character identifier | defaults to undefined
+ **includeConnectors** | [**boolean**] | Include credentialless connector definitions (character owner only) | (optional) defaults to false
 
 
 ### Return type

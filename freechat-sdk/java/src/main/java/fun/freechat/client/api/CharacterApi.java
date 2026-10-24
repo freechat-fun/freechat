@@ -2008,6 +2008,7 @@ public class CharacterApi {
     /**
      * Build call for exportCharacter
      * @param characterId Character identifier (required)
+     * @param includeConnectors Include credentialless connector definitions (character owner only) (optional, default to false)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
@@ -2018,7 +2019,7 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call exportCharacterCall(@javax.annotation.Nonnull Long characterId, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call exportCharacterCall(@javax.annotation.Nonnull Long characterId, @javax.annotation.Nullable Boolean includeConnectors, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -2044,6 +2045,10 @@ public class CharacterApi {
         Map<String, String> localVarCookieParams = new HashMap<String, String>();
         Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 
+        if (includeConnectors != null) {
+            localVarQueryParams.addAll(localVarApiClient.parameterToPair("includeConnectors", includeConnectors));
+        }
+
         final String[] localVarAccepts = {
         };
         final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
@@ -2063,13 +2068,13 @@ public class CharacterApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call exportCharacterValidateBeforeCall(@javax.annotation.Nonnull Long characterId, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call exportCharacterValidateBeforeCall(@javax.annotation.Nonnull Long characterId, @javax.annotation.Nullable Boolean includeConnectors, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'characterId' is set
         if (characterId == null) {
             throw new ApiException("Missing the required parameter 'characterId' when calling exportCharacter(Async)");
         }
 
-        return exportCharacterCall(characterId, _callback);
+        return exportCharacterCall(characterId, includeConnectors, _callback);
 
     }
 
@@ -2077,6 +2082,7 @@ public class CharacterApi {
      * Export Character Configuration
      * Export character configuration in tar.gz format, including settings, documents and pictures.
      * @param characterId Character identifier (required)
+     * @param includeConnectors Include credentialless connector definitions (character owner only) (optional, default to false)
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table border="1">
@@ -2085,14 +2091,15 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public void exportCharacter(@javax.annotation.Nonnull Long characterId) throws ApiException {
-        exportCharacterWithHttpInfo(characterId);
+    public void exportCharacter(@javax.annotation.Nonnull Long characterId, @javax.annotation.Nullable Boolean includeConnectors) throws ApiException {
+        exportCharacterWithHttpInfo(characterId, includeConnectors);
     }
 
     /**
      * Export Character Configuration
      * Export character configuration in tar.gz format, including settings, documents and pictures.
      * @param characterId Character identifier (required)
+     * @param includeConnectors Include credentialless connector definitions (character owner only) (optional, default to false)
      * @return ApiResponse&lt;Void&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
@@ -2102,8 +2109,8 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Void> exportCharacterWithHttpInfo(@javax.annotation.Nonnull Long characterId) throws ApiException {
-        okhttp3.Call localVarCall = exportCharacterValidateBeforeCall(characterId, null);
+    public ApiResponse<Void> exportCharacterWithHttpInfo(@javax.annotation.Nonnull Long characterId, @javax.annotation.Nullable Boolean includeConnectors) throws ApiException {
+        okhttp3.Call localVarCall = exportCharacterValidateBeforeCall(characterId, includeConnectors, null);
         return localVarApiClient.execute(localVarCall);
     }
 
@@ -2111,6 +2118,7 @@ public class CharacterApi {
      * Export Character Configuration (asynchronously)
      * Export character configuration in tar.gz format, including settings, documents and pictures.
      * @param characterId Character identifier (required)
+     * @param includeConnectors Include credentialless connector definitions (character owner only) (optional, default to false)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
@@ -2121,9 +2129,9 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call exportCharacterAsync(@javax.annotation.Nonnull Long characterId, final ApiCallback<Void> _callback) throws ApiException {
+    public okhttp3.Call exportCharacterAsync(@javax.annotation.Nonnull Long characterId, @javax.annotation.Nullable Boolean includeConnectors, final ApiCallback<Void> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = exportCharacterValidateBeforeCall(characterId, _callback);
+        okhttp3.Call localVarCall = exportCharacterValidateBeforeCall(characterId, includeConnectors, _callback);
         localVarApiClient.executeAsync(localVarCall, _callback);
         return localVarCall;
     }

@@ -35,6 +35,10 @@ import { ChatPromptContentDTO } from '../models/ChatPromptContentDTO.js';
 import { ChatSessionDTO } from '../models/ChatSessionDTO.js';
 import { ChatToolCallDTO } from '../models/ChatToolCallDTO.js';
 import { ChatUpdateDTO } from '../models/ChatUpdateDTO.js';
+import { ConnectorDetailsDTO } from '../models/ConnectorDetailsDTO.js';
+import { ConnectorTestDTO } from '../models/ConnectorTestDTO.js';
+import { ConnectorToolDTO } from '../models/ConnectorToolDTO.js';
+import { ConnectorWriteDTO } from '../models/ConnectorWriteDTO.js';
 import { HotTagDTO } from '../models/HotTagDTO.js';
 import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
 import { LlmResultDTO } from '../models/LlmResultDTO.js';
@@ -2446,11 +2450,12 @@ export class ObservableCharacterApi {
      * Export character configuration in tar.gz format, including settings, documents and pictures.
      * Export Character Configuration
      * @param characterId Character identifier
+     * @param [includeConnectors] Include credentialless connector definitions (character owner only)
      */
-    public exportCharacterWithHttpInfo(characterId: number, _options?: ConfigurationOptions): Observable<HttpInfo<void>> {
+    public exportCharacterWithHttpInfo(characterId: number, includeConnectors?: boolean, _options?: ConfigurationOptions): Observable<HttpInfo<void>> {
         const _config = mergeConfiguration(this.configuration, _options);
 
-        const requestContextPromise = this.requestFactory.exportCharacter(characterId, _config);
+        const requestContextPromise = this.requestFactory.exportCharacter(characterId, includeConnectors, _config);
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
         for (const middleware of _config.middleware) {
@@ -2471,9 +2476,10 @@ export class ObservableCharacterApi {
      * Export character configuration in tar.gz format, including settings, documents and pictures.
      * Export Character Configuration
      * @param characterId Character identifier
+     * @param [includeConnectors] Include credentialless connector definitions (character owner only)
      */
-    public exportCharacter(characterId: number, _options?: ConfigurationOptions): Observable<void> {
-        return this.exportCharacterWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<void>) => apiResponse.data));
+    public exportCharacter(characterId: number, includeConnectors?: boolean, _options?: ConfigurationOptions): Observable<void> {
+        return this.exportCharacterWithHttpInfo(characterId, includeConnectors, _options).pipe(map((apiResponse: HttpInfo<void>) => apiResponse.data));
     }
 
     /**
@@ -4060,6 +4066,228 @@ export class ObservableChatApi {
      */
     public updateChat(chatId: string, chatUpdateDTO: ChatUpdateDTO, _options?: ConfigurationOptions): Observable<boolean> {
         return this.updateChatWithHttpInfo(chatId, chatUpdateDTO, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
+    }
+
+}
+
+import { ConnectorApiRequestFactory, ConnectorApiResponseProcessor} from "../apis/ConnectorApi.js";
+export class ObservableConnectorApi {
+    private requestFactory: ConnectorApiRequestFactory;
+    private responseProcessor: ConnectorApiResponseProcessor;
+    private configuration: Configuration;
+
+    public constructor(
+        configuration: Configuration,
+        requestFactory?: ConnectorApiRequestFactory,
+        responseProcessor?: ConnectorApiResponseProcessor
+    ) {
+        this.configuration = configuration;
+        this.requestFactory = requestFactory || new ConnectorApiRequestFactory(configuration);
+        this.responseProcessor = responseProcessor || new ConnectorApiResponseProcessor();
+    }
+
+    /**
+     * Validates syntax and stores encrypted header values without contacting the endpoint. Public address checks run before network use.
+     * Create My Connector
+     * @param connectorWriteDTO
+     */
+    public createConnectorWithHttpInfo(connectorWriteDTO: ConnectorWriteDTO, _options?: ConfigurationOptions): Observable<HttpInfo<ConnectorDetailsDTO>> {
+        const _config = mergeConfiguration(this.configuration, _options);
+
+        const requestContextPromise = this.requestFactory.createConnector(connectorWriteDTO, _config);
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of _config.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => _config.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of _config.middleware.reverse()) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.createConnectorWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Validates syntax and stores encrypted header values without contacting the endpoint. Public address checks run before network use.
+     * Create My Connector
+     * @param connectorWriteDTO
+     */
+    public createConnector(connectorWriteDTO: ConnectorWriteDTO, _options?: ConfigurationOptions): Observable<ConnectorDetailsDTO> {
+        return this.createConnectorWithHttpInfo(connectorWriteDTO, _options).pipe(map((apiResponse: HttpInfo<ConnectorDetailsDTO>) => apiResponse.data));
+    }
+
+    /**
+     * Delete My Connector
+     * @param connectorId
+     * @param expectedRevision
+     */
+    public deleteConnectorWithHttpInfo(connectorId: string, expectedRevision: string, _options?: ConfigurationOptions): Observable<HttpInfo<void>> {
+        const _config = mergeConfiguration(this.configuration, _options);
+
+        const requestContextPromise = this.requestFactory.deleteConnector(connectorId, expectedRevision, _config);
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of _config.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => _config.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of _config.middleware.reverse()) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.deleteConnectorWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Delete My Connector
+     * @param connectorId
+     * @param expectedRevision
+     */
+    public deleteConnector(connectorId: string, expectedRevision: string, _options?: ConfigurationOptions): Observable<void> {
+        return this.deleteConnectorWithHttpInfo(connectorId, expectedRevision, _options).pipe(map((apiResponse: HttpInfo<void>) => apiResponse.data));
+    }
+
+    /**
+     * Returns metadata and header names, never header values.
+     * Get My Connector
+     * @param connectorId
+     */
+    public getConnectorWithHttpInfo(connectorId: string, _options?: ConfigurationOptions): Observable<HttpInfo<ConnectorDetailsDTO>> {
+        const _config = mergeConfiguration(this.configuration, _options);
+
+        const requestContextPromise = this.requestFactory.getConnector(connectorId, _config);
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of _config.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => _config.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of _config.middleware.reverse()) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getConnectorWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Returns metadata and header names, never header values.
+     * Get My Connector
+     * @param connectorId
+     */
+    public getConnector(connectorId: string, _options?: ConfigurationOptions): Observable<ConnectorDetailsDTO> {
+        return this.getConnectorWithHttpInfo(connectorId, _options).pipe(map((apiResponse: HttpInfo<ConnectorDetailsDTO>) => apiResponse.data));
+    }
+
+    /**
+     * List My Connectors
+     */
+    public listConnectorsWithHttpInfo(_options?: ConfigurationOptions): Observable<HttpInfo<Array<ConnectorDetailsDTO>>> {
+        const _config = mergeConfiguration(this.configuration, _options);
+
+        const requestContextPromise = this.requestFactory.listConnectors(_config);
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of _config.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => _config.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of _config.middleware.reverse()) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listConnectorsWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * List My Connectors
+     */
+    public listConnectors(_options?: ConfigurationOptions): Observable<Array<ConnectorDetailsDTO>> {
+        return this.listConnectorsWithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<Array<ConnectorDetailsDTO>>) => apiResponse.data));
+    }
+
+    /**
+     * Initialize an owned HTTP or SSE MCP server and list its tools without executing any tool. Private addresses and redirects are rejected. The stored configuration revision must match.
+     * Test My Connector
+     * @param connectorId
+     * @param expectedRevision
+     */
+    public testConnectorWithHttpInfo(connectorId: string, expectedRevision: string, _options?: ConfigurationOptions): Observable<HttpInfo<ConnectorTestDTO>> {
+        const _config = mergeConfiguration(this.configuration, _options);
+
+        const requestContextPromise = this.requestFactory.testConnector(connectorId, expectedRevision, _config);
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of _config.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => _config.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of _config.middleware.reverse()) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.testConnectorWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Initialize an owned HTTP or SSE MCP server and list its tools without executing any tool. Private addresses and redirects are rejected. The stored configuration revision must match.
+     * Test My Connector
+     * @param connectorId
+     * @param expectedRevision
+     */
+    public testConnector(connectorId: string, expectedRevision: string, _options?: ConfigurationOptions): Observable<ConnectorTestDTO> {
+        return this.testConnectorWithHttpInfo(connectorId, expectedRevision, _options).pipe(map((apiResponse: HttpInfo<ConnectorTestDTO>) => apiResponse.data));
+    }
+
+    /**
+     * Replaces an expected revision. Explicitly retain unchanged header names; retained credentials cannot move to another origin.
+     * Update My Connector
+     * @param connectorId
+     * @param connectorWriteDTO
+     */
+    public updateConnectorWithHttpInfo(connectorId: string, connectorWriteDTO: ConnectorWriteDTO, _options?: ConfigurationOptions): Observable<HttpInfo<ConnectorDetailsDTO>> {
+        const _config = mergeConfiguration(this.configuration, _options);
+
+        const requestContextPromise = this.requestFactory.updateConnector(connectorId, connectorWriteDTO, _config);
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of _config.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => _config.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of _config.middleware.reverse()) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.updateConnectorWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Replaces an expected revision. Explicitly retain unchanged header names; retained credentials cannot move to another origin.
+     * Update My Connector
+     * @param connectorId
+     * @param connectorWriteDTO
+     */
+    public updateConnector(connectorId: string, connectorWriteDTO: ConnectorWriteDTO, _options?: ConfigurationOptions): Observable<ConnectorDetailsDTO> {
+        return this.updateConnectorWithHttpInfo(connectorId, connectorWriteDTO, _options).pipe(map((apiResponse: HttpInfo<ConnectorDetailsDTO>) => apiResponse.data));
     }
 
 }

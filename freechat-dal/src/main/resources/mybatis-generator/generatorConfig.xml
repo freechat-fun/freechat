@@ -75,6 +75,8 @@
 
         <table tableName="skill_draft" />
 
+        <table tableName="connector_info" />
+
         <table tableName="rag_task">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
