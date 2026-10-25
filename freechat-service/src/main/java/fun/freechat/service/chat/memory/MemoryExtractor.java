@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CancellationException;
 import java.util.function.BiConsumer;
 
 public final class MemoryExtractor {
@@ -82,23 +83,31 @@ public final class MemoryExtractor {
     }
 
     public void requireInput(Input input, Integer providerContextLimit) {
-        bounds.requireExtraction(messages(input, false), providerContextLimit);
-        bounds.requireExtraction(messages(input, true), providerContextLimit);
+        bounds.requireExtraction(messages(input, false, null), providerContextLimit);
+        // Leave room for numeric repair feedback before admitting source evidence.
+        bounds.requireExtraction(
+                messages(input, true, new SummarySize(Long.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE)),
+                providerContextLimit);
     }
 
     public Output extract(ChatModel model, Integer providerContextLimit, Input input, Budget budget) {
         requireInput(input, providerContextLimit);
+        SummarySize oversizedSummary = null;
         for (int attempt = 0; attempt < 2; attempt++) {
-            List<ChatMessage> messages = messages(input, attempt > 0);
+            List<ChatMessage> messages = messages(input, attempt > 0, oversizedSummary);
+            bounds.requireExtraction(messages, providerContextLimit);
             String callId = budget.beforeCall();
             ChatResponse response;
             try {
                 response = model.chat(ChatRequest.builder().messages(messages).build());
                 budget.record(callId, response.tokenUsage());
+            } catch (CancellationException ignored) {
+                throw new CancellationException("Memory extraction request cancelled");
             } catch (RuntimeException ignored) {
                 throw new IllegalStateException("Memory extraction request failed");
             }
             budget.check();
+            Proposed proposed = null;
             try {
                 if (response.aiMessage() == null
                         || response.aiMessage().hasToolExecutionRequests()
@@ -107,33 +116,64 @@ public final class MemoryExtractor {
                 }
                 String text = response.aiMessage().text();
                 bounds.requireText(text, properties.getResponseReserveTokens(), MemoryBounds.VECTOR_RECORD_BYTES);
-                Proposed proposed = JSON.readValue(text, Proposed.class);
+                proposed = JSON.readValue(text, Proposed.class);
                 return validate(proposed, input);
             } catch (Exception ignored) {
                 if (attempt == 1) {
                     throw invalid();
+                }
+                if (proposed != null) {
+                    String summary = proposed.summary();
+                    long tokens = bounds.tokens(summary);
+                    int bytes = MemoryBounds.bytes(summary);
+                    if (tokens > properties.getSummaryMaxTokens() || bytes > MemoryBounds.COMPACT_TEXT_BYTES) {
+                        oversizedSummary = new SummarySize(tokens, bytes, summary.codePointCount(0, summary.length()));
+                    }
                 }
             }
         }
         throw invalid();
     }
 
-    private List<ChatMessage> messages(Input input, boolean repair) {
+    private List<ChatMessage> messages(Input input, boolean repair, SummarySize oversizedSummary) {
         String data;
         try {
             data = JSON.writeValueAsString(input);
         } catch (Exception ignored) {
             throw invalid();
         }
-        String limits = "\nMaximum " + properties.getProfileMaxFacts() + " facts per array, "
-                + properties.getSummaryMaxTokens() + " tokens per summary, " + properties.getProfileMaxTokens()
-                + " tokens per entire profile array. Preserve source attribution within these limits.";
+        int divisor = repair ? 4 : 2;
+        String limits = "\nGeneration targets: at most " + Math.max(1, properties.getSummaryMaxTokens() / divisor)
+                + " tokens for summary, " + Math.max(1, properties.getProfileMaxTokens() / divisor)
+                + " tokens for each entire profile array, and "
+                + Math.max(1, properties.getResponseReserveTokens() / divisor)
+                + " tokens for the complete JSON response. Maximum " + properties.getProfileMaxFacts()
+                + " facts per array. The server uses a local tokenizer and a safety margin; provider token counts are not comparable."
+                + " Use concise sentences, remove repetition, and preserve essential events, unresolved commitments, uncertainty and source attribution."
+                + " These are upper targets, not required lengths. Empty profile arrays remain valid.";
         // A repair repeats the original bounded data, never the invalid model response.
         String hint = repair
                 ? "\nYour last output failed strict schema, source attribution or size validation. Return a smaller valid object."
                 : "";
+        if (oversizedSummary != null) {
+            double ratio = Math.min(
+                    0.5,
+                    Math.min(
+                                    (double) properties.getSummaryMaxTokens() / Math.max(1, oversizedSummary.tokens()),
+                                    (double) MemoryBounds.COMPACT_TEXT_BYTES / Math.max(1, oversizedSummary.bytes()))
+                            / 2);
+            int characters = Math.max(1, (int) (oversizedSummary.characters() * ratio));
+            hint += "\nThe rejected summary measured " + oversizedSummary.tokens()
+                    + " server-estimated tokens including safety margin (limit " + properties.getSummaryMaxTokens()
+                    + "), " + oversizedSummary.bytes() + " UTF-8 bytes (limit " + MemoryBounds.COMPACT_TEXT_BYTES
+                    + "), and " + oversizedSummary.characters() + " Unicode characters. Rewrite summary to at most "
+                    + characters + " Unicode characters, substantially shorter than before; do not repeat it unchanged."
+                    + " Return the complete JSON object and keep the operation-specific profile rules.";
+        }
         return List.of(SystemMessage.from(INSTRUCTIONS + limits + hint), UserMessage.from(data));
     }
+
+    private record SummarySize(long tokens, int bytes, int characters) {}
 
     private Output validate(Proposed proposed, Input input) {
         require(proposed != null);
@@ -254,14 +294,14 @@ public final class MemoryExtractor {
         public void check() {
             checkLease.run();
             if (System.nanoTime() - started >= durationNanos) {
-                throw new MemoryBounds.CapacityException("Memory extraction deadline reached");
+                throw new MemoryBounds.PreparationDeferredException("Memory extraction deadline reached");
             }
         }
 
         private String beforeCall() {
             check();
             if (calls >= maxCalls) {
-                throw new MemoryBounds.CapacityException("Memory extraction call budget exhausted");
+                throw new MemoryBounds.PreparationDeferredException("Memory extraction call budget exhausted");
             }
             calls++;
             return UUID.randomUUID().toString();

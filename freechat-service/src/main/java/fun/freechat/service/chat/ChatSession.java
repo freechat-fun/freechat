@@ -139,7 +139,7 @@ public class ChatSession {
                 throw new IllegalStateException("Chat tool execution failed");
             }
         });
-        var connectors = skills != null || connectorBinder == null ? null : connectorBinder.bind();
+        var connectors = connectorBinder == null ? null : connectorBinder.bind();
         try {
             if (connectors != null) {
                 for (var entry : connectors.tools().entrySet()) {
@@ -204,7 +204,7 @@ public class ChatSession {
         }
         var connectors = connectorInvocation != null
                 ? connectorInvocation
-                : skills != null || connectorBinder == null ? null : connectorBinder.bind();
+                : connectorBinder == null ? null : connectorBinder.bind();
         try {
             if (connectors != null) {
                 connectors.check();

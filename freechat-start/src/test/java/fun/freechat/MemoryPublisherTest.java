@@ -33,6 +33,7 @@ import fun.freechat.service.chat.memory.MemoryVectorRepository;
 import fun.freechat.service.enums.EmbeddingStoreType;
 import fun.freechat.service.rag.EmbeddingModelService;
 import fun.freechat.service.rag.ExactEmbeddingStoreService;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -41,9 +42,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -65,6 +72,7 @@ class MemoryPublisherTest {
 
     @AfterEach
     void noAnnFlushDeletionOrImplicitRetries() {
+        f.publisher.close();
         // Any new vector API operation needs an explicit test, especially synchronous orphan deletion.
         assertTrue(mockingDetails(f.store).getInvocations().stream()
                 .allMatch(call -> call.getMethod().getName().equals("addAll")));
@@ -449,6 +457,288 @@ class MemoryPublisherTest {
         }
     }
 
+    @Nested
+    class BestEffortHeadReads {
+        @ParameterizedTest
+        @EnumSource(
+                value = MemoryDocument.Kind.class,
+                names = {"PROFILE_SNAPSHOT", "EPISODE_SUMMARY", "WINDOW_SUMMARY"})
+        void healthyHeadsRetainStrictValidationAndBothSqlAuthorizations(MemoryDocument.Kind kind) {
+            f.documents = List.of(f.document(kind, false));
+            MemoryDocument document = f.committedDocument();
+            Thread caller = Thread.currentThread();
+            assertEquals(
+                    Optional.of(document),
+                    f.publisher.readHeadBestEffort(SCOPE, document.id(), kind, FINGERPRINT, () -> {
+                        assertSame(caller, Thread.currentThread());
+                        f.events.add("invocation");
+                    }));
+            assertEquals(List.of("invocation", "exact", "authorize", "exact", "authorize", "invocation"), f.events);
+            verify(f.commits, times(2)).selectByPrimaryKey(document.commitId());
+            verifyNoInteractions(f.model, f.store);
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"missing", "uncommitted", "manifest", "corrupt", "reauthorize", "fingerprint", "kind"})
+        void unavailableOrUnauthorizedHeadsAreOmitted(String change) {
+            MemoryDocument document = f.committedDocument();
+            switch (change) {
+                case "missing" -> f.segments.clear();
+                case "uncommitted" -> f.attempt().setStatus("prepared");
+                case "manifest" ->
+                    f.attempt()
+                            .setManifest(MemoryDocumentCodec.encodeManifest(new MemoryManifest(
+                                    List.of(f.manifest().entries().getLast()))));
+                case "corrupt" -> {
+                    TextSegment encoded = f.segments.get(document.id());
+                    f.segments.put(document.id(), TextSegment.from(encoded.text() + " ", encoded.metadata()));
+                }
+                case "reauthorize" -> {
+                    AtomicInteger reads = new AtomicInteger();
+                    f.onExact = () -> {
+                        if (reads.incrementAndGet() == 2) {
+                            f.attempt().setStatus("terminal");
+                        }
+                    };
+                }
+                default -> {}
+            }
+            assertTrue(f.publisher
+                    .readHeadBestEffort(
+                            SCOPE,
+                            document.id(),
+                            change.equals("kind") ? MemoryDocument.Kind.WINDOW_SUMMARY : document.kind(),
+                            change.equals("fingerprint") ? "0".repeat(64) : FINGERPRINT,
+                            () -> {})
+                    .isEmpty());
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"exact", "authorize"})
+        void backendFailuresFallBackWithoutRetryingOrWriting(String stage) {
+            MemoryDocument document = f.committedDocument();
+            if (stage.equals("exact")) {
+                f.failure = stage;
+            } else {
+                doThrow(new IllegalStateException("private backend payload"))
+                        .when(f.commits)
+                        .selectByPrimaryKey(anyString());
+            }
+            AtomicInteger checks = new AtomicInteger();
+            assertTrue(f.publisher
+                    .readHeadBestEffort(SCOPE, document.id(), document.kind(), FINGERPRINT, checks::incrementAndGet)
+                    .isEmpty());
+            assertEquals(2, checks.get());
+            assertEquals(List.of("exact"), f.events);
+            verify(f.commits, times(stage.equals("authorize") ? 1 : 0)).selectByPrimaryKey(anyString());
+            verifyNoInteractions(f.model, f.store);
+        }
+
+        @ParameterizedTest
+        @ValueSource(ints = {1, 2})
+        void invocationGuardsThrowUnchangedOnTheCallerEvenAfterFallback(int failAt) {
+            MemoryDocument document = f.committedDocument();
+            Thread caller = Thread.currentThread();
+            for (String stage : List.of("", "exact")) {
+                f.failure = stage;
+                for (RuntimeException revoked : List.of(
+                        new CancellationException("cancelled"),
+                        new IllegalStateException("invalid lease"),
+                        new SecurityException("unauthorized"))) {
+                    f.events.clear();
+                    AtomicInteger checks = new AtomicInteger();
+                    assertSame(
+                            revoked,
+                            assertThrows(
+                                    revoked.getClass(),
+                                    () -> f.publisher.readHeadBestEffort(
+                                            SCOPE, document.id(), document.kind(), FINGERPRINT, () -> {
+                                                assertSame(caller, Thread.currentThread());
+                                                if (checks.incrementAndGet() == failAt) {
+                                                    throw revoked;
+                                                }
+                                            })));
+                    assertEquals(failAt, checks.get());
+                    if (failAt == 1) {
+                        assertTrue(f.events.isEmpty());
+                    }
+                }
+            }
+        }
+
+        @Test
+        void callerInterruptionIsPreservedForTheFinalInvocationGuard() {
+            MemoryDocument document = f.committedDocument();
+            CancellationException cancelled = new CancellationException("cancelled");
+            AtomicInteger checks = new AtomicInteger();
+            try {
+                assertSame(
+                        cancelled,
+                        assertThrows(
+                                CancellationException.class,
+                                () -> f.publisher.readHeadBestEffort(
+                                        SCOPE, document.id(), document.kind(), FINGERPRINT, () -> {
+                                            if (checks.incrementAndGet() == 1) {
+                                                Thread.currentThread().interrupt();
+                                            } else if (Thread.currentThread().isInterrupted()) {
+                                                throw cancelled;
+                                            }
+                                        })));
+                assertEquals(2, checks.get());
+                assertTrue(Thread.currentThread().isInterrupted());
+            } finally {
+                Thread.interrupted();
+            }
+        }
+
+        @Test
+        void nullHeadDoesNotCheckInvocationOrPerformIo() {
+            clearInvocations(f.coordination, f.states, f.commits, f.histories, f.stores, f.models, f.model, f.store);
+            assertTrue(f.publisher
+                    .readHeadBestEffort(
+                            SCOPE, null, MemoryDocument.Kind.PROFILE_SNAPSHOT, FINGERPRINT, () -> fail("Null head"))
+                    .isEmpty());
+            verifyNoInteractions(
+                    f.coordination, f.states, f.commits, f.histories, f.stores, f.models, f.model, f.store);
+        }
+
+        @Test
+        void stalledReadReturnsPromptlyAndLateCompletionCannotChangeTheFallbackOrInvocation() throws Exception {
+            MemoryDocument document = f.committedDocument();
+            AtomicInteger checks = new AtomicInteger();
+            Optional<MemoryDocument> pinned;
+            try (StalledRead stalled = new StalledRead(1)) {
+                pinned = assertTimeoutPreemptively(Duration.ofSeconds(1), () -> {
+                    Thread caller = Thread.currentThread();
+                    return f.publisher.readHeadBestEffort(SCOPE, document.id(), document.kind(), FINGERPRINT, () -> {
+                        assertSame(caller, Thread.currentThread());
+                        checks.incrementAndGet();
+                    });
+                });
+                assertTrue(pinned.isEmpty());
+                assertTrue(stalled.entered.await(1, TimeUnit.SECONDS));
+                assertTrue(stalled.interrupted.await(1, TimeUnit.SECONDS), "Timeout must interrupt the pending read");
+                assertEquals(2, checks.get());
+            }
+            // The backend finishes a valid read after fallback, but has no reference to caller-owned state.
+            assertTrue(pinned.isEmpty());
+            assertEquals(2, checks.get());
+            assertEquals(List.of("exact", "authorize", "exact", "authorize"), f.events);
+            f.onExact = () -> {};
+            assertEquals(
+                    Optional.of(document),
+                    f.publisher.readHead(SCOPE, document.id(), document.kind(), FINGERPRINT, () -> {}));
+            assertNull(f.state.getProfileId());
+            verifyNoInteractions(f.model, f.store);
+            verify(f.commits, never()).updateByPrimaryKey(any(ChatMemoryCommit.class));
+            verify(f.states, never()).updateByPrimaryKey(any(ChatMemoryState.class));
+        }
+
+        @Test
+        void interruptIgnoringBackendsCannotExceedEightWorkersOrQueueMoreReads() throws Exception {
+            MemoryDocument document = f.committedDocument();
+            try (StalledRead stalled = new StalledRead(8)) {
+                for (int index = 0; index < 8; index++) {
+                    assertTrue(assertTimeoutPreemptively(
+                                    Duration.ofSeconds(1),
+                                    () -> f.publisher.readHeadBestEffort(
+                                            SCOPE, document.id(), document.kind(), FINGERPRINT, () -> {}))
+                            .isEmpty());
+                }
+                assertTrue(stalled.entered.await(1, TimeUnit.SECONDS));
+                assertEquals(8, stalled.workers.size());
+                assertTrue(stalled.workers.stream().allMatch(Thread::isDaemon));
+                for (int index = 0; index < 3; index++) {
+                    AtomicInteger checks = new AtomicInteger();
+                    assertTrue(assertTimeoutPreemptively(
+                                    Duration.ofMillis(150),
+                                    () -> f.publisher.readHeadBestEffort(
+                                            SCOPE,
+                                            document.id(),
+                                            document.kind(),
+                                            FINGERPRINT,
+                                            checks::incrementAndGet))
+                            .isEmpty());
+                    assertEquals(2, checks.get());
+                }
+                assertEquals(8, Collections.frequency(f.events, "exact"));
+            }
+            assertEquals(16, Collections.frequency(f.events, "exact"));
+            verifyNoInteractions(f.model, f.store);
+        }
+
+        @Test
+        void closeReleasesOnlyItsOwnPoolAndClosedReadsStillCheckInvocation() throws Exception {
+            MemoryDocument document = f.committedDocument();
+            Set<Thread> ownWorkers = ConcurrentHashMap.newKeySet();
+            Set<Thread> otherWorkers = ConcurrentHashMap.newKeySet();
+            f.onExact = () -> ownWorkers.add(Thread.currentThread());
+            assertEquals(
+                    Optional.of(document),
+                    f.publisher.readHeadBestEffort(SCOPE, document.id(), document.kind(), FINGERPRINT, () -> {}));
+            try (MemoryPublisher other = new MemoryPublisher(f.publications, f.vectors)) {
+                f.onExact = () -> otherWorkers.add(Thread.currentThread());
+                assertEquals(
+                        Optional.of(document),
+                        other.readHeadBestEffort(SCOPE, document.id(), document.kind(), FINGERPRINT, () -> {}));
+                f.publisher.close();
+                f.publisher.close();
+                for (Thread worker : ownWorkers) {
+                    worker.join(1000);
+                    assertFalse(worker.isAlive());
+                }
+                f.events.clear();
+                AtomicInteger checks = new AtomicInteger();
+                assertTrue(f.publisher
+                        .readHeadBestEffort(SCOPE, document.id(), document.kind(), FINGERPRINT, checks::incrementAndGet)
+                        .isEmpty());
+                assertEquals(2, checks.get());
+                assertTrue(f.events.isEmpty());
+                assertEquals(
+                        Optional.of(document),
+                        other.readHeadBestEffort(SCOPE, document.id(), document.kind(), FINGERPRINT, () -> {}));
+            }
+            for (Thread worker : otherWorkers) {
+                worker.join(1000);
+                assertFalse(worker.isAlive());
+            }
+        }
+
+        private final class StalledRead implements AutoCloseable {
+            final CountDownLatch entered;
+            final CountDownLatch interrupted = new CountDownLatch(1);
+            final CountDownLatch release = new CountDownLatch(1);
+            final Set<Thread> workers = ConcurrentHashMap.newKeySet();
+
+            StalledRead(int expectedWorkers) {
+                entered = new CountDownLatch(expectedWorkers);
+                f.onExact = () -> {
+                    workers.add(Thread.currentThread());
+                    entered.countDown();
+                    while (true) {
+                        try {
+                            release.await();
+                            return;
+                        } catch (InterruptedException ignored) {
+                            interrupted.countDown();
+                            // Model a backend that keeps occupying its worker after cancellation.
+                        }
+                    }
+                };
+            }
+
+            @Override
+            public void close() throws InterruptedException {
+                f.publisher.close();
+                release.countDown();
+                for (Thread worker : workers) {
+                    worker.join(1000);
+                    assertFalse(worker.isAlive(), "Released workers must terminate after publisher close");
+                }
+            }
+        }
+    }
+
     private static void sanitized(Runnable action, String message) {
         IllegalStateException error = assertThrows(IllegalStateException.class, action::run);
         assertEquals(message, error.getMessage());
@@ -472,7 +762,7 @@ class MemoryPublisherTest {
         @SuppressWarnings("unchecked")
         final EmbeddingStore<TextSegment> store = fake(EmbeddingStore.class);
 
-        final List<String> events = new ArrayList<>();
+        final List<String> events = Collections.synchronizedList(new ArrayList<>());
         final Map<String, ChatMemoryCommit> attempts = new HashMap<>();
         final Map<String, TextSegment> segments = new HashMap<>();
         final List<ChatHistory> source = List.of(new ChatHistory()

@@ -27,6 +27,7 @@ import fun.freechat.service.chat.ChatService;
 import fun.freechat.service.chat.ChatSession;
 import fun.freechat.service.chat.ChatSessionService;
 import fun.freechat.service.chat.QueueAwareTokenStream;
+import fun.freechat.service.chat.memory.MemoryBounds.PreparationDeferredException;
 import fun.freechat.service.enums.ChatVar;
 import fun.freechat.service.enums.ModelProvider;
 import fun.freechat.service.enums.QuotaType;
@@ -46,6 +47,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -57,11 +59,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -101,6 +106,38 @@ public class ChatApi {
 
     @Autowired
     private PromptTaskService promptTaskService;
+
+    @ExceptionHandler(PreparationDeferredException.class)
+    public ResponseEntity<Map<String, Object>> memoryPreparationDeferred() {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.RETRY_AFTER, "1")
+                .header(HttpHeaders.CACHE_CONTROL, "no-store")
+                .body(memoryPreparationError());
+    }
+
+    private static Map<String, Object> memoryPreparationError() {
+        return Map.of(
+                "code", 503,
+                "errorCode", "CHAT_MEMORY_PREPARING",
+                "message", "Conversation memory is still being prepared. Please retry your message.");
+    }
+
+    private static void failStream(SseEmitter emitter, Throwable error) {
+        if (error instanceof PreparationDeferredException) {
+            log.warn("Chat memory preparation deferred");
+            try {
+                emitter.send(
+                        SseEmitter.event().name("error").data(memoryPreparationError(), MediaType.APPLICATION_JSON));
+                emitter.complete();
+            } catch (IOException | RuntimeException ignored) {
+                emitter.completeWithError(new IllegalStateException("Chat response delivery failed"));
+            }
+        } else {
+            log.error("SSE exception.");
+            emitter.completeWithError(new IllegalStateException("Chat stream failed"));
+        }
+    }
 
     private static void closeStream(TokenStream stream) {
         if (stream instanceof AutoCloseable closeable) {
@@ -480,8 +517,7 @@ public class ChatApi {
                         }
                     })
                     .onError(ex -> {
-                        log.error("SSE exception.");
-                        sseEmitter.completeWithError(new IllegalStateException("Chat stream failed"));
+                        failStream(sseEmitter, ex);
                         long lastPackageReceivedTime = System.currentTimeMillis();
                         String traceInfo = new TraceUtils.TraceInfoBuilder()
                                 .args(new String[] {characterName, characterUid})
@@ -499,6 +535,10 @@ public class ChatApi {
             return sseEmitter;
         } catch (RuntimeException failure) {
             closeStream(tokenStream);
+            if (failure instanceof PreparationDeferredException deferred) {
+                if (servletResponse.isCommitted()) return sseEmitter;
+                throw deferred;
+            }
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Chat stream initialization failed");
         }
     }
@@ -756,8 +796,7 @@ public class ChatApi {
                         }
                     })
                     .onError(ex -> {
-                        log.error("SSE exception.");
-                        sseEmitter.completeWithError(new IllegalStateException("Chat stream failed"));
+                        failStream(sseEmitter, ex);
                         long lastPackageReceivedTime = System.currentTimeMillis();
                         String traceInfo = new TraceUtils.TraceInfoBuilder()
                                 .args(new String[] {assistantName, assistantUid})
@@ -775,6 +814,10 @@ public class ChatApi {
             return sseEmitter;
         } catch (RuntimeException failure) {
             closeStream(tokenStream);
+            if (failure instanceof PreparationDeferredException deferred) {
+                if (servletResponse.isCommitted()) return sseEmitter;
+                throw deferred;
+            }
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Chat stream initialization failed");
         }
     }

@@ -3,10 +3,30 @@ package fun.freechat.service.chat.memory;
 import dev.langchain4j.model.output.TokenUsage;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-public final class MemoryPublisher {
+public final class MemoryPublisher implements AutoCloseable {
+    private static final int HEAD_READ_WORKERS = 8;
+    private static final long HEAD_READ_TIMEOUT_MILLIS = 200;
+
     private final MemoryPublicationRepository publications;
     private final MemoryVectorRepository vectors;
+    private final ExecutorService headReads = new ThreadPoolExecutor(
+            0,
+            HEAD_READ_WORKERS,
+            60,
+            TimeUnit.SECONDS,
+            new SynchronousQueue<>(),
+            Thread.ofPlatform().daemon(true).name("memory-head-read-", 0).factory(),
+            new ThreadPoolExecutor.AbortPolicy());
 
     public MemoryPublisher(MemoryPublicationRepository publications, MemoryVectorRepository vectors) {
         this.publications = publications;
@@ -40,12 +60,15 @@ public final class MemoryPublisher {
                     documents,
                     () -> publications.checkPrepared(snapshot.scope(), snapshot.attemptId()));
             publications.publish(snapshot.scope(), snapshot.attemptId());
-        } catch (RuntimeException ignored) {
+        } catch (RuntimeException failure) {
             try {
                 publications.terminate(
                         snapshot.scope(), snapshot.attemptId(), MemoryPublicationRepository.Failure.VECTOR_WRITE);
             } catch (RuntimeException cleanupFailure) {
                 // An ambiguous SQL commit may already be published; reconciliation owns unresolved attempts.
+            }
+            if (failure instanceof CancellationException) {
+                throw new CancellationException("Memory publication cancelled");
             }
             throw new IllegalStateException("Memory publication failed");
         }
@@ -73,6 +96,8 @@ public final class MemoryPublisher {
                 return Optional.empty();
             }
             return document;
+        } catch (CancellationException ignored) {
+            throw new CancellationException("Committed memory read cancelled");
         } catch (RuntimeException ignored) {
             throw new IllegalStateException("Committed memory read failed");
         }
@@ -99,5 +124,42 @@ public final class MemoryPublisher {
             return Optional.empty();
         }
         return Optional.of(document);
+    }
+
+    /** Optional derived memory must not stall a conversation or hide invocation revocation. */
+    public Optional<MemoryDocument> readHeadBestEffort(
+            MemoryScope scope,
+            String recordId,
+            MemoryDocument.Kind kind,
+            String fingerprint,
+            Runnable checkInvocation) {
+        if (recordId == null) {
+            return Optional.empty();
+        }
+        // The caller owns invocation state (including thread-local cancellation/authentication).
+        checkInvocation.run();
+        Optional<MemoryDocument> document = Optional.empty();
+        Future<Optional<MemoryDocument>> pending = null;
+        try {
+            // Keep strict HEAD validation and both SQL authorizations, but never pass caller state to a worker.
+            pending = headReads.submit(() -> readHead(scope, recordId, kind, fingerprint, () -> {}));
+            document = pending.get(HEAD_READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException ignored) {
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException | TimeoutException | RejectedExecutionException | CancellationException ignored) {
+            // Derived memory is optional; do not expose backend payloads or retry on the caller.
+        } finally {
+            if (pending != null) {
+                // Also discard late results when a backend ignores interruption. Completed reads are unaffected.
+                pending.cancel(true);
+            }
+        }
+        checkInvocation.run();
+        return document;
+    }
+
+    @Override
+    public void close() {
+        headReads.shutdownNow();
     }
 }

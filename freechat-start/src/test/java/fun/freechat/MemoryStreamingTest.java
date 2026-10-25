@@ -50,6 +50,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockMakers;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.SimpleTransactionStatus;
@@ -124,6 +126,46 @@ class MemoryStreamingTest {
         verify(f.timers.deadline).cancel(false);
         verify(f.timers.heartbeat).cancel(false);
         verify(f.timers.scheduler, never()).shutdown();
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void preparationDeferralSurvivesStreamingWrappersAfterFencing(boolean afterPartial) {
+        Fixture f = new Fixture();
+        MemoryTokenStream stream = f.stream();
+        List<Throwable> errors = new ArrayList<>();
+        stream.onError(error -> {
+            assertEquals("abort", f.events.getLast());
+            errors.add(error);
+        });
+        if (afterPartial) {
+            stream.start();
+            f.provider.handlers.getFirst().onPartialResponse("partial");
+        }
+        f.invocation.requestOverlay(
+                messages -> {
+                    throw new MemoryBounds.PreparationDeferredException(PRIVATE);
+                },
+                request -> {});
+        if (afterPartial) {
+            f.provider
+                    .handlers
+                    .getFirst()
+                    .onCompleteResponse(response(AiMessage.from(TOOL_CALL), new TokenUsage(1, 1)));
+        } else {
+            stream.start();
+        }
+        stream.close();
+        assertEquals(1, errors.size());
+        Throwable failure = errors.getFirst();
+        assertInstanceOf(MemoryBounds.PreparationDeferredException.class, failure);
+        assertEquals("Chat memory preparation deferred", failure.getMessage());
+        assertNull(failure.getCause());
+        assertEquals(0, failure.getSuppressed().length);
+        assertEquals(1, f.aborts.get());
+        assertEquals(afterPartial ? 1 : 0, f.provider.requests.size());
+        verify(f.timers.deadline).cancel(false);
+        verify(f.timers.heartbeat).cancel(false);
     }
 
     @Test
@@ -863,7 +905,6 @@ class MemoryStreamingTest {
                     new MemorySourceReader(turns),
                     publications,
                     new MemoryPublisher(publications, null),
-                    null,
                     bounds,
                     properties);
             invocation.add(SystemMessage.from("base"));

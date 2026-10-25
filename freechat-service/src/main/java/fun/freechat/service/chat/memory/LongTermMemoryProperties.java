@@ -19,7 +19,7 @@ public class LongTermMemoryProperties implements InitializingBean {
     private Duration extractionClaimLease = Duration.ofMinutes(5);
     private Duration extractionTimeout = Duration.ofSeconds(60);
     private Duration foregroundTimeout = Duration.ofSeconds(90);
-    private int maxForegroundBatches = 2;
+    private int maxForegroundBatches = 20;
     private int maxAttempts = 5;
     private Duration retryInitialDelay = Duration.ofSeconds(30);
     private Duration retryMaxDelay = Duration.ofMinutes(30);

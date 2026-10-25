@@ -194,9 +194,11 @@ public class ChatServiceImpl implements ChatService {
                                 .send(binding, () -> chatSessionService.verifyModerationIfNeeded(moderation));
                     } catch (fun.freechat.service.chat.memory.MemoryBounds.CapacityException exhausted) {
                         throw exhausted;
-                    } catch (Error ignored) {
+                    } catch (Error failure) {
+                        log.error("Chat invocation failed for chat {}", chatId, failure);
                         throw new Error("Chat invocation failed");
-                    } catch (RuntimeException ignored) {
+                    } catch (RuntimeException failure) {
+                        log.error("Chat invocation failed for chat {}", chatId, failure);
                         throw new IllegalStateException("Chat invocation failed");
                     }
                 }));
@@ -237,6 +239,9 @@ public class ChatServiceImpl implements ChatService {
                 TokenStream stream = new ChatExecution(session, memoryId).stream();
                 return binding == null ? stream : new MemoryTokenStream(stream, binding.memory(), binding.lifetime());
             } catch (RuntimeException | Error failure) {
+                if (!(failure instanceof fun.freechat.service.chat.memory.MemoryBounds.CapacityException)) {
+                    log.error("Chat stream initialization failed for chat {}", chatId, failure);
+                }
                 if (binding != null) {
                     binding.close();
                 }
@@ -394,7 +399,7 @@ public class ChatServiceImpl implements ChatService {
                             .map(TextSegment::text)
                             .collect(Collectors.joining("\n\n"));
                 } catch (Exception ex) {
-                    log.warn("Failed to retrieve chat knowledge.");
+                    log.warn("Failed to retrieve chat knowledge for chat {}", memoryId, ex);
                     throwable = new IllegalStateException("Chat knowledge retrieval failed");
                 } finally {
                     long endTime = System.currentTimeMillis();
@@ -442,9 +447,11 @@ public class ChatServiceImpl implements ChatService {
         try {
             ChatContext current = chatContextService.get(chatId);
             return current == null ? null : chatSessionService.get(current);
-        } catch (Error ignored) {
+        } catch (Error failure) {
+            log.error("Chat session initialization failed for chat {}", chatId, failure);
             throw new Error("Chat session initialization failed");
-        } catch (RuntimeException ignored) {
+        } catch (RuntimeException failure) {
+            log.error("Chat session initialization failed for chat {}", chatId, failure);
             throw new IllegalStateException("Chat session initialization failed");
         }
     }

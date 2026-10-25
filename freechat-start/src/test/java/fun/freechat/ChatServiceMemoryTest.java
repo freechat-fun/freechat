@@ -4,6 +4,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.ThrowableProxy;
+import ch.qos.logback.classic.spi.ThrowableProxyUtil;
+import ch.qos.logback.core.read.ListAppender;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
@@ -60,8 +66,10 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockMakers;
+import org.slf4j.LoggerFactory;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.SimpleTransactionStatus;
@@ -81,6 +89,46 @@ class ChatServiceMemoryTest {
     private static final String CUSTOM_ROLE = "Existing role: a patient guide. {{not-a-variable-now}} {literal}";
     private static final String SKILL_POLICY = "\n\nFreeChat skill policy:";
     private static final String SKILL_JSON = "Skill context JSON:\n";
+
+    @ParameterizedTest
+    @CsvSource({"false,failure", "true,failure", "false,slow", "true,slow"})
+    void optionalMemoryBackendCannotBlockOrFailAConversation(boolean streaming, String mode) throws Exception {
+        CountDownLatch release = new CountDownLatch(1);
+        try (Fixture f = new Fixture()) {
+            var state = f.turns.read(f.id).orElseThrow();
+            state.setProfileId(UUID.randomUUID().toString());
+            state.setSummaryId(UUID.randomUUID().toString());
+            doAnswer(call -> {
+                        if (mode.equals("slow")) {
+                            boolean finished = false;
+                            while (!finished) {
+                                try {
+                                    finished = release.await(5, TimeUnit.SECONDS);
+                                } catch (InterruptedException ignored) {
+                                }
+                            }
+                        }
+                        throw new IllegalStateException(PRIVATE);
+                    })
+                    .when(f.stores)
+                    .get(any(), anyString(), any());
+            long started = System.nanoTime();
+            ChatResponse result = f.run(streaming, List.of(response(AiMessage.from("Reply without optional memory"))));
+            assertEquals("Reply without optional memory", result.aiMessage().text());
+            assertTrue(
+                    System.nanoTime() - started < TimeUnit.SECONDS.toNanos(2), "Optional memory cannot stall a reply");
+            assertEquals(1, f.provider.requests.size());
+            assertEquals(2, f.writes.size());
+            assertEquals(0, f.aborts.get());
+            assertTrue(f.binding().memory().completed());
+            assertFalse(ChatMessageSerializer.messagesToJson(
+                            f.provider.requests.getFirst().messages())
+                    .contains(PRIVATE));
+            f.assertTimersDisposed();
+        } finally {
+            release.countDown();
+        }
+    }
 
     @ParameterizedTest
     @ValueSource(booleans = {false, true})
@@ -814,6 +862,68 @@ class ChatServiceMemoryTest {
         }
     }
 
+    @ParameterizedTest
+    @CsvSource({
+        "false,session,false", "true,session,false", "false,session,true", "true,session,true",
+        "false,resolution,false", "true,resolution,false", "false,resolution,true", "true,resolution,true",
+        "false,transformation,false", "true,transformation,false", "false,transformation,true",
+                "true,transformation,true"
+    })
+    void wrappedFailuresLogOriginalThrowableBeforeSanitization(boolean streaming, String phase, boolean fatal)
+            throws Exception {
+        Logger logger = (Logger) LoggerFactory.getLogger(ChatServiceImpl.class);
+        Level previous = logger.getLevel();
+        ListAppender<ILoggingEvent> events = new ListAppender<>();
+        events.list = new CopyOnWriteArrayList<>();
+        events.setContext(logger.getLoggerContext());
+        events.start();
+        logger.addAppender(events);
+        logger.setLevel(Level.ERROR);
+        Throwable original = fatal
+                ? new AssertionError(PRIVATE, new IllegalArgumentException("root cause"))
+                : new IllegalStateException(PRIVATE, new IllegalArgumentException("root cause"));
+        original.addSuppressed(new IllegalStateException("suppressed detail"));
+        try (Fixture f = new Fixture()) {
+            switch (phase) {
+                case "session" -> doThrow(original).when(f.sessions).get(f.context);
+                case "resolution" -> doThrow(original).when(f.models).resolveForSession(f.id, FINGERPRINT);
+                case "transformation" ->
+                    doThrow(original).when(f.prompts).apply(any(UserMessage.class), anyMap(), any());
+                default -> throw new AssertionError(phase);
+            }
+            RuntimeException wrapped = assertThrows(RuntimeException.class, () -> {
+                if (streaming) f.service.streamSend(f.id, ORIGINAL, null);
+                else f.service.send(f.id, ORIGINAL, null);
+            });
+            f.idle();
+            for (Throwable failure = wrapped; failure != null; failure = failure.getCause()) {
+                assertNotSame(original, failure);
+                assertFalse(failure.toString().contains(PRIVATE));
+                assertEquals(0, failure.getSuppressed().length);
+            }
+            assertEquals(1, events.list.size());
+            ILoggingEvent event = events.list.getFirst();
+            assertEquals(Level.ERROR, event.getLevel());
+            String label = phase.equals("session")
+                    ? "Chat session initialization failed"
+                    : streaming ? "Chat stream initialization failed" : "Chat invocation failed";
+            assertEquals(label + " for chat " + f.id, event.getFormattedMessage());
+            ThrowableProxy proxy = assertInstanceOf(ThrowableProxy.class, event.getThrowableProxy());
+            assertSame(original, proxy.getThrowable());
+            String trace = ThrowableProxyUtil.asString(proxy);
+            assertTrue(trace.contains(PRIVATE));
+            assertTrue(trace.contains("Caused by: java.lang.IllegalArgumentException: root cause"));
+            assertTrue(trace.contains("Suppressed: java.lang.IllegalStateException: suppressed detail"));
+            assertTrue(trace.contains("ChatServiceMemoryTest.wrappedFailuresLogOriginalThrowableBeforeSanitization"));
+            assertTrue(f.provider.requests.isEmpty());
+            assertEquals(phase.equals("transformation") ? 1 : 0, f.aborts.get());
+        } finally {
+            logger.detachAppender(events);
+            logger.setLevel(previous);
+            events.stop();
+        }
+    }
+
     private static ToolExecutionRequest loadSkill(String id) {
         return call(id, "skill", "{\"skillId\":\"" + SKILL_ID + "\"}");
     }
@@ -1423,7 +1533,6 @@ class ChatServiceMemoryTest {
                     publications,
                     publisher,
                     vectors,
-                    null,
                     boundsFactory,
                     properties,
                     scheduler);

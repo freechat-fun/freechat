@@ -250,7 +250,6 @@ class MemoryRenderedExamplesTest {
                     null,
                     publisher,
                     vectors,
-                    null,
                     bounds,
                     properties,
                     scheduler);

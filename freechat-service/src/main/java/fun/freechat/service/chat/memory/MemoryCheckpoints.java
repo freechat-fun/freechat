@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CancellationException;
 
 /** Exact-read-only incremental reduction state. No source cursor advances until ordinary publication. */
 public final class MemoryCheckpoints {
@@ -43,6 +44,8 @@ public final class MemoryCheckpoints {
                     checkpoint.attemptId(),
                     checkpoint.position(),
                     new MemoryExtractor.Output(document.summary(), document.userFacts(), document.characterDeltas())));
+        } catch (CancellationException ignored) {
+            throw new CancellationException("Memory checkpoint operation cancelled");
         } catch (RuntimeException ignored) {
             throw failed();
         }
@@ -106,11 +109,14 @@ public final class MemoryCheckpoints {
                     attemptId,
                     next,
                     new MemoryExtractor.Output(document.summary(), document.userFacts(), document.characterDeltas()));
-        } catch (RuntimeException ignored) {
+        } catch (RuntimeException failure) {
             try {
                 publications.terminate(snapshot.scope(), attemptId, MemoryPublicationRepository.Failure.VECTOR_WRITE);
             } catch (RuntimeException cleanupFailure) {
                 // No prepared row, or an ambiguous SQL result. Reconciliation owns unresolved attempts.
+            }
+            if (failure instanceof CancellationException) {
+                throw new CancellationException("Memory checkpoint operation cancelled");
             }
             throw failed();
         }

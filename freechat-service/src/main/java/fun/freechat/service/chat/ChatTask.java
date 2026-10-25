@@ -1,12 +1,15 @@
 package fun.freechat.service.chat;
 
 import dev.langchain4j.service.TokenStream;
+import fun.freechat.service.chat.memory.MemoryBounds.PreparationDeferredException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public abstract sealed class ChatTask<T> permits ChatTask.Sync, ChatTask.Stream {
 
     final CompletableFuture<T> future = new CompletableFuture<>();
@@ -34,7 +37,11 @@ public abstract sealed class ChatTask<T> permits ChatTask.Sync, ChatTask.Stream 
         void execute() {
             try {
                 future.complete(work.get());
+            } catch (PreparationDeferredException deferred) {
+                log.warn("Chat memory preparation deferred", deferred);
+                future.completeExceptionally(deferred);
             } catch (Throwable t) {
+                log.error("Chat task failed", t);
                 future.completeExceptionally(t);
             }
         }
@@ -102,10 +109,15 @@ public abstract sealed class ChatTask<T> permits ChatTask.Sync, ChatTask.Stream 
                     requestCancellation();
                 }
             } catch (InterruptedException e) {
+                log.warn("Chat stream interrupted", e);
                 requestCancellation();
                 Thread.currentThread().interrupt();
                 future.completeExceptionally(new IllegalStateException("Chat stream interrupted"));
+            } catch (PreparationDeferredException deferred) {
+                log.warn("Chat memory preparation deferred", deferred);
+                future.completeExceptionally(deferred);
             } catch (Throwable t) {
+                log.error("Chat stream failed", t);
                 future.completeExceptionally(new IllegalStateException("Chat stream failed"));
             } finally {
                 boolean interrupted = Thread.interrupted();
@@ -115,7 +127,8 @@ public abstract sealed class ChatTask<T> permits ChatTask.Sync, ChatTask.Stream 
                     } else if (raw instanceof AutoCloseable closeable) {
                         closeable.close();
                     }
-                } catch (Throwable ignored) {
+                } catch (Throwable t) {
+                    log.error("Chat stream cancellation failed", t);
                     future.completeExceptionally(new IllegalStateException("Chat stream cancellation failed"));
                 } finally {
                     if (wrapped != null) {

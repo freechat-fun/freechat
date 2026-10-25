@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class MemoryExtractorTest {
     private static final Instant OBSERVED = Instant.parse("2026-09-12T10:00:00Z");
@@ -135,6 +137,135 @@ class MemoryExtractorTest {
                 model.requests.getLast().messages().getLast());
     }
 
+    @Test
+    void summaryGenerationLeavesHeadroomForTheServerTokenizerAndMargin() {
+        FakeModel model = new FakeModel(VALID);
+        extractor.extract(model, null, input(MemoryPublicationRepository.Operation.IDLE), budget(1));
+        String system = ((SystemMessage) model.requests.getFirst().messages().getFirst()).text();
+        assertTrue(system.contains("384 tokens for summary"));
+        assertTrue(system.contains("256 tokens for each entire profile array"));
+        assertTrue(system.contains("local tokenizer and a safety margin"));
+        assertEquals(768, properties.getSummaryMaxTokens());
+        assertEquals(512, properties.getProfileMaxTokens());
+    }
+
+    @Test
+    void oversizedSummaryGetsNumericRepairFeedbackWithoutEchoingTheResponse() {
+        String privateOutput = "private-rejected-summary-";
+        String oversized = privateOutput + "a".repeat(3004 - privateOutput.length());
+        String response = "{\"summary\":\"" + oversized + "\",\"userFacts\":[],\"characterDeltas\":[]}";
+        String compact = "{\"summary\":\"The user prefers tea.\",\"userFacts\":[],\"characterDeltas\":[]}";
+        FakeModel model = new FakeModel(response, compact);
+        model.usage = new TokenUsage(1561, 693);
+
+        var output = extractor.extract(model, null, input(MemoryPublicationRepository.Operation.OVERFLOW), budget(2));
+
+        assertEquals("The user prefers tea.", output.summary());
+        assertEquals(2, model.requests.size());
+        assertEquals(2, recorded.size());
+        String repair = ((SystemMessage) model.requests.getLast().messages().getFirst()).text();
+        assertTrue(repair.contains("summary measured 939 server-estimated tokens"));
+        assertTrue(repair.contains("limit 768"));
+        assertTrue(repair.contains("3004 UTF-8 bytes"));
+        assertTrue(repair.contains("3004 Unicode characters"));
+        assertTrue(repair.contains("192 tokens for summary"));
+        assertTrue(repair.contains("at most 1228 Unicode characters"));
+        assertFalse(repair.contains(privateOutput));
+        assertEquals(
+                model.requests.getFirst().messages().getLast(),
+                model.requests.getLast().messages().getLast());
+        for (var request : model.requests) bounds.requireExtraction(request.messages(), null);
+        bounds.requireText(output.summary(), properties.getSummaryMaxTokens(), MemoryBounds.COMPACT_TEXT_BYTES);
+    }
+
+    @Test
+    void summarySizeRepairUsesCodePointsAndChecksBytesIndependentlyOfTokens() {
+        MemoryBounds byteBounds = new MemoryBounds(MemoryBoundsTest.estimator(text -> 1), properties);
+        MemoryExtractor byteExtractor = new MemoryExtractor(properties, byteBounds);
+        String oversized = "界".repeat(2700) + "\uD840\uDC00".repeat(40);
+        String response = "{\"summary\":\"" + oversized + "\",\"userFacts\":[],\"characterDeltas\":[]}";
+        FakeModel model = new FakeModel(response, "{\"summary\":\"简短摘要\",\"userFacts\":[],\"characterDeltas\":[]}");
+
+        assertEquals(
+                "简短摘要",
+                byteExtractor
+                        .extract(model, null, input(MemoryPublicationRepository.Operation.OVERFLOW), budget(2))
+                        .summary());
+
+        String repair = ((SystemMessage) model.requests.getLast().messages().getFirst()).text();
+        assertTrue(repair.contains("8260 UTF-8 bytes (limit 8192)"));
+        assertTrue(repair.contains("2740 Unicode characters"));
+        assertFalse(repair.contains(oversized));
+        var target = Pattern.compile("Rewrite summary to at most (\\d+) Unicode characters")
+                .matcher(repair);
+        assertTrue(target.find());
+        int characters = Integer.parseInt(target.group(1));
+        assertTrue(characters > 0 && characters < 1370);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2})
+    void repeatedOversizedSummariesNeverRelaxStorageLimitsOrAddModelCalls(int limit) {
+        String response = "{\"summary\":\"" + "a".repeat(3004) + "\",\"userFacts\":[],\"characterDeltas\":[]}";
+        FakeModel model = new FakeModel(response, response);
+        RuntimeException failure = assertThrows(
+                RuntimeException.class,
+                () -> extractor.extract(
+                        model, null, input(MemoryPublicationRepository.Operation.OVERFLOW), budget(limit)));
+        if (limit == 1) assertTrue(failure instanceof MemoryBounds.PreparationDeferredException);
+        else assertEquals("Invalid memory extraction output", failure.getMessage());
+        assertSafe(failure);
+        assertEquals(limit, model.requests.size());
+        assertEquals(limit, recorded.size());
+        assertEquals(768, properties.getSummaryMaxTokens());
+        assertEquals(8192, MemoryBounds.COMPACT_TEXT_BYTES);
+    }
+
+    @Test
+    void conservativePromptTargetsDoNotBecomeNewValidationLimits() {
+        String summary = "a".repeat(2000);
+        FakeModel model = new FakeModel("{\"summary\":\"" + summary + "\",\"userFacts\":[],\"characterDeltas\":[]}");
+        assertTrue(bounds.tokens(summary) > properties.getSummaryMaxTokens() / 2);
+        assertEquals(
+                summary,
+                extractor
+                        .extract(model, null, input(MemoryPublicationRepository.Operation.OVERFLOW), budget(1))
+                        .summary());
+        assertEquals(1, model.requests.size());
+    }
+
+    @Test
+    void numericRepairFeedbackIsReservedBeforeTheFirstModelCall() {
+        MemoryBounds bounded = new MemoryBounds(
+                MemoryBoundsTest.estimator(
+                        text -> text.contains("9223372036854775807") ? 100_000 : Math.max(1, text.length() / 4)),
+                properties);
+        FakeModel model = new FakeModel(VALID);
+        assertThrows(
+                MemoryBounds.CapacityException.class,
+                () -> new MemoryExtractor(properties, bounded)
+                        .extract(model, null, input(MemoryPublicationRepository.Operation.IDLE), budget(2)));
+        assertTrue(model.requests.isEmpty());
+        assertTrue(recorded.isEmpty());
+    }
+
+    @Test
+    void actualRepairIsRemeasuredBeforeSpendingAnotherCall() {
+        MemoryBounds nonmonotonic = new MemoryBounds(
+                MemoryBoundsTest.estimator(text -> text.contains("summary measured 939 server-estimated tokens")
+                        ? 100_000
+                        : Math.max(1, text.length() / 4)),
+                properties);
+        String response = "{\"summary\":\"" + "a".repeat(3004) + "\",\"userFacts\":[],\"characterDeltas\":[]}";
+        FakeModel model = new FakeModel(response, VALID);
+        assertThrows(
+                MemoryBounds.CapacityException.class,
+                () -> new MemoryExtractor(properties, nonmonotonic)
+                        .extract(model, null, input(MemoryPublicationRepository.Operation.OVERFLOW), budget(2)));
+        assertEquals(1, model.requests.size());
+        assertEquals(1, recorded.size());
+    }
+
     @ParameterizedTest
     @MethodSource("invalidOutputs")
     void rejectsNoncanonicalSchemaAndUnbackedFactsWithNoPayloadBearingErrors(String output) {
@@ -222,7 +353,7 @@ class MemoryExtractorTest {
     void overflowCannotUpdateProfilesAndRepairCountsTowardForegroundBudget() {
         FakeModel model = new FakeModel(VALID, VALID);
         RuntimeException error = assertThrows(
-                MemoryBounds.CapacityException.class,
+                MemoryBounds.PreparationDeferredException.class,
                 () -> extractor.extract(model, null, input(MemoryPublicationRepository.Operation.OVERFLOW), budget(1)));
         assertSafe(error);
         assertEquals(1, model.requests.size());
@@ -249,6 +380,18 @@ class MemoryExtractorTest {
         assertThrows(MemoryBounds.CapacityException.class, () -> extractor.extract(model, null, large, budget(2)));
         assertTrue(model.requests.isEmpty());
         assertTrue(recorded.isEmpty());
+    }
+
+    @Test
+    void exhaustedTimeBudgetIsRetryableButOversizedInputIsNot() {
+        var expired = new MemoryExtractor.Budget(1, Duration.ofNanos(1), () -> {}, (id, usage) -> {});
+        assertThrows(MemoryBounds.PreparationDeferredException.class, expired::check);
+        FakeModel model = new FakeModel(VALID);
+        var tooLarge = assertThrows(
+                MemoryBounds.CapacityException.class,
+                () -> extractor.extract(model, 1, input(MemoryPublicationRepository.Operation.IDLE), budget(2)));
+        assertFalse(tooLarge instanceof MemoryBounds.PreparationDeferredException);
+        assertTrue(model.requests.isEmpty());
     }
 
     @Test
@@ -329,6 +472,7 @@ class MemoryExtractorTest {
     private static final class FakeModel implements ChatModel {
         private final List<String> responses;
         private final List<ChatRequest> requests = new ArrayList<>();
+        private TokenUsage usage = new TokenUsage(10, 5);
 
         private FakeModel(String... responses) {
             this.responses = List.of(responses);
@@ -339,7 +483,7 @@ class MemoryExtractorTest {
             requests.add(request);
             return ChatResponse.builder()
                     .aiMessage(AiMessage.from(responses.get(requests.size() - 1)))
-                    .tokenUsage(new TokenUsage(10, 5))
+                    .tokenUsage(usage)
                     .build();
         }
     }

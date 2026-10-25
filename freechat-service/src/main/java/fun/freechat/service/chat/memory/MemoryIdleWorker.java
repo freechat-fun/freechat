@@ -1,8 +1,10 @@
 package fun.freechat.service.chat.memory;
 
 import fun.freechat.service.chat.memory.MemoryPublicationRepository.Operation;
+import fun.freechat.service.chat.memory.MemoryPublicationRepository.Snapshot;
 import fun.freechat.service.chat.memory.MemoryWorkRepository.Claim;
 import java.util.Objects;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -47,10 +49,16 @@ public final class MemoryIdleWorker implements AutoCloseable {
             if (closed.get() || leaseLost.get() || Thread.currentThread().isInterrupted()) {
                 throw new IllegalStateException("Memory extraction worker is no longer active");
             }
-            work.check(claim);
+            try {
+                work.check(claim);
+            } catch (RuntimeException rejected) {
+                leaseLost.set(true);
+                throw rejected;
+            }
         };
         ScheduledFuture<?> renewal = null;
         MemoryConsolidator.Work consolidation = null;
+        Snapshot snapshot = null;
         boolean failed = false;
         try {
             guard.run();
@@ -83,20 +91,23 @@ public final class MemoryIdleWorker implements AutoCloseable {
                 through = turn.throughId();
                 aborted = turn.aborted();
             }
-            var snapshot = publications.snapshot(claim.scope(), operation, through, claim.token());
-            if (!snapshot.fingerprint().equals(claim.fingerprint())
-                    || snapshot.expectedCursor() != claim.idleThroughId()
-                    || !Objects.equals(snapshot.expectedHead(), claim.profileId())
+            var candidate = publications.snapshot(claim.scope(), operation, through, claim.token());
+            if (!candidate.fingerprint().equals(claim.fingerprint())
+                    || candidate.expectedCursor() != claim.idleThroughId()
+                    || !Objects.equals(candidate.expectedHead(), claim.profileId())
                     || through > claim.throughId()) {
                 throw new IllegalStateException("Memory work snapshot changed");
             }
             guard.run();
             if (aborted) {
-                publications.advanceAborted(snapshot);
+                publications.advanceAborted(candidate);
                 return;
             }
+            // Only a validated, selected range may be abandoned after optional work fails.
+            snapshot = candidate;
             var model = models.resolve(claim.scope().chatId());
             if (!claim.fingerprint().equals(model.fingerprint())) {
+                snapshot = null;
                 throw new IllegalStateException("Memory work model changed");
             }
             guard.run();
@@ -111,8 +122,16 @@ public final class MemoryIdleWorker implements AutoCloseable {
             consolidation.consolidate(snapshot);
         } catch (MemoryBounds.CapacityException exhausted) {
             failed = consolidation == null || !consolidation.progressed();
+            if (failed && !(exhausted instanceof MemoryBounds.PreparationDeferredException)) {
+                failed = !abandon(snapshot, guard, finished);
+            }
+        } catch (CancellationException ignored) {
+            failed = true;
         } catch (RuntimeException ignored) {
             failed = true;
+            if (abandon(snapshot, guard, finished)) {
+                failed = false;
+            }
         } catch (Error ignored) {
             failed = true;
             // Provider/source failures may carry private payloads in messages, causes or suppressed errors.
@@ -143,6 +162,24 @@ public final class MemoryIdleWorker implements AutoCloseable {
                 if (interrupted) {
                     Thread.currentThread().interrupt();
                 }
+            }
+        }
+    }
+
+    private boolean abandon(Snapshot snapshot, Runnable guard, AtomicBoolean finished) {
+        if (snapshot == null) {
+            return false;
+        }
+        // Wait for an in-flight heartbeat before checking cancellation; never clear interruption to skip work.
+        synchronized (finished) {
+            try {
+                guard.run();
+                publications.abandon(snapshot);
+                log.warn("memory work skipped");
+                return true;
+            } catch (RuntimeException ignored) {
+                // Publication may have committed already, or ownership/source changed. Fenced cleanup still applies.
+                return false;
             }
         }
     }

@@ -70,6 +70,13 @@ class MemorySourceReaderTest {
                 .thenAnswer(call -> page(call.getArgument(1), call.getArgument(2), call.getArgument(3), false));
         when(repository.finalizedPage(eq(SCOPE), anyLong(), anyLong(), anyInt()))
                 .thenAnswer(call -> page(call.getArgument(1), call.getArgument(2), call.getArgument(3), true));
+        when(repository.latestFinalizedPage(eq(SCOPE), anyLong(), anyLong(), anyInt()))
+                .thenAnswer(call -> rows.reversed().stream()
+                        .filter(row -> row.getId() > call.getArgument(1, Long.class)
+                                && row.getId() <= call.getArgument(2, Long.class))
+                        .filter(row -> List.of("turn-complete", "turn-abort").contains(row.getRecordKind()))
+                        .limit(call.getArgument(3, Integer.class))
+                        .toList());
     }
 
     @Test
@@ -94,6 +101,33 @@ class MemorySourceReaderTest {
         assertTrue(reader.nextTurn(SCOPE, 5, 7).isEmpty());
         verify(repository).finalizedPage(SCOPE, 0, 7, 1);
         verify(repository, atLeastOnce()).sourcePage(SCOPE, 0, 3, 1);
+    }
+
+    @Test
+    void walksRecentFinalizedTurnsBackwardsWithoutSplittingThemOrReadingActiveInput() {
+        rows.add(marker(1, "turn-start"));
+        rows.add(message(2, Origin.USER_INPUT, UserMessage.from("first")));
+        rows.add(marker(3, "turn-complete"));
+        String second = UUID.randomUUID().toString();
+        rows.add(marker(4, "turn-start").withTurnId(second));
+        rows.add(message(5, Origin.USER_INPUT, UserMessage.from("second")).withTurnId(second));
+        rows.add(marker(6, "turn-complete").withTurnId(second));
+        rows.add(marker(7, "turn-start").withTurnId(UUID.randomUUID().toString()));
+        rows.add(message(8, Origin.USER_INPUT, UserMessage.from("active"))
+                .withTurnId(rows.getLast().getTurnId()));
+
+        Turn last = reader.previousTurn(SCOPE, 0, 8).orElseThrow();
+        assertEquals(3, last.afterId());
+        assertEquals(6, last.throughId());
+        assertEquals(second, last.turnId());
+        assertEquals(
+                List.of(5L), collect(last, 100).stream().map(Evidence::sourceId).toList());
+        Turn first = reader.previousTurn(SCOPE, 0, last.afterId()).orElseThrow();
+        assertEquals(0, first.afterId());
+        assertEquals(3, first.throughId());
+        assertEquals(last, reader.previousTurn(SCOPE, 3, 8).orElseThrow());
+        assertTrue(reader.previousTurn(SCOPE, 6, 8).isEmpty());
+        verify(repository, never()).sourcePage(SCOPE, 6, 8, 1);
     }
 
     @Test

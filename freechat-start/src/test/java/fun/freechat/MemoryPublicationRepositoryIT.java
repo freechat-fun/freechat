@@ -293,6 +293,295 @@ class MemoryPublicationRepositoryIT {
     }
 
     @ParameterizedTest
+    @EnumSource(
+            value = Operation.class,
+            names = {"IDLE", "REVALIDATE"})
+    void abandonIsMetadataOnlyUsesFreshAttemptAndAllowsNextTurn(Operation operation) throws Exception {
+        Snapshot good = eligibleSnapshot(Operation.IDLE);
+        MemoryManifest lastGood = manifest(Operation.IDLE);
+        publication.prepare(good, lastGood, MODEL, null);
+        publication.publish(scope, good.attemptId());
+        String profile = state().getProfileId();
+        setState("summary_id = '" + UUID.randomUUID() + "', overflow_through_id = " + good.sourceEndId());
+        long through;
+        if (operation == Operation.REVALIDATE) {
+            setState("fingerprint = '" + MemoryDocumentCodec.hash("new-baseline")
+                    + "', profile_revalidation_pending = 1");
+            through = good.sourceEndId();
+        } else {
+            through = seedFinalizedTurn(1);
+        }
+        Snapshot snapshot = publication.snapshot(scope, operation, through, claim());
+        publication.prepare(snapshot, manifest(operation), MODEL, null);
+        publication.terminate(scope, snapshot.attemptId(), Failure.VECTOR_WRITE);
+        ChatMemoryCommit failed = attempt(snapshot);
+        setState("retry_attempts = 3, retry_at = UTC_TIMESTAMP(6)");
+        ChatMemoryState before = state();
+        var history = sql.queryForList("SELECT * FROM chat_history WHERE memory_id = ? ORDER BY id", scope.chatId());
+        publication.abandon(snapshot);
+        ChatMemoryState after = state();
+        assertAbandonedState(before, after, snapshot);
+        assertEquals(
+                history,
+                sql.queryForList("SELECT * FROM chat_history WHERE memory_id = ? ORDER BY id", scope.chatId()));
+        assertEquals(operation == Operation.IDLE ? profile : null, after.getProfileId());
+        assertEquals(failed, attempt(snapshot), "The original failed publication must not be overwritten");
+        ChatMemoryCommit skipped = skipped(snapshot);
+        assertNotEquals(snapshot.attemptId(), skipped.getAttemptId());
+        assertTrue(MemoryDocumentCodec.canonicalUuid(skipped.getAttemptId()));
+        assertEquals("SKIP_" + operation, skipped.getOperation());
+        assertEquals("skipped", skipped.getStatus());
+        assertEquals("EXTRACTION", skipped.getErrorCategory());
+        assertEquals("{}", skipped.getManifest());
+        assertEquals("none", skipped.getModelId());
+        assertEquals(scope.chatId(), skipped.getChatId());
+        assertEquals(scope.generation(), skipped.getGeneration());
+        assertEquals(MemoryScope.SCHEMA_VERSION, skipped.getSchemaVersion());
+        assertEquals(operation == Operation.REVALIDATE ? 0L : snapshot.sourceStartId(), skipped.getSourceStartId());
+        assertEquals(snapshot.sourceEndId(), skipped.getSourceEndId());
+        assertEquals(snapshot.expectedCursor(), skipped.getExpectedCursor());
+        assertEquals(snapshot.expectedHead(), skipped.getExpectedHead());
+        assertEquals(snapshot.leaseToken(), skipped.getLeaseToken());
+        assertEquals(snapshot.fingerprint(), skipped.getFingerprint());
+        assertEquals(before.getClaimDeadline(), skipped.getLeaseUntil());
+        assertNull(skipped.getTokenUsage());
+        assertNull(skipped.getGcAfter());
+        var progress = InfoUtils.defaultMapper().readTree(skipped.getProgress());
+        assertEquals(1, progress.size());
+        assertEquals(snapshot.sourceHash(), progress.path("sourceHash").textValue());
+        assertTrue(publication.authorize(scope, skipped.getAttemptId(), profile).isEmpty());
+        assertConflict(() -> publication.abandon(snapshot));
+        assertEquals(after, state());
+        // Abandon does not release ownership itself, and never blocks a subsequent foreground turn.
+        var work = new fun.freechat.service.chat.memory.MemoryWorkRepository(
+                coordination, states, transactions, properties);
+        work.release(new fun.freechat.service.chat.memory.MemoryWorkRepository.Claim(
+                scope,
+                snapshot.leaseToken(),
+                before.getClaimDeadline(),
+                before.getLatestFinalizedId(),
+                operation == Operation.REVALIDATE,
+                snapshot.fingerprint(),
+                snapshot.expectedCursor(),
+                before.getLastActivity(),
+                snapshot.expectedHead()));
+        assertNull(state().getClaimToken());
+        TurnLease next = turns.begin(scope, snapshot.fingerprint());
+        append(next, "New conversation after optional memory failure");
+        turns.complete(next, AiMessage.from("Uninterrupted reply"), null, null);
+        assertTrue(state().getLatestFinalizedId() > through);
+        assertEquals(through, state().getIdleThroughId());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"full-prefix", "active-turn", "newer-finalized", "revalidation-pending"})
+    void abandonIdlePreservesNewActivityAndClearsDueOnlyWhenFullyCaughtUp(String condition) {
+        Snapshot snapshot = eligibleSnapshot(Operation.IDLE);
+        TurnLease active = null;
+        switch (condition) {
+            case "active-turn" -> active = turns.begin(scope, FINGERPRINT);
+            case "newer-finalized" -> seedFinalizedTurn(1);
+            case "revalidation-pending" -> setState("profile_revalidation_pending = 1");
+            default -> {}
+        }
+        ChatMemoryState before = state();
+        publication.abandon(snapshot);
+        assertAbandonedState(before, state(), snapshot);
+        if (condition.equals("full-prefix")) {
+            assertNull(state().getDueAt());
+        } else {
+            assertNotNull(state().getDueAt());
+        }
+        if (active != null) {
+            turns.check(active);
+            append(active, "Still writable after background skip");
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void abandonRetiresOnlyCompatibleCheckpointAndKeepsItsManifestForGc(boolean compatible) {
+        Snapshot snapshot = eligibleSnapshot(Operation.IDLE);
+        ChatMemoryCommit checkpoint = checkpoint(snapshot);
+        if (!compatible) {
+            checkpoint.setFingerprint(MemoryDocumentCodec.hash("other-baseline"));
+        }
+        commits.insertSelective(checkpoint);
+        checkpoint = commits.selectByPrimaryKey(checkpoint.getAttemptId()).orElseThrow();
+        publication.abandon(snapshot);
+        ChatMemoryCommit after =
+                commits.selectByPrimaryKey(checkpoint.getAttemptId()).orElseThrow();
+        assertEquals(checkpoint.getManifest(), after.getManifest());
+        if (compatible) {
+            assertEquals("terminal", after.getStatus());
+            assertEquals("SUPERSEDED", after.getErrorCategory());
+            assertEquals(after.getGmtModified().plus(properties.getGcGracePeriod()), after.getGcAfter());
+            assertConflict(() -> publication.checkTerminal(scope, after.getAttemptId()));
+            sql.update(
+                    "UPDATE chat_memory_commit SET gc_after = UTC_TIMESTAMP(6) WHERE attempt_id = ?",
+                    after.getAttemptId());
+            publication.checkTerminal(scope, after.getAttemptId());
+        } else {
+            assertEquals(checkpoint, after);
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+            strings = {
+                "source",
+                "boundary-disabled",
+                "boundary-kind",
+                "fingerprint",
+                "generation",
+                "status",
+                "owner",
+                "character",
+                "store",
+                "head",
+                "cursor",
+                "latest",
+                "lease",
+                "deadline",
+                "token"
+            })
+    void abandonRejectsChangedScopeSourceCursorHeadAndLease(String change) {
+        Snapshot snapshot = eligibleSnapshot(Operation.IDLE);
+        switch (change) {
+            case "source" ->
+                sql.update(
+                        "UPDATE chat_history SET enabled = 0 WHERE memory_id = ? AND record_kind = 'message'",
+                        scope.chatId());
+            case "boundary-disabled" ->
+                sql.update("UPDATE chat_history SET enabled = 0 WHERE id = ?", snapshot.sourceEndId());
+            case "boundary-kind" ->
+                sql.update("UPDATE chat_history SET record_kind = 'message' WHERE id = ?", snapshot.sourceEndId());
+            case "fingerprint" -> setState("fingerprint = 'changed'");
+            case "generation" -> setState("generation = 2");
+            case "status" -> setState("status = 'deleted'");
+            case "owner" -> setState("user_id = 'other-owner'");
+            case "character" -> setState("character_uid = 'other-character'");
+            case "store" -> setState("store_type = '" + EmbeddingStoreType.EN_LONG_TERM_MEMORY.text() + "'");
+            case "head" -> setState("profile_id = '" + UUID.randomUUID() + "'");
+            case "cursor" -> setState("idle_through_id = " + snapshot.sourceEndId());
+            case "latest" -> setState("latest_finalized_id = 0");
+            case "lease" -> setState("claim_lease_until = UTC_TIMESTAMP(6)");
+            case "deadline" -> setState("claim_deadline = UTC_TIMESTAMP(6)");
+            case "token" -> setState("claim_token = '" + UUID.randomUUID() + "'");
+            default -> fail("Unknown fixture");
+        }
+        ChatMemoryState before = state();
+        assertConflict(() -> publication.abandon(snapshot));
+        assertEquals(before, state());
+        assertNoSkips();
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = Operation.class,
+            names = {"IDLE", "REVALIDATE"})
+    void abandonCannotDiscardAlreadyCommittedPublication(Operation operation) {
+        Snapshot snapshot = eligibleSnapshot(operation);
+        publication.prepare(snapshot, manifest(operation), MODEL, null);
+        publication.publish(scope, snapshot.attemptId());
+        ChatMemoryState before = state();
+        assertConflict(() -> publication.abandon(snapshot));
+        assertEquals(before, state());
+        assertEquals("committed", attempt(snapshot).getStatus());
+        assertNoSkips();
+    }
+
+    @Test
+    void abandonRejectsOverflowAndForgedRangeOrSourceHash() {
+        Snapshot overflow = eligibleSnapshot(Operation.OVERFLOW);
+        assertConflict(() -> publication.abandon(overflow));
+        Snapshot idle = publication.snapshot(scope, Operation.IDLE, overflow.sourceEndId(), claim());
+        for (Snapshot invalid : List.of(
+                new Snapshot(
+                        scope,
+                        idle.attemptId(),
+                        Operation.IDLE,
+                        0,
+                        idle.sourceEndId(),
+                        idle.expectedCursor(),
+                        idle.expectedHead(),
+                        idle.leaseToken(),
+                        idle.fingerprint(),
+                        idle.sourceHash()),
+                new Snapshot(
+                        scope,
+                        idle.attemptId(),
+                        Operation.IDLE,
+                        idle.sourceStartId(),
+                        idle.sourceEndId(),
+                        idle.expectedCursor(),
+                        idle.expectedHead(),
+                        idle.leaseToken(),
+                        idle.fingerprint(),
+                        MemoryDocumentCodec.hash("wrong-source")))) {
+            ChatMemoryState before = state();
+            assertConflict(() -> publication.abandon(invalid));
+            assertEquals(before, state());
+        }
+        assertNoSkips();
+    }
+
+    @Test
+    void abandonRevalidationRequiresPendingFlagUnchangedCursorAndFinalBoundary() {
+        Snapshot good = eligibleSnapshot(Operation.IDLE);
+        publication.prepare(good, manifest(Operation.IDLE), MODEL, null);
+        publication.publish(scope, good.attemptId());
+        setState("profile_revalidation_pending = 1");
+        Snapshot revalidate = publication.snapshot(scope, Operation.REVALIDATE, good.sourceEndId(), claim());
+        setState("profile_revalidation_pending = 0");
+        assertConflict(() -> publication.abandon(revalidate));
+        setState("profile_revalidation_pending = 1, idle_through_id = 0");
+        assertConflict(() -> publication.abandon(revalidate));
+        setState("idle_through_id = " + good.sourceEndId());
+        sql.update("UPDATE chat_history SET enabled = 0 WHERE id = ?", good.sourceEndId());
+        ChatMemoryState before = state();
+        assertConflict(() -> publication.abandon(revalidate));
+        assertEquals(before, state());
+        assertNoSkips();
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = Operation.class,
+            names = {"IDLE", "REVALIDATE"})
+    void abandonRollsBackStateAndCheckpointWhenFreshSkipInsertFails(Operation operation) {
+        Snapshot snapshot = eligibleSnapshot(operation);
+        ChatMemoryCommit checkpoint = operation == Operation.IDLE ? checkpoint(snapshot) : null;
+        if (checkpoint != null) {
+            commits.insertSelective(checkpoint);
+            checkpoint = commits.selectByPrimaryKey(checkpoint.getAttemptId()).orElseThrow();
+        }
+        ChatMemoryState before = state();
+        sql.execute("""
+            CREATE TRIGGER fail_abandon BEFORE INSERT ON chat_memory_commit FOR EACH ROW
+            BEGIN
+              IF NEW.chat_id = '%s' AND NEW.status = 'skipped' THEN
+                SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'private-source-and-credential-fixture';
+              END IF;
+            END
+            """.formatted(scope.chatId()));
+        try {
+            assertRejected(() -> publication.abandon(snapshot));
+            assertEquals(before, state());
+            assertNoSkips();
+            if (checkpoint != null) {
+                assertEquals(
+                        checkpoint,
+                        commits.selectByPrimaryKey(checkpoint.getAttemptId()).orElseThrow());
+            }
+        } finally {
+            sql.execute("DROP TRIGGER fail_abandon");
+        }
+        publication.abandon(snapshot);
+        assertAbandonedState(before, state(), snapshot);
+    }
+
+    @ParameterizedTest
     @EnumSource(Operation.class)
     void competingPreparedPublicationLosesExpectedCursorOrHeadCas(Operation operation) throws Exception {
         Snapshot first = eligibleSnapshot(operation);
@@ -1136,6 +1425,71 @@ class MemoryPublicationRepositoryIT {
 
     private ChatMemoryCommit attempt(Snapshot snapshot) {
         return commits.selectByPrimaryKey(snapshot.attemptId()).orElseThrow();
+    }
+
+    private ChatMemoryCommit skipped(Snapshot snapshot) {
+        List<String> ids = sql.queryForList(
+                "SELECT attempt_id FROM chat_memory_commit WHERE chat_id = ? AND operation = ? AND status = 'skipped'",
+                String.class,
+                scope.chatId(),
+                "SKIP_" + snapshot.operation());
+        assertEquals(1, ids.size());
+        return commits.selectByPrimaryKey(ids.getFirst()).orElseThrow();
+    }
+
+    private void assertNoSkips() {
+        assertEquals(
+                0,
+                sql.queryForObject(
+                        "SELECT COUNT(*) FROM chat_memory_commit WHERE chat_id = ? AND status = 'skipped'",
+                        Integer.class,
+                        scope.chatId()));
+    }
+
+    private ChatMemoryCommit checkpoint(Snapshot snapshot) {
+        var now = coordination.databaseNow();
+        var progress = InfoUtils.defaultMapper().createObjectNode().put("sourceHash", snapshot.sourceHash());
+        progress.putObject("position").put("rowId", snapshot.sourceEndId()).put("offset", 0);
+        progress.putNull("predecessor");
+        return new ChatMemoryCommit()
+                .withAttemptId(UUID.randomUUID().toString())
+                .withChatId(scope.chatId())
+                .withGeneration(scope.generation())
+                .withOperation("CHECKPOINT_IDLE")
+                .withStatus("checkpoint")
+                .withSourceStartId(snapshot.sourceStartId())
+                .withSourceEndId(snapshot.sourceEndId())
+                .withExpectedCursor(snapshot.expectedCursor())
+                .withExpectedHead(snapshot.expectedHead())
+                .withFingerprint(snapshot.fingerprint())
+                .withLeaseToken(snapshot.leaseToken())
+                .withLeaseUntil(state().getClaimDeadline())
+                .withSchemaVersion(MemoryScope.SCHEMA_VERSION)
+                .withModelId(MODEL)
+                .withManifest(MemoryDocumentCodec.encodeManifest(
+                        new MemoryManifest(List.of(entry(Kind.EXTRACTION_CHECKPOINT, false)))))
+                .withProgress(progress.toString())
+                .withGmtCreate(now)
+                .withGmtModified(now);
+    }
+
+    private static void assertAbandonedState(ChatMemoryState before, ChatMemoryState after, Snapshot snapshot) {
+        if (snapshot.operation() == Operation.IDLE) {
+            before.setIdleThroughId(snapshot.sourceEndId());
+        } else {
+            before.setProfileId(null);
+            before.setProfileRevalidationPending((byte) 0);
+        }
+        before.setRetryAttempts(0);
+        before.setRetryAt(null);
+        if (before.getTurnToken() == null
+                && before.getProfileRevalidationPending() == 0
+                && before.getIdleThroughId().equals(before.getLatestFinalizedId())) {
+            before.setDueAt(null);
+        }
+        before.setVersion(before.getVersion() + 1);
+        before.setGmtModified(after.getGmtModified());
+        assertEquals(before, after, "Only the selected derived-memory work may be abandoned");
     }
 
     private void setState(String assignments) {

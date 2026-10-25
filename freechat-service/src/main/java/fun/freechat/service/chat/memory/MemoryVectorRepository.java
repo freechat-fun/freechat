@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CancellationException;
 
 public final class MemoryVectorRepository {
     private final ExactEmbeddingStoreService stores;
@@ -32,6 +33,8 @@ public final class MemoryVectorRepository {
     public MemoryDocumentCodec codec(MemoryScope scope) {
         try {
             return new MemoryDocumentCodec(boundsFactory.forLanguage(language(scope.storeType())), properties);
+        } catch (CancellationException ignored) {
+            throw new CancellationException("Memory vector codec initialization cancelled");
         } catch (RuntimeException ignored) {
             throw new IllegalStateException("Memory vector codec initialization failed");
         }
@@ -66,6 +69,8 @@ public final class MemoryVectorRepository {
                         .orElseThrow(() -> new IllegalStateException("Memory vector verification failed"));
                 checkLease.run();
             }
+        } catch (CancellationException ignored) {
+            throw new CancellationException("Prepared memory vector write cancelled");
         } catch (RuntimeException ignored) {
             throw new IllegalStateException("Prepared memory vector write failed");
         }
@@ -83,6 +88,8 @@ public final class MemoryVectorRepository {
                 }
                 return commitId;
             });
+        } catch (CancellationException ignored) {
+            throw new CancellationException("Memory commit lookup cancelled");
         } catch (RuntimeException ignored) {
             throw new IllegalStateException("Memory commit lookup failed");
         }
@@ -99,6 +106,8 @@ public final class MemoryVectorRepository {
                 }
                 return document;
             });
+        } catch (CancellationException ignored) {
+            throw new CancellationException("Memory vector read cancelled");
         } catch (RuntimeException ignored) {
             throw new IllegalStateException("Memory vector read failed");
         }
@@ -134,6 +143,8 @@ public final class MemoryVectorRepository {
                             .maxResults(limit)
                             .minScore(properties.getSearchMinScore())
                             .build());
+        } catch (CancellationException ignored) {
+            throw new CancellationException("Memory vector search cancelled");
         } catch (RuntimeException ignored) {
             throw new IllegalStateException("Memory vector search failed");
         }

@@ -55,8 +55,8 @@ public final class MemoryStreamingModel implements StreamingChatModel {
             call.request = invocation.modelRequest(request);
             lifetime.check();
             send.accept(call);
-        } catch (Throwable ignored) {
-            call.onError(MemoryTurnLifetime.unavailable());
+        } catch (Throwable failure) {
+            call.onError(failure);
         }
     }
 
@@ -100,8 +100,8 @@ public final class MemoryStreamingModel implements StreamingChatModel {
                 if (!terminal.get()) {
                     action.run();
                 }
-            } catch (Throwable ignored) {
-                fail();
+            } catch (Throwable failure) {
+                fail(failure);
             }
         }
 
@@ -109,8 +109,8 @@ public final class MemoryStreamingModel implements StreamingChatModel {
             try {
                 capture(handle.get());
                 forward(action);
-            } catch (Throwable ignored) {
-                fail();
+            } catch (Throwable failure) {
+                fail(failure);
             }
         }
 
@@ -165,23 +165,23 @@ public final class MemoryStreamingModel implements StreamingChatModel {
                 }
                 lifetime.check();
                 handler.onCompleteResponse(response);
-            } catch (Throwable ignored) {
-                fail();
+            } catch (Throwable failure) {
+                fail(failure);
             }
         }
 
         @Override
         public void onError(Throwable error) {
             if (terminal.compareAndSet(false, true)) {
-                fail();
+                fail(error);
             }
         }
 
-        private void fail() {
+        private void fail(Throwable error) {
             terminal.set(true);
-            lifetime.close();
+            lifetime.fail(error);
             if (errorDelivered.compareAndSet(false, true)) {
-                MemoryTurnLifetime.safely(() -> handler.onError(MemoryTurnLifetime.unavailable()));
+                MemoryTurnLifetime.safely(() -> handler.onError(MemoryTurnLifetime.safeFailure(error)));
             }
         }
     }

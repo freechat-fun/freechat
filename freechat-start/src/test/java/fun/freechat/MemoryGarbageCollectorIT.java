@@ -386,9 +386,10 @@ class MemoryGarbageCollectorIT {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"generation", "fingerprint", "idle-cursor", "overflow-cursor", "head"})
-    void checkpointSurvivesOrdinaryClaimExpiryButRetiresWhenItsBaselineChanges(String change) throws Exception {
-        Operation operation = change.equals("overflow-cursor") ? Operation.OVERFLOW : Operation.IDLE;
+    @ValueSource(
+            strings = {"generation", "fingerprint", "idle-cursor", "overflow-expired", "overflow-replaced", "head"})
+    void checkpointsRetainBackgroundProgressButRetireFinishedForegroundWork(String change) throws Exception {
+        Operation operation = change.startsWith("overflow-") ? Operation.OVERFLOW : Operation.IDLE;
         Snapshot snapshot = snapshot(operation).snapshot();
         lifecycle.activate(scope, FINGERPRINT);
         MemoryManifest manifest = new MemoryManifest(List.of(entry(Kind.EXTRACTION_CHECKPOINT, false)));
@@ -414,15 +415,33 @@ class MemoryGarbageCollectorIT {
         assertEquals(1, commits.insertSelective(checkpoint));
         vectors.put(
                 scope.storeType(), manifest.ids().getFirst(), scope.metadata().put("commit_id", id));
+        ChatMemoryCommit live = row(id);
+        gc.collect(id);
+        assertEquals(live, row(id), "An original live execution still owns its checkpoint");
         String prefix = operation == Operation.OVERFLOW ? "turn_" : "claim_";
-        setState(prefix + "lease_until = UTC_TIMESTAMP(6) - INTERVAL 1 HOUR, " + prefix
-                + "deadline = UTC_TIMESTAMP(6) - INTERVAL 1 HOUR");
-        sql.update(
-                "UPDATE chat_memory_commit SET lease_until = UTC_TIMESTAMP(6) - INTERVAL 1 HOUR WHERE attempt_id = ?",
-                id);
+        if (change.equals("overflow-replaced")) {
+            sql.update("UPDATE chat_memory_state SET turn_token = ? WHERE chat_id = ?", nextId(), scope.chatId());
+        } else {
+            setState(prefix + "lease_until = UTC_TIMESTAMP(6) - INTERVAL 1 HOUR, " + prefix
+                    + "deadline = UTC_TIMESTAMP(6) - INTERVAL 1 HOUR");
+            sql.update(
+                    "UPDATE chat_memory_commit SET lease_until = UTC_TIMESTAMP(6) - INTERVAL 1 HOUR WHERE attempt_id = ?",
+                    id);
+        }
         ChatMemoryCommit saved = row(id);
         gc.collect(id);
-        assertEquals(saved, row(id), "Completed checkpoint eligibility is not tied to its original claim lifetime");
+        if (operation == Operation.OVERFLOW) {
+            assertRetired(id);
+            assertTrue(vectors.exact.isEmpty());
+            ChatMemoryState unchanged = state();
+            makeDue(id);
+            gc.collect(id);
+            assertEquals(unchanged, state());
+            assertEquals(0, vectors.size());
+            assertExact(vectors.exact.getFirst(), scope, id, manifest.ids());
+            return;
+        }
+        assertEquals(saved, row(id), "Background checkpoints can survive their original claim lifetime");
         sql.update("UPDATE chat_memory_state SET " + prefix + "token = ? WHERE chat_id = ?", nextId(), scope.chatId());
         gc.collect(id);
         assertEquals(saved, row(id));
@@ -430,7 +449,6 @@ class MemoryGarbageCollectorIT {
             case "generation" -> lifecycle.clear(scope.chatId());
             case "fingerprint" -> lifecycle.activate(scope, MemoryDocumentCodec.hash("checkpoint-new-config"));
             case "idle-cursor" -> setState("idle_through_id = " + snapshot.sourceEndId());
-            case "overflow-cursor" -> setState("overflow_through_id = " + snapshot.sourceEndId());
             case "head" ->
                 sql.update("UPDATE chat_memory_state SET profile_id = ? WHERE chat_id = ?", nextId(), scope.chatId());
             default -> fail("Unknown fixture");

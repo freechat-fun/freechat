@@ -25,7 +25,6 @@ import {
 type Props = {
   enabled: string[];
   disabled: boolean;
-  skillsEnabled: boolean;
   toolFree: boolean;
   onChange: (ids: string[]) => void;
 };
@@ -38,7 +37,6 @@ export default function CharacterConnectorSelector(props: Props) {
 function OwnerConnectorSelector({
   enabled,
   disabled,
-  skillsEnabled,
   toolFree,
   onChange,
 }: Props) {
@@ -94,18 +92,6 @@ function OwnerConnectorSelector({
           'Enabling connectors on shared characters allows viewers to invoke the owner’s remote tools. Ownership is not a side-effect sandbox. Only enable servers you trust.'
         )}
       </Alert>
-      <Typography variant="body2" color="text.secondary">
-        {t(
-          'Connectors are unavailable while skills are enabled. An explicit empty tools.enabled list remains tool-free. These restrictions are enforced by the server.'
-        )}
-      </Typography>
-      {skillsEnabled && (
-        <Alert severity="warning">
-          {t(
-            'Skills are enabled: connectors are unavailable. Remove skills to use connectors; saved connector selections are preserved.'
-          )}
-        </Alert>
-      )}
       {toolFree && (
         <Alert severity="warning">
           {t(
@@ -172,7 +158,6 @@ function OwnerConnectorSelector({
                         (loading ||
                           !!errorKey ||
                           !record?.active ||
-                          skillsEnabled ||
                           toolFree ||
                           enabled.length >= 8))
                     }

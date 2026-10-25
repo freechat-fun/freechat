@@ -752,6 +752,86 @@ class MemoryTurnRepositoryIT {
     }
 
     @Test
+    void latestFinalizedPagesReturnScopedDescendingBoundariesAndPredecessor() {
+        TurnLease first = repository.begin(scope, FINGERPRINT);
+        append(first);
+        repository.complete(first, AiMessage.from("First answer"), null, null);
+        long firstEnd = state().getLatestFinalizedId();
+        repository.abort(repository.begin(scope, FINGERPRINT));
+        long predecessor = state().getLatestFinalizedId();
+        repository.abort(repository.begin(scope, FINGERPRINT));
+        long disabled = state().getLatestFinalizedId();
+        sql.update("UPDATE chat_history SET enabled = 0 WHERE id = ?", disabled);
+        MemoryScope other = new MemoryScope(
+                UUID.randomUUID().toString().replace("-", ""),
+                "other-owner",
+                scope.characterUid(),
+                1,
+                scope.storeType());
+        repository.initialize(other, FINGERPRINT);
+        repository.complete(repository.begin(other, FINGERPRINT), AiMessage.from("Foreign answer"), null, null);
+        repository.complete(repository.begin(scope, FINGERPRINT), AiMessage.from("Latest answer"), null, null);
+        long through = state().getLatestFinalizedId();
+        repository.abort(repository.begin(scope, FINGERPRINT));
+        repository.begin(scope, FINGERPRINT);
+
+        List<ChatHistory> latest = repository.latestFinalizedPage(scope, 0, through, 2);
+        assertEquals(
+                List.of(through, predecessor),
+                latest.stream().map(ChatHistory::getId).toList());
+        assertEquals(
+                List.of("turn-complete", "turn-abort"),
+                latest.stream().map(ChatHistory::getRecordKind).toList());
+        assertTrue(latest.stream().allMatch(row -> scope.chatId().equals(row.getMemoryId()) && row.getEnabled() == 1));
+        assertEquals(
+                List.of(firstEnd, predecessor),
+                repository.finalizedPage(scope, 0, through, 2).stream()
+                        .map(ChatHistory::getId)
+                        .toList(),
+                "The existing public page remains ascending");
+        assertEquals(
+                predecessor,
+                repository
+                        .latestFinalizedPage(scope, 0, through - 1, 1)
+                        .getFirst()
+                        .getId());
+        assertEquals(
+                List.of(through, predecessor),
+                repository.latestFinalizedPage(scope, firstEnd, through, 1000).stream()
+                        .map(ChatHistory::getId)
+                        .toList());
+        assertTrue(repository.latestFinalizedPage(scope, through, through, 1).isEmpty());
+    }
+
+    @Test
+    void latestFinalizedPagesRejectInvalidBoundsAndStaleOrForeignScopes() {
+        assertTrue(repository.latestFinalizedPage(scope, 0, Long.MAX_VALUE, 1).isEmpty());
+        assertThrows(IllegalArgumentException.class, () -> repository.latestFinalizedPage(null, 0, 1, 1));
+        assertThrows(IllegalArgumentException.class, () -> repository.latestFinalizedPage(scope, -1, 1, 1));
+        assertThrows(IllegalArgumentException.class, () -> repository.latestFinalizedPage(scope, 2, 1, 1));
+        assertThrows(IllegalArgumentException.class, () -> repository.latestFinalizedPage(scope, 0, 1, 0));
+        assertThrows(IllegalArgumentException.class, () -> repository.latestFinalizedPage(scope, 0, 1, 1001));
+        repository.abort(repository.begin(scope, FINGERPRINT));
+        for (MemoryScope invalid : List.of(
+                new MemoryScope(scope.chatId(), "other-owner", scope.characterUid(), 1, scope.storeType()),
+                new MemoryScope(scope.chatId(), scope.userId(), "other-character", 1, scope.storeType()),
+                new MemoryScope(
+                        scope.chatId(),
+                        scope.userId(),
+                        scope.characterUid(),
+                        1,
+                        EmbeddingStoreType.EN_LONG_TERM_MEMORY),
+                new MemoryScope(scope.chatId(), scope.userId(), scope.characterUid(), 2, scope.storeType()))) {
+            assertThrows(
+                    IllegalStateException.class, () -> repository.latestFinalizedPage(invalid, 0, Long.MAX_VALUE, 2));
+        }
+        sql.update("UPDATE chat_memory_state SET generation = 2 WHERE chat_id = ?", scope.chatId());
+        assertThrows(IllegalStateException.class, () -> repository.latestFinalizedPage(scope, 0, Long.MAX_VALUE, 2));
+        sql.update("UPDATE chat_memory_state SET generation = 1, status = 'deleted' WHERE chat_id = ?", scope.chatId());
+        assertThrows(IllegalStateException.class, () -> repository.latestFinalizedPage(scope, 0, Long.MAX_VALUE, 2));
+    }
+
+    @Test
     void toolRequestCannotCompleteTurn() {
         TurnLease lease = repository.begin(scope, FINGERPRINT);
         AiMessage toolRequest = AiMessage.from(ToolExecutionRequest.builder()

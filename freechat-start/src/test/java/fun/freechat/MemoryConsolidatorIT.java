@@ -56,7 +56,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import org.apache.ibatis.logging.nologging.NoLoggingImpl;
 import org.apache.ibatis.session.Configuration;
 import org.junit.jupiter.api.AfterAll;
@@ -345,6 +347,181 @@ class MemoryConsolidatorIT {
     }
 
     @Test
+    void overflowRepairsOversizedCumulativeSummaryOnlyWithMeasuredReductionFeedback() {
+        Source first = seed("Original turn A");
+        Source second = seed("Original turn B");
+        var originalHistory = historyThrough(second.through());
+        Snapshot a = snapshot(Operation.OVERFLOW, first.through());
+        ScriptedModel initial = new ScriptedModel(input -> summary("Chunk A"));
+        open(resolved(initial), 1).consolidate(a);
+        assertEquals(1, initial.inputs.size());
+        assertUsage(a, 1);
+        ChatMemoryState before = state();
+
+        MemoryBounds bounds = boundsFactory.forLanguage("default");
+        int summaryLimit = properties.getSummaryMaxTokens();
+        assertEquals(768, summaryLimit);
+        int initialTarget = summaryLimit / 2;
+        int repairTarget = summaryLimit / 4;
+        String oversizedMarker = "Synthetic oversized cumulative A plus B: ";
+        String oversizedSummary =
+                oversizedMarker + "evidence ".repeat(600) + "汉" + new String(Character.toChars(0x20000));
+        String oversizedResponse = summary(oversizedSummary);
+        long measuredTokens = bounds.tokens(oversizedSummary);
+        int measuredBytes = MemoryBounds.bytes(oversizedSummary);
+        int measuredCharacters = oversizedSummary.codePointCount(0, oversizedSummary.length());
+        // This fixture uses local estimates, not the provider's small fixed USAGE or the live tokenizer's counts.
+        assertTrue(measuredTokens > summaryLimit);
+        assertTrue(measuredBytes <= MemoryBounds.COMPACT_TEXT_BYTES);
+        assertThrows(
+                MemoryBounds.CapacityException.class,
+                () -> bounds.requireText(oversizedSummary, summaryLimit, MemoryBounds.COMPACT_TEXT_BYTES));
+        assertTrue(bounds.fits(
+                oversizedResponse, properties.getResponseReserveTokens(), MemoryBounds.VECTOR_RECORD_BYTES));
+        var proposed = assertDoesNotThrow(() -> JSON.readTree(oversizedResponse));
+        sameText(oversizedSummary, proposed.get("summary").textValue());
+        String reducedSummary = "Rolling A plus B";
+        assertTrue(bounds.fits(reducedSummary, repairTarget, MemoryBounds.COMPACT_TEXT_BYTES));
+        List<String> feedback = List.of(
+                "at most " + repairTarget + " tokens for summary",
+                "summary measured " + measuredTokens + " server-estimated tokens",
+                "limit " + summaryLimit,
+                measuredBytes + " UTF-8 bytes",
+                measuredCharacters + " Unicode characters");
+        Pattern rewriteTarget = Pattern.compile("Rewrite summary to at most ([1-9][0-9]*) Unicode characters");
+        AtomicReference<ScriptedModel> script = new AtomicReference<>();
+        ScriptedModel model = new ScriptedModel(input -> {
+            if (input.previousSummary().isEmpty()) {
+                return summary("Chunk B");
+            }
+            String instructions = script.get().systemPrompts.getLast();
+            var target = rewriteTarget.matcher(instructions);
+            boolean reducedTarget = target.find() && Integer.parseInt(target.group(1)) < measuredCharacters;
+            // Repeating the generic repair hint must fail again, rather than succeeding merely on call three.
+            return reducedTarget && feedback.stream().allMatch(instructions::contains)
+                    ? summary(reducedSummary)
+                    : oversizedResponse;
+        });
+        script.set(model);
+        Snapshot b = snapshot(Operation.OVERFLOW, second.through());
+        open(resolved(model), 3).consolidate(b);
+
+        assertEquals(3, model.inputs.size());
+        assertEquals(List.of(false, false, true), model.repairs);
+        assertEquals(3, model.systemPrompts.size());
+        assertTrue(model.systemPrompts.subList(0, 2).stream()
+                .allMatch(instructions -> instructions.contains("at most " + initialTarget + " tokens for summary")));
+        assertTrue(feedback.stream().allMatch(model.systemPrompts.getLast()::contains));
+        assertTrue(
+                model.systemPrompts.stream().noneMatch(instructions -> instructions.contains(oversizedMarker)),
+                "Repair instructions must contain measurements, never the rejected response body");
+        Input fragment = model.inputs.getFirst();
+        assertTrue(fragment.previousSummary().isEmpty());
+        assertEquals(second.id(), fragment.evidence().getFirst().sourceId());
+        assertTrue(fragment.evidence().getFirst().originalInput());
+        sameText("Original turn B", fragment.evidence().getFirst().text());
+        Input merge = model.inputs.get(1);
+        assertTrue(merge.equals(model.inputs.getLast()), "Repair must repeat the failed merge input, not its output");
+        assertEquals(Operation.OVERFLOW, merge.operation());
+        sameText("Chunk A", merge.previousSummary());
+        assertEquals(1, merge.evidence().size());
+        var evidence = merge.evidence().getFirst();
+        assertEquals("derived-summary", evidence.origin());
+        assertFalse(evidence.originalInput());
+        assertEquals(second.through(), evidence.sourceId());
+        sameText("Chunk B", evidence.text());
+
+        List<MemoryDocument> documents = published(b);
+        assertEquals(2, documents.size());
+        MemoryDocument archive =
+                documents.stream().filter(MemoryDocument::archive).findFirst().orElseThrow();
+        MemoryDocument head = documents.stream()
+                .filter(document -> !document.archive())
+                .findFirst()
+                .orElseThrow();
+        assertEquals(Kind.WINDOW_SUMMARY, archive.kind());
+        assertEquals(Kind.WINDOW_SUMMARY, head.kind());
+        sameText("Chunk B", archive.summary());
+        sameText(reducedSummary, head.summary());
+        assertNotEquals(archive.id(), head.id());
+        assertNotEquals(before.getSummaryId(), head.id());
+        assertEquals(head.id(), state().getSummaryId());
+        assertEquals(b.sourceStartId(), archive.sourceStartId());
+        assertEquals(second.through(), archive.sourceEndId());
+        assertEquals(second.through(), state().getOverflowThroughId());
+        assertEquals(before.getIdleThroughId(), state().getIdleThroughId());
+        assertEquals(before.getProfileId(), state().getProfileId());
+        assertUsage(b, 3);
+        assertEquals(4, count("usage"));
+        assertEquals(2, count("committed"));
+        assertRetiredCheckpoints();
+        assertTrue(originalHistory.equals(historyThrough(second.through())), "Repair must preserve original history");
+    }
+
+    @Test
+    void multiTurnOverflowCombinesEvidenceButNeverIncludesAbortedContent() {
+        Source first = seed("Original first");
+        var aborted = turns.begin(scope, FINGERPRINT);
+        long abortedInput = append(aborted, "Aborted private evidence must not be summarized");
+        turns.abort(aborted);
+        Source last = seed("Original last");
+        var original = historyThrough(last.through());
+        Snapshot range = snapshot(Operation.OVERFLOW, last.through());
+        ScriptedModel provider = new ScriptedModel(input -> summary("Combined completed turns"));
+        open(resolved(provider), 1).consolidate(range);
+        assertEquals(1, provider.inputs.size());
+        var ids = provider.inputs.getFirst().evidence().stream()
+                .map(MemorySourceReader.Evidence::sourceId)
+                .toList();
+        assertTrue(ids.contains(first.id()));
+        assertTrue(ids.contains(last.id()));
+        assertFalse(ids.contains(abortedInput));
+        assertEquals(last.through(), state().getOverflowThroughId());
+        assertEquals(0, state().getIdleThroughId());
+        assertNull(state().getProfileId());
+        for (MemoryDocument document : published(range)) {
+            assertEquals(range.sourceStartId(), document.sourceStartId());
+            assertEquals(range.sourceEndId(), document.sourceEndId());
+        }
+        assertTrue(original.equals(historyThrough(last.through())));
+        assertUsage(range, 1);
+        assertRetiredCheckpoints();
+    }
+
+    @Test
+    void multiTurnAbortedOnlyRangeSkipsWithoutCallingModelOrPublishingSummaries() {
+        for (int index = 0; index < 3; index++) {
+            var aborted = turns.begin(scope, FINGERPRINT);
+            append(aborted, "Aborted content");
+            turns.abort(aborted);
+        }
+        long through = state().getLatestFinalizedId();
+        var original = historyThrough(through);
+        ScriptedModel provider = new ScriptedModel(input -> summary("Unused"));
+        open(resolved(provider), 1).consolidate(snapshot(Operation.OVERFLOW, through));
+        assertTrue(provider.inputs.isEmpty());
+        assertEquals(through, state().getOverflowThroughId());
+        assertEquals(3, count("skipped"));
+        assertEquals(0, count("committed"));
+        assertEquals(0, count("checkpoint"));
+        assertNull(state().getSummaryId());
+        assertTrue(original.equals(historyThrough(through)));
+    }
+
+    @Test
+    void idleConsolidationStillRejectsMultiTurnRanges() {
+        seed("Original first");
+        Source second = seed("Original second");
+        ScriptedModel provider = new ScriptedModel(input -> summary("Unused"));
+        Snapshot range = snapshot(Operation.IDLE, second.through());
+        assertThrows(
+                IllegalStateException.class, () -> open(resolved(provider), 2).consolidate(range));
+        assertTrue(provider.inputs.isEmpty());
+        assertEquals(0, state().getIdleThroughId());
+        assertNull(state().getProfileId());
+    }
+
+    @Test
     void oneWorkSharesMapAndRollingBudgetAcrossSuccessiveSnapshotsAndResumesWithoutRemapping() {
         Source first = seed("First turn");
         Source second = seed("Second turn");
@@ -370,6 +547,100 @@ class MemoryConsolidatorIT {
         assertEquals(second.through(), state().getOverflowThroughId());
         assertUsage(resumed, 1);
         assertRetiredCheckpoints();
+    }
+
+    @ParameterizedTest(name = "repairFragment={0}")
+    @ValueSource(booleans = {true, false})
+    void completedFragmentSurvivesMergeAndRepairBudgetExhaustionAcrossFreshWork(boolean repairFragment) {
+        Source first = seed("Original turn A");
+        Source second = seed("Original turn B");
+        var originalHistory = historyThrough(second.through());
+        Snapshot a = snapshot(Operation.OVERFLOW, first.through());
+        ScriptedModel initial = new ScriptedModel(input -> summary("Chunk A"));
+        open(resolved(initial), 1).consolidate(a);
+        assertEquals(1, initial.inputs.size());
+        assertUsage(a, 1);
+        ChatMemoryState before = state();
+
+        // Either fragment + repair leaves no merge call, or fragment + malformed merge leaves no repair call.
+        ScriptedModel pending = new ScriptedModel(
+                input -> input.previousSummary().isEmpty() ? summary("Chunk B") : "invalid-private-response");
+        pending.malformedCalls = repairFragment ? 1 : 0;
+        var work = open(resolved(pending), 2);
+        Snapshot b = snapshot(Operation.OVERFLOW, second.through());
+        exhausted(() -> work.consolidate(b));
+        assertEquals(2, pending.inputs.size());
+        assertEquals(List.of(false, repairFragment), pending.repairs);
+        assertUsage(b, 2);
+        Input fragment = pending.inputs.getFirst();
+        assertTrue(fragment.previousSummary().isEmpty());
+        assertEquals(second.id(), fragment.evidence().getFirst().sourceId());
+        assertTrue(fragment.evidence().getFirst().originalInput());
+        sameText("Original turn B", fragment.evidence().getFirst().text());
+        if (repairFragment) {
+            assertTrue(fragment.equals(pending.inputs.getLast()), "Repair must repeat only the bounded fragment");
+        }
+        assertEquals(before.getSummaryId(), state().getSummaryId());
+        assertEquals(first.through(), state().getOverflowThroughId());
+        assertEquals(before.getIdleThroughId(), state().getIdleThroughId());
+        assertEquals(1, count("committed"));
+        var progress = checkpoints.load(b, GUARD).orElseThrow();
+        assertEquals(second.through(), progress.position().rowId());
+        assertEquals(0, progress.position().offset());
+        sameText("Chunk B", progress.output().summary());
+        assertEquals(1, count("checkpoint"));
+        assertTrue(originalHistory.equals(historyThrough(second.through())), "Exhaustion must preserve history");
+
+        Snapshot resumed = freshSnapshot(b);
+        assertNotEquals(b.leaseToken(), resumed.leaseToken());
+        assertTrue(progress.equals(checkpoints.load(resumed, GUARD).orElseThrow()));
+        assertThrows(IllegalStateException.class, () -> checkpoints.load(b, GUARD));
+        ScriptedModel merge = new ScriptedModel(input -> summary("Rolling A plus B"));
+        merge.malformedCalls = 1;
+        open(resolved(merge), 2).consolidate(resumed);
+        assertEquals(2, merge.inputs.size());
+        assertEquals(List.of(false, true), merge.repairs);
+        assertTrue(
+                merge.inputs.getFirst().equals(merge.inputs.getLast()),
+                "Merge repair must repeat bounded input, not invalid output");
+        for (Input input : merge.inputs) {
+            assertEquals(Operation.OVERFLOW, input.operation());
+            sameText("Chunk A", input.previousSummary());
+            assertEquals(1, input.evidence().size());
+            var evidence = input.evidence().getFirst();
+            assertEquals("derived-summary", evidence.origin());
+            assertFalse(evidence.originalInput());
+            assertEquals(second.through(), evidence.sourceId());
+            sameText("Chunk B", evidence.text());
+        }
+        if (!repairFragment) {
+            assertTrue(
+                    pending.inputs.getLast().equals(merge.inputs.getFirst()),
+                    "Fresh work must retry the merge without remapping original evidence");
+        }
+        List<MemoryDocument> documents = published(resumed);
+        assertEquals(2, documents.size());
+        MemoryDocument archive =
+                documents.stream().filter(MemoryDocument::archive).findFirst().orElseThrow();
+        MemoryDocument head = documents.stream()
+                .filter(document -> !document.archive())
+                .findFirst()
+                .orElseThrow();
+        sameText("Chunk B", archive.summary());
+        sameText("Rolling A plus B", head.summary());
+        assertNotEquals(archive.id(), head.id());
+        assertNotEquals(before.getSummaryId(), head.id());
+        assertEquals(head.id(), state().getSummaryId());
+        assertEquals(b.sourceStartId(), archive.sourceStartId());
+        assertEquals(second.through(), archive.sourceEndId());
+        assertEquals(second.through(), state().getOverflowThroughId());
+        assertEquals(before.getIdleThroughId(), state().getIdleThroughId());
+        assertEquals(before.getProfileId(), state().getProfileId());
+        assertUsage(resumed, 2);
+        assertEquals(5, count("usage"));
+        assertEquals(2, count("committed"));
+        assertRetiredCheckpoints();
+        assertTrue(originalHistory.equals(historyThrough(second.through())), "Resume must preserve history");
     }
 
     @Test
@@ -826,6 +1097,12 @@ class MemoryConsolidatorIT {
                 "SELECT COUNT(*) FROM chat_history WHERE memory_id = ?", Integer.class, scope.chatId());
     }
 
+    private List<Map<String, Object>> historyThrough(long through) {
+        // Lease replacement adds markers after this boundary; every original row and column must remain unchanged.
+        return sql.queryForList(
+                "SELECT * FROM chat_history WHERE memory_id = ? AND id <= ? ORDER BY id", scope.chatId(), through);
+    }
+
     // Compare digests so failed assertions never print source, model input, or profile bodies.
     private static void sameText(String expected, String actual) {
         assertEquals(MemoryDocumentCodec.hash(expected), MemoryDocumentCodec.hash(actual));
@@ -854,6 +1131,7 @@ class MemoryConsolidatorIT {
     private final class ScriptedModel implements ChatModel {
         private final List<Input> inputs = new ArrayList<>();
         private final List<Boolean> repairs = new ArrayList<>();
+        private final List<String> systemPrompts = new ArrayList<>();
         private final Function<Input, String> response;
         private int malformedCalls;
 
@@ -888,6 +1166,7 @@ class MemoryConsolidatorIT {
             assertFalse(instructions.contains("invalid-private-response"));
             inputs.add(input);
             repairs.add(instructions.contains("last output failed"));
+            systemPrompts.add(instructions);
             String text = inputs.size() <= malformedCalls ? "invalid-private-response" : response.apply(input);
             return ChatResponse.builder()
                     .aiMessage(AiMessage.from(text))

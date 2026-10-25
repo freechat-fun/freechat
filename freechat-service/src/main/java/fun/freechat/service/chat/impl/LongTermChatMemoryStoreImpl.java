@@ -30,7 +30,6 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
     private final MemoryPublicationRepository publications;
     private final MemoryPublisher publisher;
     private final MemoryVectorRepository vectors;
-    private final MemoryConsolidator consolidator;
     private final MemoryBoundsFactory boundsFactory;
     private final LongTermMemoryProperties properties;
     private final ScheduledExecutorService renewals;
@@ -47,7 +46,6 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
             MemoryPublicationRepository publications,
             MemoryPublisher publisher,
             MemoryVectorRepository vectors,
-            MemoryConsolidator consolidator,
             MemoryBoundsFactory boundsFactory,
             LongTermMemoryProperties properties,
             @Qualifier("memoryTurnRenewals") ScheduledExecutorService renewals) {
@@ -62,7 +60,6 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
         this.publications = publications;
         this.publisher = publisher;
         this.vectors = vectors;
-        this.consolidator = consolidator;
         this.boundsFactory = boundsFactory;
         this.properties = properties;
         this.renewals = renewals;
@@ -114,8 +111,8 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
         MemoryTurnLifetime lifetime = null;
         try {
             MemoryBounds bounds = boundsFactory.forLanguage(model.language());
-            MemoryInvocation memory = new MemoryInvocation(
-                    lease, model, turns, sources, publications, publisher, consolidator, bounds, properties);
+            MemoryInvocation memory =
+                    new MemoryInvocation(lease, model, turns, sources, publications, publisher, bounds, properties);
             lifetime = new MemoryTurnLifetime(turns, memory, properties, renewals);
             var recall = new MemoryRecallTools(
                     scope, model.recallLimit(), vectors, publisher, bounds, properties, lifetime::check);
@@ -143,6 +140,9 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
                 }
             } catch (Throwable ignored) {
                 // A failed close remains fenced by the durable lease and absolute deadline.
+            }
+            if (failure instanceof MemoryBounds.PreparationDeferredException deferred) {
+                throw deferred;
             }
             if (failure instanceof Error) {
                 throw new Error("Chat memory initialization failed");

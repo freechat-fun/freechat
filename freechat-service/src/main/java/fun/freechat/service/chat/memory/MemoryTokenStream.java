@@ -25,6 +25,7 @@ public final class MemoryTokenStream implements TokenStream, AutoCloseable {
     private final Object monitor = new Object();
     private volatile boolean terminal;
     private boolean failed;
+    private RuntimeException failure;
     private boolean delivered;
     private boolean ignoreErrors;
     private ChatResponse completedResponse;
@@ -39,11 +40,11 @@ public final class MemoryTokenStream implements TokenStream, AutoCloseable {
             // Pinned AiServiceTokenStream permits exactly one error registration. Keep these bridges
             // installed even when a later wrapper changes its handlers or elects to ignore errors.
             delegate.onCompleteResponse(this::complete);
-            delegate.onError(ignored -> fail());
-            lifetime.onFailure(ignored -> failed());
-        } catch (Throwable ignored) {
-            lifetime.close();
-            throw MemoryTurnLifetime.unavailable();
+            delegate.onError(this::fail);
+            lifetime.onFailure(this::failed);
+        } catch (Throwable error) {
+            lifetime.fail(error);
+            throw MemoryTurnLifetime.safeFailure(error);
         }
     }
 
@@ -145,9 +146,9 @@ public final class MemoryTokenStream implements TokenStream, AutoCloseable {
                 throw MemoryTurnLifetime.unavailable();
             }
             delegate.start();
-        } catch (Throwable ignored) {
-            fail();
-            throw MemoryTurnLifetime.unavailable();
+        } catch (Throwable error) {
+            fail(error);
+            throw MemoryTurnLifetime.safeFailure(error);
         }
     }
 
@@ -155,9 +156,9 @@ public final class MemoryTokenStream implements TokenStream, AutoCloseable {
         try {
             configuration.run();
             return this;
-        } catch (Throwable ignored) {
-            fail();
-            throw MemoryTurnLifetime.unavailable();
+        } catch (Throwable error) {
+            fail(error);
+            throw MemoryTurnLifetime.safeFailure(error);
         }
     }
 
@@ -168,10 +169,10 @@ public final class MemoryTokenStream implements TokenStream, AutoCloseable {
             }
             lifetime.check();
             callback.run();
-        } catch (Throwable ignored) {
-            fail();
+        } catch (Throwable error) {
+            fail(error);
             // Halt framework tool/retrieval processing, without passing the user's exception to its logger.
-            throw MemoryTurnLifetime.unavailable();
+            throw MemoryTurnLifetime.safeFailure(error);
         }
     }
 
@@ -196,16 +197,25 @@ public final class MemoryTokenStream implements TokenStream, AutoCloseable {
     }
 
     private void fail() {
-        lifetime.close();
-        failed();
+        fail(MemoryTurnLifetime.unavailable());
+    }
+
+    private void fail(Throwable error) {
+        lifetime.fail(error);
+        failed(error);
     }
 
     private void failed() {
+        failed(MemoryTurnLifetime.unavailable());
+    }
+
+    private void failed(Throwable error) {
         synchronized (monitor) {
             if (terminal) {
                 return;
             }
             failed = true;
+            failure = MemoryTurnLifetime.safeFailure(error);
             terminal = true;
         }
         deliver();
@@ -226,7 +236,8 @@ public final class MemoryTokenStream implements TokenStream, AutoCloseable {
                     return;
                 }
                 Consumer<Throwable> handler = errorHandler;
-                callback = () -> handler.accept(MemoryTurnLifetime.unavailable());
+                RuntimeException error = failure;
+                callback = () -> handler.accept(error);
             } else {
                 if (completeHandler == null) {
                     return;

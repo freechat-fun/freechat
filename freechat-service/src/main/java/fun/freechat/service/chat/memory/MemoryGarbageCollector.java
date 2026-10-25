@@ -252,7 +252,8 @@ public final class MemoryGarbageCollector {
                 || "REVALIDATE".equals(row.getOperation()) && state.getProfileRevalidationPending() != 1) {
             return false;
         }
-        if (!prepared) {
+        // Foreground overflow work is no longer resumed after its original execution ends.
+        if (!prepared && !overflow) {
             return true;
         }
         String token = overflow ? state.getTurnToken() : state.getClaimToken();

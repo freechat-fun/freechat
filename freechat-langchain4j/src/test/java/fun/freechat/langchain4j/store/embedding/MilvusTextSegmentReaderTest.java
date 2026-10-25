@@ -93,6 +93,19 @@ class MilvusTextSegmentReaderTest {
     }
 
     @Test
+    void queryCancellationPreservesItsMeaningWithoutPrivateDiagnostics() {
+        FakeQuery query = new FakeQuery();
+        query.failure = new java.util.concurrent.CancellationException(PRIVATE_PAYLOAD);
+        var failure = assertThrows(
+                java.util.concurrent.CancellationException.class,
+                () -> reader(query).get(ID, SCOPE));
+        assertEquals("Milvus exact query cancelled", failure.getMessage());
+        assertNull(failure.getCause());
+        assertEquals(0, failure.getSuppressed().length);
+        assertEquals(1, query.calls);
+    }
+
+    @Test
     void rejectsMissingScopeBeforeQuery() {
         FakeQuery query = new FakeQuery();
         assertThrows(IllegalArgumentException.class, () -> reader(query).get(ID, null));

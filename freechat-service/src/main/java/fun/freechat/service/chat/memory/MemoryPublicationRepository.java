@@ -3,6 +3,7 @@ package fun.freechat.service.chat.memory;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan;
 import static org.mybatis.dynamic.sql.SqlBuilder.isLessThanOrEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.isNull;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.langchain4j.data.message.AiMessage;
@@ -83,6 +84,62 @@ public final class MemoryPublicationRepository {
                     leaseToken,
                     state.getFingerprint(),
                     sourceHash(scope, cursor, throughId));
+        });
+    }
+
+    /** Retains the earliest pending OVERFLOW range under a fresh attempt and the current turn lease. */
+    public Optional<Snapshot> resumeOverflowSnapshot(MemoryScope scope, String leaseToken) {
+        return transaction(() -> {
+            ChatMemoryState state = lock(scope);
+            checkLease(state, Operation.OVERFLOW, leaseToken, coordination.databaseNow());
+            long cursor = cursor(state, Operation.OVERFLOW);
+            String expectedHead = head(state, Operation.OVERFLOW);
+            List<ChatMemoryCommit> candidates = commits.select(query -> {
+                var selection = query.where(ChatMemoryCommitDynamicSqlSupport.chatId, isEqualTo(scope.chatId()))
+                        .and(ChatMemoryCommitDynamicSqlSupport.generation, isEqualTo(scope.generation()))
+                        .and(ChatMemoryCommitDynamicSqlSupport.schemaVersion, isEqualTo(MemoryScope.SCHEMA_VERSION))
+                        .and(ChatMemoryCommitDynamicSqlSupport.operation, isEqualTo("CHECKPOINT_OVERFLOW"))
+                        .and(ChatMemoryCommitDynamicSqlSupport.status, isEqualTo("checkpoint"))
+                        .and(ChatMemoryCommitDynamicSqlSupport.sourceStartId, isEqualTo(cursor + 1))
+                        .and(ChatMemoryCommitDynamicSqlSupport.expectedCursor, isEqualTo(cursor))
+                        .and(ChatMemoryCommitDynamicSqlSupport.fingerprint, isEqualTo(state.getFingerprint()))
+                        .and(ChatMemoryCommitDynamicSqlSupport.sourceEndId, isGreaterThan(cursor))
+                        .and(
+                                ChatMemoryCommitDynamicSqlSupport.sourceEndId,
+                                isLessThanOrEqualTo(state.getLatestFinalizedId()));
+                if (expectedHead == null) {
+                    selection.and(ChatMemoryCommitDynamicSqlSupport.expectedHead, isNull());
+                } else {
+                    selection.and(ChatMemoryCommitDynamicSqlSupport.expectedHead, isEqualTo(expectedHead));
+                }
+                return selection
+                        .orderBy(ChatMemoryCommitDynamicSqlSupport.sourceEndId)
+                        .limit(1);
+            });
+            Optional<Snapshot> result = Optional.empty();
+            if (!candidates.isEmpty()) {
+                ChatMemoryCommit row = candidates.getFirst();
+                long throughId = row.getSourceEndId();
+                requireFinalBoundary(scope, throughId);
+                // Do not call snapshot(): its REQUIRES_NEW transaction would contend with this state lock.
+                Snapshot snapshot = new Snapshot(
+                        scope,
+                        UUID.randomUUID().toString(),
+                        Operation.OVERFLOW,
+                        cursor + 1,
+                        throughId,
+                        cursor,
+                        expectedHead,
+                        leaseToken,
+                        state.getFingerprint(),
+                        sourceHash(scope, cursor, throughId));
+                if (matchesCheckpoint(snapshot, row)) {
+                    checkpoint(snapshot, row);
+                    result = Optional.of(snapshot);
+                }
+            }
+            checkLease(state, Operation.OVERFLOW, leaseToken, coordination.databaseNow());
+            return result;
         });
     }
 
@@ -190,6 +247,74 @@ public final class MemoryPublicationRepository {
                         .filter(row -> matchesCheckpoint(snapshot, row))
                         .ifPresent(row -> retireCheckpoint(row, now));
             }
+        });
+    }
+
+    /** Failed optional work can be skipped only while its original snapshot is still authoritative. */
+    public void abandon(Snapshot snapshot) {
+        inTransaction(() -> {
+            require(snapshot != null
+                    && (snapshot.operation() == Operation.IDLE || snapshot.operation() == Operation.REVALIDATE));
+            ChatMemoryState state = lock(snapshot.scope());
+            LocalDateTime now = coordination.databaseNow();
+            validateSnapshot(state, snapshot, now);
+            require(snapshot.expectedCursor() >= 0
+                    && snapshot.sourceStartId() == snapshot.expectedCursor() + 1
+                    && snapshot.sourceEndId() <= state.getLatestFinalizedId());
+            if (snapshot.operation() == Operation.REVALIDATE) {
+                require(snapshot.sourceEndId() == snapshot.expectedCursor());
+            } else {
+                require(snapshot.sourceEndId() > snapshot.expectedCursor());
+            }
+            if (snapshot.sourceEndId() > 0) {
+                requireFinalBoundary(snapshot.scope(), snapshot.sourceEndId());
+            }
+            require(sourceHash(snapshot.scope(), snapshot.expectedCursor(), snapshot.sourceEndId())
+                    .equals(snapshot.sourceHash()));
+            if (snapshot.operation() == Operation.IDLE) {
+                checkpointHead(snapshot)
+                        .filter(row -> matchesCheckpoint(snapshot, row))
+                        .ifPresent(row -> retireCheckpoint(row, now));
+                state.setIdleThroughId(snapshot.sourceEndId());
+            } else {
+                state.setProfileId(null);
+                state.setProfileRevalidationPending((byte) 0);
+            }
+            state.setRetryAttempts(0);
+            state.setRetryAt(null);
+            if (state.getTurnToken() == null
+                    && state.getProfileRevalidationPending() == 0
+                    && state.getIdleThroughId().equals(state.getLatestFinalizedId())) {
+                state.setDueAt(null);
+            }
+            state.setVersion(state.getVersion() + 1);
+            state.setGmtModified(now);
+            require(!Thread.currentThread().isInterrupted());
+            checkLease(state, snapshot.operation(), snapshot.leaseToken(), coordination.databaseNow());
+            require(states.updateByPrimaryKey(state) == 1);
+            // A failed/ambiguous publication may already own snapshot.attemptId(); never reuse it.
+            require(commits.insertSelective(new ChatMemoryCommit()
+                            .withAttemptId(UUID.randomUUID().toString())
+                            .withChatId(snapshot.scope().chatId())
+                            .withGeneration(snapshot.scope().generation())
+                            .withOperation("SKIP_" + snapshot.operation().name())
+                            .withStatus("skipped")
+                            .withErrorCategory(Failure.EXTRACTION.name())
+                            .withManifest("{}")
+                            .withSourceStartId(
+                                    snapshot.operation() == Operation.REVALIDATE ? 0L : snapshot.sourceStartId())
+                            .withSourceEndId(snapshot.sourceEndId())
+                            .withExpectedCursor(snapshot.expectedCursor())
+                            .withExpectedHead(snapshot.expectedHead())
+                            .withLeaseToken(snapshot.leaseToken())
+                            .withFingerprint(snapshot.fingerprint())
+                            .withSchemaVersion(MemoryScope.SCHEMA_VERSION)
+                            .withModelId("none")
+                            .withProgress("{\"sourceHash\":\"" + snapshot.sourceHash() + "\"}")
+                            .withLeaseUntil(deadline(state, snapshot.operation()))
+                            .withGmtCreate(now)
+                            .withGmtModified(now))
+                    == 1);
         });
     }
 
@@ -922,6 +1047,8 @@ public final class MemoryPublicationRepository {
             return transactions.execute(ignored -> {
                 try {
                     return action.get();
+                } catch (java.util.concurrent.CancellationException ignoredCancellation) {
+                    throw new java.util.concurrent.CancellationException("Memory publication transaction cancelled");
                 } catch (Conflict failure) {
                     throw new Conflict();
                 } catch (Error failure) {
@@ -936,6 +1063,9 @@ public final class MemoryPublicationRepository {
             // Begin/commit/rollback can also expose payloads. A failed rollback must not downgrade a fatal error.
             if (fatal[0] || failure instanceof Error) {
                 throw new Error("Memory publication transaction failed");
+            }
+            if (failure instanceof java.util.concurrent.CancellationException) {
+                throw new java.util.concurrent.CancellationException("Memory publication transaction cancelled");
             }
             if (failure instanceof Conflict) {
                 throw new Conflict();

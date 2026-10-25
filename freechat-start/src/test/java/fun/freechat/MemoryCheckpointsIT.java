@@ -378,6 +378,303 @@ class MemoryCheckpointsIT {
         assertEquals(previous, checkpoints.load(freshSnapshot(snapshot), GUARD).orElseThrow());
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"single-partial", "single-complete", "batch-partial", "batch-complete"})
+    void resumeOverflowRetainsPendingEndpointAcrossFreshLeaseAndNewFinalizedTurns(String shape) {
+        seed(Operation.IDLE, "original source evidence");
+        long partialRow = sourceId;
+        if (shape.startsWith("batch")) {
+            // A non-null published head and nonzero cursor must be matched just as strictly as the initial state.
+            setState("overflow_through_id = " + throughId + ", summary_id = '" + UUID.randomUUID() + "'");
+            var first = turns.begin(scope, FINGERPRINT);
+            partialRow = turns.append(
+                    first,
+                    UserMessage.from("Next source evidence"),
+                    null,
+                    null,
+                    MemoryTurnRepository.Origin.USER_INPUT,
+                    null);
+            turns.complete(first, AiMessage.from("Next answer"), null, null);
+            turns.complete(turns.begin(scope, FINGERPRINT), AiMessage.from("Another answer"), null, null);
+            throughId = state().getLatestFinalizedId();
+        }
+        var oldTurn = turns.begin(scope, FINGERPRINT);
+        Snapshot original = publications.snapshot(scope, Operation.OVERFLOW, throughId, oldTurn.token());
+        Position position = shape.endsWith("complete") ? new Position(throughId, 0) : new Position(partialRow, 2);
+        Progress prior = save(original, null, position);
+        sql.update(
+                "UPDATE chat_memory_commit SET lease_until = UTC_TIMESTAMP(6) WHERE attempt_id = ?", prior.attemptId());
+        ChatMemoryCommit stored = attempt(prior.attemptId());
+        turns.complete(oldTurn, AiMessage.from("New final turn after the checkpoint"), null, null);
+        var currentTurn = turns.begin(scope, FINGERPRINT);
+        ChatMemoryState before = state();
+        int reads = stores.reads.get();
+
+        Snapshot resumed =
+                publications.resumeOverflowSnapshot(scope, currentTurn.token()).orElseThrow();
+        assertEquals(scope, resumed.scope());
+        assertEquals(Operation.OVERFLOW, resumed.operation());
+        assertEquals(original.sourceStartId(), resumed.sourceStartId());
+        assertEquals(original.sourceEndId(), resumed.sourceEndId());
+        assertEquals(original.expectedCursor(), resumed.expectedCursor());
+        assertEquals(original.expectedHead(), resumed.expectedHead());
+        assertEquals(original.fingerprint(), resumed.fingerprint());
+        assertEquals(original.sourceHash(), resumed.sourceHash());
+        assertEquals(currentTurn.token(), resumed.leaseToken());
+        assertNotEquals(stored.getLeaseToken(), resumed.leaseToken());
+        assertTrue(MemoryDocumentCodec.canonicalUuid(resumed.attemptId()));
+        assertNotEquals(original.attemptId(), resumed.attemptId());
+        assertNotEquals(prior.attemptId(), resumed.attemptId());
+        assertTrue(before.getLatestFinalizedId() > resumed.sourceEndId());
+        assertEquals(before, state());
+        assertEquals(stored, attempt(prior.attemptId()), "Discovery must not rewrite the deployed checkpoint");
+        assertTrue(commits.selectByPrimaryKey(resumed.attemptId()).isEmpty());
+        assertEquals(reads, stores.reads.get(), "Repository discovery must not read or return vector payloads");
+        assertEquals(prior, checkpoints.load(resumed, GUARD).orElseThrow());
+        Snapshot repeated =
+                publications.resumeOverflowSnapshot(scope, currentTurn.token()).orElseThrow();
+        assertNotEquals(resumed.attemptId(), repeated.attemptId());
+        assertEquals(resumed.sourceEndId(), repeated.sourceEndId());
+        rejected(() -> publications.resumeOverflowSnapshot(scope, oldTurn.token()));
+        turns.check(currentTurn);
+    }
+
+    @Test
+    void resumeOverflowChoosesEarliestMatchingRangeRatherThanNewestCheckpoint() {
+        seed(Operation.IDLE, "first source");
+        long earlierEnd = throughId;
+        turns.complete(turns.begin(scope, FINGERPRINT), AiMessage.from("Second answer"), null, null);
+        throughId = state().getLatestFinalizedId();
+        var turn = turns.begin(scope, FINGERPRINT);
+        assertTrue(publications.resumeOverflowSnapshot(scope, turn.token()).isEmpty());
+        Snapshot earlier = publications.snapshot(scope, Operation.OVERFLOW, earlierEnd, turn.token());
+        Progress prior = save(earlier, null, new Position(sourceId, 2));
+        Snapshot later = publications.snapshot(scope, Operation.OVERFLOW, throughId, turn.token());
+        save(later, null, new Position(throughId, 0));
+        assertEquals(2, count("checkpoint"));
+
+        Snapshot resumed =
+                publications.resumeOverflowSnapshot(scope, turn.token()).orElseThrow();
+        assertEquals(earlierEnd, resumed.sourceEndId());
+        assertEquals(earlier.sourceHash(), resumed.sourceHash());
+        assertEquals(prior, checkpoints.load(resumed, GUARD).orElseThrow());
+        sql.update(
+                "UPDATE chat_memory_commit SET expected_head = ? WHERE attempt_id = ?",
+                UUID.randomUUID().toString(),
+                prior.attemptId());
+        assertEquals(
+                throughId,
+                publications
+                        .resumeOverflowSnapshot(scope, turn.token())
+                        .orElseThrow()
+                        .sourceEndId(),
+                "Filter mismatched heads before limiting candidates, including when the current head is null");
+        sql.update("UPDATE chat_memory_commit SET expected_head = NULL WHERE attempt_id = ?", prior.attemptId());
+        // An incompatible earlier candidate must never be resumed just because its old source hash was stored.
+        sql.update("UPDATE chat_history SET source_message = message WHERE id = ?", sourceId);
+        assertTrue(publications.resumeOverflowSnapshot(scope, turn.token()).isEmpty());
+        assertEquals(2, count("checkpoint"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+            strings = {
+                "source",
+                "fingerprint",
+                "generation",
+                "head",
+                "cleared-head",
+                "cursor",
+                "schema",
+                "source-start",
+                "expected-cursor",
+                "past-cursor",
+                "future-end",
+                "status",
+                "operation",
+                "chat"
+            })
+    void resumeOverflowDoesNotReuseIncompatibleSourceBaselineOrCheckpointRange(String change) {
+        if (change.equals("cleared-head")) {
+            setState("summary_id = '" + UUID.randomUUID() + "'");
+        }
+        Snapshot original = seed(Operation.OVERFLOW, "unchanged source");
+        Progress prior = save(original, null, new Position(sourceId, 2));
+        ChatMemoryCommit row = attempt(prior.attemptId());
+        switch (change) {
+            case "source" -> sql.update("UPDATE chat_history SET source_message = message WHERE id = ?", sourceId);
+            case "fingerprint" -> setState("fingerprint = '" + MemoryDocumentCodec.hash("new baseline") + "'");
+            case "generation" -> {
+                setState("generation = 2");
+                rejected(() -> publications.resumeOverflowSnapshot(scope, original.leaseToken()));
+                scope = new MemoryScope(scope.chatId(), scope.userId(), scope.characterUid(), 2, scope.storeType());
+            }
+            case "head" -> setState("summary_id = '" + UUID.randomUUID() + "'");
+            case "cleared-head" -> setState("summary_id = NULL");
+            case "cursor" -> setState("overflow_through_id = " + original.sourceEndId());
+            case "schema" -> row.setSchemaVersion(MemoryScope.SCHEMA_VERSION + 1);
+            case "source-start" -> row.setSourceStartId(original.sourceStartId() + 1);
+            case "expected-cursor" -> row.setExpectedCursor(original.expectedCursor() + 1);
+            case "past-cursor" -> row.setSourceEndId(original.expectedCursor());
+            case "future-end" -> row.setSourceEndId(Long.MAX_VALUE);
+            case "status" -> row.setStatus("prepared");
+            case "operation" -> row.setOperation("CHECKPOINT_IDLE");
+            case "chat" -> row.setChatId(UUID.randomUUID().toString().replace("-", ""));
+            default -> fail("Unknown fixture");
+        }
+        assertEquals(1, commits.updateByPrimaryKey(row));
+        ChatMemoryState before = state();
+        ChatMemoryCommit stored = attempt(prior.attemptId());
+        int reads = stores.reads.get();
+        assertTrue(publications
+                .resumeOverflowSnapshot(scope, original.leaseToken())
+                .isEmpty());
+        assertEquals(before, state());
+        assertEquals(stored, attempt(prior.attemptId()));
+        assertEquals(reads, stores.reads.get());
+    }
+
+    @Test
+    void resumeOverflowRejectsForeignScopesAndWrongTurnExecutions() {
+        Snapshot original = seed(Operation.OVERFLOW, "source evidence");
+        save(original, null, new Position(sourceId, 2));
+        Snapshot current = freshSnapshot(original);
+        for (MemoryScope foreign : List.of(
+                new MemoryScope(scope.chatId(), "other-owner", scope.characterUid(), 1, scope.storeType()),
+                new MemoryScope(scope.chatId(), scope.userId(), "other-character", 1, scope.storeType()),
+                new MemoryScope(
+                        scope.chatId(),
+                        scope.userId(),
+                        scope.characterUid(),
+                        1,
+                        EmbeddingStoreType.EN_LONG_TERM_MEMORY),
+                new MemoryScope(scope.chatId(), scope.userId(), scope.characterUid(), 2, scope.storeType()))) {
+            rejected(() -> publications.resumeOverflowSnapshot(foreign, current.leaseToken()));
+        }
+        rejected(() -> publications.resumeOverflowSnapshot(scope, original.leaseToken()));
+        rejected(() -> publications.resumeOverflowSnapshot(scope, null));
+        rejected(() ->
+                publications.resumeOverflowSnapshot(scope, UUID.randomUUID().toString()));
+        String claim = UUID.randomUUID().toString();
+        setState("claim_token = '" + claim + "', claim_lease_until = UTC_TIMESTAMP(6) + INTERVAL 5 MINUTE, "
+                + "claim_deadline = UTC_TIMESTAMP(6) + INTERVAL 10 MINUTE");
+        rejected(() -> publications.resumeOverflowSnapshot(scope, claim));
+        MemoryScope other = new MemoryScope(
+                UUID.randomUUID().toString().replace("-", ""),
+                "other-owner",
+                scope.characterUid(),
+                1,
+                scope.storeType());
+        turns.initialize(other, FINGERPRINT);
+        var otherTurn = turns.begin(other, FINGERPRINT);
+        rejected(() -> publications.resumeOverflowSnapshot(scope, otherTurn.token()));
+        rejected(() -> publications.resumeOverflowSnapshot(other, current.leaseToken()));
+        assertTrue(publications.resumeOverflowSnapshot(other, otherTurn.token()).isEmpty());
+        assertTrue(
+                publications.resumeOverflowSnapshot(scope, current.leaseToken()).isPresent());
+        setState("status = 'deleted'");
+        rejected(() -> publications.resumeOverflowSnapshot(scope, current.leaseToken()));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"turn_lease_until", "turn_deadline"})
+    void resumeOverflowRequiresLiveLeaseEvenWithoutCheckpoint(String field) {
+        Snapshot snapshot = seed(Operation.OVERFLOW, "source evidence");
+        setState(field + " = UTC_TIMESTAMP(6)");
+        rejected(() -> publications.resumeOverflowSnapshot(scope, snapshot.leaseToken()));
+        Snapshot fresh = freshSnapshot(snapshot);
+        save(fresh, null, new Position(sourceId, 2));
+        setState(field + " = UTC_TIMESTAMP(6)");
+        rejected(() -> publications.resumeOverflowSnapshot(scope, fresh.leaseToken()));
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+            strings = {
+                "position",
+                "foreign-position",
+                "manifest",
+                "progress",
+                "disabled-terminal",
+                "nonterminal",
+                "foreign-terminal"
+            })
+    void resumeOverflowValidatesCheckpointPositionManifestAndFinalBoundaryWithoutPayloadLeaks(String corruption)
+            throws Exception {
+        Snapshot snapshot = seed(Operation.OVERFLOW, "private source evidence");
+        Progress prior = save(snapshot, null, new Position(sourceId, 2));
+        ChatMemoryCommit row = attempt(prior.attemptId());
+        ObjectNode progress = (ObjectNode) InfoUtils.defaultMapper().readTree(row.getProgress());
+        switch (corruption) {
+            case "position" -> ((ObjectNode) progress.get("position")).put("offset", 100000);
+            case "foreign-position" -> {
+                sql.update(
+                        "UPDATE chat_history SET memory_id = ? WHERE id = ?",
+                        UUID.randomUUID().toString().replace("-", ""),
+                        sourceId);
+                // Keep the hash compatible so only the position's owner check can reject this checkpoint.
+                Snapshot changed = publications.snapshot(scope, Operation.OVERFLOW, throughId, snapshot.leaseToken());
+                progress.put("sourceHash", changed.sourceHash());
+            }
+            case "manifest" -> row.setManifest("{\"private-source\":\"credential-fixture\"}");
+            case "progress" -> progress.put("summary", "private source and credential fixture");
+            case "disabled-terminal" -> sql.update("UPDATE chat_history SET enabled = 0 WHERE id = ?", throughId);
+            case "nonterminal" -> sql.update("UPDATE chat_history SET record_kind = 'message' WHERE id = ?", throughId);
+            case "foreign-terminal" ->
+                sql.update(
+                        "UPDATE chat_history SET memory_id = ? WHERE id = ?",
+                        UUID.randomUUID().toString().replace("-", ""),
+                        throughId);
+            default -> fail("Unknown corruption");
+        }
+        row.setProgress(progress.toString());
+        assertEquals(1, commits.updateByPrimaryKey(row));
+        ChatMemoryState before = state();
+        ChatMemoryCommit stored = attempt(prior.attemptId());
+        int reads = stores.reads.get();
+        rejected(() -> publications.resumeOverflowSnapshot(scope, snapshot.leaseToken()));
+        assertEquals(before, state());
+        assertEquals(stored, attempt(prior.attemptId()));
+        assertEquals(reads, stores.reads.get());
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void resumeOverflowUsesOneTransactionAndRechecksLeaseAfterValidation(boolean expires) {
+        Snapshot snapshot = seed(Operation.OVERFLOW, "source evidence");
+        Progress prior = save(snapshot, null, new Position(sourceId, 2));
+        ChatMemoryState before = state();
+        ChatMemoryCommit stored = attempt(prior.attemptId());
+        ChatMemoryCoordinationMapper clock = org.mockito.Mockito.mock(
+                ChatMemoryCoordinationMapper.class, org.mockito.AdditionalAnswers.delegatesTo(coordination));
+        LocalDateTime now = coordination.databaseNow();
+        org.mockito.Mockito.when(clock.databaseNow()).thenReturn(now, expires ? before.getTurnDeadline() : now);
+        AtomicInteger begun = new AtomicInteger();
+        var countedTransactions = new DataSourceTransactionManager(dataSource) {
+            @Override
+            protected void doBegin(
+                    Object transaction, org.springframework.transaction.TransactionDefinition definition) {
+                assertEquals(1, begun.incrementAndGet(), "Resume must not open a nested REQUIRES_NEW transaction");
+                super.doBegin(transaction, definition);
+            }
+        };
+        var checked =
+                new MemoryPublicationRepository(clock, states, commits, histories, countedTransactions, properties);
+        if (expires) {
+            rejected(() -> checked.resumeOverflowSnapshot(scope, snapshot.leaseToken()));
+        } else {
+            assertEquals(
+                    throughId,
+                    checked.resumeOverflowSnapshot(scope, snapshot.leaseToken())
+                            .orElseThrow()
+                            .sourceEndId());
+        }
+        assertEquals(1, begun.get());
+        org.mockito.Mockito.verify(clock, org.mockito.Mockito.times(2)).databaseNow();
+        assertEquals(before, state());
+        assertEquals(stored, attempt(prior.attemptId()));
+    }
+
     @Test
     void duplicateWorkersCompeteOnPredecessorAndOnlyOneChainHeadSurvives() throws Exception {
         Snapshot snapshot = seed(Operation.IDLE, "source evidence");
