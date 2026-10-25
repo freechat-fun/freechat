@@ -1,5 +1,6 @@
 package fun.freechat.service.connectors;
 
+import static fun.freechat.service.util.ChannelUtils.isValidChannelUser;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isNotEqualTo;
 
@@ -8,11 +9,14 @@ import fun.freechat.mapper.CharacterInfoDynamicSqlSupport;
 import fun.freechat.mapper.CharacterInfoMapper;
 import fun.freechat.mapper.ChatContextMapper;
 import fun.freechat.mapper.UserMapper;
-import fun.freechat.service.skills.CharacterSkillConfiguration;
+import fun.freechat.model.CharacterBackend;
+import fun.freechat.model.ChatContext;
+import fun.freechat.service.chat.TgChatService;
 import fun.freechat.service.skills.SkillCharacterAccess;
 import fun.freechat.service.tools.CharacterToolConfiguration;
 import fun.freechat.service.tools.ToolContext;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,6 +27,7 @@ public final class DatabaseConnectorPolicySource implements ConnectorPolicySourc
     private final CharacterInfoMapper characters;
     private final SkillCharacterAccess access;
     private final UserMapper users;
+    private final TgChatService telegramChats;
 
     @Override
     public Policy load(ToolContext scope) {
@@ -43,19 +48,37 @@ public final class DatabaseConnectorPolicySource implements ConnectorPolicySourc
                                     CharacterInfoDynamicSqlSupport.characterId.descending())
                             .limit(1))
                     .orElseThrow();
-            if (!access.permits(scope.userId(), character)) throw unavailable();
-            requireActiveUser(scope.userId());
+            boolean telegram = context.getTgChatId() != null;
+            if (telegram) {
+                if (!isValidChannelUser(context)) throw unavailable();
+            } else {
+                if (!access.permits(scope.userId(), character)) throw unavailable();
+                requireActiveUser(scope.userId());
+            }
             requireActiveUser(character.getUserId());
-            return new Policy(
-                    character.getUserId(),
-                    CharacterConnectorConfiguration.parse(character.getExt()).enabled(),
-                    CharacterSkillConfiguration.parse(character.getExt())
-                                    .enabled()
-                                    .isEmpty()
-                            && !CharacterToolConfiguration.parse(character.getExt())
-                                    .enabled()
-                                    .isEmpty());
+            var enabled =
+                    CharacterConnectorConfiguration.parse(character.getExt()).enabled();
+            if (enabled.isEmpty()
+                    || CharacterToolConfiguration.parse(character.getExt())
+                            .enabled()
+                            .isEmpty()) {
+                return new Policy(character.getUserId(), enabled, false);
+            }
+            if (telegram) requireTelegramChat(context, backend);
+            return new Policy(character.getUserId(), enabled, true);
         } catch (RuntimeException ignored) {
+            throw unavailable();
+        }
+    }
+
+    private void requireTelegramChat(ChatContext context, CharacterBackend backend) {
+        if (StringUtils.isBlank(backend.getTgBotToken())) throw unavailable();
+        // The owner-configured bot grants access through its persisted Telegram chat binding.
+        var chat = telegramChats
+                .findByBackendAndChat(context.getBackendId(), context.getTgChatId())
+                .orElseThrow(DatabaseConnectorPolicySource::unavailable);
+        if (!context.getBackendId().equals(chat.getBackendId())
+                || !context.getTgChatId().equals(chat.getTgChatId())) {
             throw unavailable();
         }
     }

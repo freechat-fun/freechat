@@ -2,7 +2,9 @@ package fun.freechat;
 
 import static fun.freechat.BuiltinToolChatTest.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
+import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.data.message.*;
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
@@ -11,6 +13,7 @@ import dev.langchain4j.model.chat.request.ChatRequest;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import fun.freechat.service.chat.ChatExecution;
 import fun.freechat.service.chat.ChatSession;
+import fun.freechat.service.connectors.*;
 import fun.freechat.service.skills.*;
 import fun.freechat.service.tools.*;
 import java.time.Duration;
@@ -154,7 +157,122 @@ class SkillChatTest {
                 .contains(BODY));
     }
 
+    @ParameterizedTest
+    @CsvSource({"false,false", "true,false", "false,true", "true,true"})
+    void skillsAndOwnerConnectorsWorkInOneInvocation(boolean streaming, boolean derived) {
+        Fixture f = new Fixture();
+        Mcp mcp = new Mcp();
+        ChatMemory memory = memoryWithSystem();
+        ChatSession session = session(f, memory, new AtomicBoolean(true), false, mcp.binder);
+        if (derived) session = session.forInvocation(memory, f.provider, List.of(new Recall()), 8, () -> {});
+        f.provider.script.add(tools(call("skill", "{\"skillId\":\"" + ID + "\"}")));
+        f.provider.beforeDelivery = () -> {
+            String remote = names(f.provider.requests.getFirst().toolSpecifications()).stream()
+                    .filter(name -> name.startsWith("mcp_"))
+                    .findFirst()
+                    .orElseThrow();
+            f.provider.script.addAll(List.of(
+                    tools(call("read_skill_resource", "{\"skillId\":\"" + ID + "\",\"file\":\"references/style.md\"}")),
+                    tools(call(remote, "{}")),
+                    reply()));
+        };
+
+        assertEquals("The answer is 42.", run(session, streaming).aiMessage().text());
+        assertEquals(4, f.provider.requests.size());
+        assertFalse(text(f.provider.requests.getFirst()).contains(BODY));
+        assertTrue(text(f.provider.requests.get(1)).contains(BODY));
+        assertTrue(text(f.provider.requests.get(2)).contains(REFERENCE));
+        assertTrue(text(f.provider.requests.getLast()).contains("remote result"));
+        for (ChatRequest request : f.provider.requests) {
+            Set<String> exposed = names(request.toolSpecifications());
+            assertTrue(exposed.containsAll(SkillTools.NAMES));
+            assertEquals(
+                    1, exposed.stream().filter(name -> name.startsWith("mcp_")).count());
+            assertFalse(exposed.contains("find_image"));
+            assertEquals(1, text(request).split("FreeChat skill policy:", -1).length - 1);
+        }
+        String persisted = ChatMessageSerializer.messagesToJson(memory.messages());
+        assertFalse(persisted.contains(BODY));
+        assertFalse(persisted.contains(REFERENCE));
+        verify(mcp.service).resolve("creator", mcp.id);
+        verify(mcp.connection).execute("lookup", "{}");
+        verify(mcp.connection).close();
+        assertEquals(0, f.album.calls);
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void connectorRevocationStillFencesSkillExecution(boolean streaming) {
+        Fixture f = new Fixture();
+        Mcp mcp = new Mcp();
+        ChatSession session = session(f, memoryWithSystem(), new AtomicBoolean(true), false, mcp.binder);
+        f.provider.script.add(tools(call("skill", "{\"skillId\":\"" + ID + "\"}")));
+        f.provider.beforeDelivery = () -> mcp.live.set(false);
+        assertThrows(RuntimeException.class, () -> run(session, streaming));
+        verify(mcp.connection, never()).execute(anyString(), anyString());
+        verify(mcp.connection).close();
+    }
+
+    @Test
+    void cancellationBeforeStartClosesConnectorAlongsideSkills() throws Exception {
+        Fixture f = new Fixture();
+        Mcp mcp = new Mcp();
+        ChatSession session = session(f, memoryWithSystem(), new AtomicBoolean(true), false, mcp.binder);
+        var stream = new ChatExecution(session, CHAT).stream();
+        assertInstanceOf(AutoCloseable.class, stream).close();
+        assertThrows(IllegalStateException.class, stream::start);
+        assertTrue(f.provider.requests.isEmpty());
+        verify(mcp.connection, never()).execute(anyString(), anyString());
+        verify(mcp.connection).close();
+    }
+
+    private static final class Mcp {
+        final String id = "c".repeat(32);
+        final AtomicBoolean live = new AtomicBoolean(true);
+        final ConnectorService service =
+                mock(ConnectorService.class, withSettings().mockMaker(org.mockito.MockMakers.SUBCLASS));
+        final ConnectorClientFactory.Connection connection = mock(
+                ConnectorClientFactory.Connection.class, withSettings().mockMaker(org.mockito.MockMakers.SUBCLASS));
+        final ConnectorBinder binder;
+
+        Mcp() {
+            var configuration =
+                    new ConnectorConfiguration("Owner MCP", "http", "https://example.com/mcp", 60000, Map.of());
+            when(service.list("creator"))
+                    .thenReturn(List.of(new ConnectorService.Summary(
+                            id,
+                            "revision",
+                            "Owner MCP",
+                            "http",
+                            configuration.url(),
+                            60000,
+                            true,
+                            Set.of(),
+                            Instant.EPOCH)));
+            when(service.resolve("creator", id))
+                    .thenReturn(new ConnectorService.Resolved(id, "creator", "revision", configuration, true));
+            when(connection.listTools())
+                    .thenReturn(
+                            List.of(ToolSpecification.builder().name("lookup").build()));
+            when(connection.execute("lookup", "{}")).thenReturn("remote result");
+            var runtime = new ConnectorRuntimeBinder(
+                    scope -> new ConnectorPolicySource.Policy("creator", live.get() ? Set.of(id) : Set.of(), true),
+                    service,
+                    (owner, config, lifetime, authorize) -> {
+                        assertEquals("creator", owner);
+                        authorize.run();
+                        return connection;
+                    });
+            binder = runtime.binder(CHAT, "owner", "character", "backend-character");
+        }
+    }
+
     private static ChatSession session(Fixture f, ChatMemory memory, AtomicBoolean live, boolean disabled) {
+        return session(f, memory, live, disabled, null);
+    }
+
+    private static ChatSession session(
+            Fixture f, ChatMemory memory, AtomicBoolean live, boolean disabled, ConnectorBinder connectors) {
         SkillTools.definitions().forEach(f.registry::register);
         Set<String> allowed = new HashSet<>(CharacterToolConfiguration.DEFAULTS);
         allowed.addAll(SkillTools.NAMES);
@@ -184,6 +302,7 @@ class SkillChatTest {
                         },
                         estimator(),
                         8192))
+                .connectorBinder(connectors)
                 .build();
     }
 

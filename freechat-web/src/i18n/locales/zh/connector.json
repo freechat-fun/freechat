@@ -60,8 +60,6 @@
   "Character connectors": "角色连接器",
   "Select up to 8 of your private connectors. No selection means no remote tools. Saved references remain until you remove them.": "最多选择 8 个私有连接器。不选择则不启用远程工具。已保存的引用会保留，直到您手动移除。",
   "Enabling connectors on shared characters allows viewers to invoke the owner’s remote tools. Ownership is not a side-effect sandbox. Only enable servers you trust.": "在共享角色中启用连接器会允许访问者调用所有者的远程工具。所有权无法隔离工具产生的实际副作用，请仅启用可信服务器。",
-  "Connectors are unavailable while skills are enabled. An explicit empty tools.enabled list remains tool-free. These restrictions are enforced by the server.": "启用技能时无法使用连接器。显式设置为空的 tools.enabled 仍会禁用所有工具。这些限制由服务端强制执行。",
-  "Skills are enabled: connectors are unavailable. Remove skills to use connectors; saved connector selections are preserved.": "已启用技能：连接器不可用。移除技能后才能使用连接器；已保存的连接器选择会保留。",
   "This character explicitly disables all tools (tools.enabled=[]). Connectors cannot override that setting.": "此角色已显式禁用所有工具（tools.enabled=[]）。连接器无法覆盖该设置。",
   "Imported connectors are private inactive copies owned by the importing user. Review and configure them before use; existing IDs and credentials are never reused across accounts.": "导入的连接器将成为当前用户私有且未启用的副本。使用前必须检查并重新配置；不同账号之间不会复用原有 ID 或凭证。",
   "Manage connectors": "管理连接器",

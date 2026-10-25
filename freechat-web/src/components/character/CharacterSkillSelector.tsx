@@ -79,9 +79,9 @@ export default function CharacterSkillSelector({
           'Select your private skills for this character. No selection means no user skills. Saved selections are retained if the inventory cannot be loaded.'
         )}
       </Typography>
-      <Alert severity="warning">
+      <Alert severity="info">
         {t(
-          'While user skills are enabled, only approved in-process roleplay, memory and skill-reading tools are available. Network, image, file-system and shell tools are unavailable. Skills cannot grant tools.'
+          'Skills can be used with this character’s enabled connectors. Skills cannot grant additional tool permissions.'
         )}
       </Alert>
       <Typography variant="body2" color="text.secondary">

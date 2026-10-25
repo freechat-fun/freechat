@@ -70,7 +70,7 @@
   "Characters using this skill may no longer be able to read it. This cannot be undone.": "使用此技能的角色可能无法再读取它。此操作无法撤销。",
   "Character skills": "角色技能",
   "Select your private skills for this character. No selection means no user skills. Saved selections are retained if the inventory cannot be loaded.": "为此角色选择你的私有技能。不选择表示不使用用户技能。列表加载失败时仍保留已保存的选择。",
-  "While user skills are enabled, only approved in-process roleplay, memory and skill-reading tools are available. Network, image, file-system and shell tools are unavailable. Skills cannot grant tools.": "启用用户技能时，仅可使用获准的进程内角色扮演、记忆及技能读取工具。网络、图像、文件系统和 Shell 工具均不可用。技能不能授予工具权限。",
+  "Skills can be used with this character’s enabled connectors. Skills cannot grant additional tool permissions.": "技能可以与此角色已启用的连接器同时使用。技能不会授予额外的工具权限。",
   "Never include secrets in skills used by shared characters. The server validates skill access and tool permissions.": "共享角色使用的技能中切勿包含机密信息。技能访问和工具权限由服务器验证。",
   "Could not load your skills. Saved selections have not been changed.": "无法加载你的技能列表。已保存的选择未被更改。",
   "No skills found. Install a skill from My skills first.": "未找到技能。请先在“我的技能”中安装技能。",

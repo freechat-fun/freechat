@@ -70,7 +70,7 @@
   "Characters using this skill may no longer be able to read it. This cannot be undone.": "Characters using this skill may no longer be able to read it. This cannot be undone.",
   "Character skills": "Character skills",
   "Select your private skills for this character. No selection means no user skills. Saved selections are retained if the inventory cannot be loaded.": "Select your private skills for this character. No selection means no user skills. Saved selections are retained if the inventory cannot be loaded.",
-  "While user skills are enabled, only approved in-process roleplay, memory and skill-reading tools are available. Network, image, file-system and shell tools are unavailable. Skills cannot grant tools.": "While user skills are enabled, only approved in-process roleplay, memory and skill-reading tools are available. Network, image, file-system and shell tools are unavailable. Skills cannot grant tools.",
+  "Skills can be used with this character’s enabled connectors. Skills cannot grant additional tool permissions.": "Skills can be used with this character’s enabled connectors. Skills cannot grant additional tool permissions.",
   "Never include secrets in skills used by shared characters. The server validates skill access and tool permissions.": "Never include secrets in skills used by shared characters. The server validates skill access and tool permissions.",
   "Could not load your skills. Saved selections have not been changed.": "Could not load your skills. Saved selections have not been changed.",
   "No skills found. Install a skill from My skills first.": "No skills found. Install a skill from My skills first.",

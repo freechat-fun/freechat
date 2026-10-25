@@ -1034,7 +1034,6 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
             <CharacterConnectorSelector
               enabled={enabledConnectorIds}
               disabled={!editEnabled || extError}
-              skillsEnabled={enabledSkillIds.length > 0}
               toolFree={toolFree}
               onChange={handleConnectorSelection}
             />
