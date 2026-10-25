@@ -155,8 +155,14 @@ public final class MemoryBounds {
 
     public record Page(String text, int offset, Integer nextOffset) {}
 
-    public static final class CapacityException extends IllegalStateException {
+    public static class CapacityException extends IllegalStateException {
         public CapacityException(String message) {
+            super(message);
+        }
+    }
+
+    public static final class PreparationDeferredException extends CapacityException {
+        public PreparationDeferredException(String message) {
             super(message);
         }
     }

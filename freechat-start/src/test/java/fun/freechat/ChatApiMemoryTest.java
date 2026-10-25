@@ -22,6 +22,7 @@ import fun.freechat.service.chat.ChatService;
 import fun.freechat.service.chat.ChatSession;
 import fun.freechat.service.chat.ChatSessionService;
 import fun.freechat.service.chat.MemoryUsage;
+import fun.freechat.service.chat.memory.MemoryBounds.PreparationDeferredException;
 import fun.freechat.service.enums.QuotaType;
 import jakarta.servlet.AsyncEvent;
 import jakarta.servlet.http.HttpServletResponse;
@@ -285,6 +286,40 @@ class ChatApiMemoryTest {
         assertEquals("Chat stream failed", ((Throwable) terminal).getMessage());
         assertNull(((Throwable) terminal).getCause());
         assertFalse(result.getResponse().getContentAsString().contains(PRIVATE));
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void memoryPreparationDeferralReturnsRetryableJsonBeforeStreaming(boolean streaming) throws Exception {
+        var deferred = new PreparationDeferredException(PRIVATE);
+        if (streaming) doThrow(deferred).when(chats).streamSend(eq("chat"), any(), isNull());
+        else doThrow(deferred).when(chats).send(eq("chat"), any(), isNull());
+        MockMvc mvc = MockMvcBuilders.standaloneSetup(api).build();
+        MvcResult result = mvc.perform(post(streaming ? "/api/v2/chat/send/stream/chat" : "/api/v2/chat/send/chat")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(streaming ? MediaType.TEXT_EVENT_STREAM : MediaType.APPLICATION_JSON)
+                        .content("{\"role\":\"user\",\"contents\":[{\"type\":\"text\",\"content\":\"hello\"}]}"))
+                .andExpect(status().isServiceUnavailable())
+                .andExpect(request().asyncNotStarted())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(header().string("Retry-After", "1"))
+                .andExpect(header().string("Cache-Control", "no-store"))
+                .andExpect(jsonPath("$.errorCode").value("CHAT_MEMORY_PREPARING"))
+                .andReturn();
+        assertFalse(result.getResponse().getContentAsString().contains(PRIVATE));
+    }
+
+    @Test
+    void memoryPreparationDeferralAfterPartialResponseUsesNamedSseError() throws Exception {
+        MvcResult result = startHttp(false);
+        partial.accept("partial answer");
+        error.accept(new PreparationDeferredException(PRIVATE));
+        String body = result.getResponse().getContentAsString();
+        assertTrue(body.contains("partial answer"));
+        assertTrue(body.contains("event:error"));
+        assertTrue(body.contains("\"errorCode\":\"CHAT_MEMORY_PREPARING\""));
+        assertFalse(body.contains(PRIVATE));
+        assertNull(result.getAsyncResult(1000));
     }
 
     private MvcResult startHttp(boolean assistant) throws Exception {

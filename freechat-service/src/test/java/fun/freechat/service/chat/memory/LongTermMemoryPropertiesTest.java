@@ -351,7 +351,7 @@ class LongTermMemoryPropertiesTest {
                         LongTermMemoryProperties::setDispatchBatchSize),
                 new NumericSetting(
                         "maxForegroundBatches",
-                        2,
+                        20,
                         LongTermMemoryProperties::getMaxForegroundBatches,
                         LongTermMemoryProperties::setMaxForegroundBatches),
                 new NumericSetting(

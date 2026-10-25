@@ -1,6 +1,7 @@
 package fun.freechat.service.chat;
 
 import dev.langchain4j.service.TokenStream;
+import fun.freechat.service.chat.memory.MemoryBounds.PreparationDeferredException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -36,6 +37,9 @@ public abstract sealed class ChatTask<T> permits ChatTask.Sync, ChatTask.Stream 
         void execute() {
             try {
                 future.complete(work.get());
+            } catch (PreparationDeferredException deferred) {
+                log.warn("Chat memory preparation deferred", deferred);
+                future.completeExceptionally(deferred);
             } catch (Throwable t) {
                 log.error("Chat task failed", t);
                 future.completeExceptionally(t);
@@ -109,6 +113,9 @@ public abstract sealed class ChatTask<T> permits ChatTask.Sync, ChatTask.Stream 
                 requestCancellation();
                 Thread.currentThread().interrupt();
                 future.completeExceptionally(new IllegalStateException("Chat stream interrupted"));
+            } catch (PreparationDeferredException deferred) {
+                log.warn("Chat memory preparation deferred", deferred);
+                future.completeExceptionally(deferred);
             } catch (Throwable t) {
                 log.error("Chat stream failed", t);
                 future.completeExceptionally(new IllegalStateException("Chat stream failed"));

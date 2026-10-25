@@ -87,7 +87,7 @@ chat:
       extractionClaimLease: PT5M
       extractionTimeout: PT60S
       foregroundTimeout: PT90S
-      maxForegroundBatches: 2
+      maxForegroundBatches: 20
       maxAttempts: 5
       retryInitialDelay: PT30S
       retryMaxDelay: PT30M

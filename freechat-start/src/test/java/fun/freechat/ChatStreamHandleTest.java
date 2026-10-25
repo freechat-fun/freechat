@@ -429,6 +429,30 @@ class ChatStreamHandleTest {
         }
     }
 
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void memoryPreparationDeferralRetainsItsTypeAndReleasesTheQueue(boolean streaming) throws Exception {
+        var deferred = new fun.freechat.service.chat.memory.MemoryBounds.PreparationDeferredException(
+                "Memory extraction call budget exhausted");
+        try (Worker worker = new Worker(false)) {
+            ChatTask<?> task = streaming
+                    ? worker.submit(() -> {
+                        throw deferred;
+                    })
+                    : worker.queue.submit(new ChatTask.Sync<>(() -> {
+                        throw deferred;
+                    }));
+            assertSame(
+                    deferred,
+                    assertThrows(ExecutionException.class, () -> get(task.future()))
+                            .getCause());
+            get(task.settled());
+            assertEquals(
+                    "next",
+                    get(worker.queue.submit(new ChatTask.Sync<>(() -> "next")).future()));
+        }
+    }
+
     @Test
     void interruptedHttpWaitRemovesQueuedTaskWithoutOpeningMemory() throws Exception {
         CompletableFuture<ChatTask<?>> admitted = new CompletableFuture<>();

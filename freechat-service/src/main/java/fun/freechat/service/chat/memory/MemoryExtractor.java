@@ -254,14 +254,14 @@ public final class MemoryExtractor {
         public void check() {
             checkLease.run();
             if (System.nanoTime() - started >= durationNanos) {
-                throw new MemoryBounds.CapacityException("Memory extraction deadline reached");
+                throw new MemoryBounds.PreparationDeferredException("Memory extraction deadline reached");
             }
         }
 
         private String beforeCall() {
             check();
             if (calls >= maxCalls) {
-                throw new MemoryBounds.CapacityException("Memory extraction call budget exhausted");
+                throw new MemoryBounds.PreparationDeferredException("Memory extraction call budget exhausted");
             }
             calls++;
             return UUID.randomUUID().toString();

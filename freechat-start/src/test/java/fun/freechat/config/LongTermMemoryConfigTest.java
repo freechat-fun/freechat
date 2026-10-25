@@ -44,6 +44,7 @@ class LongTermMemoryConfigTest {
             assertThat(context.getBean("longTermMemoryProperties")).isSameAs(properties);
             assertThat(properties.getIdleTimeout()).isEqualTo(Duration.parse("PT1H"));
             assertThat(properties.getScanInterval()).isEqualTo(Duration.ofSeconds(30));
+            assertThat(properties.getMaxForegroundBatches()).isEqualTo(20);
             assertThat(properties.getGcGracePeriod()).isEqualTo(Duration.ofHours(24));
             assertThat(properties.getTokenEstimatorBean()).isEmpty();
         });
@@ -58,7 +59,9 @@ class LongTermMemoryConfigTest {
                         source -> context.getEnvironment().getPropertySources().addLast(source)))
                 .run(context -> {
                     assertThat(context).hasNotFailed().hasSingleBean(LongTermMemoryProperties.class);
-                    BeanWrapper properties = new BeanWrapperImpl(context.getBean(LongTermMemoryProperties.class));
+                    LongTermMemoryProperties bound = context.getBean(LongTermMemoryProperties.class);
+                    assertThat(bound.getMaxForegroundBatches()).isEqualTo(20);
+                    BeanWrapper properties = new BeanWrapperImpl(bound);
                     for (PropertyDescriptor setting : properties.getPropertyDescriptors()) {
                         if (setting.getWriteMethod() == null) {
                             continue;
@@ -80,7 +83,7 @@ class LongTermMemoryConfigTest {
     }
 
     @Test
-    void standardEnvironmentVariableOverridesApplicationYamlDefault() throws IOException {
+    void standardEnvironmentVariablesOverrideApplicationYamlDefaults() throws IOException {
         var yamlSources =
                 new YamlPropertySourceLoader().load("applicationYaml", new ClassPathResource("application.yml"));
         contextRunner
@@ -89,13 +92,16 @@ class LongTermMemoryConfigTest {
                     yamlSources.forEach(sources::addLast);
                     sources.addFirst(new SystemEnvironmentPropertySource(
                             StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME,
-                            Map.of("CHAT_MEMORY_LONGTERM_IDLETIMEOUT", "PT2H")));
+                            Map.of(
+                                    "CHAT_MEMORY_LONGTERM_IDLETIMEOUT", "PT2H",
+                                    "CHAT_MEMORY_LONGTERM_MAXFOREGROUNDBATCHES", "7")));
                 })
                 .run(context -> {
                     assertThat(context).hasNotFailed().hasSingleBean(LongTermMemoryProperties.class);
                     LongTermMemoryProperties properties = context.getBean(LongTermMemoryProperties.class);
                     assertThat(properties.getIdleTimeout()).isEqualTo(Duration.ofHours(2));
                     assertThat(properties.getScanInterval()).isEqualTo(Duration.ofSeconds(30));
+                    assertThat(properties.getMaxForegroundBatches()).isEqualTo(7);
                 });
     }
 

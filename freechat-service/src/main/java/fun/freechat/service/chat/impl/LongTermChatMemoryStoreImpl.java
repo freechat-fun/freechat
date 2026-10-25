@@ -144,6 +144,9 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
             } catch (Throwable ignored) {
                 // A failed close remains fenced by the durable lease and absolute deadline.
             }
+            if (failure instanceof MemoryBounds.PreparationDeferredException deferred) {
+                throw deferred;
+            }
             if (failure instanceof Error) {
                 throw new Error("Chat memory initialization failed");
             }

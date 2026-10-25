@@ -372,6 +372,100 @@ class MemoryConsolidatorIT {
         assertRetiredCheckpoints();
     }
 
+    @ParameterizedTest(name = "repairFragment={0}")
+    @ValueSource(booleans = {true, false})
+    void completedFragmentSurvivesMergeAndRepairBudgetExhaustionAcrossFreshWork(boolean repairFragment) {
+        Source first = seed("Original turn A");
+        Source second = seed("Original turn B");
+        var originalHistory = historyThrough(second.through());
+        Snapshot a = snapshot(Operation.OVERFLOW, first.through());
+        ScriptedModel initial = new ScriptedModel(input -> summary("Chunk A"));
+        open(resolved(initial), 1).consolidate(a);
+        assertEquals(1, initial.inputs.size());
+        assertUsage(a, 1);
+        ChatMemoryState before = state();
+
+        // Either fragment + repair leaves no merge call, or fragment + malformed merge leaves no repair call.
+        ScriptedModel pending = new ScriptedModel(
+                input -> input.previousSummary().isEmpty() ? summary("Chunk B") : "invalid-private-response");
+        pending.malformedCalls = repairFragment ? 1 : 0;
+        var work = open(resolved(pending), 2);
+        Snapshot b = snapshot(Operation.OVERFLOW, second.through());
+        exhausted(() -> work.consolidate(b));
+        assertEquals(2, pending.inputs.size());
+        assertEquals(List.of(false, repairFragment), pending.repairs);
+        assertUsage(b, 2);
+        Input fragment = pending.inputs.getFirst();
+        assertTrue(fragment.previousSummary().isEmpty());
+        assertEquals(second.id(), fragment.evidence().getFirst().sourceId());
+        assertTrue(fragment.evidence().getFirst().originalInput());
+        sameText("Original turn B", fragment.evidence().getFirst().text());
+        if (repairFragment) {
+            assertTrue(fragment.equals(pending.inputs.getLast()), "Repair must repeat only the bounded fragment");
+        }
+        assertEquals(before.getSummaryId(), state().getSummaryId());
+        assertEquals(first.through(), state().getOverflowThroughId());
+        assertEquals(before.getIdleThroughId(), state().getIdleThroughId());
+        assertEquals(1, count("committed"));
+        var progress = checkpoints.load(b, GUARD).orElseThrow();
+        assertEquals(second.through(), progress.position().rowId());
+        assertEquals(0, progress.position().offset());
+        sameText("Chunk B", progress.output().summary());
+        assertEquals(1, count("checkpoint"));
+        assertTrue(originalHistory.equals(historyThrough(second.through())), "Exhaustion must preserve history");
+
+        Snapshot resumed = freshSnapshot(b);
+        assertNotEquals(b.leaseToken(), resumed.leaseToken());
+        assertTrue(progress.equals(checkpoints.load(resumed, GUARD).orElseThrow()));
+        assertThrows(IllegalStateException.class, () -> checkpoints.load(b, GUARD));
+        ScriptedModel merge = new ScriptedModel(input -> summary("Rolling A plus B"));
+        merge.malformedCalls = 1;
+        open(resolved(merge), 2).consolidate(resumed);
+        assertEquals(2, merge.inputs.size());
+        assertEquals(List.of(false, true), merge.repairs);
+        assertTrue(
+                merge.inputs.getFirst().equals(merge.inputs.getLast()),
+                "Merge repair must repeat bounded input, not invalid output");
+        for (Input input : merge.inputs) {
+            assertEquals(Operation.OVERFLOW, input.operation());
+            sameText("Chunk A", input.previousSummary());
+            assertEquals(1, input.evidence().size());
+            var evidence = input.evidence().getFirst();
+            assertEquals("derived-summary", evidence.origin());
+            assertFalse(evidence.originalInput());
+            assertEquals(second.through(), evidence.sourceId());
+            sameText("Chunk B", evidence.text());
+        }
+        if (!repairFragment) {
+            assertTrue(
+                    pending.inputs.getLast().equals(merge.inputs.getFirst()),
+                    "Fresh work must retry the merge without remapping original evidence");
+        }
+        List<MemoryDocument> documents = published(resumed);
+        assertEquals(2, documents.size());
+        MemoryDocument archive =
+                documents.stream().filter(MemoryDocument::archive).findFirst().orElseThrow();
+        MemoryDocument head = documents.stream()
+                .filter(document -> !document.archive())
+                .findFirst()
+                .orElseThrow();
+        sameText("Chunk B", archive.summary());
+        sameText("Rolling A plus B", head.summary());
+        assertNotEquals(archive.id(), head.id());
+        assertNotEquals(before.getSummaryId(), head.id());
+        assertEquals(head.id(), state().getSummaryId());
+        assertEquals(b.sourceStartId(), archive.sourceStartId());
+        assertEquals(second.through(), archive.sourceEndId());
+        assertEquals(second.through(), state().getOverflowThroughId());
+        assertEquals(before.getIdleThroughId(), state().getIdleThroughId());
+        assertEquals(before.getProfileId(), state().getProfileId());
+        assertUsage(resumed, 2);
+        assertEquals(5, count("usage"));
+        assertEquals(2, count("committed"));
+        assertRetiredCheckpoints();
+        assertTrue(originalHistory.equals(historyThrough(second.through())), "Resume must preserve history");
+    }
+
     @Test
     void baselineRevalidationReadsIncompatiblePairedProfileAndRemovesFactsWithoutEpisodeOrCursorChanges() {
         Source source = seed("Supported profile source");
@@ -824,6 +918,12 @@ class MemoryConsolidatorIT {
     private int historyCount() {
         return sql.queryForObject(
                 "SELECT COUNT(*) FROM chat_history WHERE memory_id = ?", Integer.class, scope.chatId());
+    }
+
+    private List<Map<String, Object>> historyThrough(long through) {
+        // Lease replacement adds markers after this boundary; every original row and column must remain unchanged.
+        return sql.queryForList(
+                "SELECT * FROM chat_history WHERE memory_id = ? AND id <= ? ORDER BY id", scope.chatId(), through);
     }
 
     // Compare digests so failed assertions never print source, model input, or profile bodies.

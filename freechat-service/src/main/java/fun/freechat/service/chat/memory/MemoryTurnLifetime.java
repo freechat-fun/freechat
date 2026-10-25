@@ -25,6 +25,7 @@ public final class MemoryTurnLifetime implements AutoCloseable {
     private final List<Consumer<Throwable>> failures = new ArrayList<>();
     private final CompletableFuture<Void> fenced = new CompletableFuture<>();
     private volatile State state = State.ACTIVE;
+    private RuntimeException failure = unavailable();
     private long deadlineNanos;
     private ScheduledFuture<?> heartbeat;
     private ScheduledFuture<?> timeout;
@@ -117,7 +118,7 @@ public final class MemoryTurnLifetime implements AutoCloseable {
             }
         }
         if (notify) {
-            safely(() -> callback.accept(unavailable()));
+            safely(() -> callback.accept(failure));
         }
     }
 
@@ -162,6 +163,10 @@ public final class MemoryTurnLifetime implements AutoCloseable {
 
     @Override
     public void close() {
+        fail(unavailable());
+    }
+
+    public void fail(Throwable error) {
         boolean owner = false;
         synchronized (monitor) {
             if (state == State.FINISHED || state == State.FAILED) {
@@ -175,6 +180,7 @@ public final class MemoryTurnLifetime implements AutoCloseable {
                     cancellations.clear();
                     return;
                 }
+                failure = safeFailure(error);
                 state = State.FAILING;
                 cancelTimers();
                 owner = true;
@@ -198,8 +204,14 @@ public final class MemoryTurnLifetime implements AutoCloseable {
         }
         fenced.complete(null);
         // Notify first: transport cancellation is best effort and may block or call us back.
-        notify.forEach(callback -> safely(() -> callback.accept(unavailable())));
+        notify.forEach(callback -> safely(() -> callback.accept(failure)));
         cancel.forEach(MemoryTurnLifetime::safely);
+    }
+
+    static RuntimeException safeFailure(Throwable error) {
+        return error instanceof MemoryBounds.PreparationDeferredException
+                ? new MemoryBounds.PreparationDeferredException("Chat memory preparation deferred")
+                : unavailable();
     }
 
     private void cancelTimers() {

@@ -50,7 +50,21 @@ export default function ChatContent({
     const hasBody = body !== undefined;
     let fullThinking = '';
     let fullText = '';
-    acRef.current = new AbortController();
+    let memoryDeferred = false;
+    const controller = new AbortController();
+    acRef.current = controller;
+
+    const reportMemoryDeferred = () => {
+      if (memoryDeferred || controller.signal.aborted) return;
+      memoryDeferred = true;
+      controller.abort();
+      const message = `[${t('Conversation memory is still being prepared. Please retry your message.')}]`;
+      const partial = getSenderReply(fullText, debugMode, false, fullThinking);
+      setData(partial ? `${partial}\n\n${message}` : message);
+      const error = { code: 503, errorCode: 'CHAT_MEMORY_PREPARING', message };
+      if (onError) onError(error);
+      else handleError(error);
+    };
 
     const startListening = async () => {
       try {
@@ -60,10 +74,20 @@ export default function ChatContent({
             'Content-Type': hasBody ? 'application/json' : 'text/event-stream',
           },
           body: body,
-          signal: acRef.current?.signal,
+          signal: controller.signal,
           async onopen(response) {
             setUsage(undefined);
             setCopied(false);
+            if (response.status === 503) {
+              const error = await response
+                .clone()
+                .json()
+                .catch(() => null);
+              if (error?.errorCode === 'CHAT_MEMORY_PREPARING') {
+                reportMemoryDeferred();
+                return;
+              }
+            }
             if (response.ok) {
               setData('');
             } else if (response.status === 429) {
@@ -80,8 +104,17 @@ export default function ChatContent({
             return Promise.resolve();
           },
           onmessage(event) {
-            const result = JSON.parse(event.data) as LlmResultDTO;
-              
+            const result = JSON.parse(event.data) as LlmResultDTO & {
+              errorCode?: string;
+            };
+            if (
+              event.event === 'error' &&
+              result?.errorCode === 'CHAT_MEMORY_PREPARING'
+            ) {
+              reportMemoryDeferred();
+              return;
+            }
+
             if (result.finishReason) {
               setUsage(result.tokenUsage);
               onFinish?.(result);
@@ -97,7 +130,12 @@ export default function ChatContent({
                 fullText = fullText + textChunk;
               }
 
-              const fullMessage = getSenderReply(fullText, debugMode, false, fullThinking);
+              const fullMessage = getSenderReply(
+                fullText,
+                debugMode,
+                false,
+                fullThinking
+              );
               if (thinkingChunk || textChunk) {
                 if (onMessage === undefined || onMessage(result)) {
                   setData(fullMessage);
@@ -108,6 +146,7 @@ export default function ChatContent({
             }
           },
           onerror(error) {
+            if (memoryDeferred) return;
             console.error('The connection has an error...');
             if (onError) {
               onError(error);
@@ -116,11 +155,13 @@ export default function ChatContent({
             }
           },
           onclose() {
+            if (memoryDeferred) return;
             console.error('The connection has been closed...');
             onFinish?.();
           },
         });
       } catch (error) {
+        if (memoryDeferred) return;
         console.error('The connection has an error...');
         if (onError) {
           onError(error);
@@ -139,9 +180,7 @@ export default function ChatContent({
 
   return (
     <Fragment>
-      <MarkdownContent sx={sx}>
-        {data}
-      </MarkdownContent>
+      <MarkdownContent sx={sx}>{data}</MarkdownContent>
       {debugMode && usage && (
         <Fragment>
           <LinePlaceholder spacing={2} />

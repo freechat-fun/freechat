@@ -222,7 +222,7 @@ class MemoryExtractorTest {
     void overflowCannotUpdateProfilesAndRepairCountsTowardForegroundBudget() {
         FakeModel model = new FakeModel(VALID, VALID);
         RuntimeException error = assertThrows(
-                MemoryBounds.CapacityException.class,
+                MemoryBounds.PreparationDeferredException.class,
                 () -> extractor.extract(model, null, input(MemoryPublicationRepository.Operation.OVERFLOW), budget(1)));
         assertSafe(error);
         assertEquals(1, model.requests.size());
@@ -249,6 +249,18 @@ class MemoryExtractorTest {
         assertThrows(MemoryBounds.CapacityException.class, () -> extractor.extract(model, null, large, budget(2)));
         assertTrue(model.requests.isEmpty());
         assertTrue(recorded.isEmpty());
+    }
+
+    @Test
+    void exhaustedTimeBudgetIsRetryableButOversizedInputIsNot() {
+        var expired = new MemoryExtractor.Budget(1, Duration.ofNanos(1), () -> {}, (id, usage) -> {});
+        assertThrows(MemoryBounds.PreparationDeferredException.class, expired::check);
+        FakeModel model = new FakeModel(VALID);
+        var tooLarge = assertThrows(
+                MemoryBounds.CapacityException.class,
+                () -> extractor.extract(model, 1, input(MemoryPublicationRepository.Operation.IDLE), budget(2)));
+        assertFalse(tooLarge instanceof MemoryBounds.PreparationDeferredException);
+        assertTrue(model.requests.isEmpty());
     }
 
     @Test
