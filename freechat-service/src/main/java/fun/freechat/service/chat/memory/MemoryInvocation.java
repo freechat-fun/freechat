@@ -215,31 +215,33 @@ public final class MemoryInvocation implements ChatMemory, AutoCloseable {
             SystemMessage system = compose(summary);
             List<ChatMessage> history = new ArrayList<>();
             requireFits(system, history);
-            long after = state.getOverflowThroughId();
-            Turn oldest = null;
-            boolean overflow = false;
-            while (after < state.getLatestFinalizedId()) {
-                check();
-                Turn turn = sources.nextTurn(lease.scope(), after, state.getLatestFinalizedId())
+            long cursor = state.getOverflowThroughId();
+            if (cursor < state.getLatestFinalizedId()) {
+                Turn oldest = sources.nextTurn(lease.scope(), cursor, state.getLatestFinalizedId())
                         .orElseThrow(MemoryInvocation::unavailable);
-                if (oldest == null) {
-                    oldest = turn;
+                if (oldest.aborted()) {
+                    publications.advanceAborted(publications.snapshot(
+                            lease.scope(), Operation.OVERFLOW, oldest.throughId(), lease.token()));
+                    continue;
                 }
-                if (turn.aborted()) {
-                    if (turn == oldest) {
-                        publications.advanceAborted(publications.snapshot(
-                                lease.scope(), Operation.OVERFLOW, turn.throughId(), lease.token()));
-                        overflow = true;
-                        oldest = null;
+            }
+            long before = state.getLatestFinalizedId();
+            long compactThrough = cursor;
+            while (before > cursor) {
+                check();
+                Turn turn =
+                        sources.previousTurn(lease.scope(), cursor, before).orElseThrow(MemoryInvocation::unavailable);
+                if (!turn.aborted()) {
+                    List<ChatMessage> candidate = new ArrayList<>(history);
+                    if (!loadTurn(turn, candidate, system)) {
+                        compactThrough = turn.throughId();
                         break;
                     }
-                } else if (!loadTurn(turn, history, system)) {
-                    overflow = true;
-                    break;
+                    history = candidate;
                 }
-                after = turn.throughId();
+                before = turn.afterId();
             }
-            if (!overflow) {
+            if (compactThrough == cursor) {
                 check();
                 renderedSystem = system;
                 List<ChatMessage> result = new ArrayList<>(history.size() + current.size() + 1);
@@ -248,22 +250,27 @@ public final class MemoryInvocation implements ChatMemory, AutoCloseable {
                 result.addAll(current);
                 return List.copyOf(result);
             }
-            if (oldest != null) {
-                if (preparation == null) {
-                    preparation = consolidator.open(
-                            model,
-                            properties.getMaxForegroundBatches(),
-                            properties.getForegroundTimeout(),
-                            this::check);
-                }
-                preparation.consolidate(
-                        publications.snapshot(lease.scope(), Operation.OVERFLOW, oldest.throughId(), lease.token()));
+            if (preparation == null) {
+                preparation = consolidator.open(
+                        model, properties.getMaxForegroundBatches(), properties.getForegroundTimeout(), this::check);
             }
+            var snapshot = publications
+                    .resumeOverflowSnapshot(lease.scope(), lease.token())
+                    .orElse(null);
+            if (snapshot == null) {
+                List<ChatHistory> endpoints = turns.finalizedPage(
+                        lease.scope(), cursor, compactThrough, MemoryConsolidator.MAX_OVERFLOW_TURNS);
+                if (endpoints.isEmpty()) throw unavailable();
+                snapshot = publications.snapshot(
+                        lease.scope(), Operation.OVERFLOW, endpoints.getLast().getId(), lease.token());
+            }
+            preparation.consolidate(snapshot);
         }
     }
 
     private boolean loadTurn(Turn turn, List<ChatMessage> history, SystemMessage system) {
         long after = turn.afterId();
+        int insertion = 0;
         while (after < turn.throughId()) {
             List<ChatHistory> page = turns.sourcePage(lease.scope(), after, turn.throughId(), 1);
             if (page.isEmpty()) {
@@ -288,7 +295,7 @@ public final class MemoryInvocation implements ChatMemory, AutoCloseable {
             try {
                 ChatMessage message = ChatMessageDeserializer.messageFromJson(row.getMessage());
                 if (!(message instanceof SystemMessage)) {
-                    history.add(message);
+                    history.add(insertion++, message);
                 }
             } catch (RuntimeException ignored) {
                 throw new IllegalStateException("Invalid chat source message");

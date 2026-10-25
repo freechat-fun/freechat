@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 public final class MemoryConsolidator {
+    static final int MAX_OVERFLOW_TURNS = 64;
     private static final int MAX_EVIDENCE_PER_CALL = 100;
     private final MemorySourceReader sources;
     private final MemoryPublicationRepository publications;
@@ -84,13 +85,30 @@ public final class MemoryConsolidator {
                 revalidate();
                 return;
             }
-            Turn turn = sources.nextTurn(snapshot.scope(), snapshot.expectedCursor(), snapshot.sourceEndId())
-                    .orElseThrow(MemoryConsolidator::invalid);
-            require(turn.throughId() == snapshot.sourceEndId());
-            if (turn.aborted()) {
-                publications.advanceAborted(snapshot);
+            List<Turn> range = new ArrayList<>();
+            long after = snapshot.expectedCursor();
+            while (after < snapshot.sourceEndId()) {
+                budget.check();
+                require(range.size() < (snapshot.operation() == Operation.OVERFLOW ? MAX_OVERFLOW_TURNS : 1));
+                Turn turn = sources.nextTurn(snapshot.scope(), after, snapshot.sourceEndId())
+                        .orElseThrow(MemoryConsolidator::invalid);
+                range.add(turn);
+                after = turn.throughId();
+            }
+            require(after == snapshot.sourceEndId() && !range.isEmpty());
+            if (range.stream().allMatch(Turn::aborted)) {
+                for (Turn turn : range) {
+                    current = range.size() == 1
+                            ? snapshot
+                            : publications.snapshot(
+                                    snapshot.scope(), snapshot.operation(), turn.throughId(), snapshot.leaseToken());
+                    budget.check();
+                    publications.advanceAborted(current);
+                }
                 return;
             }
+            Instant observedAt =
+                    range.stream().map(Turn::observedAt).max(Instant::compareTo).orElseThrow();
             MemoryDocument previous = head();
             if (snapshot.operation() == Operation.IDLE && previous != null) {
                 require(previous.fingerprint().equals(snapshot.fingerprint()));
@@ -108,27 +126,20 @@ public final class MemoryConsolidator {
                                     : List.of())
                     : progress.output();
             Position position = progress == null ? new Position(snapshot.expectedCursor(), 0) : progress.position();
-            while (position.rowId() < turn.throughId() || position.offset() > 0) {
+            while (position.rowId() < snapshot.sourceEndId() || position.offset() > 0) {
                 budget.check();
-                Batch batch = batch(turn, position, compact);
+                Batch batch = batch(range, position, compact, observedAt);
                 if (batch.input().evidence().isEmpty()) {
                     position = batch.next();
                     break;
                 }
                 compact = extractor.extract(model.model(), model.providerContextLimit(), batch.input(), budget);
                 progress = checkpoints.save(
-                        snapshot,
-                        progress,
-                        batch.next(),
-                        compact,
-                        turn.observedAt(),
-                        model.modelId(),
-                        null,
-                        this::check);
+                        snapshot, progress, batch.next(), compact, observedAt, model.modelId(), null, this::check);
                 progressed = true;
                 position = batch.next();
             }
-            require(position.rowId() == turn.throughId() && position.offset() == 0);
+            require(position.rowId() == snapshot.sourceEndId() && position.offset() == 0);
             if (compact.summary().isBlank()) {
                 compact = new Output(
                         "This completed turn contained no textual memory evidence.",
@@ -141,21 +152,21 @@ public final class MemoryConsolidator {
                     Input merge = input(
                             new Output(previous.summary(), List.of(), List.of()),
                             List.of(new Evidence(
-                                    turn.throughId(),
+                                    snapshot.sourceEndId(),
                                     "derived-summary",
                                     false,
-                                    turn.observedAt(),
+                                    observedAt,
                                     0,
                                     compact.summary())),
-                            turn.observedAt());
+                            observedAt);
                     rolling = extractor.extract(model.model(), model.providerContextLimit(), merge, budget);
                 }
                 budget.check();
                 publisher.publish(
                         snapshot,
                         List.of(
-                                document(Kind.WINDOW_SUMMARY, false, rolling, turn.observedAt()),
-                                document(Kind.WINDOW_SUMMARY, true, compact, turn.observedAt())),
+                                document(Kind.WINDOW_SUMMARY, false, rolling, observedAt),
+                                document(Kind.WINDOW_SUMMARY, true, compact, observedAt)),
                         model.modelId(),
                         null);
             } else {
@@ -167,12 +178,12 @@ public final class MemoryConsolidator {
                                         Kind.EPISODE_SUMMARY,
                                         false,
                                         new Output(compact.summary(), List.of(), List.of()),
-                                        turn.observedAt()),
+                                        observedAt),
                                 document(
                                         Kind.PROFILE_SNAPSHOT,
                                         false,
                                         new Output("", compact.userFacts(), compact.characterDeltas()),
-                                        turn.observedAt())),
+                                        observedAt)),
                         model.modelId(),
                         null);
             }
@@ -208,19 +219,28 @@ public final class MemoryConsolidator {
             return document;
         }
 
-        private Batch batch(Turn turn, Position start, Output previous) {
+        private Batch batch(List<Turn> range, Position start, Output previous, Instant observedAt) {
             List<Evidence> evidence = new ArrayList<>();
             Position position = start;
+            int turnIndex = 0;
+            while (turnIndex < range.size()
+                    && (position.rowId() > range.get(turnIndex).throughId()
+                            || position.rowId() == range.get(turnIndex).throughId() && position.offset() == 0)) {
+                turnIndex++;
+            }
             int fragmentTokens = properties.getExtractionMaxInputTokens();
-            while (evidence.size() < MAX_EVIDENCE_PER_CALL) {
+            while (turnIndex < range.size() && evidence.size() < MAX_EVIDENCE_PER_CALL) {
                 budget.check();
-                var fragment = sources.nextFragment(current.scope(), turn, position, bounds, fragmentTokens);
+                var fragment =
+                        sources.nextFragment(current.scope(), range.get(turnIndex), position, bounds, fragmentTokens);
                 if (fragment.complete()) {
-                    return new Batch(input(previous, evidence, turn.observedAt()), fragment.next());
+                    position = fragment.next();
+                    turnIndex++;
+                    continue;
                 }
                 List<Evidence> candidate = new ArrayList<>(evidence);
                 candidate.add(fragment.evidence());
-                Input proposed = input(previous, candidate, turn.observedAt());
+                Input proposed = input(previous, candidate, observedAt);
                 try {
                     extractor.requireInput(proposed, model.providerContextLimit());
                 } catch (MemoryBounds.CapacityException tooLarge) {
@@ -238,7 +258,7 @@ public final class MemoryConsolidator {
                 position = fragment.next();
                 fragmentTokens = properties.getExtractionMaxInputTokens();
             }
-            return new Batch(input(previous, evidence, turn.observedAt()), position);
+            return new Batch(input(previous, evidence, observedAt), position);
         }
 
         private Input input(Output previous, List<Evidence> evidence, Instant observedAt) {

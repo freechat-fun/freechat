@@ -3,6 +3,7 @@ package fun.freechat.service.chat.memory;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan;
 import static org.mybatis.dynamic.sql.SqlBuilder.isLessThanOrEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.isNull;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.langchain4j.data.message.AiMessage;
@@ -83,6 +84,62 @@ public final class MemoryPublicationRepository {
                     leaseToken,
                     state.getFingerprint(),
                     sourceHash(scope, cursor, throughId));
+        });
+    }
+
+    /** Retains the earliest pending OVERFLOW range under a fresh attempt and the current turn lease. */
+    public Optional<Snapshot> resumeOverflowSnapshot(MemoryScope scope, String leaseToken) {
+        return transaction(() -> {
+            ChatMemoryState state = lock(scope);
+            checkLease(state, Operation.OVERFLOW, leaseToken, coordination.databaseNow());
+            long cursor = cursor(state, Operation.OVERFLOW);
+            String expectedHead = head(state, Operation.OVERFLOW);
+            List<ChatMemoryCommit> candidates = commits.select(query -> {
+                var selection = query.where(ChatMemoryCommitDynamicSqlSupport.chatId, isEqualTo(scope.chatId()))
+                        .and(ChatMemoryCommitDynamicSqlSupport.generation, isEqualTo(scope.generation()))
+                        .and(ChatMemoryCommitDynamicSqlSupport.schemaVersion, isEqualTo(MemoryScope.SCHEMA_VERSION))
+                        .and(ChatMemoryCommitDynamicSqlSupport.operation, isEqualTo("CHECKPOINT_OVERFLOW"))
+                        .and(ChatMemoryCommitDynamicSqlSupport.status, isEqualTo("checkpoint"))
+                        .and(ChatMemoryCommitDynamicSqlSupport.sourceStartId, isEqualTo(cursor + 1))
+                        .and(ChatMemoryCommitDynamicSqlSupport.expectedCursor, isEqualTo(cursor))
+                        .and(ChatMemoryCommitDynamicSqlSupport.fingerprint, isEqualTo(state.getFingerprint()))
+                        .and(ChatMemoryCommitDynamicSqlSupport.sourceEndId, isGreaterThan(cursor))
+                        .and(
+                                ChatMemoryCommitDynamicSqlSupport.sourceEndId,
+                                isLessThanOrEqualTo(state.getLatestFinalizedId()));
+                if (expectedHead == null) {
+                    selection.and(ChatMemoryCommitDynamicSqlSupport.expectedHead, isNull());
+                } else {
+                    selection.and(ChatMemoryCommitDynamicSqlSupport.expectedHead, isEqualTo(expectedHead));
+                }
+                return selection
+                        .orderBy(ChatMemoryCommitDynamicSqlSupport.sourceEndId)
+                        .limit(1);
+            });
+            Optional<Snapshot> result = Optional.empty();
+            if (!candidates.isEmpty()) {
+                ChatMemoryCommit row = candidates.getFirst();
+                long throughId = row.getSourceEndId();
+                requireFinalBoundary(scope, throughId);
+                // Do not call snapshot(): its REQUIRES_NEW transaction would contend with this state lock.
+                Snapshot snapshot = new Snapshot(
+                        scope,
+                        UUID.randomUUID().toString(),
+                        Operation.OVERFLOW,
+                        cursor + 1,
+                        throughId,
+                        cursor,
+                        expectedHead,
+                        leaseToken,
+                        state.getFingerprint(),
+                        sourceHash(scope, cursor, throughId));
+                if (matchesCheckpoint(snapshot, row)) {
+                    checkpoint(snapshot, row);
+                    result = Optional.of(snapshot);
+                }
+            }
+            checkLease(state, Operation.OVERFLOW, leaseToken, coordination.databaseNow());
+            return result;
         });
     }
 

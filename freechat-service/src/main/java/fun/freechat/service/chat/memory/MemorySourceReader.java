@@ -26,7 +26,17 @@ public final class MemorySourceReader {
         if (terminals.isEmpty()) {
             return Optional.empty();
         }
-        ChatHistory terminal = terminals.getFirst();
+        return Optional.of(turn(scope, afterId, terminals.getFirst()));
+    }
+
+    public Optional<Turn> previousTurn(MemoryScope scope, long afterId, long throughId) {
+        List<ChatHistory> terminals = turns.latestFinalizedPage(scope, afterId, throughId, 2);
+        if (terminals.isEmpty()) return Optional.empty();
+        long previous = terminals.size() > 1 ? terminals.get(1).getId() : afterId;
+        return Optional.of(turn(scope, previous, terminals.getFirst()));
+    }
+
+    private Turn turn(MemoryScope scope, long afterId, ChatHistory terminal) {
         require(MemoryDocumentCodec.canonicalUuid(terminal.getTurnId()));
         long cursor = afterId;
         ChatHistory start;
@@ -42,13 +52,13 @@ public final class MemorySourceReader {
         require(("turn-start".equals(start.getRecordKind()) || singleAbort)
                 && terminal.getTurnId().equals(start.getTurnId())
                 && Objects.equals(terminal.getEpisode(), start.getEpisode()));
-        return Optional.of(new Turn(
+        return new Turn(
                 afterId,
                 terminal.getId(),
                 terminal.getTurnId(),
                 terminal.getEpisode(),
                 terminal.getGmtCreate().toInstant(ZoneOffset.UTC),
-                "turn-abort".equals(terminal.getRecordKind())));
+                "turn-abort".equals(terminal.getRecordKind()));
     }
 
     public Fragment nextFragment(MemoryScope scope, Turn turn, Position position, MemoryBounds bounds, int tokenLimit) {

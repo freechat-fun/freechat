@@ -459,6 +459,69 @@ class MemoryConsolidatorIT {
     }
 
     @Test
+    void multiTurnOverflowCombinesEvidenceButNeverIncludesAbortedContent() {
+        Source first = seed("Original first");
+        var aborted = turns.begin(scope, FINGERPRINT);
+        long abortedInput = append(aborted, "Aborted private evidence must not be summarized");
+        turns.abort(aborted);
+        Source last = seed("Original last");
+        var original = historyThrough(last.through());
+        Snapshot range = snapshot(Operation.OVERFLOW, last.through());
+        ScriptedModel provider = new ScriptedModel(input -> summary("Combined completed turns"));
+        open(resolved(provider), 1).consolidate(range);
+        assertEquals(1, provider.inputs.size());
+        var ids = provider.inputs.getFirst().evidence().stream()
+                .map(MemorySourceReader.Evidence::sourceId)
+                .toList();
+        assertTrue(ids.contains(first.id()));
+        assertTrue(ids.contains(last.id()));
+        assertFalse(ids.contains(abortedInput));
+        assertEquals(last.through(), state().getOverflowThroughId());
+        assertEquals(0, state().getIdleThroughId());
+        assertNull(state().getProfileId());
+        for (MemoryDocument document : published(range)) {
+            assertEquals(range.sourceStartId(), document.sourceStartId());
+            assertEquals(range.sourceEndId(), document.sourceEndId());
+        }
+        assertTrue(original.equals(historyThrough(last.through())));
+        assertUsage(range, 1);
+        assertRetiredCheckpoints();
+    }
+
+    @Test
+    void multiTurnAbortedOnlyRangeSkipsWithoutCallingModelOrPublishingSummaries() {
+        for (int index = 0; index < 3; index++) {
+            var aborted = turns.begin(scope, FINGERPRINT);
+            append(aborted, "Aborted content");
+            turns.abort(aborted);
+        }
+        long through = state().getLatestFinalizedId();
+        var original = historyThrough(through);
+        ScriptedModel provider = new ScriptedModel(input -> summary("Unused"));
+        open(resolved(provider), 1).consolidate(snapshot(Operation.OVERFLOW, through));
+        assertTrue(provider.inputs.isEmpty());
+        assertEquals(through, state().getOverflowThroughId());
+        assertEquals(3, count("skipped"));
+        assertEquals(0, count("committed"));
+        assertEquals(0, count("checkpoint"));
+        assertNull(state().getSummaryId());
+        assertTrue(original.equals(historyThrough(through)));
+    }
+
+    @Test
+    void idleConsolidationStillRejectsMultiTurnRanges() {
+        seed("Original first");
+        Source second = seed("Original second");
+        ScriptedModel provider = new ScriptedModel(input -> summary("Unused"));
+        Snapshot range = snapshot(Operation.IDLE, second.through());
+        assertThrows(
+                IllegalStateException.class, () -> open(resolved(provider), 2).consolidate(range));
+        assertTrue(provider.inputs.isEmpty());
+        assertEquals(0, state().getIdleThroughId());
+        assertNull(state().getProfileId());
+    }
+
+    @Test
     void oneWorkSharesMapAndRollingBudgetAcrossSuccessiveSnapshotsAndResumesWithoutRemapping() {
         Source first = seed("First turn");
         Source second = seed("Second turn");

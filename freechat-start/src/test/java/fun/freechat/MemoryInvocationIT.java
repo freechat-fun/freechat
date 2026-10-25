@@ -345,6 +345,130 @@ class MemoryInvocationIT {
         }
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = {40, 80})
+    void oldTurnsAreCompactedInBoundedGroupsWhileRecentTurnsStayVerbatim(int oldCount) {
+        properties.setMaxForegroundBatches(5);
+        List<Source> old = new ArrayList<>();
+        for (int index = 0; index < oldCount; index++)
+            old.add(seed("Original old " + index, "Transformed old " + index));
+        seed("Original recent one", "Transformed recent one");
+        seed("Original recent two", "Transformed recent two");
+        List<RowDigest> originals = digests();
+        try (MemoryInvocation invocation = ready(6)) {
+            List<ChatMessage> result = invocation.messages();
+            assertEquals(6, result.size());
+            assertMessage(
+                    UserMessage.from("Transformed recent one"), ChatMessageSerializer.messageToJson(result.get(1)));
+            assertMessage(
+                    UserMessage.from("Transformed recent two"), ChatMessageSerializer.messageToJson(result.get(3)));
+            assertEquals(old.getLast().through(), state().getOverflowThroughId());
+            assertTrue(model.inputs.size() <= 4, "Catch-up must batch turns rather than spend two calls per turn");
+            assertTrue(model.inputs.getFirst().evidence().size() > 2);
+            List<Long> evidence = model.inputs.stream()
+                    .flatMap(input -> input.evidence().stream())
+                    .filter(item -> !item.origin().equals("derived-summary"))
+                    .map(MemorySourceReader.Evidence::sourceId)
+                    .toList();
+            assertEquals(
+                    old.stream()
+                            .flatMap(source -> java.util.stream.Stream.of(source.id(), source.answerId()))
+                            .toList(),
+                    evidence);
+            assertEquals(0, state().getIdleThroughId());
+            assertNull(state().getProfileId());
+            assertEquals(0, count("checkpoint"));
+            assertEquals(originals, digests().subList(0, originals.size()));
+            finish(invocation, "Answer after batched catch-up");
+        }
+    }
+
+    @Test
+    void batchedCheckpointResumesAcrossTurnBoundariesWithoutRepeatingEvidence() {
+        properties.setMaxForegroundBatches(1);
+        List<Source> old = new ArrayList<>();
+        for (int index = 0; index < 64; index++) old.add(seed("Original old " + index, "Transformed old " + index));
+        seed("Original recent one", "Transformed recent one");
+        seed("Original recent two", "Transformed recent two");
+        List<RowDigest> originals = digests();
+        String checkpointId;
+        try (MemoryInvocation invocation = ready(6)) {
+            assertThrows(MemoryBounds.PreparationDeferredException.class, invocation::messages);
+            assertEquals(1, model.inputs.size());
+            assertEquals(0, state().getOverflowThroughId());
+            Snapshot pending = publications
+                    .resumeOverflowSnapshot(scope, invocation.lease().token())
+                    .orElseThrow();
+            assertEquals(old.getLast().through(), pending.sourceEndId());
+            var progress = checkpoints.load(pending, invocation::check).orElseThrow();
+            checkpointId = progress.attemptId();
+            assertTrue(progress.position().rowId() > old.getFirst().through());
+            assertTrue(progress.position().rowId() < old.getLast().through());
+        }
+        try (MemoryInvocation next = ready(6)) {
+            var pending = publications
+                    .resumeOverflowSnapshot(scope, next.lease().token())
+                    .orElseThrow();
+            assertEquals(
+                    checkpointId,
+                    checkpoints.load(pending, next::check).orElseThrow().attemptId());
+            assertEquals(6, next.messages().size());
+            assertEquals(old.getLast().through(), state().getOverflowThroughId());
+            assertEquals(2, model.inputs.size());
+            assertEquals(
+                    old.stream()
+                            .flatMap(source -> java.util.stream.Stream.of(source.id(), source.answerId()))
+                            .toList(),
+                    model.inputs.stream()
+                            .flatMap(input -> input.evidence().stream())
+                            .map(MemorySourceReader.Evidence::sourceId)
+                            .toList());
+            assertEquals(0, count("checkpoint"));
+            assertEquals(originals, digests().subList(0, originals.size()));
+        }
+    }
+
+    @Test
+    void legacySingleTurnCheckpointFinishesBeforePlanningACombinedRange() {
+        Source first = seed("Original first", "Transformed first");
+        Source second = seed("Original second", "Transformed second");
+        Source third = seed("Original third", "Transformed third");
+        seed("Original recent one", "Transformed recent one");
+        seed("Original recent two", "Transformed recent two");
+        List<RowDigest> originals = digests();
+        try (MemoryInvocation pending = ready(6)) {
+            var initial = publications.snapshot(
+                    scope, Operation.OVERFLOW, first.through(), pending.lease().token());
+            consolidator
+                    .open(resolved(model, 6, null), 1, Duration.ofMinutes(1), pending::check)
+                    .consolidate(initial);
+            var legacy = publications.snapshot(
+                    scope, Operation.OVERFLOW, second.through(), pending.lease().token());
+            assertThrows(
+                    MemoryBounds.PreparationDeferredException.class,
+                    () -> consolidator
+                            .open(resolved(model, 6, null), 1, Duration.ofMinutes(1), pending::check)
+                            .consolidate(legacy));
+            assertEquals(2, model.inputs.size());
+            assertEquals(
+                    second.through(),
+                    checkpoints
+                            .load(legacy, pending::check)
+                            .orElseThrow()
+                            .position()
+                            .rowId());
+        }
+        try (MemoryInvocation next = ready(6)) {
+            assertEquals(6, next.messages().size());
+            assertEquals(
+                    "derived-summary", model.inputs.get(2).evidence().getFirst().origin());
+            assertEquals(5, model.inputs.size());
+            assertEquals(third.through(), state().getOverflowThroughId());
+            assertEquals(0, count("checkpoint"));
+            assertEquals(originals, digests().subList(0, originals.size()));
+        }
+    }
+
     @Test
     void finalizedToolChainIsLoadedWholeOrCompactedWholeNeverReturnedAsAnOrphanedSuffix() {
         TurnLease past = turns.begin(scope, FINGERPRINT);

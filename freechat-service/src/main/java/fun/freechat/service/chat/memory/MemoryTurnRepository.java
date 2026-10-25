@@ -253,21 +253,36 @@ public class MemoryTurnRepository {
     }
 
     public List<ChatHistory> finalizedPage(MemoryScope scope, long afterExclusive, long throughInclusive, int limit) {
+        return finalizedPage(scope, afterExclusive, throughInclusive, limit, false);
+    }
+
+    /** Newest enabled terminal boundaries first, bounded without loading the older source history. */
+    public List<ChatHistory> latestFinalizedPage(
+            MemoryScope scope, long afterExclusive, long throughInclusive, int limit) {
+        return finalizedPage(scope, afterExclusive, throughInclusive, limit, true);
+    }
+
+    private List<ChatHistory> finalizedPage(
+            MemoryScope scope, long afterExclusive, long throughInclusive, int limit, boolean descending) {
         validateScope(scope);
         if (afterExclusive < 0 || throughInclusive < afterExclusive || limit < 1 || limit > 1000) {
             throw new IllegalArgumentException("Invalid memory source page bounds");
         }
         return inTransaction(() -> {
             requireCurrent(lock(scope.chatId()), scope);
-            return sourceRows(
+            List<ChatHistory> rows = sourceRows(
                     scope,
                     c -> c.where(ChatHistoryDynamicSqlSupport.memoryId, isEqualTo(scope.chatId()))
                             .and(ChatHistoryDynamicSqlSupport.enabled, isEqualTo((byte) 1))
                             .and(ChatHistoryDynamicSqlSupport.id, isGreaterThan(afterExclusive))
                             .and(ChatHistoryDynamicSqlSupport.id, isLessThanOrEqualTo(throughInclusive))
                             .and(ChatHistoryDynamicSqlSupport.recordKind, isIn("turn-complete", "turn-abort"))
-                            .orderBy(ChatHistoryDynamicSqlSupport.id)
+                            .orderBy(
+                                    descending
+                                            ? ChatHistoryDynamicSqlSupport.id.descending()
+                                            : ChatHistoryDynamicSqlSupport.id)
                             .limit(limit));
+            return descending ? rows.reversed() : rows;
         });
     }
 
