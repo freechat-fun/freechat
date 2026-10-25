@@ -91,6 +91,46 @@ class ChatServiceMemoryTest {
     private static final String SKILL_JSON = "Skill context JSON:\n";
 
     @ParameterizedTest
+    @CsvSource({"false,failure", "true,failure", "false,slow", "true,slow"})
+    void optionalMemoryBackendCannotBlockOrFailAConversation(boolean streaming, String mode) throws Exception {
+        CountDownLatch release = new CountDownLatch(1);
+        try (Fixture f = new Fixture()) {
+            var state = f.turns.read(f.id).orElseThrow();
+            state.setProfileId(UUID.randomUUID().toString());
+            state.setSummaryId(UUID.randomUUID().toString());
+            doAnswer(call -> {
+                        if (mode.equals("slow")) {
+                            boolean finished = false;
+                            while (!finished) {
+                                try {
+                                    finished = release.await(5, TimeUnit.SECONDS);
+                                } catch (InterruptedException ignored) {
+                                }
+                            }
+                        }
+                        throw new IllegalStateException(PRIVATE);
+                    })
+                    .when(f.stores)
+                    .get(any(), anyString(), any());
+            long started = System.nanoTime();
+            ChatResponse result = f.run(streaming, List.of(response(AiMessage.from("Reply without optional memory"))));
+            assertEquals("Reply without optional memory", result.aiMessage().text());
+            assertTrue(
+                    System.nanoTime() - started < TimeUnit.SECONDS.toNanos(2), "Optional memory cannot stall a reply");
+            assertEquals(1, f.provider.requests.size());
+            assertEquals(2, f.writes.size());
+            assertEquals(0, f.aborts.get());
+            assertTrue(f.binding().memory().completed());
+            assertFalse(ChatMessageSerializer.messagesToJson(
+                            f.provider.requests.getFirst().messages())
+                    .contains(PRIVATE));
+            f.assertTimersDisposed();
+        } finally {
+            release.countDown();
+        }
+    }
+
+    @ParameterizedTest
     @ValueSource(booleans = {false, true})
     void skillsOverlayRealMemoryWithoutReplacingRoleProfilesOrKnowledge(boolean streaming) throws Exception {
         SkillSetup skills = new SkillSetup(SKILL_BODY, SKILL_REFERENCE);
@@ -1493,7 +1533,6 @@ class ChatServiceMemoryTest {
                     publications,
                     publisher,
                     vectors,
-                    null,
                     boundsFactory,
                     properties,
                     scheduler);

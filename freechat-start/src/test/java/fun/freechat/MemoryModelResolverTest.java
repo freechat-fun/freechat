@@ -783,6 +783,34 @@ class MemoryModelResolverTest {
         assertEquals(1, key.closes);
     }
 
+    @Test
+    void cancelledBackgroundResolutionRemainsCancellationWithoutPrivateCauses() {
+        doThrow(new java.util.concurrent.CancellationException("private cancelled source"))
+                .when(contexts)
+                .get("chat");
+        var failure = assertThrows(java.util.concurrent.CancellationException.class, () -> resolver.resolve("chat"));
+        assertEquals("Memory model resolution cancelled", failure.getMessage());
+        assertNull(failure.getCause());
+        assertEquals(0, failure.getSuppressed().length);
+        verifyNoInteractions(keys);
+    }
+
+    @Test
+    void foregroundBindingDoesNotClaimCredentialsOrConstructAnExtractionModel() {
+        var configuration = resolver.configuration("chat").orElseThrow();
+        var foreground =
+                resolver.resolveForSession("chat", configuration.fingerprint()).orElseThrow();
+        assertEquals(configuration, foreground.configuration());
+        assertNull(foreground.resolved().model());
+        assertEquals(configuration.fingerprint(), foreground.resolved().fingerprint());
+        assertEquals(backend.getMessageWindowSize(), foreground.resolved().messageWindowSize());
+        verifyNoInteractions(keys);
+        assertEquals(0, key.closes);
+        assertEquals(0, requests.get());
+        assertThrows(IllegalStateException.class, () -> resolver.resolveForSession("chat", "wrong-fingerprint"));
+        verifyNoInteractions(keys);
+    }
+
     @ParameterizedTest
     @NullSource
     @ValueSource(ints = {0, -1})
@@ -858,7 +886,8 @@ class MemoryModelResolverTest {
         assertEquals(configuration, bound.configuration());
         assertEquals(scope, bound.resolved().userId());
         assertEquals(background.fingerprint(), bound.resolved().fingerprint());
-        assertEquals(3, key.closes);
+        assertNull(bound.resolved().model());
+        assertEquals(2, key.closes);
         verify(users, times(4)).loadByUserId(scope);
         assertEquals(before, snapshot(), "Telegram scope and context must not be replaced by owner or sender data");
     }
@@ -974,7 +1003,8 @@ class MemoryModelResolverTest {
             assertEquals(fingerprint, resolution.resolved().fingerprint());
             assertEquals("tg--1001234567890", resolution.resolved().userId());
             assertEquals(expectedProfile, resolution.resolved().userBaseline());
-            assertEquals(2, key.closes);
+            assertNull(resolution.resolved().model());
+            assertEquals(1, key.closes);
         } else {
             assertTrue(bound.isEmpty());
             assertEquals(1, key.closes);
@@ -1110,7 +1140,8 @@ class MemoryModelResolverTest {
                         .orElseThrow()
                         .resolved()
                         .fingerprint());
-        assertEquals(1, key.closes);
+        assertEquals(0, key.closes);
+        verifyNoInteractions(keys);
     }
 
     @ParameterizedTest
@@ -1158,7 +1189,8 @@ class MemoryModelResolverTest {
                             .orElseThrow()
                             .resolved()
                             .fingerprint());
-            assertEquals(2, key.closes);
+            assertEquals(1, key.closes);
+            verifyNoInteractions(keys);
         } else {
             unavailable(() -> resolver.resolveForSession("chat", expected));
             verifyNoInteractions(keys);

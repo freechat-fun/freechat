@@ -53,6 +53,7 @@ import fun.freechat.service.rag.ExactEmbeddingStoreService;
 import fun.freechat.service.util.InfoUtils;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,11 +65,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 import org.apache.ibatis.logging.nologging.NoLoggingImpl;
 import org.apache.ibatis.session.Configuration;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -191,6 +197,13 @@ class MemoryInvocationIT {
         model = new ScriptedModel(input -> output("Compact historical turn", "[]", "[]"));
     }
 
+    @AfterEach
+    void closeHeadReaders() {
+        if (publisher != null) {
+            publisher.close();
+        }
+    }
+
     @Test
     void originalInputIsDurableEvidenceWhileTransformedInputAndOneSyntheticSystemAreSent() {
         try (MemoryInvocation invocation = invocation(10)) {
@@ -292,52 +305,352 @@ class MemoryInvocationIT {
     }
 
     @Test
-    void everyOutgoingRequestRechecksOverflowAndRefreshesSummaryWithoutTruncatingToolChains() {
-        Source first = seed("Original first", "Transformed first");
-        Source second = seed("Original second", "Transformed second");
-        Source third = seed("Original third", "Transformed third");
-        List<RowDigest> historical = digests();
-        model = new ScriptedModel(input -> output("Summary step " + (model.inputs.size()), "[]", "[]"));
+    void profileAndSummaryAreLoadedAtFirstSystemMessageAndNeverRereadDuringTheInvocation() {
+        Source source = seed("Original learned preference", "Transformed learned preference");
+        publishHeads(source);
+        int before = stores.reads.get();
+        try (MemoryInvocation invocation = invocation(10)) {
+            assertEquals(before, stores.reads.get(), "Construction does not load optional heads");
+            invocation.add(SystemMessage.from("Configured policy"));
+            assertEquals(
+                    before + 4, stores.reads.get(), "Each head uses one commit lookup and one authorized exact read");
+            invocation.addInput(
+                    UserMessage.from("Original current question"), UserMessage.from("Transformed current question"));
+            List<ChatMessage> first = assertPreparationReadOnly(invocation);
+            assertProfile(memoryJson(first), "Tea", "Old promise", source);
+            assertEquals(
+                    "Previously learned summary",
+                    memoryJson(first).path("rollingSummary").asText());
+            stores.beforeRead = ignored -> {
+                throw new IllegalStateException("A pinned head must not be reread");
+            };
+            invocation.add(SystemMessage.from("Replacement policy"));
+            List<ChatMessage> replacement = assertPreparationReadOnly(invocation);
+            assertTrue(((SystemMessage) replacement.getFirst()).text().startsWith("Replacement policy"));
+            assertEquals(memoryJson(first), memoryJson(replacement));
+            assertEquals(before + 4, stores.reads.get());
+            assertTrue(model.inputs.isEmpty());
+            finish(invocation, "Answer with pinned optional memory");
+        }
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "profile,missing",
+        "summary,missing",
+        "profile,corrupt",
+        "summary,corrupt",
+        "profile,vector",
+        "summary,vector"
+    })
+    void unreadableHeadIsOmittedWithoutBlockingTheOtherHeadOrRetryingDuringConversation(String head, String failure) {
+        Source source = seed("Original learned preference", "Transformed learned preference");
+        publishHeads(source);
+        seed("Original recent one", "Transformed recent one");
+        seed("Original recent two", "Transformed recent two");
+        String id = head.equals("profile") ? state().getProfileId() : state().getSummaryId();
+        TextSegment saved = stores.records.get(id);
+        assertNotNull(saved);
+        switch (failure) {
+            case "missing" -> stores.records.remove(id);
+            case "corrupt" -> stores.records.put(id, TextSegment.from("Invalid derived memory JSON", saved.metadata()));
+            case "vector" ->
+                stores.beforeRead = requested -> {
+                    if (id.equals(requested)) throw new IllegalStateException("Injected exact-read failure");
+                };
+            default -> throw new AssertionError("Unknown read failure");
+        }
+        List<RowDigest> history = digests();
         try (MemoryInvocation invocation = ready(6)) {
-            List<ChatMessage> initial = invocation.messages();
+            List<ChatMessage> outgoing = assertPreparationReadOnly(invocation);
+            assertRecentPair(outgoing);
+            JsonNode memory = memoryJson(outgoing);
+            if (head.equals("profile")) {
+                assertTrue(memory.path("userFacts").isEmpty());
+                assertTrue(memory.path("characterDeltas").isEmpty());
+                assertEquals(
+                        "Previously learned summary",
+                        memory.path("rollingSummary").asText());
+            } else {
+                assertProfile(memory, "Tea", "Old promise", source);
+                assertEquals("", memory.path("rollingSummary").asText());
+            }
+            stores.records.put(id, saved);
+            stores.beforeRead = ignored -> {};
+            assertEquals(outgoing, assertPreparationReadOnly(invocation), "Recovery is not retried within this turn");
+            assertEquals(source.through(), state().getOverflowThroughId());
+            assertEquals(history, digests().subList(0, history.size()));
+            assertTrue(model.inputs.isEmpty());
+        }
+        try (MemoryInvocation next = ready(6)) {
+            List<ChatMessage> outgoing = assertPreparationReadOnly(next);
+            assertRecentPair(outgoing);
+            assertProfile(memoryJson(outgoing), "Tea", "Old promise", source);
+            assertEquals(
+                    "Previously learned summary",
+                    memoryJson(outgoing).path("rollingSummary").asText());
+        }
+    }
+
+    @Test
+    void vectorFailureWithValidSqlHeadsStillReturnsRecentContextAndPersistsTheCurrentAnswer() {
+        Source source = seed("Original learned preference", "Transformed learned preference");
+        publishHeads(source);
+        seed("Original recent one", "Transformed recent one");
+        seed("Original recent two", "Transformed recent two");
+        String profile = state().getProfileId();
+        String summary = state().getSummaryId();
+        List<RowDigest> history = digests();
+        stores.beforeRead = ignored -> {
+            throw new IllegalStateException("Vector service is unavailable");
+        };
+        try (MemoryInvocation invocation = ready(6)) {
+            List<ChatMessage> outgoing = assertPreparationReadOnly(invocation);
+            assertRecentPair(outgoing);
+            assertEmptyMemory(outgoing);
+            assertEquals(profile, state().getProfileId());
+            assertEquals(summary, state().getSummaryId());
+            assertEquals(source.through(), state().getOverflowThroughId());
+            assertTrue(model.inputs.isEmpty());
+            finish(invocation, "Answer without optional vector memory");
+            assertTrue(invocation.completed());
+            assertMessage(
+                    AiMessage.from("Answer without optional vector memory"),
+                    histories
+                            .selectByPrimaryKey(invocation.finalMessageId())
+                            .orElseThrow()
+                            .getMessage());
+            assertEquals(history, digests().subList(0, history.size()));
+        }
+    }
+
+    @Test
+    void slowHeadsAreBoundedAndOmittedEvenWhenTheVectorBackendIgnoresInterruption() throws Exception {
+        Source source = seed("Original learned preference", "Transformed learned preference");
+        publishHeads(source);
+        seed("Original recent one", "Transformed recent one");
+        seed("Original recent two", "Transformed recent two");
+        CountDownLatch entered = new CountDownLatch(2);
+        CountDownLatch release = new CountDownLatch(1);
+        stores.beforeRead = ignored -> {
+            entered.countDown();
+            boolean waiting = true;
+            while (waiting) {
+                try {
+                    release.await();
+                    waiting = false;
+                } catch (InterruptedException ignoredInterruption) {
+                    // Deliberately emulate a backend that does not honor cancellation.
+                }
+            }
+        };
+        try (var executor = Executors.newSingleThreadExecutor()) {
+            try (MemoryInvocation invocation = invocation(6)) {
+                try {
+                    var added = executor.submit(() -> invocation.add(SystemMessage.from("Configured policy")));
+                    assertTrue(entered.await(2, TimeUnit.SECONDS), "Both optional head reads must have bounded waits");
+                    added.get(2, TimeUnit.SECONDS);
+                    assertEquals(
+                            1, release.getCount(), "The conversation proceeds while both backend reads remain stuck");
+                    invocation.addInput(
+                            UserMessage.from("Original current question"),
+                            UserMessage.from("Transformed current question"));
+                    List<ChatMessage> outgoing = assertPreparationReadOnly(invocation);
+                    assertRecentPair(outgoing);
+                    assertEmptyMemory(outgoing);
+                    invocation.add(SystemMessage.from("Replacement policy"));
+                    assertEmptyMemory(assertPreparationReadOnly(invocation));
+                    assertTrue(model.inputs.isEmpty());
+                    finish(invocation, "Answer without waiting for slow heads");
+                } finally {
+                    release.countDown();
+                }
+            }
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void oldSummaryCursorCannotPreventRecoveringRecentRawHistory(boolean unreadableHeads) {
+        seed("Original oldest input", "Transformed oldest input");
+        seed("Original recent one", "Transformed recent one");
+        Source recent = seed("Original recent two", "Transformed recent two");
+        publishHeads(recent);
+        assertEquals(recent.through(), state().getOverflowThroughId());
+        if (unreadableHeads) {
+            stores.beforeRead = ignored -> {
+                throw new IllegalStateException("Old summary is unavailable");
+            };
+        }
+        List<RowDigest> history = digests();
+        try (MemoryInvocation invocation = ready(6)) {
+            List<ChatMessage> outgoing = assertPreparationReadOnly(invocation);
+            assertRecentPair(outgoing);
+            if (unreadableHeads) assertEmptyMemory(outgoing);
+            else
+                assertEquals(
+                        "Previously learned summary",
+                        memoryJson(outgoing).path("rollingSummary").asText());
+            assertEquals(recent.through(), state().getOverflowThroughId());
+            assertTrue(model.inputs.isEmpty());
+            assertEquals(history, digests().subList(0, history.size()));
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"current-tool-chain", "tool-schema", "request-overlay"})
+    void learnedHeadsAreDroppedTogetherBeforeStrictActualRequestAndCurrentTurnAreRechecked(String pressure) {
+        Source source = seed("Original learned preference", "Transformed learned preference");
+        publishHeads(source);
+        try (MemoryInvocation invocation = ready(10)) {
+            List<ChatMessage> initial = assertPreparationReadOnly(invocation);
+            assertProfile(memoryJson(initial), "Tea", "Old promise", source);
+            assertEquals(
+                    "Previously learned summary",
+                    memoryJson(initial).path("rollingSummary").asText());
+            List<ChatMessage> current = new ArrayList<>(List.of(initial.getLast()));
+            List<ToolSpecification> tools = List.of();
+            UnaryOperator<List<ChatMessage>> overlay = UnaryOperator.identity();
+            if (pressure.equals("current-tool-chain")) {
+                AiMessage request = toolCall("required-tool");
+                ToolExecutionResultMessage result = toolResult("required-tool", "Unabridged current result");
+                accept(invocation, request, USAGE);
+                invocation.add(result);
+                current.add(request);
+                current.add(result);
+            } else if (pressure.equals("tool-schema")) {
+                tools = List.of(ToolSpecification.builder()
+                        .name("lookup")
+                        .description("Current request tool schema".repeat(20))
+                        .parameters(JsonObjectSchema.builder()
+                                .addStringProperty("query")
+                                .build())
+                        .build());
+                invocation.tools(tools);
+            } else {
+                overlay = messages -> {
+                    List<ChatMessage> actual = new ArrayList<>(messages);
+                    actual.add(UserMessage.from("Request-only overlay".repeat(20)));
+                    return actual;
+                };
+                invocation.requestOverlay(overlay, ignored -> {});
+            }
+            String learnedText = ((SystemMessage) initial.getFirst()).text();
+            String marker = "Session memory JSON:\n";
+            String prefix = learnedText.substring(0, learnedText.indexOf(marker) + marker.length());
+            SystemMessage bareSystem =
+                    SystemMessage.from(prefix + "{\"rollingSummary\":\"\",\"userFacts\":[],\"characterDeltas\":[]}");
+            List<ChatMessage> required = new ArrayList<>(List.of(bareSystem));
+            required.addAll(current);
+            List<ChatMessage> summaryOnly = new ArrayList<>(required);
+            summaryOnly.set(
+                    0,
+                    SystemMessage.from(
+                            prefix
+                                    + "{\"rollingSummary\":\"Previously learned summary\",\"userFacts\":[],\"characterDeltas\":[]}"));
+            var estimator = models.tokenCountEstimatorForLang("default");
+            int schemaTokens = tools.isEmpty()
+                    ? 0
+                    : estimator.estimateTokenCountInText(dev.langchain4j.internal.Json.toJson(tools));
+            int requiredTokens = estimator.estimateTokenCountInMessages(overlay.apply(required)) + schemaTokens;
+            int summaryTokens = estimator.estimateTokenCountInMessages(overlay.apply(summaryOnly)) + schemaTokens;
+            properties.setMaxInputTokens((summaryTokens * 5 + 3) / 4);
+            bounds().requirePrompt(overlay.apply(required), tools, null);
+            bounds().requirePrompt(overlay.apply(summaryOnly), tools, null);
+            List<ChatMessage> withHeads = new ArrayList<>(required);
+            withHeads.set(0, initial.getFirst());
+            List<ChatMessage> actualWithHeads = overlay.apply(withHeads);
+            List<ToolSpecification> actualTools = tools;
+            assertThrows(
+                    MemoryBounds.CapacityException.class,
+                    () -> bounds().requirePrompt(actualWithHeads, actualTools, null));
+            List<ChatMessage> outgoing = assertPreparationReadOnly(invocation);
+            assertEmptyMemory(outgoing);
+            assertEquals(
+                    current, outgoing.subList(1, outgoing.size()), "Full current input and tool chain remain intact");
+            var actual = invocation.modelRequest(ChatRequest.builder()
+                    .messages(List.of(UserMessage.from("Unused execution trigger")))
+                    .toolSpecifications(tools)
+                    .build());
+            assertEquals(overlay.apply(outgoing), actual.messages());
+            bounds().requirePrompt(actual.messages(), actual.toolSpecifications(), null);
+            assertEquals(source.through(), state().getOverflowThroughId());
+            assertNotNull(state().getProfileId(), "Dropping heads is invocation-local, not durable invalidation");
+            assertNotNull(state().getSummaryId());
+            properties.setMaxInputTokens((requiredTokens * 5 + 3) / 4 - 1);
+            List<RowDigest> history = digests();
+            assertThrows(MemoryBounds.CapacityException.class, invocation::messages);
+            assertEquals(
+                    history, digests(), "An impossible actual request still fails closed after dropping both heads");
+            assertTrue(model.inputs.isEmpty());
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"abort", "generation", "fingerprint", "lease", "deadline"})
+    void optionalHeadFailureNeverHidesRevokedSqlLeaseOrFingerprint(String change) {
+        Source source = seed("Original learned preference", "Transformed learned preference");
+        publishHeads(source);
+        MemoryInvocation invocation = invocation(6);
+        AtomicBoolean invalidated = new AtomicBoolean();
+        stores.beforeRead = ignored -> {
+            if (invalidated.compareAndSet(false, true)) invalidate(invocation, change);
+            throw new IllegalStateException("Optional vector read failed after revocation");
+        };
+        try {
+            assertThrows(IllegalStateException.class, () -> invocation.add(SystemMessage.from("Configured policy")));
+            assertTrue(invalidated.get());
+            List<RowDigest> history = digests();
+            assertThrows(IllegalStateException.class, invocation::messages);
+            assertThrows(
+                    IllegalStateException.class,
+                    () -> invocation.addInput(UserMessage.from("Late original"), UserMessage.from("Late input")));
+            assertEquals(history, digests());
+            assertTrue(model.inputs.isEmpty());
+        } finally {
+            stores.beforeRead = ignored -> {};
+            restoreAndClose(invocation, change);
+        }
+    }
+
+    @Test
+    void everyOutgoingRequestRechecksRecentSuffixWithoutExtractionOrTruncatingCurrentToolChains() {
+        seed("Original first", "Transformed first");
+        seed("Original second", "Transformed second");
+        seed("Original third", "Transformed third");
+        List<RowDigest> historical = digests();
+        try (MemoryInvocation invocation = ready(6)) {
+            List<ChatMessage> initial = assertPreparationReadOnly(invocation);
             assertEquals(6, initial.size());
-            assertEquals(first.through(), state().getOverflowThroughId());
-            assertEquals(1, model.inputs.size());
-            sameText(
-                    "Summary step 1", memoryJson(initial).path("rollingSummary").asText());
-            assertMessage(UserMessage.from("Transformed second"), ChatMessageSerializer.messageToJson(initial.get(1)));
+            assertEquals(UserMessage.from("Transformed second"), initial.get(1));
+            assertEquals(UserMessage.from("Transformed third"), initial.get(3));
+            ChatMessage current = initial.getLast();
+            assertEquals(UserMessage.from("Transformed current question"), current);
             AiMessage tool1 = toolCall("tool-one");
             accept(invocation, tool1, USAGE);
             ToolExecutionResultMessage result1 = toolResult("tool-one", "Quoted first result");
             invocation.add(result1);
-            List<ChatMessage> continuation = invocation.messages();
+            List<ChatMessage> continuation = assertPreparationReadOnly(invocation);
             assertEquals(6, continuation.size());
-            assertEquals(second.through(), state().getOverflowThroughId());
-            assertEquals(3, model.inputs.size(), "Map and rolling reduction share this preparation's budget");
-            sameText(
-                    "Summary step 3",
-                    memoryJson(continuation).path("rollingSummary").asText());
+            assertEquals(UserMessage.from("Transformed third"), continuation.get(1));
+            assertSame(current, continuation.get(3));
             assertSame(tool1, continuation.get(4));
             assertSame(result1, continuation.get(5));
             AiMessage tool2 = toolCall("tool-two");
             accept(invocation, tool2, new TokenUsage(13, 17));
             ToolExecutionResultMessage result2 = toolResult("tool-two", "Quoted second result");
             invocation.add(result2);
-            List<ChatMessage> next = invocation.messages();
-            assertEquals(third.through(), state().getOverflowThroughId());
-            assertEquals(5, model.inputs.size());
+            List<ChatMessage> next = assertPreparationReadOnly(invocation);
             assertEquals(6, next.size());
+            assertSame(current, next.get(1));
             assertEquals(List.of(tool1, result1, tool2, result2), next.subList(2, 6));
-            sameText("Summary step 5", memoryJson(next).path("rollingSummary").asText());
-            assertTrue(model.inputs.stream()
-                    .flatMap(input -> input.evidence().stream())
-                    .noneMatch(evidence -> evidence.text().contains("Transformed")));
-            assertEquals(
-                    historical,
-                    digests().subList(0, historical.size()),
-                    "Compaction preserves every source ID and body");
+            assertEquals(initial.getFirst(), next.getFirst());
+            assertEmptyMemory(next);
+            assertTrue(model.inputs.isEmpty());
+            assertEquals(0, state().getOverflowThroughId());
             assertEquals(0, state().getIdleThroughId());
             assertNull(state().getProfileId());
+            assertEquals(historical, digests().subList(0, historical.size()), "Every source ID and body is preserved");
             finish(invocation, "Final answer after complete chain");
             assertSnapshot(
                     next.getFirst(),
@@ -347,95 +660,83 @@ class MemoryInvocationIT {
 
     @ParameterizedTest
     @ValueSource(ints = {40, 80})
-    void oldTurnsAreCompactedInBoundedGroupsWhileRecentTurnsStayVerbatim(int oldCount) {
-        properties.setMaxForegroundBatches(5);
-        List<Source> old = new ArrayList<>();
-        for (int index = 0; index < oldCount; index++)
-            old.add(seed("Original old " + index, "Transformed old " + index));
+    void oldTurnsAreOmittedWithoutExtractionWhileLargeBacklogsRetainBoundedRecentTurnsVerbatim(int oldCount) {
+        properties.setMaxForegroundBatches(1);
+        model = new ScriptedModel(input -> {
+            throw new IllegalStateException("Historical extraction must not run on the conversation path");
+        });
+        for (int index = 0; index < oldCount; index++) seed("Original old " + index, "Transformed old " + index);
         seed("Original recent one", "Transformed recent one");
         seed("Original recent two", "Transformed recent two");
         List<RowDigest> originals = digests();
         try (MemoryInvocation invocation = ready(6)) {
-            List<ChatMessage> result = invocation.messages();
-            assertEquals(6, result.size());
-            assertMessage(
-                    UserMessage.from("Transformed recent one"), ChatMessageSerializer.messageToJson(result.get(1)));
-            assertMessage(
-                    UserMessage.from("Transformed recent two"), ChatMessageSerializer.messageToJson(result.get(3)));
-            assertEquals(old.getLast().through(), state().getOverflowThroughId());
-            assertTrue(model.inputs.size() <= 4, "Catch-up must batch turns rather than spend two calls per turn");
-            assertTrue(model.inputs.getFirst().evidence().size() > 2);
-            List<Long> evidence = model.inputs.stream()
-                    .flatMap(input -> input.evidence().stream())
-                    .filter(item -> !item.origin().equals("derived-summary"))
-                    .map(MemorySourceReader.Evidence::sourceId)
-                    .toList();
-            assertEquals(
-                    old.stream()
-                            .flatMap(source -> java.util.stream.Stream.of(source.id(), source.answerId()))
-                            .toList(),
-                    evidence);
+            List<ChatMessage> result = assertPreparationReadOnly(invocation);
+            assertRecentPair(result);
+            bounds().requirePrompt(result, List.of(), null);
+            assertEquals(result, assertPreparationReadOnly(invocation));
+            assertTrue(model.inputs.isEmpty());
+            assertEquals(0, models.embeddingCalls);
+            assertEquals(0, state().getOverflowThroughId());
             assertEquals(0, state().getIdleThroughId());
             assertNull(state().getProfileId());
             assertEquals(0, count("checkpoint"));
+            assertEquals(0, count("usage"));
+            assertTrue(stores.records.isEmpty());
             assertEquals(originals, digests().subList(0, originals.size()));
-            finish(invocation, "Answer after batched catch-up");
+            finish(invocation, "Answer without foreground catch-up");
         }
     }
 
     @Test
-    void batchedCheckpointResumesAcrossTurnBoundariesWithoutRepeatingEvidence() {
-        properties.setMaxForegroundBatches(1);
+    void batchedCheckpointIsNeitherConsumedNorMutatedWhileRecentTurnsRemainAvailable() {
         List<Source> old = new ArrayList<>();
         for (int index = 0; index < 64; index++) old.add(seed("Original old " + index, "Transformed old " + index));
         seed("Original recent one", "Transformed recent one");
         seed("Original recent two", "Transformed recent two");
         List<RowDigest> originals = digests();
-        String checkpointId;
+        MemoryCheckpoints.Progress progress;
         try (MemoryInvocation invocation = ready(6)) {
-            assertThrows(MemoryBounds.PreparationDeferredException.class, invocation::messages);
-            assertEquals(1, model.inputs.size());
-            assertEquals(0, state().getOverflowThroughId());
-            Snapshot pending = publications
-                    .resumeOverflowSnapshot(scope, invocation.lease().token())
-                    .orElseThrow();
-            assertEquals(old.getLast().through(), pending.sourceEndId());
-            var progress = checkpoints.load(pending, invocation::check).orElseThrow();
-            checkpointId = progress.attemptId();
+            Snapshot pending = publications.snapshot(
+                    scope,
+                    Operation.OVERFLOW,
+                    old.getLast().through(),
+                    invocation.lease().token());
+            assertThrows(
+                    MemoryBounds.PreparationDeferredException.class,
+                    () -> consolidator
+                            .open(resolved(model, 6, null), 1, Duration.ofMinutes(1), invocation::check)
+                            .consolidate(pending));
+            assertEquals(1, model.inputs.size(), "Only explicit checkpoint setup calls the provider");
+            progress = checkpoints.load(pending, invocation::check).orElseThrow();
             assertTrue(progress.position().rowId() > old.getFirst().through());
             assertTrue(progress.position().rowId() < old.getLast().through());
+            assertRecentPair(assertPreparationReadOnly(invocation));
+            assertEquals(progress, checkpoints.load(pending, invocation::check).orElseThrow());
         }
         try (MemoryInvocation next = ready(6)) {
-            var pending = publications
+            Snapshot pending = publications
                     .resumeOverflowSnapshot(scope, next.lease().token())
                     .orElseThrow();
-            assertEquals(
-                    checkpointId,
-                    checkpoints.load(pending, next::check).orElseThrow().attemptId());
-            assertEquals(6, next.messages().size());
-            assertEquals(old.getLast().through(), state().getOverflowThroughId());
-            assertEquals(2, model.inputs.size());
-            assertEquals(
-                    old.stream()
-                            .flatMap(source -> java.util.stream.Stream.of(source.id(), source.answerId()))
-                            .toList(),
-                    model.inputs.stream()
-                            .flatMap(input -> input.evidence().stream())
-                            .map(MemorySourceReader.Evidence::sourceId)
-                            .toList());
-            assertEquals(0, count("checkpoint"));
+            assertEquals(old.getLast().through(), pending.sourceEndId());
+            assertEquals(progress, checkpoints.load(pending, next::check).orElseThrow());
+            assertRecentPair(assertPreparationReadOnly(next));
+            assertEquals(progress, checkpoints.load(pending, next::check).orElseThrow());
+            assertEquals(1, model.inputs.size());
+            assertEquals(0, state().getOverflowThroughId());
+            assertEquals(1, count("checkpoint"));
             assertEquals(originals, digests().subList(0, originals.size()));
         }
     }
 
     @Test
-    void legacySingleTurnCheckpointFinishesBeforePlanningACombinedRange() {
+    void legacySingleTurnCheckpointRemainsUntouchedInsteadOfPlanningOrFinishingExtraction() {
         Source first = seed("Original first", "Transformed first");
         Source second = seed("Original second", "Transformed second");
-        Source third = seed("Original third", "Transformed third");
+        seed("Original third", "Transformed third");
         seed("Original recent one", "Transformed recent one");
         seed("Original recent two", "Transformed recent two");
         List<RowDigest> originals = digests();
+        MemoryCheckpoints.Progress progress;
         try (MemoryInvocation pending = ready(6)) {
             var initial = publications.snapshot(
                     scope, Operation.OVERFLOW, first.through(), pending.lease().token());
@@ -450,54 +751,50 @@ class MemoryInvocationIT {
                             .open(resolved(model, 6, null), 1, Duration.ofMinutes(1), pending::check)
                             .consolidate(legacy));
             assertEquals(2, model.inputs.size());
-            assertEquals(
-                    second.through(),
-                    checkpoints
-                            .load(legacy, pending::check)
-                            .orElseThrow()
-                            .position()
-                            .rowId());
+            progress = checkpoints.load(legacy, pending::check).orElseThrow();
+            assertEquals(second.through(), progress.position().rowId());
+            assertRecentPair(assertPreparationReadOnly(pending));
+            assertEquals(progress, checkpoints.load(legacy, pending::check).orElseThrow());
         }
         try (MemoryInvocation next = ready(6)) {
-            assertEquals(6, next.messages().size());
-            assertEquals(
-                    "derived-summary", model.inputs.get(2).evidence().getFirst().origin());
-            assertEquals(5, model.inputs.size());
-            assertEquals(third.through(), state().getOverflowThroughId());
-            assertEquals(0, count("checkpoint"));
+            Snapshot legacy = publications
+                    .resumeOverflowSnapshot(scope, next.lease().token())
+                    .orElseThrow();
+            assertRecentPair(assertPreparationReadOnly(next));
+            assertEquals(progress, checkpoints.load(legacy, next::check).orElseThrow());
+            assertEquals(2, model.inputs.size());
+            assertEquals(first.through(), state().getOverflowThroughId());
+            assertEquals(1, count("checkpoint"));
             assertEquals(originals, digests().subList(0, originals.size()));
         }
     }
 
     @Test
-    void finalizedToolChainIsLoadedWholeOrCompactedWholeNeverReturnedAsAnOrphanedSuffix() {
+    void finalizedToolChainIsLoadedWholeOrOmittedWholeNeverReturnedAsAnOrphanedSuffix() {
         TurnLease past = turns.begin(scope, FINGERPRINT);
-        long inputId = append(past, "Original tool question", "Transformed tool question");
+        append(past, "Original tool question", "Transformed tool question");
         AiMessage request = toolCall("historical-tool");
         turns.append(past, request, null, null, Origin.TOOL, USAGE);
         ToolExecutionResultMessage result = toolResult("historical-tool", "Historical tool evidence");
-        long resultId = turns.append(past, result, null, null, Origin.TOOL, null);
+        turns.append(past, result, null, null, Origin.TOOL, null);
         AiMessage answer = AiMessage.from("Historical final answer");
-        long answerId = turns.complete(past, answer, null, USAGE);
-        long through = state().getLatestFinalizedId();
+        turns.complete(past, answer, null, USAGE);
         List<RowDigest> original = digests();
         try (MemoryInvocation invocation = ready(6)) {
-            List<ChatMessage> full = invocation.messages();
+            List<ChatMessage> full = assertPreparationReadOnly(invocation);
             assertEquals(6, full.size());
+            assertEquals(UserMessage.from("Transformed tool question"), full.get(1));
             assertEquals(List.of(request, result, answer), full.subList(2, 5));
-            assertEquals(0, state().getOverflowThroughId());
-            invocation.addExample(UserMessage.from("Current example must not displace half a tool chain"));
-            List<ChatMessage> compacted = invocation.messages();
-            assertEquals(3, compacted.size());
-            assertEquals(through, state().getOverflowThroughId());
-            assertTrue(compacted.stream()
+            UserMessage example = UserMessage.from("Current example must not displace half a tool chain");
+            invocation.addExample(example);
+            List<ChatMessage> recent = assertPreparationReadOnly(invocation);
+            assertEquals(3, recent.size());
+            assertEquals(List.of(full.getLast(), example), recent.subList(1, 3));
+            assertTrue(recent.stream()
                     .noneMatch(
                             message -> message instanceof AiMessage || message instanceof ToolExecutionResultMessage));
-            assertEquals(
-                    List.of(inputId, resultId, answerId),
-                    model.inputs.getFirst().evidence().stream()
-                            .map(MemorySourceReader.Evidence::sourceId)
-                            .toList());
+            assertTrue(model.inputs.isEmpty());
+            assertEquals(0, state().getOverflowThroughId());
             assertEquals(original, digests().subList(0, original.size()));
         }
     }
@@ -522,10 +819,7 @@ class MemoryInvocationIT {
             assertThrows(MemoryBounds.CapacityException.class, invocation::messages);
             assertEquals(before, digests());
             assertEquals(cursor, state().getOverflowThroughId());
-            assertEquals(
-                    calls,
-                    model.inputs.size(),
-                    "Impossible current turn must fail before attempting historical compression");
+            assertEquals(calls, model.inputs.size(), "An impossible current turn never starts optional extraction");
             assertTrue(rows().stream().anyMatch(row -> row.getId().equals(history.id())));
             assertFalse(invocation.completed());
         }
@@ -569,27 +863,27 @@ class MemoryInvocationIT {
 
     @ParameterizedTest
     @ValueSource(strings = {"tokens", "bytes"})
-    void historicalByteOrTokenOverflowCompactsWholeSourceWithoutMutatingLargeJsonRows(String limit) {
+    void historicalByteOrTokenOverflowStopsAtWholeTurnWithoutMutatingLargeJsonRows(String limit) {
         if (limit.equals("bytes")) {
             properties.setMaxInputTokens(1_000_000);
         }
-        Source old = seed("Small original evidence", limit.equals("bytes") ? "汉".repeat(50000) : "x".repeat(70000));
+        seed("Even older small evidence", "Do not skip the oversized turn to recover this older input");
+        seed("Small original evidence", limit.equals("bytes") ? "汉".repeat(50000) : "x".repeat(70000));
+        seed("Original recent one", "Transformed recent one");
+        seed("Original recent two", "Transformed recent two");
         List<RowDigest> before = digests();
         try (MemoryInvocation invocation = ready(20)) {
-            List<ChatMessage> outgoing = invocation.messages();
-            assertEquals(2, outgoing.size());
-            assertEquals(old.through(), state().getOverflowThroughId());
-            assertEquals(1, model.inputs.size());
-            sameText(
-                    "Small original evidence",
-                    model.inputs.getFirst().evidence().getFirst().text());
+            List<ChatMessage> outgoing = assertPreparationReadOnly(invocation);
+            assertRecentPair(outgoing);
+            assertEmptyMemory(outgoing);
+            assertEquals(0, state().getOverflowThroughId());
+            assertTrue(model.inputs.isEmpty());
             assertEquals(before, digests().subList(0, before.size()));
         }
     }
 
     @Test
-    void exhaustedCompressionRetainsCheckpointButNoPartialCursorAndNextInvocationResumesExactSourceIds() {
-        properties.setMaxForegroundBatches(1);
+    void exhaustedCompressionCheckpointDoesNotBlockCurrentTurnOrResumeOnNextInvocation() {
         TurnLease past = turns.begin(scope, FINGERPRINT);
         List<Long> evidenceIds = new ArrayList<>();
         for (int index = 0; index < 101; index++) {
@@ -598,88 +892,107 @@ class MemoryInvocationIT {
         evidenceIds.add(turns.complete(past, AiMessage.from("Past answer"), null, null));
         long through = state().getLatestFinalizedId();
         List<RowDigest> originals = digests();
+        MemoryCheckpoints.Progress checkpoint;
         try (MemoryInvocation invocation = ready(2)) {
-            var failure = assertThrows(MemoryBounds.CapacityException.class, invocation::messages);
+            Snapshot snapshot = publications.snapshot(
+                    scope, Operation.OVERFLOW, through, invocation.lease().token());
+            var failure = assertThrows(
+                    MemoryBounds.PreparationDeferredException.class,
+                    () -> consolidator
+                            .open(resolved(model, 2, null), 1, Duration.ofMinutes(1), invocation::check)
+                            .consolidate(snapshot));
             assertEquals("Memory extraction call budget exhausted", failure.getMessage());
             assertEquals(1, model.inputs.size());
             assertEquals(100, model.inputs.getFirst().evidence().size());
+            checkpoint = checkpoints.load(snapshot, invocation::check).orElseThrow();
+            assertEquals(evidenceIds.get(99), checkpoint.position().rowId());
+            assertEquals(0, checkpoint.position().offset());
+            List<ChatMessage> outgoing = assertPreparationReadOnly(invocation);
+            assertEquals(2, outgoing.size());
+            assertEquals(UserMessage.from("Transformed current question"), outgoing.getLast());
+            assertEquals(
+                    checkpoint, checkpoints.load(snapshot, invocation::check).orElseThrow());
+        }
+        try (MemoryInvocation next = ready(2)) {
+            Snapshot snapshot = publications
+                    .resumeOverflowSnapshot(scope, next.lease().token())
+                    .orElseThrow();
+            assertEquals(2, assertPreparationReadOnly(next).size());
+            assertEquals(checkpoint, checkpoints.load(snapshot, next::check).orElseThrow());
+            assertEquals(1, model.inputs.size(), "Interactive requests never resume paid extraction work");
             assertEquals(0, state().getOverflowThroughId());
             assertEquals(0, state().getIdleThroughId());
             assertNull(state().getSummaryId());
-            Snapshot snapshot = publications.snapshot(
-                    scope, Operation.OVERFLOW, through, invocation.lease().token());
-            var checkpoint = checkpoints.load(snapshot, invocation::check).orElseThrow();
-            assertEquals(evidenceIds.get(99), checkpoint.position().rowId());
-            assertEquals(0, checkpoint.position().offset());
             assertEquals(1, count("checkpoint"));
-        }
-        try (MemoryInvocation next = ready(2)) {
-            assertEquals(2, next.messages().size());
-            assertEquals(2, model.inputs.size());
-            assertEquals(
-                    evidenceIds,
-                    model.inputs.stream()
-                            .flatMap(input -> input.evidence().stream())
-                            .map(MemorySourceReader.Evidence::sourceId)
-                            .toList());
-            assertEquals(
-                    state().getLatestFinalizedId(),
-                    state().getOverflowThroughId(),
-                    "Prior abandoned invocation is skipped after resumption");
-            assertEquals(0, count("checkpoint"));
             assertEquals(originals, digests().subList(0, originals.size()));
+            finish(next, "Conversation proceeds despite exhausted optional work");
         }
     }
 
     @Test
-    void failedPublicationRetainsCompletedCheckpointAndRetryDoesNotRepeatProviderWork() {
+    void failedPublicationLeavesCheckpointUntouchedAndDoesNotBlockOrRetryDuringConversation() {
         Source old = seed("Original evidence", "Transformed evidence");
+        List<RowDigest> originals = digests();
         try (MemoryInvocation invocation = ready(2)) {
-            stores.failPublication = true;
-            assertThrows(IllegalStateException.class, invocation::messages);
-            assertEquals(0, state().getOverflowThroughId());
-            assertNull(state().getSummaryId());
-            assertEquals(1, model.inputs.size());
             Snapshot snapshot = publications.snapshot(
                     scope, Operation.OVERFLOW, old.through(), invocation.lease().token());
-            assertEquals(
-                    old.through(),
-                    checkpoints
-                            .load(snapshot, invocation::check)
-                            .orElseThrow()
-                            .position()
-                            .rowId());
+            stores.failPublication = true;
+            assertThrows(
+                    IllegalStateException.class,
+                    () -> consolidator
+                            .open(resolved(model, 2, null), 1, Duration.ofMinutes(1), invocation::check)
+                            .consolidate(snapshot));
+            var checkpoint = checkpoints.load(snapshot, invocation::check).orElseThrow();
+            assertEquals(old.through(), checkpoint.position().rowId());
             assertEquals(1, count("checkpoint"));
-            stores.failPublication = false;
-            assertEquals(2, invocation.messages().size());
             assertEquals(1, model.inputs.size());
-            assertEquals(old.through(), state().getOverflowThroughId());
+            List<ChatMessage> outgoing = assertPreparationReadOnly(invocation);
+            assertEquals(2, outgoing.size());
+            assertEquals(UserMessage.from("Transformed current question"), outgoing.getLast());
+            assertEquals(
+                    checkpoint, checkpoints.load(snapshot, invocation::check).orElseThrow());
+            stores.failPublication = false;
+            assertEquals(outgoing, assertPreparationReadOnly(invocation));
+            assertEquals(
+                    checkpoint, checkpoints.load(snapshot, invocation::check).orElseThrow());
+            assertEquals(1, model.inputs.size());
+            assertEquals(0, state().getOverflowThroughId());
+            assertNull(state().getSummaryId());
+            assertEquals(originals, digests().subList(0, originals.size()));
+            finish(invocation, "Answer without retrying failed publication");
         }
     }
 
-    @Test
-    void abortedRangesAreSkippedWithoutModelEmbeddingVectorIoOrSourceRewrites() {
-        for (int index = 0; index < 2; index++) {
+    @ParameterizedTest
+    @ValueSource(ints = {2, 6})
+    void abortedRangesCountTowardScanBudgetWithoutCursorAdvancementPublicationOrSourceRewrites(int abortedCount) {
+        seed("Original recent one", "Transformed recent one");
+        for (int index = 0; index < abortedCount; index++) {
             TurnLease aborted = turns.begin(scope, FINGERPRINT);
             append(aborted, "Never extract aborted original", "Never send aborted prompt");
             turns.abort(aborted);
         }
-        long through = state().getLatestFinalizedId();
+        seed("Original recent two", "Transformed recent two");
         List<RowDigest> original = digests();
-        try (MemoryInvocation invocation = ready(2)) {
-            assertEquals(2, invocation.messages().size());
-            assertEquals(through, state().getOverflowThroughId());
+        try (MemoryInvocation invocation = ready(6)) {
+            List<ChatMessage> outgoing = assertPreparationReadOnly(invocation);
+            if (abortedCount == 2) {
+                assertRecentPair(outgoing);
+            } else {
+                assertEquals(4, outgoing.size(), "At most messageWindow turns are scanned, including aborted turns");
+                assertEquals(
+                        List.of(
+                                UserMessage.from("Transformed recent two"),
+                                AiMessage.from("Historical answer"),
+                                UserMessage.from("Transformed current question")),
+                        outgoing.subList(1, 4));
+            }
+            assertEquals(0, state().getOverflowThroughId());
             assertEquals(0, state().getIdleThroughId());
-            assertEquals(2, count("skipped"));
-            assertEquals(
-                    List.of("none", "none"),
-                    sql.queryForList(
-                            "SELECT model_id FROM chat_memory_commit WHERE chat_id = ? AND status = 'skipped'",
-                            String.class,
-                            scope.chatId()));
+            assertEquals(0, count("skipped"));
             assertTrue(model.inputs.isEmpty());
             assertEquals(0, models.embeddingCalls);
-            assertEquals(0, stores.reads);
+            assertEquals(0, stores.reads.get());
             assertTrue(stores.records.isEmpty());
             assertEquals(0, count("usage"));
             assertEquals(original, digests().subList(0, original.size()));
@@ -1096,6 +1409,114 @@ class MemoryInvocationIT {
         assertEquals(before, digests());
     }
 
+    private List<ChatMessage> assertPreparationReadOnly(MemoryInvocation invocation) {
+        ChatMemoryState before = state();
+        List<RowDigest> history = digests();
+        List<ChatMemoryCommit> attempts = publicationRows();
+        Map<String, TextSegment> vectors = Map.copyOf(stores.records);
+        int calls = model.inputs.size();
+        int embeddings = models.embeddingCalls;
+        int reads = stores.reads.get();
+        List<ChatMessage> result = invocation.messages();
+        assertEquals(before, state(), "Preparing conversation context never advances a cursor or changes a head");
+        assertEquals(history, digests(), "Preparing context never mutates raw history, including the current turn");
+        assertEquals(
+                attempts, publicationRows(), "No publication, checkpoint, skipped-range or extraction usage writes");
+        assertEquals(vectors, stores.records);
+        assertEquals(calls, model.inputs.size(), "No extraction or checkpoint resumption on outgoing requests");
+        assertEquals(embeddings, models.embeddingCalls);
+        assertEquals(reads, stores.reads.get(), "Heads are read only when the first system message is added");
+        return result;
+    }
+
+    private List<ChatMemoryCommit> publicationRows() {
+        return sql
+                .queryForList(
+                        "SELECT attempt_id FROM chat_memory_commit WHERE chat_id = ? ORDER BY attempt_id",
+                        String.class,
+                        scope.chatId())
+                .stream()
+                .map(id -> commits.selectByPrimaryKey(id).orElseThrow())
+                .toList();
+    }
+
+    private static void assertRecentPair(List<ChatMessage> result) {
+        assertEquals(6, result.size());
+        assertEquals(
+                List.of(
+                        UserMessage.from("Transformed recent one"),
+                        AiMessage.from("Historical answer"),
+                        UserMessage.from("Transformed recent two"),
+                        AiMessage.from("Historical answer"),
+                        UserMessage.from("Transformed current question")),
+                result.subList(1, 6));
+    }
+
+    private static void assertEmptyMemory(List<ChatMessage> messages) {
+        JsonNode memory = memoryJson(messages);
+        assertEquals("", memory.path("rollingSummary").asText());
+        assertTrue(memory.path("userFacts").isEmpty());
+        assertTrue(memory.path("characterDeltas").isEmpty());
+    }
+
+    private void publishHeads(Source source) {
+        Snapshot idle = idleSnapshot(source.through());
+        Instant observedAt = Instant.now();
+        MemoryDocument profile = new MemoryDocument(
+                UUID.randomUUID().toString(),
+                scope,
+                idle.attemptId(),
+                Kind.PROFILE_SNAPSHOT,
+                false,
+                idle.sourceStartId(),
+                idle.sourceEndId(),
+                observedAt,
+                FINGERPRINT,
+                "",
+                List.of(new MemoryDocument.Fact("drink", "Tea", List.of(source.id()), observedAt, false)),
+                List.of(new MemoryDocument.Fact("story", "Old promise", List.of(source.answerId()), observedAt, true)));
+        publisher.publish(
+                idle,
+                List.of(summaryDocument(idle, Kind.EPISODE_SUMMARY, false, "Previously learned episode"), profile),
+                MODEL,
+                null);
+        TurnLease lease = turns.begin(scope, FINGERPRINT);
+        try {
+            Snapshot overflow = publications.snapshot(scope, Operation.OVERFLOW, source.through(), lease.token());
+            publisher.publish(
+                    overflow,
+                    List.of(
+                            summaryDocument(overflow, Kind.WINDOW_SUMMARY, false, "Previously learned summary"),
+                            summaryDocument(overflow, Kind.WINDOW_SUMMARY, true, "Previously learned archive")),
+                    MODEL,
+                    null);
+        } finally {
+            turns.abort(lease);
+        }
+        assertTrue(publisher
+                .readHead(scope, state().getProfileId(), Kind.PROFILE_SNAPSHOT, FINGERPRINT, () -> {})
+                .isPresent());
+        assertTrue(publisher
+                .readHead(scope, state().getSummaryId(), Kind.WINDOW_SUMMARY, FINGERPRINT, () -> {})
+                .isPresent());
+    }
+
+    private MemoryDocument summaryDocument(Snapshot snapshot, Kind kind, boolean archive, String text) {
+        return new MemoryDocument(
+                UUID.randomUUID().toString(),
+                scope,
+                snapshot.attemptId(),
+                kind,
+                archive,
+                snapshot.sourceStartId(),
+                snapshot.sourceEndId(),
+                Instant.now(),
+                FINGERPRINT,
+                text,
+                List.of(),
+                List.of());
+    }
+
     private MemoryInvocation invocation(int window) {
         return invocation(window, null);
     }
@@ -1103,15 +1524,7 @@ class MemoryInvocationIT {
     private MemoryInvocation invocation(int window, Integer context) {
         TurnLease lease = turns.begin(scope, FINGERPRINT);
         return new MemoryInvocation(
-                lease,
-                resolved(model, window, context),
-                turns,
-                sources,
-                publications,
-                publisher,
-                consolidator,
-                bounds(),
-                properties);
+                lease, resolved(model, window, context), turns, sources, publications, publisher, bounds(), properties);
     }
 
     private MemoryInvocation ready(int window) {
@@ -1420,7 +1833,8 @@ class MemoryInvocationIT {
 
     private final class FakeStores implements ExactEmbeddingStoreService {
         private final Map<String, TextSegment> records = new ConcurrentHashMap<>();
-        private int reads;
+        private final AtomicInteger reads = new AtomicInteger();
+        private volatile Consumer<String> beforeRead = ignored -> {};
         private boolean failPublication;
 
         @Override
@@ -1428,7 +1842,8 @@ class MemoryInvocationIT {
             assertFalse(
                     TransactionSynchronizationManager.isActualTransactionActive(),
                     "No SQL transaction across vector IO");
-            reads++;
+            reads.incrementAndGet();
+            beforeRead.accept(id);
             return Optional.ofNullable(records.get(id)).filter(segment -> filter.test(segment.metadata()));
         }
 

@@ -65,6 +65,8 @@ public final class MilvusTextSegmentReader {
         R<QueryResults> response;
         try {
             response = query.apply(request);
+        } catch (java.util.concurrent.CancellationException ignored) {
+            throw new java.util.concurrent.CancellationException("Milvus exact query cancelled");
         } catch (RuntimeException ignored) {
             // SDK exceptions can contain the expression or document. Do not retain their causes.
             throw new IllegalStateException("Milvus exact query failed");

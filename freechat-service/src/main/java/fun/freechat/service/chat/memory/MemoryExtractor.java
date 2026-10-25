@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CancellationException;
 import java.util.function.BiConsumer;
 
 public final class MemoryExtractor {
@@ -100,6 +101,8 @@ public final class MemoryExtractor {
             try {
                 response = model.chat(ChatRequest.builder().messages(messages).build());
                 budget.record(callId, response.tokenUsage());
+            } catch (CancellationException ignored) {
+                throw new CancellationException("Memory extraction request cancelled");
             } catch (RuntimeException ignored) {
                 throw new IllegalStateException("Memory extraction request failed");
             }

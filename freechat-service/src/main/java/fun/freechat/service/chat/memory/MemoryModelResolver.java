@@ -139,6 +139,8 @@ public class MemoryModelResolver {
             }
             Prepared current = prepared.get();
             return Optional.of(new Resolution(construct(current), current.configuration()));
+        } catch (java.util.concurrent.CancellationException ignored) {
+            throw new java.util.concurrent.CancellationException("Memory model resolution cancelled");
         } catch (Exception ignored) {
             // Parsing, repositories, credential decryption and provider builders can include payloads
             // in their messages/causes (including suppressed close failures). Do not propagate them.
@@ -168,6 +170,7 @@ public class MemoryModelResolver {
         }
     }
 
+    /** Foreground binding needs metadata, not another credential claim or extraction client. */
     public Optional<Resolution> resolveForSession(String chatId, String fingerprint) {
         try {
             Optional<Prepared> prepared = load(chatId);
@@ -180,7 +183,7 @@ public class MemoryModelResolver {
                 return Optional.empty();
             }
             Prepared value = prepared.get();
-            return Optional.of(new Resolution(construct(value), value.configuration()));
+            return Optional.of(new Resolution(resolved(value, null), value.configuration()));
         } catch (Exception ignored) {
             throw unavailable();
         }
@@ -331,7 +334,6 @@ public class MemoryModelResolver {
     }
 
     private Resolved construct(Prepared prepared) throws Exception {
-        Configuration configuration = prepared.configuration();
         ModelProvider provider = prepared.provider();
         AiModelInfo model = prepared.model();
         // Copy only; never mutate stored task parameters or baseline records. Preserve provider
@@ -359,6 +361,11 @@ public class MemoryModelResolver {
                 default -> throw new IllegalArgumentException();
             };
         }
+        return resolved(prepared, chatModel);
+    }
+
+    private static Resolved resolved(Prepared prepared, ChatModel chatModel) {
+        Configuration configuration = prepared.configuration();
         return new Resolved(
                 chatModel,
                 prepared.task().getModelId(),

@@ -17,7 +17,6 @@ import dev.langchain4j.model.output.TokenUsage;
 import fun.freechat.model.ChatHistory;
 import fun.freechat.model.ChatMemoryState;
 import fun.freechat.service.chat.memory.MemoryDocument.Kind;
-import fun.freechat.service.chat.memory.MemoryPublicationRepository.Operation;
 import fun.freechat.service.chat.memory.MemorySourceReader.Turn;
 import fun.freechat.service.chat.memory.MemoryTurnRepository.Origin;
 import fun.freechat.service.chat.memory.MemoryTurnRepository.TurnLease;
@@ -49,11 +48,11 @@ public final class MemoryInvocation implements ChatMemory, AutoCloseable {
     private final MemorySourceReader sources;
     private final MemoryPublicationRepository publications;
     private final MemoryPublisher publisher;
-    private final MemoryConsolidator consolidator;
     private final MemoryBounds bounds;
     private final LongTermMemoryProperties properties;
     private MemoryDocument profile;
-    private boolean profileLoaded;
+    private MemoryDocument summary;
+    private boolean headsLoaded;
     private final List<ChatMessage> current = new ArrayList<>();
     private final Set<String> responses = new HashSet<>();
     private final AtomicBoolean stopped = new AtomicBoolean();
@@ -66,7 +65,6 @@ public final class MemoryInvocation implements ChatMemory, AutoCloseable {
             ignored -> {};
     private AiMessage pendingAnswer;
     private TokenUsage pendingUsage;
-    private MemoryConsolidator.Work preparation;
     private int toolRounds;
     private volatile Long finalMessageId;
 
@@ -77,7 +75,6 @@ public final class MemoryInvocation implements ChatMemory, AutoCloseable {
             MemorySourceReader sources,
             MemoryPublicationRepository publications,
             MemoryPublisher publisher,
-            MemoryConsolidator consolidator,
             MemoryBounds bounds,
             LongTermMemoryProperties properties) {
         this.lease = lease;
@@ -86,7 +83,6 @@ public final class MemoryInvocation implements ChatMemory, AutoCloseable {
         this.sources = sources;
         this.publications = publications;
         this.publisher = publisher;
-        this.consolidator = consolidator;
         this.bounds = bounds;
         this.properties = properties;
     }
@@ -155,7 +151,6 @@ public final class MemoryInvocation implements ChatMemory, AutoCloseable {
             }
             pendingAnswer = response.aiMessage();
             pendingUsage = response.tokenUsage();
-            preparation = null;
             return true;
         }
     }
@@ -164,17 +159,25 @@ public final class MemoryInvocation implements ChatMemory, AutoCloseable {
     public synchronized void add(ChatMessage message) {
         check();
         if (message instanceof SystemMessage system) {
-            if (!profileLoaded) {
+            if (!headsLoaded) {
                 ChatMemoryState state = state();
                 profile = publisher
-                        .readHead(
+                        .readHeadBestEffort(
                                 lease.scope(),
                                 state.getProfileId(),
                                 Kind.PROFILE_SNAPSHOT,
                                 model.fingerprint(),
                                 this::check)
                         .orElse(null);
-                profileLoaded = true;
+                summary = publisher
+                        .readHeadBestEffort(
+                                lease.scope(),
+                                state.getSummaryId(),
+                                Kind.WINDOW_SUMMARY,
+                                model.fingerprint(),
+                                this::check)
+                        .orElse(null);
+                headsLoaded = true;
             }
             baseSystem = system;
             renderedSystem = null;
@@ -206,66 +209,37 @@ public final class MemoryInvocation implements ChatMemory, AutoCloseable {
         if (baseSystem == null) {
             throw new IllegalStateException("Chat system prompt is not initialized");
         }
-        while (true) {
-            ChatMemoryState state = state();
-            MemoryDocument summary = publisher
-                    .readHead(
-                            lease.scope(), state.getSummaryId(), Kind.WINDOW_SUMMARY, model.fingerprint(), this::check)
-                    .orElse(null);
-            SystemMessage system = compose(summary);
-            List<ChatMessage> history = new ArrayList<>();
+        ChatMemoryState state = state();
+        SystemMessage system = compose(summary);
+        List<ChatMessage> history = new ArrayList<>();
+        try {
             requireFits(system, history);
-            long cursor = state.getOverflowThroughId();
-            if (cursor < state.getLatestFinalizedId()) {
-                Turn oldest = sources.nextTurn(lease.scope(), cursor, state.getLatestFinalizedId())
-                        .orElseThrow(MemoryInvocation::unavailable);
-                if (oldest.aborted()) {
-                    publications.advanceAborted(publications.snapshot(
-                            lease.scope(), Operation.OVERFLOW, oldest.throughId(), lease.token()));
-                    continue;
-                }
-            }
-            long before = state.getLatestFinalizedId();
-            long compactThrough = cursor;
-            while (before > cursor) {
-                check();
-                Turn turn =
-                        sources.previousTurn(lease.scope(), cursor, before).orElseThrow(MemoryInvocation::unavailable);
-                if (!turn.aborted()) {
-                    List<ChatMessage> candidate = new ArrayList<>(history);
-                    if (!loadTurn(turn, candidate, system)) {
-                        compactThrough = turn.throughId();
-                        break;
-                    }
-                    history = candidate;
-                }
-                before = turn.afterId();
-            }
-            if (compactThrough == cursor) {
-                check();
-                renderedSystem = system;
-                List<ChatMessage> result = new ArrayList<>(history.size() + current.size() + 1);
-                result.add(system);
-                result.addAll(history);
-                result.addAll(current);
-                return List.copyOf(result);
-            }
-            if (preparation == null) {
-                preparation = consolidator.open(
-                        model, properties.getMaxForegroundBatches(), properties.getForegroundTimeout(), this::check);
-            }
-            var snapshot = publications
-                    .resumeOverflowSnapshot(lease.scope(), lease.token())
-                    .orElse(null);
-            if (snapshot == null) {
-                List<ChatHistory> endpoints = turns.finalizedPage(
-                        lease.scope(), cursor, compactThrough, MemoryConsolidator.MAX_OVERFLOW_TURNS);
-                if (endpoints.isEmpty()) throw unavailable();
-                snapshot = publications.snapshot(
-                        lease.scope(), Operation.OVERFLOW, endpoints.getLast().getId(), lease.token());
-            }
-            preparation.consolidate(snapshot);
+        } catch (MemoryBounds.CapacityException tooLarge) {
+            if (profile == null && summary == null) throw tooLarge;
+            profile = null;
+            summary = null;
+            system = compose(null);
+            requireFits(system, history);
         }
+        long before = state.getLatestFinalizedId();
+        int scanned = 0;
+        while (before > 0 && scanned++ < Math.min(1000, model.messageWindowSize())) {
+            check();
+            Turn turn = sources.previousTurn(lease.scope(), 0, before).orElseThrow(MemoryInvocation::unavailable);
+            if (!turn.aborted()) {
+                List<ChatMessage> candidate = new ArrayList<>(history);
+                if (!loadTurn(turn, candidate, system)) break;
+                history = candidate;
+            }
+            before = turn.afterId();
+        }
+        check();
+        renderedSystem = system;
+        List<ChatMessage> result = new ArrayList<>(history.size() + current.size() + 1);
+        result.add(system);
+        result.addAll(history);
+        result.addAll(current);
+        return List.copyOf(result);
     }
 
     private boolean loadTurn(Turn turn, List<ChatMessage> history, SystemMessage system) {
@@ -355,10 +329,7 @@ public final class MemoryInvocation implements ChatMemory, AutoCloseable {
         if (baseSystem == null) {
             throw new IllegalStateException("Chat system prompt is not initialized");
         }
-        ChatMemoryState state = state();
-        return compose(publisher
-                .readHead(lease.scope(), state.getSummaryId(), Kind.WINDOW_SUMMARY, model.fingerprint(), this::check)
-                .orElse(null));
+        return compose(summary);
     }
 
     private ChatMemoryState state() {

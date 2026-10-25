@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.ScheduledExecutorService;
@@ -47,6 +48,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockMakers;
 import org.mybatis.dynamic.sql.dsl.SelectDSLCompleter;
@@ -67,6 +69,9 @@ class MemoryIdleWorkerTest {
     private static final String TOKEN = "00000000-0000-0000-0000-000000000001";
     private static final String PRIVATE = "private-provider-source-and-credential";
     private static final LocalDateTime NOW = LocalDateTime.of(2026, 9, 12, 10, 0);
+    private static final com.fasterxml.jackson.databind.ObjectMapper JSON =
+            new com.fasterxml.jackson.databind.ObjectMapper()
+                    .registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
     private final Fixture f = new Fixture();
 
     @AfterEach
@@ -206,14 +211,313 @@ class MemoryIdleWorkerTest {
     }
 
     @Test
-    void capacityBeforeConsolidatorOpensStillFailsClaim() {
+    void capacityWithoutResumableProgressSkipsValidatedRange() {
         doThrow(new MemoryBounds.CapacityException("Test capacity"))
                 .when(f.boundsFactory)
                 .forLanguage("en");
         f.worker.execute(f.claim());
-        f.finished(true);
+        f.finished(false);
         verifyNoInteractions(f.chat);
-        assertTrue(f.attempts.isEmpty());
+        assertEquals(3L, f.state.getIdleThroughId());
+        assertEquals("EXTRACTION", f.onlyAttempt("SKIP_IDLE").getErrorCategory());
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+            strings = {
+                "resolution",
+                "provider",
+                "vector-lookup",
+                "vector-read",
+                "checkpoint-vector",
+                "publication-vector"
+            })
+    void optionalFailureSkipsOnlySelectedTurnRetainsLastProfileAndAllowsNextTurn(String failure) {
+        f.worker.execute(f.claim());
+        String lastGoodProfile = f.state.getProfileId();
+        assertNotNull(lastGoodProfile);
+        f.nextTurn();
+        String history = MemoryDocumentCodec.hash(JSON.valueToTree(f.rows).toString());
+        switch (failure) {
+            case "resolution" ->
+                doThrow(new IllegalStateException(PRIVATE)).when(f.models).resolve(SCOPE.chatId());
+            case "provider" ->
+                doThrow(new IllegalStateException(PRIVATE)).when(f.chat).chat(any(ChatRequest.class));
+            case "vector-lookup", "vector-read" -> f.failExternalIo(failure, new IllegalStateException(PRIVATE));
+            case "checkpoint-vector" ->
+                doThrow(new IllegalStateException(PRIVATE)).when(f.store).addAll(anyList(), anyList(), anyList());
+            case "publication-vector" ->
+                doAnswer(call -> {
+                            List<String> ids = call.getArgument(0);
+                            if (ids.size() > 1) {
+                                throw new IllegalStateException(PRIVATE);
+                            }
+                            f.insertSegments(ids, call.getArgument(2));
+                            return null;
+                        })
+                        .when(f.store)
+                        .addAll(anyList(), anyList(), anyList());
+            default -> fail("Unknown fixture");
+        }
+        f.worker.execute(f.claim());
+        f.finished(false);
+        assertEquals(6L, f.state.getIdleThroughId());
+        assertEquals(lastGoodProfile, f.state.getProfileId());
+        assertEquals(history, MemoryDocumentCodec.hash(JSON.valueToTree(f.rows).toString()));
+        ChatMemoryCommit skip = f.onlyAttempt("SKIP_IDLE");
+        assertEquals("EXTRACTION", skip.getErrorCategory());
+        assertEquals("skipped", skip.getStatus());
+        assertEquals("{}", skip.getManifest());
+        assertEquals(4L, skip.getSourceStartId());
+        assertEquals(6L, skip.getSourceEndId());
+        assertTrue(f.attempts.values().stream().noneMatch(row -> "checkpoint".equals(row.getStatus())));
+        assertTrue(mockingDetails(f.store).getInvocations().stream()
+                .noneMatch(call -> call.getMethod().getName().startsWith("remove")));
+        if (failure.equals("publication-vector")) {
+            ChatMemoryCommit failed = f.attempts.values().stream()
+                    .filter(row -> "IDLE".equals(row.getOperation()) && "terminal".equals(row.getStatus()))
+                    .findFirst()
+                    .orElseThrow();
+            assertNotEquals(failed.getAttemptId(), skip.getAttemptId());
+        }
+        doAnswer(call -> f.resolved(FINGERPRINT)).when(f.models).resolve(SCOPE.chatId());
+        doAnswer(call -> f.response()).when(f.chat).chat(any(ChatRequest.class));
+        doAnswer(call -> f.readSegment(call.getArgument(1), call.getArgument(2)))
+                .when(f.stores)
+                .get(eq(SCOPE.storeType()), anyString(), any(Filter.class));
+        doAnswer(call -> {
+                    f.insertSegments(call.getArgument(0), call.getArgument(2));
+                    return null;
+                })
+                .when(f.store)
+                .addAll(anyList(), anyList(), anyList());
+        f.nextTurn();
+        f.worker.execute(f.claim());
+        f.finished(false);
+        assertEquals(9L, f.state.getIdleThroughId());
+        assertNotEquals(lastGoodProfile, f.state.getProfileId());
+        assertEquals(
+                1,
+                f.attempts.values().stream()
+                        .filter(row -> "SKIP_IDLE".equals(row.getOperation()))
+                        .count());
+    }
+
+    @Test
+    void cancelledPublicationTransactionRollsBackAndDoesNotBecomeASkippableFailure() {
+        doThrow(new java.util.concurrent.CancellationException(PRIVATE))
+                .when(f.coordination)
+                .databaseNow();
+        var failure = assertThrows(
+                java.util.concurrent.CancellationException.class,
+                () -> f.publications.snapshot(SCOPE, MemoryPublicationRepository.Operation.IDLE, 3, TOKEN));
+        assertEquals("Memory publication transaction cancelled", failure.getMessage());
+        assertNull(failure.getCause());
+        assertEquals(0, failure.getSuppressed().length);
+        verify(f.transactions).rollback(any());
+        assertEquals(0L, f.state.getIdleThroughId());
+    }
+
+    @Test
+    void failedRevalidationDropsIncompatibleProfileWithoutAdvancingCursor() {
+        f.worker.execute(f.claim());
+        f.resetCleanup();
+        f.state.setFingerprint("b".repeat(64));
+        f.state.setProfileRevalidationPending((byte) 1);
+        String history = MemoryDocumentCodec.hash(JSON.valueToTree(f.rows).toString());
+        doThrow(new IllegalStateException(PRIVATE)).when(f.models).resolve(SCOPE.chatId());
+        f.worker.execute(f.claim());
+        f.finished(false);
+        assertNull(f.state.getProfileId());
+        assertEquals((byte) 0, f.state.getProfileRevalidationPending());
+        assertEquals(3L, f.state.getIdleThroughId());
+        assertEquals(0L, f.state.getOverflowThroughId());
+        assertEquals(history, MemoryDocumentCodec.hash(JSON.valueToTree(f.rows).toString()));
+        assertEquals("EXTRACTION", f.onlyAttempt("SKIP_REVALIDATE").getErrorCategory());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"cancelled", "provider-cancelled", "interrupted", "stopped"})
+    void cancellationAfterValidatedSnapshotNeverSkips(String cancellation) {
+        if (cancellation.equals("cancelled")) {
+            doThrow(new java.util.concurrent.CancellationException(PRIVATE))
+                    .when(f.models)
+                    .resolve(SCOPE.chatId());
+        } else if (cancellation.equals("provider-cancelled")) {
+            doThrow(new java.util.concurrent.CancellationException(PRIVATE))
+                    .when(f.chat)
+                    .chat(any(ChatRequest.class));
+        } else {
+            doAnswer(call -> {
+                        if (cancellation.equals("interrupted")) {
+                            Thread.currentThread().interrupt();
+                        } else {
+                            f.worker.close();
+                        }
+                        throw new IllegalStateException(PRIVATE);
+                    })
+                    .when(f.chat)
+                    .chat(any(ChatRequest.class));
+        }
+        f.worker.execute(f.claim());
+        f.finished(true);
+        assertEquals(0L, f.state.getIdleThroughId());
+        assertTrue(
+                f.attempts.values().stream().noneMatch(row -> row.getOperation().startsWith("SKIP_")));
+        assertEquals(cancellation.equals("interrupted"), Thread.currentThread().isInterrupted());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "vector-lookup, false",
+        "vector-read, false",
+        "checkpoint-vector, false",
+        "checkpoint-read, false",
+        "publication-vector, false",
+        "publication-read, false",
+        "vector-lookup, true",
+        "vector-read, true",
+        "publication-vector, true",
+        "publication-read, true"
+    })
+    void cancelledVectorIoNeverConsumesSourceOrClearsProfile(String boundary, boolean revalidation) {
+        f.worker.execute(f.claim());
+        String lastGoodProfile = f.state.getProfileId();
+        assertNotNull(lastGoodProfile);
+        if (revalidation) {
+            f.resetCleanup();
+            f.state.setFingerprint("b".repeat(64));
+            f.state.setProfileRevalidationPending((byte) 1);
+            doAnswer(call -> f.resolved(f.state.getFingerprint()))
+                    .when(f.models)
+                    .resolve(SCOPE.chatId());
+        } else {
+            f.nextTurn();
+        }
+        String history = MemoryDocumentCodec.hash(JSON.valueToTree(f.rows).toString());
+        List<String> priorAttempts = List.copyOf(f.attempts.keySet());
+        f.failExternalIo(boundary, privateCancellation());
+
+        assertDoesNotThrow(() -> f.worker.execute(f.claim()));
+
+        f.finished(true);
+        assertEquals(3L, f.state.getIdleThroughId());
+        assertEquals(0L, f.state.getOverflowThroughId());
+        assertEquals(lastGoodProfile, f.state.getProfileId());
+        assertEquals((byte) (revalidation ? 1 : 0), f.state.getProfileRevalidationPending());
+        assertEquals(history, MemoryDocumentCodec.hash(JSON.valueToTree(f.rows).toString()));
+        assertTrue(
+                f.attempts.values().stream().noneMatch(row -> row.getOperation().startsWith("SKIP_")));
+        assertFalse(Thread.currentThread().isInterrupted(), "Cancellation must survive without an interrupt flag");
+        List<ChatMemoryCommit> newAttempts = f.attempts.values().stream()
+                .filter(row -> !priorAttempts.contains(row.getAttemptId()))
+                .toList();
+        assertTrue(newAttempts.stream().noneMatch(row -> "prepared".equals(row.getStatus())));
+        if (boundary.startsWith("checkpoint") || boundary.startsWith("publication")) {
+            String operation =
+                    boundary.startsWith("checkpoint") ? "CHECKPOINT_IDLE" : revalidation ? "REVALIDATE" : "IDLE";
+            ChatMemoryCommit terminated = newAttempts.stream()
+                    .filter(row -> operation.equals(row.getOperation()))
+                    .findFirst()
+                    .orElseThrow();
+            assertEquals("terminal", terminated.getStatus());
+            assertEquals("VECTOR_WRITE", terminated.getErrorCategory());
+        }
+        if (!revalidation && boundary.startsWith("publication")) {
+            assertTrue(
+                    newAttempts.stream().anyMatch(row -> "checkpoint".equals(row.getStatus())),
+                    "Cancellation must retain resumable checkpoint progress");
+        }
+        assertFalse(JSON.valueToTree(f.attempts).toString().contains(PRIVATE));
+        assertFalse(JSON.valueToTree(f.state).toString().contains(PRIVATE));
+        assertTrue(mockingDetails(f.store).getInvocations().stream()
+                .noneMatch(call -> call.getMethod().getName().startsWith("remove")));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "provider, Memory extraction request cancelled",
+        "vector-lookup, Committed memory read cancelled",
+        "vector-read, Committed memory read cancelled",
+        "checkpoint-vector, Memory checkpoint operation cancelled",
+        "checkpoint-read, Memory checkpoint operation cancelled",
+        "publication-vector, Memory publication cancelled",
+        "publication-read, Memory publication cancelled"
+    })
+    void externalCancellationKeepsItsTypeWithoutPrivateCauseOrSuppressedErrors(String boundary, String message) {
+        f.worker.execute(f.claim());
+        f.nextTurn();
+        var snapshot = f.publications.snapshot(SCOPE, MemoryPublicationRepository.Operation.IDLE, 6, TOKEN);
+        CancellationException original = privateCancellation();
+        f.failExternalIo(boundary, original);
+
+        CancellationException failure = assertThrows(
+                CancellationException.class,
+                () -> f.consolidator
+                        .open(f.resolved(FINGERPRINT), 2, Duration.ofMinutes(1), () -> {})
+                        .consolidate(snapshot));
+
+        assertSanitizedCancellation(original, failure, message);
+        assertEquals(3L, f.state.getIdleThroughId());
+        assertTrue(
+                f.attempts.values().stream().noneMatch(row -> row.getOperation().startsWith("SKIP_")));
+    }
+
+    @Test
+    void cancelledCheckpointResumeReadRetainsProgressWithoutConsumingSource() {
+        f.properties.setJobMaxDuration(Duration.ofMinutes(1));
+        f.properties.setExtractionTimeout(Duration.ofMinutes(1));
+        f.rows.get(1).setMessage(ChatMessageSerializer.messageToJson(UserMessage.from("evidence ".repeat(40000))));
+        f.worker.execute(f.claim());
+        f.finished(false);
+        ChatMemoryCommit checkpoint = f.onlyAttempt("CHECKPOINT_IDLE");
+        assertEquals("checkpoint", checkpoint.getStatus());
+        f.resetCleanup();
+        CancellationException original = privateCancellation();
+        f.failExternalIo("vector-lookup", original);
+        var snapshot = f.publications.snapshot(SCOPE, MemoryPublicationRepository.Operation.IDLE, 3, TOKEN);
+
+        CancellationException failure = assertThrows(
+                CancellationException.class,
+                () -> f.consolidator
+                        .open(f.resolved(FINGERPRINT), 1, Duration.ofMinutes(1), () -> {})
+                        .consolidate(snapshot));
+        assertSanitizedCancellation(original, failure, "Memory checkpoint operation cancelled");
+        f.worker.execute(f.claim());
+
+        f.finished(true);
+        assertEquals(0L, f.state.getIdleThroughId());
+        assertEquals(0L, f.state.getOverflowThroughId());
+        assertNull(f.state.getProfileId());
+        assertEquals("checkpoint", checkpoint.getStatus());
+        assertTrue(
+                f.attempts.values().stream().noneMatch(row -> row.getOperation().startsWith("SKIP_")));
+        assertFalse(JSON.valueToTree(f.attempts).toString().contains(PRIVATE));
+        verify(f.chat, times(1)).chat(any(ChatRequest.class));
+    }
+
+    @Test
+    void ambiguousPublicationAlreadyCommittedIsNotAbandonedOrChargedToNewWork() {
+        AtomicBoolean ambiguous = new AtomicBoolean(true);
+        doAnswer(call -> {
+                    f.transactionFinished();
+                    if (f.attempts.values().stream()
+                                    .anyMatch(row ->
+                                            "IDLE".equals(row.getOperation()) && "committed".equals(row.getStatus()))
+                            && ambiguous.getAndSet(false)) {
+                        throw new IllegalStateException(PRIVATE);
+                    }
+                    return null;
+                })
+                .when(f.transactions)
+                .commit(any());
+        f.worker.execute(f.claim());
+        f.finished(false);
+        assertEquals(3L, f.state.getIdleThroughId());
+        assertNotNull(f.state.getProfileId());
+        assertEquals("committed", f.onlyAttempt("IDLE").getStatus());
+        assertTrue(
+                f.attempts.values().stream().noneMatch(row -> row.getOperation().startsWith("SKIP_")));
     }
 
     @Test
@@ -255,6 +559,38 @@ class MemoryIdleWorkerTest {
         assertEquals("CHECKPOINT_IDLE", checkpoints.getFirst().getOperation());
         assertFalse(f.segments.isEmpty());
         assertTrue(f.attempts.values().stream().noneMatch(row -> "IDLE".equals(row.getOperation())));
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void capacityOrCancellationAfterCheckpointPreservesResumableProgress(boolean cancelled) {
+        f.rows.get(1).setMessage(ChatMessageSerializer.messageToJson(UserMessage.from("evidence ".repeat(40000))));
+        if (cancelled) {
+            AtomicBoolean first = new AtomicBoolean(true);
+            doAnswer(call -> {
+                        if (first.getAndSet(false)) {
+                            return f.response();
+                        }
+                        throw new java.util.concurrent.CancellationException(PRIVATE);
+                    })
+                    .when(f.chat)
+                    .chat(any(ChatRequest.class));
+        } else {
+            doAnswer(call -> {
+                        if (f.attempts.values().stream().anyMatch(row -> "checkpoint".equals(row.getStatus()))) {
+                            throw new MemoryBounds.CapacityException("Test capacity after progress");
+                        }
+                        return f.page(call.getArgument(1), call.getArgument(2), call.getArgument(3), false);
+                    })
+                    .when(f.turns)
+                    .sourcePage(eq(SCOPE), anyLong(), anyLong(), anyInt());
+        }
+        f.worker.execute(f.claim());
+        f.finished(cancelled);
+        assertEquals(0L, f.state.getIdleThroughId());
+        assertEquals("checkpoint", f.onlyAttempt("CHECKPOINT_IDLE").getStatus());
+        assertTrue(
+                f.attempts.values().stream().noneMatch(row -> row.getOperation().startsWith("SKIP_")));
     }
 
     @Test
@@ -380,6 +716,22 @@ class MemoryIdleWorkerTest {
         return mock(type, withSettings().mockMaker(MockMakers.SUBCLASS));
     }
 
+    private static CancellationException privateCancellation() {
+        CancellationException failure = new CancellationException(PRIVATE);
+        failure.initCause(new IllegalStateException(PRIVATE));
+        failure.addSuppressed(new IllegalStateException(PRIVATE));
+        return failure;
+    }
+
+    private static void assertSanitizedCancellation(
+            CancellationException original, CancellationException failure, String message) {
+        assertEquals(CancellationException.class, failure.getClass());
+        assertEquals(message, failure.getMessage());
+        assertNotSame(original, failure);
+        assertNull(failure.getCause());
+        assertEquals(0, failure.getSuppressed().length);
+    }
+
     private static final class Fixture {
         final LongTermMemoryProperties properties = new LongTermMemoryProperties();
         final ChatMemoryCoordinationMapper coordination = fake(ChatMemoryCoordinationMapper.class);
@@ -428,6 +780,8 @@ class MemoryIdleWorkerTest {
                 .withRetryAttempts(0)
                 .withLastActivity(NOW);
         final MemoryBoundsFactory boundsFactory;
+        final MemoryPublicationRepository publications;
+        final MemoryConsolidator consolidator;
         final MemoryIdleWorker worker;
         final ScheduledExecutorService realRenewals;
         boolean cleanupFailure;
@@ -544,27 +898,19 @@ class MemoryIdleWorkerTest {
             });
             when(stores.of(SCOPE.chatId(), SCOPE.storeType())).thenReturn(store);
             doAnswer(call -> {
-                        List<String> ids = call.getArgument(0);
-                        List<TextSegment> values = call.getArgument(2);
-                        for (int i = 0; i < ids.size(); i++) {
-                            segments.put(ids.get(i), values.get(i));
-                        }
+                        insertSegments(call.getArgument(0), call.getArgument(2));
                         return null;
                     })
                     .when(store)
                     .addAll(anyList(), anyList(), anyList());
             when(stores.get(eq(SCOPE.storeType()), anyString(), any(Filter.class)))
-                    .thenAnswer(call -> {
-                        Filter filter = call.getArgument(2);
-                        return Optional.ofNullable(segments.get(call.getArgument(1)))
-                                .filter(segment -> filter.test(segment.metadata()));
-                    });
-            MemoryPublicationRepository publications =
+                    .thenAnswer(call -> readSegment(call.getArgument(1), call.getArgument(2)));
+            publications =
                     new MemoryPublicationRepository(coordination, states, commits, histories, transactions, properties);
             MemorySourceReader sources = new MemorySourceReader(turns);
             MemoryVectorRepository vectors =
                     new MemoryVectorRepository(stores, embeddingModels, boundsFactory, properties);
-            MemoryConsolidator consolidator = new MemoryConsolidator(
+            consolidator = new MemoryConsolidator(
                     sources,
                     publications,
                     new MemoryPublisher(publications, vectors),
@@ -618,7 +964,95 @@ class MemoryIdleWorkerTest {
         }
 
         Claim claim() {
-            return new Claim(SCOPE, TOKEN, NOW.plusHours(1), 3, false, FINGERPRINT, 0, NOW, null);
+            return new Claim(
+                    SCOPE,
+                    TOKEN,
+                    NOW.plusHours(1),
+                    state.getLatestFinalizedId(),
+                    state.getProfileRevalidationPending() == 1,
+                    state.getFingerprint(),
+                    state.getIdleThroughId(),
+                    NOW,
+                    state.getProfileId());
+        }
+
+        void resetCleanup() {
+            finishes.clear();
+            cleanupTransactionsFinished = 0;
+        }
+
+        void nextTurn() {
+            resetCleanup();
+            long start = rows.getLast().getId() + 1;
+            rows.add(row(start, "turn-start"));
+            rows.add(row(start + 1, "message")
+                    .withMessageOrigin("user-input")
+                    .withMessage(ChatMessageSerializer.messageToJson(UserMessage.from("Next remembered preference"))));
+            rows.add(row(start + 2, "turn-complete"));
+            state.setLatestFinalizedId(start + 2);
+        }
+
+        void insertSegments(List<String> ids, List<TextSegment> values) {
+            for (int i = 0; i < ids.size(); i++) {
+                segments.put(ids.get(i), values.get(i));
+            }
+        }
+
+        Optional<TextSegment> readSegment(String id, Filter filter) {
+            return Optional.ofNullable(segments.get(id)).filter(segment -> filter.test(segment.metadata()));
+        }
+
+        void failExternalIo(String boundary, RuntimeException failure) {
+            switch (boundary) {
+                case "provider" -> doThrow(failure).when(chat).chat(any(ChatRequest.class));
+                case "vector-lookup" ->
+                    doThrow(failure).when(stores).get(eq(SCOPE.storeType()), anyString(), any(Filter.class));
+                case "vector-read" -> {
+                    AtomicBoolean lookup = new AtomicBoolean(true);
+                    doAnswer(call -> {
+                                if (!lookup.getAndSet(false)) {
+                                    throw failure;
+                                }
+                                return readSegment(call.getArgument(1), call.getArgument(2));
+                            })
+                            .when(stores)
+                            .get(eq(SCOPE.storeType()), anyString(), any(Filter.class));
+                }
+                case "checkpoint-vector", "publication-vector" ->
+                    doAnswer(call -> {
+                                List<TextSegment> values = call.getArgument(2);
+                                boolean checkpoint = values.getFirst()
+                                        .metadata()
+                                        .getString("record_kind")
+                                        .equals(MemoryDocument.Kind.EXTRACTION_CHECKPOINT.name());
+                                if (checkpoint == boundary.equals("checkpoint-vector")) {
+                                    throw failure;
+                                }
+                                insertSegments(call.getArgument(0), values);
+                                return null;
+                            })
+                            .when(store)
+                            .addAll(anyList(), anyList(), anyList());
+                case "checkpoint-read", "publication-read" ->
+                    doAnswer(call -> {
+                                Optional<TextSegment> found = readSegment(call.getArgument(1), call.getArgument(2));
+                                if (found.isPresent()) {
+                                    var metadata = found.orElseThrow().metadata();
+                                    boolean checkpoint = metadata.getString("record_kind")
+                                            .equals(MemoryDocument.Kind.EXTRACTION_CHECKPOINT.name());
+                                    if (checkpoint == boundary.equals("checkpoint-read")
+                                            && "prepared"
+                                                    .equals(attempts.get(metadata.getString("commit_id"))
+                                                            .getStatus())) {
+                                        throw failure;
+                                    }
+                                }
+                                return found;
+                            })
+                            .when(stores)
+                            .get(eq(SCOPE.storeType()), anyString(), any(Filter.class));
+                default -> fail("Unknown external I/O boundary");
+            }
         }
 
         MemoryModelResolver.Resolved resolved(String fingerprint) {

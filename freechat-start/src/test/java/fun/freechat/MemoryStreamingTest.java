@@ -905,7 +905,6 @@ class MemoryStreamingTest {
                     new MemorySourceReader(turns),
                     publications,
                     new MemoryPublisher(publications, null),
-                    null,
                     bounds,
                     properties);
             invocation.add(SystemMessage.from("base"));
