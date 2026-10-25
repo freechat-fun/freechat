@@ -4,6 +4,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.ThrowableProxy;
+import ch.qos.logback.classic.spi.ThrowableProxyUtil;
+import ch.qos.logback.core.read.ListAppender;
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.data.message.AiMessage;
@@ -42,6 +48,7 @@ import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockMakers;
+import org.slf4j.LoggerFactory;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @Timeout(20)
@@ -371,6 +378,54 @@ class ChatStreamHandleTest {
             get(failed.settled());
             assertFalse(worker.lock.isLocked());
             assertTrue(worker.queue.isIdle());
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void taskFailuresLogFullThrowableWithoutChangingFutureBehavior(boolean streaming) throws Exception {
+        Logger logger = (Logger) LoggerFactory.getLogger(ChatTask.class);
+        Level previous = logger.getLevel();
+        ListAppender<ILoggingEvent> events = new ListAppender<>();
+        events.setContext(logger.getLoggerContext());
+        events.start();
+        logger.addAppender(events);
+        logger.setLevel(Level.ERROR);
+        var original = new IllegalArgumentException("diagnostic failure", new IllegalStateException("root cause"));
+        original.addSuppressed(new IllegalStateException("suppressed detail"));
+        try (Worker worker = new Worker(false)) {
+            ChatTask<?> task = streaming
+                    ? worker.submit(() -> {
+                        throw original;
+                    })
+                    : worker.queue.submit(new ChatTask.Sync<>(() -> {
+                        throw original;
+                    }));
+            Throwable failure = assertThrows(ExecutionException.class, () -> get(task.future()))
+                    .getCause();
+            get(task.settled());
+            if (streaming) {
+                assertEquals("Chat stream failed", failure.getMessage());
+                assertNull(failure.getCause());
+            } else {
+                assertSame(original, failure);
+            }
+            assertEquals(1, events.list.size());
+            ILoggingEvent event = events.list.getFirst();
+            assertEquals(Level.ERROR, event.getLevel());
+            assertEquals(streaming ? "Chat stream failed" : "Chat task failed", event.getFormattedMessage());
+            ThrowableProxy proxy = assertInstanceOf(ThrowableProxy.class, event.getThrowableProxy());
+            assertSame(original, proxy.getThrowable());
+            String trace = ThrowableProxyUtil.asString(proxy);
+            assertTrue(trace.contains("IllegalArgumentException: diagnostic failure"));
+            assertTrue(trace.contains("Caused by: java.lang.IllegalStateException: root cause"));
+            assertTrue(trace.contains("Suppressed: java.lang.IllegalStateException: suppressed detail"));
+            assertTrue(
+                    trace.contains("ChatStreamHandleTest.taskFailuresLogFullThrowableWithoutChangingFutureBehavior"));
+        } finally {
+            logger.detachAppender(events);
+            logger.setLevel(previous);
+            events.stop();
         }
     }
 
