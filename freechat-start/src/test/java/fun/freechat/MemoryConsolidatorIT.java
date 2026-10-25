@@ -56,7 +56,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import org.apache.ibatis.logging.nologging.NoLoggingImpl;
 import org.apache.ibatis.session.Configuration;
 import org.junit.jupiter.api.AfterAll;
@@ -342,6 +344,118 @@ class MemoryConsolidatorIT {
         assertUsage(a, 1);
         assertUsage(b, 2);
         assertRetiredCheckpoints();
+    }
+
+    @Test
+    void overflowRepairsOversizedCumulativeSummaryOnlyWithMeasuredReductionFeedback() {
+        Source first = seed("Original turn A");
+        Source second = seed("Original turn B");
+        var originalHistory = historyThrough(second.through());
+        Snapshot a = snapshot(Operation.OVERFLOW, first.through());
+        ScriptedModel initial = new ScriptedModel(input -> summary("Chunk A"));
+        open(resolved(initial), 1).consolidate(a);
+        assertEquals(1, initial.inputs.size());
+        assertUsage(a, 1);
+        ChatMemoryState before = state();
+
+        MemoryBounds bounds = boundsFactory.forLanguage("default");
+        int summaryLimit = properties.getSummaryMaxTokens();
+        assertEquals(768, summaryLimit);
+        int initialTarget = summaryLimit / 2;
+        int repairTarget = summaryLimit / 4;
+        String oversizedMarker = "Synthetic oversized cumulative A plus B: ";
+        String oversizedSummary =
+                oversizedMarker + "evidence ".repeat(600) + "汉" + new String(Character.toChars(0x20000));
+        String oversizedResponse = summary(oversizedSummary);
+        long measuredTokens = bounds.tokens(oversizedSummary);
+        int measuredBytes = MemoryBounds.bytes(oversizedSummary);
+        int measuredCharacters = oversizedSummary.codePointCount(0, oversizedSummary.length());
+        // This fixture uses local estimates, not the provider's small fixed USAGE or the live tokenizer's counts.
+        assertTrue(measuredTokens > summaryLimit);
+        assertTrue(measuredBytes <= MemoryBounds.COMPACT_TEXT_BYTES);
+        assertThrows(
+                MemoryBounds.CapacityException.class,
+                () -> bounds.requireText(oversizedSummary, summaryLimit, MemoryBounds.COMPACT_TEXT_BYTES));
+        assertTrue(bounds.fits(
+                oversizedResponse, properties.getResponseReserveTokens(), MemoryBounds.VECTOR_RECORD_BYTES));
+        var proposed = assertDoesNotThrow(() -> JSON.readTree(oversizedResponse));
+        sameText(oversizedSummary, proposed.get("summary").textValue());
+        String reducedSummary = "Rolling A plus B";
+        assertTrue(bounds.fits(reducedSummary, repairTarget, MemoryBounds.COMPACT_TEXT_BYTES));
+        List<String> feedback = List.of(
+                "at most " + repairTarget + " tokens for summary",
+                "summary measured " + measuredTokens + " server-estimated tokens",
+                "limit " + summaryLimit,
+                measuredBytes + " UTF-8 bytes",
+                measuredCharacters + " Unicode characters");
+        Pattern rewriteTarget = Pattern.compile("Rewrite summary to at most ([1-9][0-9]*) Unicode characters");
+        AtomicReference<ScriptedModel> script = new AtomicReference<>();
+        ScriptedModel model = new ScriptedModel(input -> {
+            if (input.previousSummary().isEmpty()) {
+                return summary("Chunk B");
+            }
+            String instructions = script.get().systemPrompts.getLast();
+            var target = rewriteTarget.matcher(instructions);
+            boolean reducedTarget = target.find() && Integer.parseInt(target.group(1)) < measuredCharacters;
+            // Repeating the generic repair hint must fail again, rather than succeeding merely on call three.
+            return reducedTarget && feedback.stream().allMatch(instructions::contains)
+                    ? summary(reducedSummary)
+                    : oversizedResponse;
+        });
+        script.set(model);
+        Snapshot b = snapshot(Operation.OVERFLOW, second.through());
+        open(resolved(model), 3).consolidate(b);
+
+        assertEquals(3, model.inputs.size());
+        assertEquals(List.of(false, false, true), model.repairs);
+        assertEquals(3, model.systemPrompts.size());
+        assertTrue(model.systemPrompts.subList(0, 2).stream()
+                .allMatch(instructions -> instructions.contains("at most " + initialTarget + " tokens for summary")));
+        assertTrue(feedback.stream().allMatch(model.systemPrompts.getLast()::contains));
+        assertTrue(
+                model.systemPrompts.stream().noneMatch(instructions -> instructions.contains(oversizedMarker)),
+                "Repair instructions must contain measurements, never the rejected response body");
+        Input fragment = model.inputs.getFirst();
+        assertTrue(fragment.previousSummary().isEmpty());
+        assertEquals(second.id(), fragment.evidence().getFirst().sourceId());
+        assertTrue(fragment.evidence().getFirst().originalInput());
+        sameText("Original turn B", fragment.evidence().getFirst().text());
+        Input merge = model.inputs.get(1);
+        assertTrue(merge.equals(model.inputs.getLast()), "Repair must repeat the failed merge input, not its output");
+        assertEquals(Operation.OVERFLOW, merge.operation());
+        sameText("Chunk A", merge.previousSummary());
+        assertEquals(1, merge.evidence().size());
+        var evidence = merge.evidence().getFirst();
+        assertEquals("derived-summary", evidence.origin());
+        assertFalse(evidence.originalInput());
+        assertEquals(second.through(), evidence.sourceId());
+        sameText("Chunk B", evidence.text());
+
+        List<MemoryDocument> documents = published(b);
+        assertEquals(2, documents.size());
+        MemoryDocument archive =
+                documents.stream().filter(MemoryDocument::archive).findFirst().orElseThrow();
+        MemoryDocument head = documents.stream()
+                .filter(document -> !document.archive())
+                .findFirst()
+                .orElseThrow();
+        assertEquals(Kind.WINDOW_SUMMARY, archive.kind());
+        assertEquals(Kind.WINDOW_SUMMARY, head.kind());
+        sameText("Chunk B", archive.summary());
+        sameText(reducedSummary, head.summary());
+        assertNotEquals(archive.id(), head.id());
+        assertNotEquals(before.getSummaryId(), head.id());
+        assertEquals(head.id(), state().getSummaryId());
+        assertEquals(b.sourceStartId(), archive.sourceStartId());
+        assertEquals(second.through(), archive.sourceEndId());
+        assertEquals(second.through(), state().getOverflowThroughId());
+        assertEquals(before.getIdleThroughId(), state().getIdleThroughId());
+        assertEquals(before.getProfileId(), state().getProfileId());
+        assertUsage(b, 3);
+        assertEquals(4, count("usage"));
+        assertEquals(2, count("committed"));
+        assertRetiredCheckpoints();
+        assertTrue(originalHistory.equals(historyThrough(second.through())), "Repair must preserve original history");
     }
 
     @Test
@@ -954,6 +1068,7 @@ class MemoryConsolidatorIT {
     private final class ScriptedModel implements ChatModel {
         private final List<Input> inputs = new ArrayList<>();
         private final List<Boolean> repairs = new ArrayList<>();
+        private final List<String> systemPrompts = new ArrayList<>();
         private final Function<Input, String> response;
         private int malformedCalls;
 
@@ -988,6 +1103,7 @@ class MemoryConsolidatorIT {
             assertFalse(instructions.contains("invalid-private-response"));
             inputs.add(input);
             repairs.add(instructions.contains("last output failed"));
+            systemPrompts.add(instructions);
             String text = inputs.size() <= malformedCalls ? "invalid-private-response" : response.apply(input);
             return ChatResponse.builder()
                     .aiMessage(AiMessage.from(text))
