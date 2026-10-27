@@ -1,14 +1,14 @@
 {
-  "Sign up!": "Sign up!",
-  "Sign in": "Sign in",
-  "Don't have an account?": "Don't have an account? ",
-  "Continue with Google": "Continue with Google",
-  "Continue with GitHub": "Continue with GitHub",
-  "Continue with Aliyun": "Continue with Aliyun",
-  "or": "or",
-  "Username": "Username",
-  "Password": "Password",
-  "Remember me": "Remember me",
-  "Forgot your password?": "Forgot your password?",
-  "I'm a guest": "I'm a guest"
+  "Sign up!": "பதிவு செய்க!",
+  "Sign in": "உள்நுழைக",
+  "Don't have an account?": "கணக்கு இல்லையா? ",
+  "Continue with Google": "Google மூலம் தொடர்க",
+  "Continue with GitHub": "GitHub மூலம் தொடர்க",
+  "Continue with Aliyun": "Aliyun மூலம் தொடர்க",
+  "or": "அல்லது",
+  "Username": "பயனர்பெயர்",
+  "Password": "கடவுச்சொல்",
+  "Remember me": "என்னை நினைவில் கொள்க",
+  "Forgot your password?": "கடவுச்சொல்லை மறந்துவிட்டீர்களா?",
+  "I'm a guest": "நான் ஒரு விருந்தினர்"
 }
