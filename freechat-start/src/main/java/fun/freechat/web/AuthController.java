@@ -1,5 +1,6 @@
 package fun.freechat.web;
 
+import fun.freechat.access.auth.GuestRegistrationRateLimiter;
 import fun.freechat.api.dto.UserFullDetailsDTO;
 import fun.freechat.model.User;
 import fun.freechat.service.account.SysUserService;
@@ -29,6 +30,9 @@ public class AuthController {
 
     @Autowired
     private SysUserService userService;
+
+    @Autowired
+    private GuestRegistrationRateLimiter guestRegistrationRateLimiter;
 
     private User authenticationToUser(Authentication authenticated) {
         Object principal = authenticated.getPrincipal();
@@ -63,6 +67,11 @@ public class AuthController {
     @PostMapping("/public/register/guest")
     @ResponseBody
     public UserFullDetailsDTO registerGuest() {
+        if (!guestRegistrationRateLimiter.tryAcquire()) {
+            throw new ResponseStatusException(
+                    HttpStatus.TOO_MANY_REQUESTS, "Too many guests registered recently, try again later");
+        }
+
         String username = IdUtils.newId() + "@guest";
         String password = IdUtils.newId();
 

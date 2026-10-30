@@ -77,7 +77,13 @@ export default function SignIn() {
       })
         .then((resp) => {
           if (!resp.ok) {
-            handleError({ code: resp.status, message: resp.statusText });
+            handleError({
+              code: resp.status,
+              message:
+                resp.status === 429
+                  ? t('Too many guests registered recently, please try again later')
+                  : resp.statusText,
+            });
             return null;
           }
           return resp.json();
