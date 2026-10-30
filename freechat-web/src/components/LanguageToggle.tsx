@@ -14,7 +14,7 @@ export default function LanguageToggle(props: ListItemButtonProps) {
   const [mounted, setMounted] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const anchorRef = useRef<HTMLDivElement>(null);
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation('sidebar');
   const language =
     i18n.resolvedLanguage || i18n.language || i18nConfig.defaultLocale;
 
@@ -23,13 +23,22 @@ export default function LanguageToggle(props: ListItemButtonProps) {
   }, []);
 
   if (!mounted) {
-    return <ListItemButton dense id="toggle-language" disabled {...props} />;
+    return (
+      <ListItemButton
+        dense
+        id="toggle-language"
+        aria-label={t('Switch Language')}
+        disabled
+        {...props}
+      />
+    );
   }
   return (
     <>
       <ListItemButton
         dense
         id="toggle-language"
+        aria-label={t('Switch Language')}
         ref={anchorRef}
         onClick={() => setOpenMenu(true)}
         {...props}

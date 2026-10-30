@@ -13,6 +13,13 @@ if (location !== 'CN') {
   i18n.use(LanguageDetector);
 }
 
+const syncDocumentLanguage = () => {
+  document.documentElement.lang =
+    i18n.resolvedLanguage || i18n.language || i18nConfig.defaultLocale;
+};
+
+i18n.on('languageChanged', syncDocumentLanguage);
+
 i18n
   .use(
     resourcesToBackend(
@@ -32,4 +39,5 @@ i18n
     },
 
     debug: false,
-  });
+  })
+  .then(syncDocumentLanguage);
