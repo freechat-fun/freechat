@@ -10,5 +10,6 @@
   "Password": "Password",
   "Remember me": "Remember me",
   "Forgot your password?": "Forgot your password?",
-  "I'm a guest": "I'm a guest"
+  "I'm a guest": "I'm a guest",
+  "Too many guests registered recently, please try again later": "Too many guests registered recently, please try again later"
 }

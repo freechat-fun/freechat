@@ -50,6 +50,10 @@ auth:
   impersonate:
     headerName: X-FC-IMPERSONATE
     autoRegister: true
+  guest:
+    registration:
+      maxRegistrations: 10
+      interval: PT10M
   aiApiKey:
     limits: 3
 skills:
