@@ -1,5 +1,6 @@
 package fun.freechat;
 
+import static fun.freechat.util.TestCommonUtils.MYSQL_IMAGE;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -81,7 +82,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Timeout(120)
 class MemoryCheckpointsIT {
     @Container
-    private static final MySQLContainer<?> MYSQL = new MySQLContainer<>("mysql:8.0.36")
+    private static final MySQLContainer<?> MYSQL = new MySQLContainer<>(MYSQL_IMAGE)
             .withUsername("root")
             .withDatabaseName("freechat")
             .withInitScript("sql/schema.sql");

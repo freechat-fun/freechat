@@ -8,6 +8,10 @@ import java.util.Map;
 import java.util.Random;
 
 public class TestCommonUtils {
+    public static final String MYSQL_IMAGE = "mysql:9.4.0";
+    public static final String REDIS_IMAGE = "redis:8.2.2";
+    public static final String MILVUS_IMAGE = "milvusdb/milvus:v2.5.19";
+
     public static void waitAWhile() {
         try {
             Thread.sleep(500);

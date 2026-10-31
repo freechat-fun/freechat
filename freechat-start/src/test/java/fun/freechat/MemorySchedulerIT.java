@@ -1,5 +1,7 @@
 package fun.freechat;
 
+import static fun.freechat.util.TestCommonUtils.MYSQL_IMAGE;
+import static fun.freechat.util.TestCommonUtils.REDIS_IMAGE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import static org.mockito.ArgumentMatchers.*;
@@ -103,12 +105,11 @@ class MemorySchedulerIT {
     private static final String SECRET = "scheduler-test-body-and-provider-secret-not-for-redis";
 
     @Container
-    private static final GenericContainer<?> REDIS =
-            new GenericContainer<>("redis:7.4.2-alpine").withExposedPorts(6379);
+    private static final GenericContainer<?> REDIS = new GenericContainer<>(REDIS_IMAGE).withExposedPorts(6379);
 
     @Container
     private static final MySQLContainer<?> MYSQL =
-            new MySQLContainer<>("mysql:8.0.36").withDatabaseName("freechat").withInitScript("sql/schema.sql");
+            new MySQLContainer<>(MYSQL_IMAGE).withDatabaseName("freechat").withInitScript("sql/schema.sql");
 
     private static HikariDataSource dataSource;
     private static JdbcTemplate sql;

@@ -1,5 +1,6 @@
 package fun.freechat;
 
+import static fun.freechat.util.TestCommonUtils.MYSQL_IMAGE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
@@ -68,7 +69,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Timeout(60)
 class MemoryLifecycleRepositoryIT {
     @Container
-    private static final MySQLContainer<?> MYSQL = new MySQLContainer<>("mysql:8.0.36")
+    private static final MySQLContainer<?> MYSQL = new MySQLContainer<>(MYSQL_IMAGE)
             // Root permits failure-injection triggers on this disposable binary-logging server.
             .withUsername("root")
             .withDatabaseName("freechat")
