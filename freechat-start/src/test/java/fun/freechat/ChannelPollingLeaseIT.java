@@ -1,5 +1,6 @@
 package fun.freechat;
 
+import static fun.freechat.util.TestCommonUtils.REDIS_IMAGE;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -41,8 +42,7 @@ class ChannelPollingLeaseIT {
     private static final Duration CHECK_INTERVAL = Duration.ofMillis(20);
 
     @Container
-    private static final GenericContainer<?> REDIS =
-            new GenericContainer<>("redis:7.4.2-alpine").withExposedPorts(6379);
+    private static final GenericContainer<?> REDIS = new GenericContainer<>(REDIS_IMAGE).withExposedPorts(6379);
 
     private static RedissonClient firstClient;
     private static RedissonClient secondClient;

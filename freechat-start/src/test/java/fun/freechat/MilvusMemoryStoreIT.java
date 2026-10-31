@@ -1,6 +1,7 @@
 package fun.freechat;
 
 import static dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey;
+import static fun.freechat.util.TestCommonUtils.MILVUS_IMAGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
@@ -79,9 +80,8 @@ import org.testcontainers.utility.DockerImageName;
 @Testcontainers
 @Timeout(value = 2, unit = TimeUnit.MINUTES)
 class MilvusMemoryStoreIT {
-    // Match AbstractIntegrationTest, without inheriting its other containers or application context.
     @Container
-    private static final MilvusContainer MILVUS = new MilvusContainer(DockerImageName.parse("milvusdb/milvus:v2.4.20"))
+    private static final MilvusContainer MILVUS = new MilvusContainer(DockerImageName.parse(MILVUS_IMAGE))
             .waitingFor(Wait.forHttp("/healthz").forPort(9091).forStatusCode(200))
             .withStartupTimeout(Duration.ofMinutes(3));
 

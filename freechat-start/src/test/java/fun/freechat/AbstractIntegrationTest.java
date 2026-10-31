@@ -1,6 +1,9 @@
 package fun.freechat;
 
 import static fun.freechat.service.enums.ModelProvider.OLLAMA;
+import static fun.freechat.util.TestCommonUtils.MILVUS_IMAGE;
+import static fun.freechat.util.TestCommonUtils.MYSQL_IMAGE;
+import static fun.freechat.util.TestCommonUtils.REDIS_IMAGE;
 import static fun.freechat.util.TestCommonUtils.defaultEmbeddingModelFor;
 import static fun.freechat.util.TestCommonUtils.defaultModelFor;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -140,15 +143,15 @@ public class AbstractIntegrationTest {
     }
 
     private static DockerImageName redisImageName() {
-        return DockerImageName.parse("redis:8.2.2");
+        return DockerImageName.parse(REDIS_IMAGE);
     }
 
     private static DockerImageName mysqlImageName() {
-        return DockerImageName.parse("mysql:8.0.36");
+        return DockerImageName.parse(MYSQL_IMAGE);
     }
 
     private static DockerImageName milvusImageName() {
-        return DockerImageName.parse("milvusdb/milvus:v2.4.20");
+        return DockerImageName.parse(MILVUS_IMAGE);
     }
 
     private static DockerImageName ttsImageName() {

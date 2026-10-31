@@ -1,5 +1,6 @@
 package fun.freechat;
 
+import static fun.freechat.util.TestCommonUtils.MYSQL_IMAGE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mockStatic;
 
@@ -85,7 +86,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Timeout(120)
 class MemoryConsolidatorIT {
     @Container
-    private static final MySQLContainer<?> MYSQL = new MySQLContainer<>("mysql:8.0.36")
+    private static final MySQLContainer<?> MYSQL = new MySQLContainer<>(MYSQL_IMAGE)
             .withUsername("root")
             .withDatabaseName("freechat")
             .withInitScript("sql/schema.sql");

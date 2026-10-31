@@ -1,5 +1,6 @@
 package fun.freechat;
 
+import static fun.freechat.util.TestCommonUtils.MYSQL_IMAGE;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zaxxer.hikari.HikariConfig;
@@ -62,7 +63,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Timeout(60)
 class MemoryTurnRepositoryIT {
     @Container
-    private static final MySQLContainer<?> MYSQL = new MySQLContainer<>("mysql:8.0.36")
+    private static final MySQLContainer<?> MYSQL = new MySQLContainer<>(MYSQL_IMAGE)
             // Failure-injection triggers require SUPER when this isolated server enables binary logging.
             .withUsername("root")
             .withDatabaseName("freechat")

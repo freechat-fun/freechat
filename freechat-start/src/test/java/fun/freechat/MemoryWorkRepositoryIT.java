@@ -1,5 +1,6 @@
 package fun.freechat;
 
+import static fun.freechat.util.TestCommonUtils.MYSQL_IMAGE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import static org.mockito.Mockito.doReturn;
@@ -66,7 +67,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Timeout(60)
 class MemoryWorkRepositoryIT {
     @Container
-    private static final MySQLContainer<?> MYSQL = new MySQLContainer<>("mysql:8.0.36")
+    private static final MySQLContainer<?> MYSQL = new MySQLContainer<>(MYSQL_IMAGE)
             .withUsername("root") // Isolated failure-injection triggers with binary logging enabled.
             .withDatabaseName("freechat")
             .withInitScript("sql/schema.sql");

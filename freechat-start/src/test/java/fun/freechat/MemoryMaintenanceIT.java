@@ -1,5 +1,7 @@
 package fun.freechat;
 
+import static fun.freechat.util.TestCommonUtils.MYSQL_IMAGE;
+import static fun.freechat.util.TestCommonUtils.REDIS_IMAGE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -85,11 +87,10 @@ class MemoryMaintenanceIT {
 
     @Container
     private static final MySQLContainer<?> MYSQL =
-            new MySQLContainer<>("mysql:8.0.36").withDatabaseName("freechat").withInitScript("sql/schema.sql");
+            new MySQLContainer<>(MYSQL_IMAGE).withDatabaseName("freechat").withInitScript("sql/schema.sql");
 
     @Container
-    private static final GenericContainer<?> REDIS =
-            new GenericContainer<>("redis:7.4.2-alpine").withExposedPorts(6379);
+    private static final GenericContainer<?> REDIS = new GenericContainer<>(REDIS_IMAGE).withExposedPorts(6379);
 
     private static HikariDataSource dataSource;
     private static JdbcTemplate sql;

@@ -2,6 +2,7 @@ package fun.freechat;
 
 import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
 import static fun.freechat.service.util.CacheUtils.MIDDLE_PERIOD_CACHE_NAME;
+import static fun.freechat.util.TestCommonUtils.MYSQL_IMAGE;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zaxxer.hikari.HikariConfig;
@@ -84,7 +85,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Timeout(60)
 class MemoryLifecycleUsageIntegrationIT {
     @Container
-    private static final MySQLContainer<?> MYSQL = new MySQLContainer<>("mysql:8.0.36")
+    private static final MySQLContainer<?> MYSQL = new MySQLContainer<>(MYSQL_IMAGE)
             .withUsername("root")
             .withDatabaseName("freechat")
             .withInitScript("sql/schema.sql");

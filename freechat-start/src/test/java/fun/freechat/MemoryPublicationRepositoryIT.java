@@ -1,5 +1,6 @@
 package fun.freechat;
 
+import static fun.freechat.util.TestCommonUtils.MYSQL_IMAGE;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zaxxer.hikari.HikariConfig;
@@ -71,7 +72,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Timeout(120)
 class MemoryPublicationRepositoryIT {
     @Container
-    private static final MySQLContainer<?> MYSQL = new MySQLContainer<>("mysql:8.0.36")
+    private static final MySQLContainer<?> MYSQL = new MySQLContainer<>(MYSQL_IMAGE)
             // Root is needed for failure-injection triggers when binary logging is enabled.
             .withUsername("root")
             .withDatabaseName("freechat")
