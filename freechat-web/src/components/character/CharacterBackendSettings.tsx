@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
 import {
   Fragment,
-  createRef,
   forwardRef,
   useEffect,
   useRef,
@@ -137,7 +136,11 @@ const CharacterBackendSettings = forwardRef<
   const fileInputId = useRef(`voice-file-upload-input-${idCounter}`).current;
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [playing, setPlaying] = useState(false);
-  const audioRefs = useRef(Array(2).fill(createRef<HTMLAudioElement | null>()));
+  const audioRefs = useRef(
+    Array.from({ length: 2 }, () => ({
+      current: null as HTMLAudioElement | null,
+    }))
+  );
 
   const [promptTask, setPromptTask] = useState<PromptTaskDetailsDTO>();
   const [provider, setProvider] = useState('open_ai');

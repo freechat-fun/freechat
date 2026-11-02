@@ -1,4 +1,4 @@
-import { createRef, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FlexBox,
@@ -65,7 +65,9 @@ export default function CharacterDocumentUploader({
   const fileInputId = useRef(`file-upload-input-${idCounter}`).current;
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const splitterInputRefs = useRef(
-    Array(2).fill(createRef<HTMLInputElement | null>())
+    Array.from({ length: 2 }, () => ({
+      current: null as HTMLInputElement | null,
+    }))
   );
 
   useEffect(() => {
