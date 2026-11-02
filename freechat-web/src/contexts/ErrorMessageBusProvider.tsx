@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-empty-function */
+
 /* eslint-disable react-refresh/only-export-components */
 import {
   PropsWithChildren,

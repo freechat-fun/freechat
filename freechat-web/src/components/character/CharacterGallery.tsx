@@ -238,7 +238,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
                   window.open(
                     record.telegramUrl as string,
                     '_blank',
-                    'noopener,noreferrer',
+                    'noopener,noreferrer'
                   );
                 }}
               >

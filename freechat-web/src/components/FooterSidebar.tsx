@@ -1,4 +1,3 @@
-/* eslint-disable react/display-name */
 import { forwardRef, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';

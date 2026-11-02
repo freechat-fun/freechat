@@ -51,7 +51,6 @@ type BubbleContainerProps = StackProps & {
 };
 
 const BubbleContainer = styled(
-  // eslint-disable-next-line react/display-name
   forwardRef<HTMLDivElement, BubbleContainerProps>((props, ref) => {
     const { children, isSent, onMouseEnter, onMouseLeave, ...others } = props;
 
@@ -258,7 +257,12 @@ export default function ChatBubble(props: ChatBubbleProps) {
                       : theme.palette.text.primary,
                   })}
                 >
-                  {getSenderReply(content.content, debugMode, false, message?.thinking)}
+                  {getSenderReply(
+                    content.content,
+                    debugMode,
+                    false,
+                    message?.thinking
+                  )}
                 </MarkdownContent>
               )}
               {!isSent && !apiPath && (
@@ -280,7 +284,12 @@ export default function ChatBubble(props: ChatBubbleProps) {
                           if (content.content) {
                             navigator?.clipboard
                               ?.writeText(
-                                getSenderReply(content.content, debugMode, false, message?.thinking)
+                                getSenderReply(
+                                  content.content,
+                                  debugMode,
+                                  false,
+                                  message?.thinking
+                                )
                               )
                               .then(() => {
                                 setCopied(true);

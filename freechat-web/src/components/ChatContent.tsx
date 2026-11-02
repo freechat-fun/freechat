@@ -176,6 +176,9 @@ export default function ChatContent({
       acRef.current?.abort();
       acRef.current = null;
     };
+    // `debugMode` is intentionally omitted so that toggling debug output does
+    // not abort and restart the active SSE stream.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url, body, onFinish, onMessage, onError, handleError, disabled, t]);
 
   return (

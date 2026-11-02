@@ -273,9 +273,7 @@ export default function PromptViewer({
                 setDefaultVariables(undefined);
               }
 
-              setDefaultOutputText(
-                getMessageText(response?.message) ?? ''
-              );
+              setDefaultOutputText(getMessageText(response?.message) ?? '');
             }}
             onPlayFailure={(request, error) => {
               if (request?.params && Object.keys(request?.params).length > 0) {

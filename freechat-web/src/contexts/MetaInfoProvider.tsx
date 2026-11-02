@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable react-refresh/only-export-components */
 import { PropsWithChildren, createContext, useContext, useState } from 'react';
 
