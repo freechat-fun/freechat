@@ -16,11 +16,7 @@ import {
   toggleChatsPane,
 } from '../../libs/chat_utils';
 import { AvatarWithStatus } from '.';
-import {
-  GridBox,
-  HighlightedTypography,
-  TransparentIconButton,
-} from '..';
+import { GridBox, HighlightedTypography, TransparentIconButton } from '..';
 import { CircleRounded, RemoveCircleRounded } from '@mui/icons-material';
 import { getDateLabel } from '../../libs/date_utils';
 import { useTranslation } from 'react-i18next';

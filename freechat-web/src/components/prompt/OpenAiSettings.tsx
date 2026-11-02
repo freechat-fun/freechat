@@ -166,7 +166,6 @@ export default function OpenAiSettings(props: {
   }
 
   function handleClose(): void {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const parameters: { [key: string]: any } = {};
 
     if (baseUrl) {
@@ -271,18 +270,13 @@ export default function OpenAiSettings(props: {
         <OptionCard>
           <DynamicFlexBox>
             <Typography>think</Typography>
-            <OptionTooltip
-              title={t('Whether to generate thinking content.')}
-            >
+            <OptionTooltip title={t('Whether to generate thinking content.')}>
               <IconButton size="small">
                 <HelpIcon />
               </IconButton>
             </OptionTooltip>
             <Box sx={{ ml: 'auto' }}>
-              <Switch
-                checked={think}
-                onChange={() => setThink(!think)}
-              />
+              <Switch checked={think} onChange={() => setThink(!think)} />
             </Box>
           </DynamicFlexBox>
         </OptionCard>

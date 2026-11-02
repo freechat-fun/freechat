@@ -1,5 +1,5 @@
-import { Box } from "@mui/material";
-import { MarkdownContent } from "../components";
+import { Box } from '@mui/material';
+import { MarkdownContent } from '../components';
 
 const PRIVACY_POLICY_CONTENT = `
 <center><h4>FreeChat Privacy Policy</h4></center>
@@ -44,9 +44,7 @@ If you have any questions regarding this privacy policy or our privacy practices
 export default function PrivacyPolicy() {
   return (
     <Box sx={{ p: 2 }}>
-      <MarkdownContent>
-        {PRIVACY_POLICY_CONTENT}
-      </MarkdownContent>
+      <MarkdownContent>{PRIVACY_POLICY_CONTENT}</MarkdownContent>
     </Box>
   );
 }

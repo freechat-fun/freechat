@@ -12,7 +12,9 @@ function detectIosPwaMode(): boolean {
   const isStandalone =
     window.matchMedia('(display-mode: standalone)').matches ||
     // Legacy iOS Safari flag.
-    Boolean((window.navigator as Navigator & { standalone?: boolean }).standalone);
+    Boolean(
+      (window.navigator as Navigator & { standalone?: boolean }).standalone
+    );
 
   return isIosDevice && isStandalone;
 }
@@ -27,7 +29,6 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <App />

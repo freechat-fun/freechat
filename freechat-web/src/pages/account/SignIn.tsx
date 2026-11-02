@@ -81,7 +81,9 @@ export default function SignIn() {
               code: resp.status,
               message:
                 resp.status === 429
-                  ? t('Too many guests registered recently, please try again later')
+                  ? t(
+                      'Too many guests registered recently, please try again later'
+                    )
                   : resp.statusText,
             });
             return null;
@@ -298,17 +300,20 @@ export default function SignIn() {
                 >
                   {t("I'm a guest")}
                 </Button>
-                <Typography variant="body2"
+                <Typography
+                  variant="body2"
                   sx={{
                     alignSelf: 'center',
                     fontSize: '14px',
                     color: 'gray',
                   }}
                 >
-                  {t('Your login constitutes acceptance of the ')}<Link href="/privacy-policy" target="_blank">{t('Privacy Policy')}</Link>
+                  {t('Your login constitutes acceptance of the ')}
+                  <Link href="/privacy-policy" target="_blank">
+                    {t('Privacy Policy')}
+                  </Link>
                 </Typography>
               </form>
-              
             </Stack>
           </Box>
         </Box>

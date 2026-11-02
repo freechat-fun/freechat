@@ -160,7 +160,6 @@ export default function AzureOpenAiSettings(props: {
   }
 
   function handleClose(): void {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const parameters: { [key: string]: any } = {};
 
     if (baseUrl) {

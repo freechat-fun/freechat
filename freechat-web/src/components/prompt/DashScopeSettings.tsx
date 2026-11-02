@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,8 +14,9 @@ import {
 } from '@mui/material';
 import { AddCircleRounded, TransitEnterexitRounded } from '@mui/icons-material';
 import {
-    defaultBaseURLs, defaultImageModels,
-    defaultModels,
+  defaultBaseURLs,
+  defaultImageModels,
+  defaultModels,
 } from '../../configs/model-providers-config';
 import { InputAdornment } from '@mui/material';
 import {
@@ -178,7 +178,6 @@ export default function DashScopeSettings(props: {
   }
 
   function handleClose(): void {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const parameters: { [key: string]: any } = {};
 
     if (baseUrl) {
@@ -313,9 +312,7 @@ export default function DashScopeSettings(props: {
         <OptionCard>
           <DynamicFlexBox>
             <Typography>enableThinking</Typography>
-            <OptionTooltip
-              title={t('Whether to generate thinking content.')}
-            >
+            <OptionTooltip title={t('Whether to generate thinking content.')}>
               <IconButton size="small">
                 <HelpIcon />
               </IconButton>

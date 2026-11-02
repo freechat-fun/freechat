@@ -89,7 +89,11 @@ export default function MessagesPaneHeader(props: MessagesPaneHeaderProps) {
         px: { xs: 1, md: 2 },
       }}
     >
-      <Stack direction="row" spacing={{ xs: 1, md: 2 }} sx={{ alignItems: 'center' }}>
+      <Stack
+        direction="row"
+        spacing={{ xs: 1, md: 2 }}
+        sx={{ alignItems: 'center' }}
+      >
         <IconButton
           color="inherit"
           size="small"
@@ -150,7 +154,7 @@ export default function MessagesPaneHeader(props: MessagesPaneHeaderProps) {
           color="inherit"
           onClick={() => setFullscreenMode?.(!fullscreenMode)}
         >
-          {fullscreenMode? <FullscreenExitRounded /> : <FullscreenRounded />}
+          {fullscreenMode ? <FullscreenExitRounded /> : <FullscreenRounded />}
         </IconButton>
         <IconButton
           disabled={disabled}

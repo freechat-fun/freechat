@@ -122,7 +122,8 @@ export function getSenderReply(
     let preProcessedMessage = message;
     if (thinking) {
       if (debugMode) {
-        preProcessedMessage = `> ${thinking.replace(/\n\n/g, '\n>\n> ')}` + '\n\n' + message;
+        preProcessedMessage =
+          `> ${thinking.replace(/\n\n/g, '\n>\n> ')}` + '\n\n' + message;
       }
     } else {
       const matches = message.match(/<think\b[^>]*>([\s\S]*?)<\/think>/gi);
