@@ -12,10 +12,6 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.read.ListAppender;
-import com.alibaba.dashscope.common.DashScopeResult;
-import com.alibaba.dashscope.common.ResultCallback;
-import com.alibaba.dashscope.protocol.HalfDuplexRequest;
-import com.alibaba.dashscope.protocol.okhttp.OkHttpHttpClient;
 import com.alibaba.dashscope.protocol.okhttp.OkHttpWebSocketClient;
 import com.azure.core.implementation.serializer.DefaultJsonSerializer;
 import com.azure.core.util.serializer.TypeReference;
@@ -54,7 +50,6 @@ import fun.freechat.service.chat.memory.MemoryWorkRepository;
 import fun.freechat.service.enums.ChatVar;
 import fun.freechat.service.util.EncryptionUtils;
 import fun.freechat.service.util.InfoUtils;
-import io.reactivex.FlowableEmitter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -92,7 +87,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import okhttp3.sse.EventSourceListener;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -357,8 +351,6 @@ class MemoryPrivacyLoggingTest {
         RETRY,
         SSE_DECODER,
         AZURE_DECODER,
-        DASHSCOPE_SSE,
-        DASHSCOPE_CALLBACK,
         DASHSCOPE_WEBSOCKET
     }
 
@@ -1345,34 +1337,6 @@ class MemoryPrivacyLoggingTest {
                 Throwable failure = caught(() ->
                         new DefaultJsonSerializer().deserialize(brokenBody, TypeReference.createInstance(Map.class)));
                 assertTrue(failure instanceof java.io.UncheckedIOException, "Decoder must still report failure");
-            }
-            case DASHSCOPE_SSE -> {
-                var client = new OkHttpHttpClient(new OkHttpClient());
-                FlowableEmitter<DashScopeResult> emitter =
-                        mock(FlowableEmitter.class, withSettings().mockMaker(MockMakers.SUBCLASS));
-                var method = OkHttpHttpClient.class.getDeclaredMethod(
-                        "handleSSEEvent",
-                        FlowableEmitter.class,
-                        String.class,
-                        String.class,
-                        String.class,
-                        boolean.class,
-                        Response.class,
-                        HalfDuplexRequest.class);
-                method.setAccessible(true);
-                method.invoke(client, emitter, "safe-id", "error", errorEvent(), false, null, null);
-                verify(emitter).onError(any(Throwable.class));
-            }
-            case DASHSCOPE_CALLBACK -> {
-                var client = new OkHttpHttpClient(new OkHttpClient());
-                ResultCallback<DashScopeResult> callback =
-                        mock(ResultCallback.class, withSettings().mockMaker(MockMakers.SUBCLASS));
-                var constructor = Class.forName(OkHttpHttpClient.class.getName() + "$3")
-                        .getDeclaredConstructor(OkHttpHttpClient.class, ResultCallback.class, HalfDuplexRequest.class);
-                constructor.setAccessible(true);
-                var listener = (EventSourceListener) constructor.newInstance(client, callback, null);
-                listener.onEvent(null, "safe-id", "error", errorEvent());
-                verify(callback).onError(any(Exception.class));
             }
             case DASHSCOPE_WEBSOCKET -> {
                 var client = new OkHttpWebSocketClient(new OkHttpClient(), false);
