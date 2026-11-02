@@ -1,4 +1,4 @@
-import { createRef, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { List, ListProps } from '@mui/material';
 import { CharacterSummaryDTO } from 'freechat-sdk';
 import { CharacterRecommendationListItem } from '.';
@@ -23,7 +23,11 @@ export default function CharacterRecommendationList(
   const { records, selectedId, setSelectedId, onShow, sx } = props;
 
   const [showCards, setShowCards] = useState(false);
-  const itemRefs = useRef(Array(records.length || 6).fill(createRef()));
+  const itemRefs = useRef(
+    Array.from({ length: records.length || 6 }, () => ({
+      current: null as HTMLLIElement | null,
+    }))
+  );
 
   useEffect(() => {
     return initTransitionSequence(setShowCards, onShow, records.length);

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createRef, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Box,
@@ -105,7 +105,11 @@ export default function AzureOpenAiSettings(props: {
   );
   const [stopWord, setStopWord] = useState<string>();
 
-  const inputRefs = useRef(Array(6).fill(createRef<HTMLInputElement | null>()));
+  const inputRefs = useRef(
+    Array.from({ length: 6 }, () => ({
+      current: null as HTMLInputElement | null,
+    }))
+  );
 
   useEffect(() => {
     setBaseUrl(

@@ -1,11 +1,4 @@
-import {
-  createRef,
-  forwardRef,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -180,7 +173,11 @@ export default function Prompts() {
   const [showCards, setShowCards] = useState(false);
   const [showCardsFinish, setShowCardsFinish] = useState(false);
 
-  const cardRefs = useRef(Array(pageSize).fill(createRef()));
+  const cardRefs = useRef(
+    Array.from({ length: pageSize }, () => ({
+      current: null as HTMLDivElement | null,
+    }))
+  );
 
   const doSearch = useCallback(() => {
     promptApi
