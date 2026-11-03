@@ -42,7 +42,7 @@
         <telegrambots.version>10.3.0</telegrambots.version>
         <wiremock.version>3.13.2</wiremock.version>
         <re2j.version>1.8</re2j.version>
-        <jsoup.version>1.23.2</jsoup.version>
+        <jsoup.version>1.24.1</jsoup.version>
 
         <!--plugin versions-->
         <buildnumber-maven-plugin.version>3.3.1</buildnumber-maven-plugin.version>
