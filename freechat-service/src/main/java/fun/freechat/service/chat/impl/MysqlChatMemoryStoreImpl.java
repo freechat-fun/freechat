@@ -463,7 +463,9 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
         return (acc, messageRecord) -> {
             ChatMessageType type = messageRecord.getMessage().type();
             if (acc.isEmpty()) {
-                if (type == SYSTEM) {
+                // A stored history may lack the system row (it can be a
+                // canonical invocation row); seed with the first user message too.
+                if (type == SYSTEM || type == USER) {
                     acc.add(messageRecord);
                 }
                 return acc;

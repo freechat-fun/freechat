@@ -570,7 +570,9 @@ public class ChatApi {
         int end = messages.size() - messagesOffset;
         int start = Math.max(0, end - messagesLimit);
 
-        if (start == 0) {
+        if (start == 0
+                && !messages.isEmpty()
+                && messages.getFirst().getMessage().type() == ChatMessageType.SYSTEM) {
             LinkedList<ChatMessageRecord> records = new LinkedList<>(messages);
             // remove system message
             ChatMessageRecord firstRecord = records.removeFirst();
@@ -629,7 +631,9 @@ public class ChatApi {
         int end = messages.size() - messagesOffset;
         int start = Math.max(0, end - messagesLimit);
 
-        if (start == 0) {
+        if (start == 0
+                && !messages.isEmpty()
+                && messages.getFirst().getMessage().type() == ChatMessageType.SYSTEM) {
             LinkedList<ChatMessageRecord> records = new LinkedList<>(messages);
             // remove system message
             ChatMessageRecord firstRecord = records.removeFirst();

@@ -51,8 +51,29 @@ export default function ChatContent({
     let fullThinking = '';
     let fullText = '';
     let memoryDeferred = false;
+    let finished = false;
     const controller = new AbortController();
     acRef.current = controller;
+
+    // The final SSE event can carry an empty message; fall back to the text
+    // accumulated during streaming so the committed bubble is not blank.
+    const withAccumulatedText = (result?: LlmResultDTO): LlmResultDTO | undefined => {
+      if (!fullText && !fullThinking) {
+        return result;
+      }
+      const hasText = !!result?.message && !!getMessageText(result.message);
+      if (hasText) {
+        return result;
+      }
+      return {
+        ...result,
+        message: {
+          role: 'assistant',
+          contents: [{ type: 'text', content: fullText }],
+          thinking: fullThinking || undefined,
+        },
+      } as LlmResultDTO;
+    };
 
     const reportMemoryDeferred = () => {
       if (memoryDeferred || controller.signal.aborted) return;
@@ -117,7 +138,8 @@ export default function ChatContent({
 
             if (result.finishReason) {
               setUsage(result.tokenUsage);
-              onFinish?.(result);
+              finished = true;
+              onFinish?.(withAccumulatedText(result));
             } else {
               const thinkingChunk = result.message?.thinking;
               const textChunk = getMessageText(result.message) ?? '';
@@ -157,7 +179,7 @@ export default function ChatContent({
           onclose() {
             if (memoryDeferred) return;
             console.error('The connection has been closed...');
-            onFinish?.();
+            onFinish?.(finished ? undefined : withAccumulatedText(undefined));
           },
         });
       } catch (error) {
