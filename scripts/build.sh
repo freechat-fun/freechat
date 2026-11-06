@@ -64,7 +64,15 @@ if [[ " ${ARGS[*]} " =~ " --release " ]]; then
 
   PUBLIC_REPO=freechatfun/freechat
 
-  cat >> ${COMPOSE_CONFIG} <<EOF
+  if [[ " ${ARGS[*]} " =~ " --no-latest " ]]; then
+    cat >> ${COMPOSE_CONFIG} <<EOF
+      platforms:
+        - linux/amd64
+        - linux/arm64
+    image: ${PUBLIC_REPO}:${VERSION}
+EOF
+  else
+    cat >> ${COMPOSE_CONFIG} <<EOF
       tags:
         - ${PUBLIC_REPO}:${VERSION}
       platforms:
@@ -72,6 +80,7 @@ if [[ " ${ARGS[*]} " =~ " --release " ]]; then
         - linux/arm64
     image: ${PUBLIC_REPO}:latest
 EOF
+  fi
 
   if [[ "${VERBOSE}" == "1" ]];then
     echo "[COMPOSE CONFIG]"
