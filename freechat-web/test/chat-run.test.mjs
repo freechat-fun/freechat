@@ -109,7 +109,7 @@ test('control frames and tools never create a bubble; only server phases change 
     assert.equal(visible(run, true), false);
   }
   assert.equal(run.snapshot.phase, 'waiting_model');
-  assert.equal(chatRunStatusKeys.tool_execution, 'Processing your request.');
+  assert.equal(chatRunStatusKeys.tool_execution, 'Processing your request');
 });
 
 test('first visible text creates a bubble without inventing a phase', () => {
@@ -800,6 +800,11 @@ test('header uses one live status Chip for run phases and restores presence when
     for (const runStatus of [undefined, ...Object.keys(chatRunStatusKeys)]) {
       const label =
         translations[runStatus ? chatRunStatusKeys[runStatus] : 'online'];
+      assert.doesNotMatch(
+        label,
+        /\p{P}/u,
+        `${locale}: ${runStatus ?? 'online'}`
+      );
       const html = renderToStaticMarkup(
         React.createElement(exports.default, {
           session: { senderStatus: 'online', character: { name: 'Emily' } },
@@ -826,6 +831,7 @@ test('all request statuses and error sentences have en/zh/ta translations', asyn
     for (const key of [
       ...Object.values(chatRunStatusKeys),
       ...Object.values(chatRunErrorKeys),
+      'The request was cancelled.',
       'The request failed. Please try again.',
       'Retry the request.',
     ]) {

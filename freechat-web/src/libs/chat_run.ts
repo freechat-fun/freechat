@@ -83,17 +83,17 @@ export type ChatRunOutcome = {
 };
 
 export const chatRunStatusKeys: Record<ChatRunStatus, string> = {
-  sending: 'Sending your message.',
-  queued: 'Your request is queued.',
-  preparing: 'Preparing your request.',
-  waiting_model: 'Waiting for the model.',
-  thinking: 'Thinking about your message.',
-  responding: 'Writing a response.',
-  tool_execution: 'Processing your request.',
-  finalizing: 'Finishing the response.',
-  cancelling: 'Cancelling your request.',
-  failed: 'The request failed.',
-  cancelled: 'The request was cancelled.',
+  sending: 'Sending your message',
+  queued: 'Your request is queued',
+  preparing: 'Preparing your request',
+  waiting_model: 'Waiting for the model',
+  thinking: 'Thinking about your message',
+  responding: 'Writing a response',
+  tool_execution: 'Processing your request',
+  finalizing: 'Finishing the response',
+  cancelling: 'Cancelling your request',
+  failed: 'The request failed',
+  cancelled: 'The request was cancelled',
 };
 
 export const chatRunErrorKeys = {
