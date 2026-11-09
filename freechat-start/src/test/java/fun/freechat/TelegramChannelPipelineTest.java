@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.model.chat.response.ChatResponse;
-import dev.langchain4j.service.TokenStream;
 import fun.freechat.channels.spi.*;
 import fun.freechat.channels.telegram.DefaultTelegramChannel;
 import fun.freechat.channels.telegram.TelegramChannelPlugin;
@@ -19,12 +18,13 @@ import fun.freechat.service.channel.ChannelRegistry;
 import fun.freechat.service.channel.ChannelRuntime;
 import fun.freechat.service.chat.*;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockMakers;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.telegram.telegrambots.meta.api.methods.send.SendChatAction;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -51,27 +51,32 @@ class TelegramChannelPipelineTest {
                     .receive("room", "event", "echo")
                     .get(5, TimeUnit.SECONDS);
             assertEquals(List.of("echo"), fixture.text.sent);
+            verify(fixture.manager.client, never()).execute(any(SendMessage.class));
+            fixture.finalGate = new CountDownLatch(1);
+            fixture.stream.emit("reasoning.delta", Map.of("delta", "private thinking"));
             fixture.stream.partial.accept("Hello *world* ![photo](https://unused.invalid/generated.png)");
             assertTrue(fixture.partial.await(5, TimeUnit.SECONDS), "A scheduled partial must reach the raw SDK");
             fixture.stream.complete();
             fixture.stream.complete();
             fixture.stream.error.accept(new IllegalStateException("late callback"));
+            assertTrue(fixture.finalStarted.await(5, TimeUnit.SECONDS));
+            assertTrue(fixture.stream.settlement.isDone());
+            assertEquals(2, fixture.runtime.pendingReceives("telegram"), "Delivery still owns the input lane");
+            verify(fixture.bindings, times(1))
+                    .getOrCreate(anyString(), anyLong(), anyString(), any(), any(), any(), any(), any());
+            fixture.finalGate.countDown();
             await().atMost(Duration.ofSeconds(5))
                     .until(() -> fixture.history.stream()
                                     .filter(row -> "out".equals(row.direction()))
                                     .count()
                             == 2);
-            assertEquals(List.of("typing", "placeholder", "partial", "final", "photo"), fixture.operations);
+            assertEquals(List.of("typing", "partial", "final", "photo"), fixture.operations);
             assertTrue(fixture.history.contains(new History(42L, "out", "text", "Hello *world* ")));
             assertTrue(
                     fixture.history.contains(new History(43L, "out", "photo", "https://unused.invalid/generated.png")));
-            verify(fixture.bindings, times(1))
-                    .getOrCreate(anyString(), anyLong(), anyString(), any(), any(), any(), any(), any());
-            assertEquals(2, fixture.runtime.pendingReceives("telegram"), "Model callback is not service settlement");
-            fixture.stream.settlement.complete(null);
             await().atMost(Duration.ofSeconds(5)).until(() -> fixture.runtime.pendingReceives("telegram") == 0);
             assertTrue(fixture.history.contains(new History(2L, "in", "unsupported", null)));
-            verify(fixture.chats).streamSendManaged(eq("chat"), any(), isNull());
+            verify(fixture.chats).startRun(eq("chat"), any(), isNull(), any());
             verify(fixture.manager.client).execute(any(SendPhoto.class));
             verify(fixture.manager.client).execute(any(SendChatAction.class));
             assertEquals(0, fixture.stream.cancelled.get());
@@ -105,12 +110,13 @@ class TelegramChannelPipelineTest {
             consumer.accept(List.of(TelegramChannelManagerTest.update(1, "question")));
             assertTrue(fixture.stream.started.await(5, TimeUnit.SECONDS));
             fixture.stream.partial.accept("answer ![image](https://unused.invalid/photo)");
+            assertTrue(fixture.partial.await(5, TimeUnit.SECONDS));
             fixture.stream.complete();
             fixture.stream.settlement.complete(null);
             await().atMost(Duration.ofSeconds(5)).until(() -> fixture.runtime.pendingReceives("telegram") == 0);
             assertEquals(2, attempts.get());
             assertTrue(times.get(1) - times.get(0) >= TimeUnit.SECONDS.toNanos(1));
-            assertEquals(List.of("typing", "placeholder", "final", "photo"), fixture.operations);
+            assertEquals(List.of("typing", "partial", "final", "photo"), fixture.operations);
             verify(fixture.manager.client).execute(any(SendPhoto.class));
             assertEquals(3, fixture.history.size());
         }
@@ -130,72 +136,87 @@ class TelegramChannelPipelineTest {
             fixture.stream.complete();
             fixture.stream.settlement.complete(null);
             await().atMost(Duration.ofSeconds(5)).until(() -> fixture.runtime.pendingReceives("telegram") == 0);
-            verify(fixture.chats).streamSendManaged(eq("chat"), any(), isNull());
+            verify(fixture.chats).startRun(eq("chat"), any(), isNull(), any());
             verify(fixture.manager.client, never()).execute(any(SendPhoto.class));
             assertEquals(List.of(new History(1L, "in", "text", "question")), fixture.history);
         }
     }
 
+    @Test
+    void failedRunSendsSafeNoticeInsteadOfFinalizingPartialAsSuccess() throws Exception {
+        try (var fixture = new Pipeline()) {
+            fixture.manager.registration().consumer().accept(List.of(TelegramChannelManagerTest.update(1, "question")));
+            assertTrue(fixture.stream.started.await(5, TimeUnit.SECONDS));
+            fixture.stream.partial.accept("confirmed body");
+            assertTrue(fixture.partial.await(5, TimeUnit.SECONDS));
+            fixture.stream.fail();
+            await().atMost(Duration.ofSeconds(5)).until(() -> fixture.runtime.pendingReceives("telegram") == 0);
+            assertEquals(List.of("typing", "partial", "error"), fixture.operations);
+            assertTrue(fixture.history.contains(new History(42L, "out", "text", "confirmed body")));
+            verify(fixture.manager.client, never()).execute(any(EditMessageText.class));
+            verify(fixture.manager.client, never()).execute(any(SendPhoto.class));
+            assertEquals(2, fixture.history.size());
+        }
+    }
+
     record History(Long message, String direction, String kind, String content) {}
 
-    static final class ManagedStream implements ChatStreamHandle {
-        final CompletableFuture<TokenStream> ready = new CompletableFuture<>();
+    static final class ManagedRun implements ChatRunHandle {
         final CompletableFuture<Void> settlement = new CompletableFuture<>();
+        final CompletableFuture<Void> eventDelivery = new CompletableFuture<>();
         final CountDownLatch started = new CountDownLatch(1);
         final AtomicInteger cancelled = new AtomicInteger();
-        final TokenStream stream = mock(
-                TokenStream.class, withSettings().mockMaker(MockMakers.SUBCLASS).defaultAnswer(RETURNS_SELF));
-        volatile Consumer<String> partial;
-        volatile Consumer<ChatResponse> terminal;
-        volatile Consumer<Throwable> error;
-        RuntimeException cancellationFailure;
+        volatile Consumer<ChatRunEvent> observer;
+        final Consumer<String> partial = delta -> emit("message.delta", Map.of("delta", delta));
+        final Consumer<Throwable> error = ignored -> fail();
+        long seq;
 
-        ManagedStream() {
-            doAnswer(call -> {
-                        partial = call.getArgument(0);
-                        return stream;
-                    })
-                    .when(stream)
-                    .onPartialResponse(any());
-            doAnswer(call -> {
-                        terminal = call.getArgument(0);
-                        return stream;
-                    })
-                    .when(stream)
-                    .onCompleteResponse(any());
-            doAnswer(call -> {
-                        error = call.getArgument(0);
-                        return stream;
-                    })
-                    .when(stream)
-                    .onError(any());
-            doAnswer(call -> {
-                        started.countDown();
-                        return null;
-                    })
-                    .when(stream)
-                    .start();
-            ready.complete(stream);
+        void start(Consumer<ChatRunEvent> listener) {
+            observer = listener;
+            emit("run.queued", Map.of("phase", "queued"));
+            emit("run.started", Map.of("phase", "preparing"));
+            started.countDown();
         }
 
-        public CompletableFuture<TokenStream> ready() {
-            return ready;
+        void emit(String name, Map<String, Object> data) {
+            observer.accept(new ChatRunEvent(name, "run", "chat", ++seq, Instant.now(), data));
+        }
+
+        void complete() {
+            emit("run.status", Map.of("phase", "finalizing"));
+            settlement.complete(null);
+            emit(
+                    "run.completed",
+                    Map.of(
+                            "response",
+                            ChatResponse.builder()
+                                    .aiMessage(AiMessage.from("complete"))
+                                    .build(),
+                            "completed",
+                            true,
+                            "partial",
+                            false));
+        }
+
+        void fail() {
+            settlement.complete(null);
+            emit("run.failed", Map.of("message", "Safe failure", "completed", false, "partial", true));
+        }
+
+        public String runId() {
+            return "run";
         }
 
         public CompletableFuture<Void> settled() {
             return settlement;
         }
 
-        public void cancel() {
-            cancelled.incrementAndGet();
-            if (cancellationFailure != null) {
-                throw cancellationFailure;
-            }
+        public CompletableFuture<Void> eventsDelivered() {
+            return eventDelivery;
         }
 
-        void complete() {
-            terminal.accept(
-                    ChatResponse.builder().aiMessage(AiMessage.from("complete")).build());
+        public void cancel() {
+            cancelled.incrementAndGet();
         }
     }
 
@@ -241,11 +262,13 @@ class TelegramChannelPipelineTest {
         final TgChatBindingService bindings = TelegramChannelManagerTest.stub(TgChatBindingService.class);
         final TgMessageService messages = TelegramChannelManagerTest.stub(TgMessageService.class);
         final ChatService chats = TelegramChannelManagerTest.stub(ChatService.class);
-        final ManagedStream stream = new ManagedStream();
+        final ManagedRun stream = new ManagedRun();
         final TextPlugin text = new TextPlugin();
         final List<History> history = new CopyOnWriteArrayList<>();
         final List<String> operations = new CopyOnWriteArrayList<>();
         final CountDownLatch partial = new CountDownLatch(1);
+        final CountDownLatch finalStarted = new CountDownLatch(1);
+        volatile CountDownLatch finalGate = new CountDownLatch(0);
         final AnnotationConfigApplicationContext spring = new AnnotationConfigApplicationContext();
         final ChannelRuntime runtime;
         volatile Thread callbackThread;
@@ -253,7 +276,10 @@ class TelegramChannelPipelineTest {
         Pipeline() throws Exception {
             when(bindings.getOrCreate(anyString(), anyLong(), anyString(), any(), any(), any(), any(), any()))
                     .thenReturn("chat");
-            when(chats.streamSendManaged(eq("chat"), any(), isNull())).thenReturn(stream);
+            when(chats.startRun(eq("chat"), any(), isNull(), any())).thenAnswer(call -> {
+                stream.start(call.getArgument(3));
+                return stream;
+            });
             when(messages.record(anyString(), anyLong(), any(), anyString(), anyString(), any(), any()))
                     .thenAnswer(call -> {
                         assertNotSame(callbackThread, Thread.currentThread());
@@ -265,8 +291,14 @@ class TelegramChannelPipelineTest {
                 checkDeliveryThread();
                 SendMessage send = call.getArgument(0);
                 assertEquals("7", send.getChatId());
-                assertEquals("…", send.getText());
-                operations.add("placeholder");
+                assertFalse(send.getText().isBlank());
+                assertNotEquals("…", send.getText());
+                assertFalse(send.getText().contains("!["));
+                operations.add(
+                        send.getText().equals("Safe failure")
+                                ? "error"
+                                : send.getParseMode() == null ? "partial" : "final");
+                if (send.getParseMode() == null) partial.countDown();
                 Message message = new Message();
                 message.setMessageId(42);
                 return message;
@@ -278,7 +310,11 @@ class TelegramChannelPipelineTest {
                 assertFalse(edit.getText().contains("!["));
                 operations.add(edit.getParseMode() == null ? "partial" : "final");
                 if (edit.getParseMode() == null) partial.countDown();
-                else assertEquals("Markdown", edit.getParseMode());
+                else {
+                    assertEquals("Markdown", edit.getParseMode());
+                    finalStarted.countDown();
+                    assertTrue(finalGate.await(5, TimeUnit.SECONDS));
+                }
                 return Boolean.TRUE;
             });
             when(manager.client.execute(any(SendPhoto.class))).thenAnswer(call -> {
@@ -315,6 +351,7 @@ class TelegramChannelPipelineTest {
         }
 
         public void close() {
+            finalGate.countDown();
             stream.settlement.complete(null);
             spring.close();
             manager.close();

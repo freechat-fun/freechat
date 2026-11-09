@@ -221,41 +221,64 @@ public class ChatServiceImpl implements ChatService {
         }
 
         ChatTaskQueue queue = queueManager.getOrCreateQueue(chatId);
-        ChatTask.Stream task = new ChatTask.Stream(() -> {
-            ChatSession base = currentSession(chatId);
-            if (base == null) {
-                return null;
-            }
-            LongTermChatMemoryStore.Binding binding = null;
-            try {
-                binding = longTermChatMemoryStore.open(chatId, base).orElse(null);
-                ChatSession session = binding == null ? base : binding.session();
-                Object memoryId = asMemoryId(chatId);
-                var messages = handleMessages(message, context, memoryId, session);
-                if (session.getModerationModel() != null) {
-                    chatSessionService.verifyModerationIfNeeded(
-                            chatSessionService.triggerModerationIfNeeded(session, messages));
-                }
-                TokenStream stream = new ChatExecution(session, memoryId).stream();
-                return binding == null ? stream : new MemoryTokenStream(stream, binding.memory(), binding.lifetime());
-            } catch (RuntimeException | Error failure) {
-                if (!(failure instanceof fun.freechat.service.chat.memory.MemoryBounds.CapacityException)) {
-                    log.error("Chat stream initialization failed for chat {}", chatId, failure);
-                }
-                if (binding != null) {
-                    binding.close();
-                }
-                if (failure instanceof Error) {
-                    throw new Error("Chat stream initialization failed");
-                }
-                if (failure instanceof fun.freechat.service.chat.memory.MemoryBounds.CapacityException exhausted) {
-                    throw exhausted;
-                }
-                throw new IllegalStateException("Chat stream initialization failed");
-            }
-        });
+        ChatTask.Stream task = new ChatTask.Stream(() -> buildStream(chatId, message, context, null));
         queue.submit(task);
         return task;
+    }
+
+    @Override
+    public ChatRunHandle startRun(
+            String chatId, ChatMessage message, String context, java.util.function.Consumer<ChatRunEvent> observer) {
+        return ChatRun.start(
+                chatId,
+                observer,
+                run -> buildStream(chatId, message, context, run),
+                task -> queueManager.getOrCreateQueue(chatId).submit(task));
+    }
+
+    private TokenStream buildStream(String chatId, ChatMessage message, String context, ChatRun run) {
+        if (run != null) run.checkActive();
+        ChatSession base = currentSession(chatId);
+        if (base == null) {
+            return null;
+        }
+        LongTermChatMemoryStore.Binding binding = null;
+        try {
+            if (run != null) run.checkActive();
+            binding = longTermChatMemoryStore.open(chatId, base).orElse(null);
+            if (run != null) run.checkActive();
+            ChatSession session = binding == null ? base : binding.session();
+            Object memoryId = asMemoryId(chatId);
+            var messages = handleMessages(message, context, memoryId, session);
+            if (session.getModerationModel() != null) {
+                chatSessionService.verifyModerationIfNeeded(
+                        chatSessionService.triggerModerationIfNeeded(session, messages));
+            }
+            if (run != null) run.checkActive();
+            if (run != null && binding == null) {
+                run.onFinalResponse(response -> {
+                    session.addMemoryUsage(1L, response.tokenUsage());
+                    return chatMemoryService.updateChatMessageTokenUsage(
+                            chatId, response.aiMessage(), response.tokenUsage());
+                });
+            }
+            TokenStream stream = new ChatExecution(session, memoryId, run).stream();
+            return binding == null ? stream : new MemoryTokenStream(stream, binding.memory(), binding.lifetime());
+        } catch (RuntimeException | Error failure) {
+            if (!(failure instanceof fun.freechat.service.chat.memory.MemoryBounds.CapacityException)) {
+                log.error("Chat stream initialization failed for chat {}", chatId, failure);
+            }
+            if (binding != null) {
+                binding.close();
+            }
+            if (failure instanceof Error) {
+                throw new Error("Chat stream initialization failed");
+            }
+            if (failure instanceof fun.freechat.service.chat.memory.MemoryBounds.CapacityException exhausted) {
+                throw exhausted;
+            }
+            throw new IllegalStateException("Chat stream initialization failed");
+        }
     }
 
     @Override
@@ -313,24 +336,38 @@ public class ChatServiceImpl implements ChatService {
             return null;
         }
 
-        ChatTask<TokenStream> task = queueManager.getOrCreateQueue(chatId).submit(new ChatTask.Stream(() -> {
-            ChatSession session = chatSessionService.get(chatId);
-            if (session == null) {
-                return null;
-            }
+        ChatTask.Stream task = new ChatTask.Stream(() -> buildAssistantStream(chatId, assistantUid, null));
+        queueManager.getOrCreateQueue(chatId).submit(task);
+        return awaitQuietly(task.ready(), task::cancel);
+    }
 
-            ChatSession assistantSession = createTemporarySession(session, chatId, assistantUid);
-            if (assistantSession == null) {
-                return null;
-            }
+    @Override
+    public ChatRunHandle startAssistantRun(
+            String chatId, String assistantUid, java.util.function.Consumer<ChatRunEvent> observer) {
+        return ChatRun.start(
+                chatId,
+                observer,
+                run -> buildAssistantStream(chatId, assistantUid, run),
+                task -> queueManager.getOrCreateQueue(chatId).submit(task));
+    }
 
-            String assistantChatId = assistantChatId(chatId);
-            Object assistantMemoryId = asMemoryId(assistantChatId);
-            handleMessages(null, null, assistantChatId, assistantSession);
-            return new ChatExecution(assistantSession, assistantMemoryId).stream();
-        }));
+    private TokenStream buildAssistantStream(String chatId, String assistantUid, ChatRun run) {
+        if (run != null) run.checkActive();
+        ChatSession session = chatSessionService.get(chatId);
+        if (session == null) {
+            return null;
+        }
 
-        return awaitQuietly(task.future());
+        ChatSession assistantSession = createTemporarySession(session, chatId, assistantUid);
+        if (assistantSession == null) {
+            return null;
+        }
+
+        String assistantChatId = assistantChatId(chatId);
+        Object assistantMemoryId = asMemoryId(assistantChatId);
+        handleMessages(null, null, assistantChatId, assistantSession);
+        if (run != null) run.checkActive();
+        return new ChatExecution(assistantSession, assistantMemoryId, run).stream();
     }
 
     private ChatSession createTemporarySession(ChatSession session, String chatId, String assistantUid) {

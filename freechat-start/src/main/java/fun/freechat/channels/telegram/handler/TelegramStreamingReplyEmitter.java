@@ -1,10 +1,12 @@
 package fun.freechat.channels.telegram.handler;
 
+import dev.langchain4j.model.chat.response.ChatResponse;
 import fun.freechat.channels.spi.ChannelFailure;
 import fun.freechat.channels.spi.ChannelMedia;
 import fun.freechat.channels.spi.ChannelReceipt;
 import fun.freechat.channels.spi.ChannelText;
 import fun.freechat.channels.spi.ChannelTurnContext;
+import fun.freechat.service.chat.ChatRunEvent;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +26,7 @@ public final class TelegramStreamingReplyEmitter {
     }
 
     private enum Kind {
-        PLACEHOLDER,
-        REPLACEMENT,
+        ERROR,
         FREEZE,
         PARTIAL,
         FINAL,
@@ -46,7 +47,7 @@ public final class TelegramStreamingReplyEmitter {
     static final int MAX_BUFFER_LENGTH = 128_000;
     static final int MAX_IMAGES = 32;
     static final long FLUSH_INTERVAL_MS = 500L;
-    private static final String PLACEHOLDER = "…";
+    private static final String SAFE_ERROR = "Sorry, I couldn't complete this reply. Please try again.";
     private static final Pattern IMAGE_MD = Pattern.compile("!\\[([^\\]]*)\\]\\(([^)\\s]+)\\)");
     private static final Pattern INCOMPLETE_IMAGE = Pattern.compile("!\\[[^\\]]*(?:\\](?:\\([^)]*)?)?$");
 
@@ -61,7 +62,11 @@ public final class TelegramStreamingReplyEmitter {
     private ChannelFailure failure;
     private ChannelFailure textFailure;
     private ChannelFailure imageFailure;
-    private boolean initialRequested;
+    private boolean runTerminal;
+    private boolean typingStopped;
+    private boolean typingStarting;
+    private String errorNotice;
+    private boolean errorNoticeRequested;
     private boolean inFlight;
     private boolean partialReady;
     private boolean timerArmed;
@@ -70,7 +75,6 @@ public final class TelegramStreamingReplyEmitter {
     private AutoCloseable typing;
     private int receivedLength;
     private int segmentStart;
-    private int pendingSplitAt = -1;
     private int imageIndex;
     private String messageId;
     private String lastFlushed = "";
@@ -89,13 +93,77 @@ public final class TelegramStreamingReplyEmitter {
                 return started;
             }
             state = State.STREAMING;
-            initialRequested = true;
+        }
+        // Readiness is local; no Telegram message exists until actual visible content arrives.
+        started.complete(null);
+        return started;
+    }
+
+    /** Project the service's ordered run events, never infer model status from UI text. */
+    public void onRunEvent(ChatRunEvent event) {
+        synchronized (monitor) {
+            if (runTerminal || state != State.STREAMING) {
+                return;
+            }
+            runTerminal = switch (event.event()) {
+                case "run.completed", "run.failed", "run.cancelled" -> true;
+                default -> false;
+            };
+        }
+        switch (event.event()) {
+            case "run.queued", "run.started" -> startTyping();
+            case "run.status" -> {
+                Object phase = event.data().get("phase");
+                if ("finalizing".equals(phase) || "cancelling".equals(phase)) {
+                    stopTyping();
+                } else {
+                    startTyping();
+                }
+            }
+            case "message.delta" -> {
+                if (event.data().get("delta") instanceof String delta) {
+                    append(delta);
+                }
+            }
+            case "run.completed" -> {
+                boolean needsBody;
+                synchronized (monitor) {
+                    needsBody = images.isEmpty() && fullText.toString().isBlank();
+                    if (needsBody) {
+                        fullText.setLength(0);
+                        receivedLength = 0;
+                    }
+                }
+                if (needsBody
+                        && event.data().get("response") instanceof ChatResponse response
+                        && response.aiMessage() != null) {
+                    append(response.aiMessage().text());
+                }
+                complete();
+            }
+            case "run.failed" ->
+                fail(
+                        new ChannelFailure(ChannelFailure.Kind.FAILED),
+                        event.data().get("message") instanceof String message ? message : SAFE_ERROR);
+            case "run.cancelled" -> fail(new ChannelFailure(ChannelFailure.Kind.CANCELLED));
+            default -> {
+                // Reasoning, tool arguments and metadata are not Telegram reply content.
+            }
+        }
+    }
+
+    private void startTyping() {
+        synchronized (monitor) {
+            if (state != State.STREAMING || typingStopped || typing != null || typingStarting) {
+                return;
+            }
+            typingStarting = true;
         }
         try {
             AutoCloseable heartbeat = turn.typing(Duration.ofSeconds(4));
             boolean keep;
             synchronized (monitor) {
-                keep = state == State.STREAMING;
+                keep = state == State.STREAMING && !typingStopped;
                 if (keep) {
                     typing = heartbeat;
                 }
@@ -105,9 +173,11 @@ public final class TelegramStreamingReplyEmitter {
             }
         } catch (Exception ignored) {
             // Typing is optional and best effort, never a reason to lose a reply.
+        } finally {
+            synchronized (monitor) {
+                typingStarting = false;
+            }
         }
-        drive();
-        return started;
     }
 
     /** Token callbacks only mutate a bounded buffer and enqueue coalesced work. */
@@ -154,6 +224,11 @@ public final class TelegramStreamingReplyEmitter {
 
     /** Abort setup/delivery without exposing a provider exception or its cause. */
     public CompletableFuture<Reply> fail(Throwable cause) {
+        return fail(cause, null);
+    }
+
+    /** A service-approved safe message is a separate notice, not successful assistant content. */
+    public CompletableFuture<Reply> fail(Throwable cause, String safeMessage) {
         synchronized (monitor) {
             if (state == State.TERMINAL) {
                 return completion;
@@ -165,6 +240,14 @@ public final class TelegramStreamingReplyEmitter {
                 failure = cause instanceof ChannelFailure safe
                         ? new ChannelFailure(safe.kind(), safe.retryAfter())
                         : new ChannelFailure(ChannelFailure.Kind.FAILED);
+                if (safeMessage != null && failure.kind() != ChannelFailure.Kind.CANCELLED) {
+                    String notice = safeMessage.isBlank() ? SAFE_ERROR : safeMessage;
+                    int end = Math.min(notice.length(), MAX_MESSAGE_LENGTH);
+                    if (end < notice.length() && Character.isHighSurrogate(notice.charAt(end - 1))) {
+                        end--;
+                    }
+                    errorNotice = notice.substring(0, end);
+                }
             }
             state = State.FINALIZING;
         }
@@ -193,7 +276,14 @@ public final class TelegramStreamingReplyEmitter {
             if (state == State.NEW || state == State.TERMINAL || inFlight) {
                 return;
             }
-            operation = failure == null ? nextOperation() : null;
+            if (failure == null) {
+                operation = nextOperation();
+            } else if (errorNotice != null && !errorNoticeRequested && !turn.isCancelled()) {
+                errorNoticeRequested = true;
+                operation = new Operation(Kind.ERROR, null, ChannelText.plain(errorNotice), -1, null);
+            } else {
+                operation = null;
+            }
             if (operation != null) {
                 inFlight = true;
             } else if (state == State.FINALIZING) {
@@ -202,6 +292,7 @@ public final class TelegramStreamingReplyEmitter {
             } else if (!timerArmed
                     && textFailure == null
                     && visibleEnd() > segmentStart
+                    && !fullText.substring(segmentStart, visibleEnd()).isBlank()
                     && !fullText.substring(segmentStart, visibleEnd()).equals(lastFlushed)) {
                 timerArmed = true;
                 scheduleVersion = ++timerVersion;
@@ -229,18 +320,12 @@ public final class TelegramStreamingReplyEmitter {
         }
     }
 
-    // Called only under monitor. Offsets change in accepted(), never when a send is merely queued.
+    // Called only under monitor. Only skip blank segments; sent offsets advance in accepted().
     private Operation nextOperation() {
         if (textFailure != null) {
             return state == State.FINALIZING && imageIndex < images.size()
                     ? new Operation(Kind.IMAGE, null, null, -1, images.get(imageIndex))
                     : null;
-        }
-        if (messageId == null && initialRequested) {
-            return new Operation(Kind.PLACEHOLDER, null, ChannelText.plain(PLACEHOLDER), -1, null);
-        }
-        if (pendingSplitAt >= 0) {
-            return new Operation(Kind.REPLACEMENT, null, ChannelText.plain(PLACEHOLDER), pendingSplitAt, null);
         }
         boolean isFinal = state == State.FINALIZING;
         if (!isFinal && !partialReady) {
@@ -248,7 +333,8 @@ public final class TelegramStreamingReplyEmitter {
         }
         int end = isFinal ? fullText.length() : visibleEnd();
         int remaining = end - segmentStart;
-        if (remaining > MAX_MESSAGE_LENGTH) {
+        while (remaining > MAX_MESSAGE_LENGTH
+                && !fullText.substring(segmentStart, end).isBlank()) {
             int splitAt = segmentStart + MAX_MESSAGE_LENGTH;
             int space = fullText.lastIndexOf(" ", splitAt);
             if (space > segmentStart + MAX_MESSAGE_LENGTH * 3 / 4) {
@@ -257,11 +343,17 @@ public final class TelegramStreamingReplyEmitter {
             if (Character.isHighSurrogate(fullText.charAt(splitAt - 1))) {
                 splitAt--;
             }
-            return freeze(splitAt);
+            if (messageId == null && fullText.substring(segmentStart, splitAt).isBlank()) {
+                fullText.delete(segmentStart, splitAt);
+                end -= splitAt - segmentStart;
+                remaining = end - segmentStart;
+            } else {
+                return freeze(splitAt);
+            }
         }
         String segment = fullText.substring(segmentStart, end);
         if (isFinal && !finalTextConfirmed) {
-            if (segment.isEmpty()) {
+            if (segment.isBlank()) {
                 finalTextConfirmed = true;
             } else {
                 String markdown = balanceMarkdown(segment);
@@ -278,7 +370,7 @@ public final class TelegramStreamingReplyEmitter {
                     ? new Operation(Kind.IMAGE, null, null, -1, images.get(imageIndex))
                     : null;
         }
-        if (!segment.isEmpty() && !segment.equals(lastFlushed)) {
+        if (!segment.isBlank() && !segment.equals(lastFlushed)) {
             return new Operation(Kind.PARTIAL, messageId, ChannelText.plain(segment), -1, null);
         }
         partialReady = false;
@@ -297,9 +389,11 @@ public final class TelegramStreamingReplyEmitter {
         try {
             CompletableFuture<?> delivery =
                     switch (operation.kind()) {
-                        case PLACEHOLDER, REPLACEMENT -> turn.outbound().sendText(operation.text());
+                        case ERROR -> turn.outbound().sendText(operation.text());
                         case FREEZE, PARTIAL, FINAL ->
-                            turn.outbound().editText(operation.messageId(), operation.text());
+                            operation.messageId() == null
+                                    ? turn.outbound().sendText(operation.text())
+                                    : turn.outbound().editText(operation.messageId(), operation.text());
                         case IMAGE ->
                             turn.outbound()
                                     .sendMedia(ChannelMedia.reference(ChannelMedia.Kind.IMAGE, operation.url(), null));
@@ -310,7 +404,7 @@ public final class TelegramStreamingReplyEmitter {
                 synchronized (monitor) {
                     if (error == null) {
                         accepted(operation, (receipt instanceof ChannelReceipt r) ? r : null);
-                    } else if (operation.kind() != Kind.PLACEHOLDER && failure == null && !turn.isCancelled()) {
+                    } else if (failure == null && !turn.isCancelled()) {
                         Throwable unwrapped = error;
                         while (unwrapped instanceof CompletionException && unwrapped.getCause() != null) {
                             unwrapped = unwrapped.getCause();
@@ -322,9 +416,14 @@ public final class TelegramStreamingReplyEmitter {
                             if (operation.kind() == Kind.IMAGE) {
                                 imageFailure = imageFailure == null ? safe : imageFailure;
                                 imageIndex++;
-                            } else if (operation.kind() == Kind.PARTIAL
-                                    || (operation.kind() == Kind.FREEZE && state == State.STREAMING)) {
+                            } else if (operation.messageId() != null
+                                    && (operation.kind() == Kind.PARTIAL
+                                            || (operation.kind() == Kind.FREEZE && state == State.STREAMING))) {
                                 partialReady = false;
+                            } else if (operation.messageId() == null && state == State.STREAMING) {
+                                // An unconfirmed send cannot safely be replayed as a later edit/send.
+                                failure = safe;
+                                state = State.FINALIZING;
                             } else {
                                 textFailure = textFailure == null ? safe : textFailure;
                             }
@@ -339,9 +438,6 @@ public final class TelegramStreamingReplyEmitter {
                 } else if (error != null || currentFailure != null) {
                     fail(error != null ? error : currentFailure);
                 } else {
-                    if (operation.kind() == Kind.PLACEHOLDER) {
-                        started.complete(null);
-                    }
                     drive();
                 }
             });
@@ -354,36 +450,35 @@ public final class TelegramStreamingReplyEmitter {
     }
 
     private void accepted(Operation operation, ChannelReceipt receipt) {
+        if (operation.kind() != Kind.IMAGE && operation.kind() != Kind.ERROR && operation.messageId() == null) {
+            if (receipt == null || receipt.messageId() == null) {
+                failure = new ChannelFailure(ChannelFailure.Kind.AMBIGUOUS);
+                state = State.FINALIZING;
+                return;
+            }
+            messageId = receipt.messageId();
+        }
         switch (operation.kind()) {
-            case PLACEHOLDER, REPLACEMENT -> {
-                if (receipt == null) {
-                    failure = new ChannelFailure(ChannelFailure.Kind.AMBIGUOUS);
-                    state = State.FINALIZING;
-                    return;
-                }
-                messageId = receipt.messageId();
-                lastFlushed = PLACEHOLDER;
-                if (operation.kind() == Kind.REPLACEMENT) {
-                    segmentStart = operation.splitAt();
-                    pendingSplitAt = -1;
-                }
+            case ERROR -> {
+                // Failure notices never replace or become confirmed assistant content.
             }
             case FREEZE -> {
-                lastFlushed = operation.text().text();
-                pendingSplitAt = operation.splitAt();
                 confirmedTextEnd = operation.splitAt();
-                confirmedTextMessageId = operation.messageId();
+                confirmedTextMessageId = messageId;
+                segmentStart = operation.splitAt();
+                messageId = null;
+                lastFlushed = "";
             }
             case PARTIAL -> {
                 lastFlushed = operation.text().text();
                 partialReady = false;
                 confirmedTextEnd = segmentStart + operation.text().text().length();
-                confirmedTextMessageId = operation.messageId();
+                confirmedTextMessageId = messageId;
             }
             case FINAL -> {
                 finalTextConfirmed = true;
                 confirmedTextEnd = fullText.length();
-                confirmedTextMessageId = operation.messageId();
+                confirmedTextMessageId = messageId;
             }
             case IMAGE -> {
                 if (receipt == null) {
@@ -429,17 +524,24 @@ public final class TelegramStreamingReplyEmitter {
 
     private void stopTimers() {
         ScheduledFuture<?> oldTimer;
-        AutoCloseable oldTyping;
         synchronized (monitor) {
             timerArmed = false;
             timerVersion++;
             oldTimer = timer;
             timer = null;
-            oldTyping = typing;
-            typing = null;
         }
         if (oldTimer != null) {
             oldTimer.cancel(false);
+        }
+        stopTyping();
+    }
+
+    private void stopTyping() {
+        AutoCloseable oldTyping;
+        synchronized (monitor) {
+            typingStopped = true;
+            oldTyping = typing;
+            typing = null;
         }
         close(oldTyping);
     }

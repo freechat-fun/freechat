@@ -1,16 +1,15 @@
 import { useRef, KeyboardEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Avatar, IconButton, Stack, useTheme } from '@mui/material';
+import { Alert, Avatar, IconButton, Stack, useTheme } from '@mui/material';
 import { AndroidRounded, SendRounded } from '@mui/icons-material';
-import { CharacterSummaryDTO, LlmResultDTO } from 'freechat-sdk';
+import { CharacterSummaryDTO } from 'freechat-sdk';
 import { MessageAssistantsWindow } from '.';
-import { fetchEventSource } from '@microsoft/fetch-event-source';
+import { chatRunErrorKey } from '../../libs/chat_run';
+import type { ChatRunStatus } from '../../libs/chat_run';
+import { useChatRun } from '../../libs/use_chat_run';
 import { getMessageText } from '../../libs/template_utils';
-import {
-  useErrorMessageBusContext,
-  useFreeChatApiContext,
-} from '../../contexts';
-import { isChatsPaneOpened } from '../../libs/chat_utils';
+import { useFreeChatApiContext } from '../../contexts';
+import { getSenderReply, isChatsPaneOpened } from '../../libs/chat_utils';
 import { TinyInput } from '..';
 
 export type MessageInputProps = {
@@ -19,6 +18,7 @@ export type MessageInputProps = {
   setTextAreaValue: (value: string) => void;
   onSubmit: () => void;
   disabled?: boolean;
+  onRunStatus?: (status?: ChatRunStatus) => void;
 };
 
 export default function MessageInput(props: MessageInputProps) {
@@ -27,11 +27,11 @@ export default function MessageInput(props: MessageInputProps) {
     textAreaValue,
     setTextAreaValue,
     onSubmit,
+    onRunStatus,
     disabled = false,
   } = props;
   const theme = useTheme();
   const { t } = useTranslation('chat');
-  const { handleError } = useErrorMessageBusContext();
   const { serverUrl } = useFreeChatApiContext();
 
   const [assistantAvatar, setAssistantAvatar] = useState<string>();
@@ -39,8 +39,14 @@ export default function MessageInput(props: MessageInputProps) {
   const [assistantUid, setAssistantUid] = useState<string>();
   const [assistantWindowOpen, setAssistantWindowOpen] =
     useState<boolean>(false);
-  const [assistantHelp, setAssistantHelp] = useState(false);
-  const [assistantMessage, setAssistantMessaage] = useState('');
+  const [assistantRequest, setAssistantRequest] = useState<{
+    chatId: string;
+    uid: string;
+  }>();
+  const assistantHelp =
+    !!assistantRequest && assistantRequest.chatId === chatId;
+  const [assistantMessage, setAssistantMessage] = useState('');
+  const [assistantError, setAssistantError] = useState('');
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -53,15 +59,16 @@ export default function MessageInput(props: MessageInputProps) {
     const storedAssistantUid = localStorage.getItem(
       ASSISTANT_UID_KEY_PREFIX + chatId
     );
-    if (storedAssistantUid) {
-      setAssistantUid(storedAssistantUid);
-      setAssistantName(
-        localStorage.getItem(ASSISTANT_NAME_KEY_PREFIX + chatId) ?? undefined
-      );
-      setAssistantAvatar(
-        localStorage.getItem(ASSISTANT_AVATAR_KEY_PREFIX + chatId) ?? undefined
-      );
-    }
+    setAssistantUid(storedAssistantUid || undefined);
+    setAssistantName(
+      localStorage.getItem(ASSISTANT_NAME_KEY_PREFIX + chatId) ?? undefined
+    );
+    setAssistantAvatar(
+      localStorage.getItem(ASSISTANT_AVATAR_KEY_PREFIX + chatId) ?? undefined
+    );
+    setAssistantMessage('');
+    setAssistantError('');
+    setAssistantRequest(undefined);
   }, [chatId]);
 
   useEffect(() => {
@@ -70,77 +77,53 @@ export default function MessageInput(props: MessageInputProps) {
     }
   }, [disabled, theme.breakpoints]);
 
+  useChatRun({
+    enabled: assistantHelp && !disabled,
+    url: `${serverUrl}${apiPath}/${chatId}/${assistantRequest?.uid}`,
+    sessionId: chatId,
+    onUpdate: (snapshot) => {
+      onRunStatus?.(snapshot.phase);
+      setAssistantMessage(
+        getSenderReply(getMessageText(snapshot.result.message) ?? '', false)
+      );
+    },
+    onFinish: (outcome) => {
+      const text = getSenderReply(
+        getMessageText(outcome.result.message) ?? '',
+        false
+      );
+      if (text) setTextAreaValue(text);
+      setAssistantMessage('');
+      setAssistantRequest(undefined);
+      onRunStatus?.(
+        outcome.status === 'completed' ? undefined : outcome.status
+      );
+      setAssistantError(
+        outcome.status === 'completed'
+          ? ''
+          : outcome.status === 'cancelled'
+            ? 'The request was cancelled.'
+            : chatRunErrorKey(outcome.error)
+      );
+    },
+  });
+
   useEffect(() => {
-    if (!assistantHelp || !chatId || !assistantUid) {
-      return;
-    }
-
-    const url = `${serverUrl}${apiPath}/${chatId}/${assistantUid}`;
-    const controller = new AbortController();
-    let shouldReconnect = true;
-
-    const startListening = async () => {
-      try {
-        await fetchEventSource(url, {
-          method: 'GET',
-          signal: controller.signal,
-          async onopen(response) {
-            if (response.ok) {
-              setAssistantMessaage('');
-            } else if (response.status === 429) {
-              const message = `[${t('Quota has been used up, you can use your API key to continue chatting.')}]`;
-              setTextAreaValue(message);
-            } else {
-              const message = `[${response.statusText}]`;
-              setTextAreaValue(message);
-            }
-            return Promise.resolve();
-          },
-          onmessage(event) {
-            const result = JSON.parse(event.data) as LlmResultDTO;
-            if (result.finishReason) {
-              const fullMessage = getMessageText(result.message) ?? '';
-              if (fullMessage) {
-                setTextAreaValue(fullMessage);
-              }
-              setAssistantMessaage('');
-              setAssistantHelp(false);
-            } else if (result.text) {
-              setAssistantMessaage((prevMessage) => prevMessage + result.text);
-            }
-          },
-          onerror(error) {
-            handleError(error);
-          },
-          onclose() {
-            if (shouldReconnect) {
-              console.error('The connection has been closed...');
-            }
-          },
-        });
-      } catch (error) {
-        handleError(error);
-      }
-    };
-
-    startListening();
-    return () => {
-      shouldReconnect = false;
-      controller.abort();
-      setAssistantHelp(false);
-    };
+    if (!disabled || !assistantHelp) return;
+    if (assistantMessage) setTextAreaValue(assistantMessage);
+    setAssistantMessage('');
+    setAssistantRequest(undefined);
+    onRunStatus?.(undefined);
   }, [
+    disabled,
     assistantHelp,
-    assistantUid,
-    chatId,
-    handleError,
-    serverUrl,
+    assistantMessage,
     setTextAreaValue,
-    t,
+    onRunStatus,
   ]);
 
   function handleClick() {
-    if (textAreaValue.trim() !== '') {
+    if (!disabled && !assistantHelp && textAreaValue.trim() !== '') {
       onSubmit();
       setTextAreaValue('');
     }
@@ -187,7 +170,11 @@ export default function MessageInput(props: MessageInputProps) {
   }
 
   function handleAssistantSend() {
-    setAssistantHelp(true);
+    if (!chatId || !assistantUid || disabled || assistantHelp) return;
+    setAssistantError('');
+    setAssistantMessage('');
+    onRunStatus?.('sending');
+    setAssistantRequest({ chatId, uid: assistantUid });
   }
 
   return (
@@ -195,12 +182,13 @@ export default function MessageInput(props: MessageInputProps) {
       sx={{
         px: 1,
         pb: { xs: 1, sm: 3 },
-        flexDirection: 'row',
+        flexDirection: 'column',
       }}
     >
+      {assistantError && <Alert severity="warning">{t(assistantError)}</Alert>}
       <Stack direction="row" sx={{ flex: 1 }}>
         <TinyInput
-          disabled={disabled}
+          disabled={disabled || assistantHelp}
           placeholder="Type something here…"
           aria-label="Message"
           onChange={(e) => setTextAreaValue(e.target.value)}
