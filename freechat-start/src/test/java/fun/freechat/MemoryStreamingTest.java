@@ -171,11 +171,11 @@ class MemoryStreamingTest {
     @Test
     void httpCompletionReturnsCanonicalFinalIdWithoutRecountingRecursiveProviderUsage() throws Exception {
         Fixture f = new Fixture();
-        var constructor = fun.freechat.service.chat.QueueAwareTokenStream.class.getDeclaredConstructor(
-                TokenStream.class, CountDownLatch.class);
-        constructor.setAccessible(true);
-        CountDownLatch finished = new CountDownLatch(1);
-        var queued = constructor.newInstance(f.stream(), finished);
+        var worker = java.util.concurrent.Executors.newSingleThreadExecutor();
+        var queue = new fun.freechat.service.chat.ChatTaskQueue("chat", new java.util.concurrent.locks.ReentrantLock());
+        queue.startWorker(worker);
+        AtomicReference<MemoryTokenStream> stream = new AtomicReference<>();
+        AtomicReference<fun.freechat.service.chat.ChatRunHandle> run = new AtomicReference<>();
         var api = new fun.freechat.api.ChatApi();
         var chats = testMock(fun.freechat.service.chat.ChatService.class);
         var contexts = testMock(fun.freechat.service.chat.ChatContextService.class);
@@ -190,7 +190,19 @@ class MemoryStreamingTest {
         when(contexts.get("chat")).thenReturn(new fun.freechat.model.ChatContext().withApiKeyName("synthetic"));
         when(contexts.getCharacterUid("chat")).thenReturn("character");
         when(characters.getNameByUid("character")).thenReturn("Character");
-        when(chats.streamSend(eq("chat"), any(), isNull())).thenReturn(queued);
+        when(chats.startRun(eq("chat"), any(), isNull(), any())).thenAnswer(call -> {
+            var handle = fun.freechat.service.chat.ChatRun.start(
+                    "chat",
+                    call.getArgument(3),
+                    ignored -> {
+                        MemoryTokenStream value = f.stream();
+                        stream.set(value);
+                        return value;
+                    },
+                    queue::submit);
+            run.set(handle);
+            return handle;
+        });
         var previous = org.springframework.security.core.context.SecurityContextHolder.getContext();
         var mdc = org.slf4j.MDC.getCopyOfContextMap();
         var security = org.springframework.security.core.context.SecurityContextHolder.createEmptyContext();
@@ -208,6 +220,7 @@ class MemoryStreamingTest {
                     .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.request()
                             .asyncStarted())
                     .andReturn();
+            assertTrue(f.provider.dispatched.await(3, java.util.concurrent.TimeUnit.SECONDS));
             f.provider
                     .handlers
                     .getFirst()
@@ -216,8 +229,9 @@ class MemoryStreamingTest {
             ChatResponse finalResponse = response(AiMessage.from("answer"), new TokenUsage(20, 3));
             f.provider.handlers.get(1).onCompleteResponse(finalResponse);
             f.provider.handlers.get(1).onCompleteResponse(finalResponse);
-            assertEquals(0L, finished.getCount());
-            assertEquals(9L, queued.finalMessageId());
+            assertNull(result.getAsyncResult(3000));
+            run.get().settled().get(3, java.util.concurrent.TimeUnit.SECONDS);
+            assertEquals(9L, stream.get().finalMessageId());
             assertEquals(2, f.accounting.size());
             assertEquals(
                     List.of("usage", "tool-message", "tool-execute", "tool-result", "usage", "complete"), f.events);
@@ -226,9 +240,11 @@ class MemoryStreamingTest {
                     .lines()
                     .filter(line -> line.startsWith("data:"))
                     .toList();
-            assertEquals(2, frames.size());
-            var last = fun.freechat.service.util.InfoUtils.defaultMapper()
-                    .readValue(frames.getLast().substring(5), fun.freechat.api.dto.LlmResultDTO.class);
+            assertEquals(6, frames.size());
+            var mapper = fun.freechat.service.util.InfoUtils.defaultMapper();
+            var terminal = mapper.readTree(frames.getLast().substring(5));
+            assertEquals("run.completed", terminal.get("event").asText());
+            var last = mapper.treeToValue(terminal.get("result"), fun.freechat.api.dto.LlmResultDTO.class);
             assertEquals(9L, last.getMessage().getMessageId());
             assertEquals("stop", last.getFinishReason());
             assertEquals(fun.freechat.api.dto.TokenUsageDTO.from(new TokenUsage(30, 5)), last.getTokenUsage());
@@ -236,7 +252,9 @@ class MemoryStreamingTest {
             verifyNoInteractions(memories, sessions);
             assertEquals(0, f.aborts.get());
         } finally {
-            queued.close();
+            queue.drain(0);
+            worker.shutdownNow();
+            assertTrue(worker.awaitTermination(3, java.util.concurrent.TimeUnit.SECONDS));
             org.springframework.security.core.context.SecurityContextHolder.setContext(previous);
             if (mdc == null) {
                 org.slf4j.MDC.clear();
@@ -747,6 +765,7 @@ class MemoryStreamingTest {
     }
 
     private static final class Provider implements StreamingChatModel {
+        private final CountDownLatch dispatched = new CountDownLatch(1);
         private final List<ChatRequest> requests = new ArrayList<>();
         private final List<StreamingChatResponseHandler> handlers = new ArrayList<>();
         private final ChatRequestParameters defaults =
@@ -757,6 +776,7 @@ class MemoryStreamingTest {
         public void chat(ChatRequest request, StreamingChatResponseHandler handler) {
             requests.add(request);
             handlers.add(handler);
+            dispatched.countDown();
         }
 
         @Override

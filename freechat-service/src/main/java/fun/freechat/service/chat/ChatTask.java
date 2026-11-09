@@ -51,12 +51,20 @@ public abstract sealed class ChatTask<T> permits ChatTask.Sync, ChatTask.Stream 
         private static final long STREAM_TIMEOUT_MS = 600_000L;
 
         private final Supplier<TokenStream> streamBuilder;
+        private final Runnable onStarted;
+        private final Runnable onCancellation;
         private final CountDownLatch cleanupRequested = new CountDownLatch(1);
         private final AtomicBoolean cancelled = new AtomicBoolean();
         private volatile ChatTaskQueue owner;
 
         public Stream(Supplier<TokenStream> streamBuilder) {
+            this(streamBuilder, () -> {}, () -> {});
+        }
+
+        Stream(Supplier<TokenStream> streamBuilder, Runnable onStarted, Runnable onCancellation) {
             this.streamBuilder = streamBuilder;
+            this.onStarted = onStarted;
+            this.onCancellation = onCancellation;
         }
 
         @Override
@@ -84,7 +92,7 @@ public abstract sealed class ChatTask<T> permits ChatTask.Sync, ChatTask.Stream 
 
         // Request only: never interrupt builder/abort IO or run active cleanup on the caller.
         void requestCancellation() {
-            cancelled.set(true);
+            if (cancelled.compareAndSet(false, true)) onCancellation.run();
             cleanupRequested.countDown();
         }
 
@@ -97,6 +105,7 @@ public abstract sealed class ChatTask<T> permits ChatTask.Sync, ChatTask.Stream 
                     future.completeExceptionally(new ChatQueueRejectedException());
                     return;
                 }
+                onStarted.run();
                 raw = streamBuilder.get();
                 if (raw == null) {
                     future.complete(null);

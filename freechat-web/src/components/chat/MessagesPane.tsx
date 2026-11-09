@@ -1,6 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Stack, useTheme, SxProps, Theme } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  Stack,
+  useTheme,
+  SxProps,
+  Theme,
+} from '@mui/material';
 import {
   AvatarWithStatus,
   ChatBubble,
@@ -21,11 +29,14 @@ import {
 import {
   PROACTIVE_CHAT_PROMPT_EN,
   PROACTIVE_CHAT_PROMPT_ZH,
-  getSenderName,
+  getSenderReply,
   getSenderStatus,
 } from '../../libs/chat_utils';
 import { processBackground } from '../../libs/ui_utils';
 import { getMessageText } from '../../libs/template_utils';
+import { useChatRun } from '../../libs/use_chat_run';
+import { chatRunErrorKey, hasChatRunContent } from '../../libs/chat_run';
+import type { ChatRunOutcome, ChatRunStatus } from '../../libs/chat_run';
 
 const ENABLE_BACKGROUND_KEY = 'MessagesPane.enableBackground';
 
@@ -40,6 +51,12 @@ type MessagesPaneProps = {
 };
 
 export default function MessagesPane(props: MessagesPaneProps) {
+  return (
+    <MessagesPaneSession key={props.session?.context?.chatId} {...props} />
+  );
+}
+
+function MessagesPaneSession(props: MessagesPaneProps) {
   const {
     session,
     defaultDebugMode = false,
@@ -51,7 +68,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
   } = props;
   const { t } = useTranslation('chat');
   const theme = useTheme();
-  const { chatApi } = useFreeChatApiContext();
+  const { chatApi, serverUrl } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
   const [chatMessages, setChatMessages] = useState<ChatMessageRecordDTO[]>([]);
@@ -59,6 +76,13 @@ export default function MessagesPane(props: MessagesPaneProps) {
   const [messageToSend, setMessageToSend] =
     useState<ChatMessageRecordDTO | null>(null);
   const [errorMessage, setErrorMessage] = useState('');
+  const [runStatus, setRunStatus] = useState<ChatRunStatus>();
+  const [assistantStatus, setAssistantStatus] = useState<ChatRunStatus>();
+  const [streamResult, setStreamResult] = useState<LlmResultDTO>();
+  const failedMessage = useRef<ChatMessageRecordDTO | null>(null);
+  const messagesRevision = useRef(0);
+  const historyCallbacks = useRef({ onOpen, handleError });
+  historyCallbacks.current = { onOpen, handleError };
   const [debugMode, setDebugMode] = useState(defaultDebugMode);
   const [background, setBackground] = useState('');
   const [enableBackground, setEnableBackground] = useState(
@@ -75,24 +99,22 @@ export default function MessagesPane(props: MessagesPaneProps) {
     <AvatarWithStatus status={getSenderStatus(session)} src={sender?.avatar} />
   );
 
-  const errorMessageRecord = useCallback(
-    (message?: string) => {
-      const content = new ChatContentDTO();
-      content.type = 'text';
-      content.content = message || t('Sorry, something went wrong!');
+  const showDebug = debugMode && !!session?.isDebugEnabled;
+  const visibleStream =
+    !!messageToSend &&
+    hasChatRunContent(streamResult?.message, showDebug, getSenderReply);
 
-      const chatMessage = new ChatMessageDTO();
-      chatMessage.contents = [content];
-      chatMessage.role = 'assistant';
-      chatMessage.name = getSenderName(sender);
-
-      const record = new ChatMessageRecordDTO();
-      record.message = chatMessage;
-
-      return record;
+  useChatRun({
+    enabled: !!messageToSend,
+    url: `${serverUrl}/api/v2/chat/send/stream/${context?.chatId}`,
+    body: messageToSend ? JSON.stringify(messageToSend.message) : undefined,
+    sessionId: context?.chatId,
+    onUpdate: (snapshot) => {
+      setRunStatus(snapshot.phase);
+      setStreamResult(snapshot.result);
     },
-    [sender, t]
-  );
+    onFinish: handleReceiveFinish,
+  });
 
   const handleSend = useCallback(
     (
@@ -101,7 +123,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
       textToSend?: string,
       processingMessage?: ChatMessageRecordDTO | null
     ) => {
-      if (!textToSend || !chatId || processingMessage) {
+      if (!textToSend?.trim() || !chatId || processingMessage) {
         return;
       }
 
@@ -122,67 +144,47 @@ export default function MessagesPane(props: MessagesPaneProps) {
         return [...prevMessages, messageRecord];
       });
 
+      messagesRevision.current++;
+      setStreamResult(undefined);
+      setRunStatus('sending');
+      setAssistantStatus(undefined);
       setMessageToSend(messageRecord);
+      failedMessage.current = null;
       setErrorMessage('');
     },
     []
   );
 
   useEffect(() => {
-    if (debugMode) {
-      if (context?.chatId) {
-        chatApi
-          ?.listDebugMessages2(context.chatId)
-          .then((resp) => {
-            if (!resp) {
-              return;
-            }
-            if (sender?.picture) {
-              processBackground(sender.picture, theme.palette.mode, 0.6).then(
-                (bg) => {
-                  setBackground(bg);
-                  setChatMessages(resp);
-                }
-              );
-            } else {
-              setBackground('');
-              setChatMessages(resp);
-            }
-            onOpen?.();
-          })
-          .catch(handleError);
-      }
-    } else {
-      if (context?.chatId) {
-        chatApi
-          ?.listMessages2(context.chatId)
-          .then((resp) => {
-            if (!resp) {
-              return;
-            }
-            if (sender?.picture) {
-              processBackground(sender.picture, theme.palette.mode, 0.6).then(
-                (bg) => {
-                  setBackground(bg);
-                  setChatMessages(resp);
-                }
-              );
-            } else {
-              setBackground('');
-              setChatMessages(resp);
-            }
-            onOpen?.();
-          })
-          .catch(handleError);
-      }
-    }
+    if (!context?.chatId || !chatApi) return;
+    let active = true;
+    const revision = messagesRevision.current;
+    const request = showDebug
+      ? chatApi.listDebugMessages2(context.chatId)
+      : chatApi.listMessages2(context.chatId);
+    void request
+      .then(async (resp) => {
+        if (!active) return;
+        const bg = sender?.picture
+          ? await processBackground(sender.picture, theme.palette.mode, 0.6)
+          : '';
+        if (!active) return;
+        setBackground(bg);
+        if (resp && revision === messagesRevision.current)
+          setChatMessages(resp);
+        historyCallbacks.current.onOpen?.();
+      })
+      .catch((error) => {
+        if (active) historyCallbacks.current.handleError(error);
+      });
+    return () => {
+      active = false;
+    };
   }, [
     chatApi,
-    debugMode,
+    showDebug,
     context?.chatId,
-    handleError,
     theme.palette.mode,
-    onOpen,
     sender?.picture,
   ]);
 
@@ -214,7 +216,13 @@ export default function MessagesPane(props: MessagesPaneProps) {
         ? PROACTIVE_CHAT_PROMPT_ZH
         : PROACTIVE_CHAT_PROMPT_EN;
 
-    if (proactiveChatWaitingTime > 0 && chatMessages.length > 2) {
+    if (
+      proactiveChatWaitingTime > 0 &&
+      chatMessages.length > 2 &&
+      !messageToSend &&
+      !assistantStatus &&
+      !errorMessage
+    ) {
       const lastMessage = chatMessages[chatMessages.length - 1];
       const secondToLastMessage = chatMessages[chatMessages.length - 2];
 
@@ -236,7 +244,13 @@ export default function MessagesPane(props: MessagesPaneProps) {
         );
       }
     }
+    return () => {
+      if (proactiveChatHandler.current)
+        clearTimeout(proactiveChatHandler.current);
+    };
   }, [
+    assistantStatus,
+    errorMessage,
     chatMessages,
     context?.chatId,
     context?.userNickname,
@@ -247,41 +261,48 @@ export default function MessagesPane(props: MessagesPaneProps) {
   ]);
 
   function handleResend(): void {
-    if (!context?.chatId) {
-      return;
-    }
-    if (chatMessages.length > 0) {
-      setMessageToSend(chatMessages[chatMessages.length - 1]);
-    }
+    if (!context?.chatId || !failedMessage.current || messageToSend) return;
+    messagesRevision.current++;
+    setStreamResult(undefined);
+    setRunStatus('sending');
+    setAssistantStatus(undefined);
+    setMessageToSend(failedMessage.current);
     setErrorMessage('');
   }
 
-  function handleReceiveFinish(result: LlmResultDTO | undefined): void {
+  function handleReceiveFinish(outcome: ChatRunOutcome): void {
+    const { result, status } = outcome;
+    messagesRevision.current++;
+    failedMessage.current = status === 'completed' ? null : messageToSend;
     setMessageToSend(null);
+    setStreamResult(undefined);
+    setRunStatus(status === 'completed' ? undefined : status);
+    setErrorMessage(
+      status === 'completed'
+        ? ''
+        : status === 'cancelled'
+          ? 'The request was cancelled.'
+          : chatRunErrorKey(outcome.error)
+    );
 
-    if (!result) {
-      return;
+    if (hasChatRunContent(result.message, showDebug, getSenderReply)) {
+      const messageRecord = new ChatMessageRecordDTO();
+      messageRecord.message = result.message;
+      messageRecord.gmtCreate = new Date();
+      if (session?.isDebugEnabled && result.tokenUsage) {
+        messageRecord.ext = JSON.stringify([
+          result.tokenUsage.inputTokenCount,
+          result.tokenUsage.outputTokenCount,
+          result.tokenUsage.totalTokenCount,
+        ]);
+      }
+      setChatMessages((prevMessages) => [...prevMessages, messageRecord]);
     }
-
-    const messageRecord = new ChatMessageRecordDTO();
-    messageRecord.message = result.message;
-    messageRecord.gmtCreate = new Date();
-    if (session?.isDebugEnabled) {
-      messageRecord.ext = `[${result.tokenUsage?.inputTokenCount},${result.tokenUsage?.outputTokenCount},${result.tokenUsage?.outputTokenCount}]`;
-    }
-
-    setChatMessages((prevMessages) => [...prevMessages, messageRecord]);
-    onReceivedMessage?.(result);
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function handleReceiveError(reason: any): void {
-    setMessageToSend(null);
-    setErrorMessage(reason?.message ?? '');
+    if (status === 'completed') onReceivedMessage?.(result);
   }
 
   function handleChatReplay(index: number): void {
-    if (!context?.chatId || index >= chatMessages.length) {
+    if (!context?.chatId || messageToSend || index >= chatMessages.length) {
       return;
     }
 
@@ -299,7 +320,11 @@ export default function MessagesPane(props: MessagesPaneProps) {
       .then(() => {
         const newMessageToSend = chatMessages[rollbackIndex];
         const newChatMessages = chatMessages.slice(0, rollbackIndex + 1);
+        messagesRevision.current++;
         setChatMessages(newChatMessages);
+        setStreamResult(undefined);
+        setRunStatus('sending');
+        setErrorMessage('');
         setMessageToSend(newMessageToSend);
       })
       .catch(handleError);
@@ -317,7 +342,9 @@ export default function MessagesPane(props: MessagesPaneProps) {
     return chatMessages.filter(
       (record) =>
         !!record.message &&
-        getMessageText(record.message) !== proactiveChatPrompt
+        getMessageText(record.message) !== proactiveChatPrompt &&
+        (record.message.role === 'user' ||
+          hasChatRunContent(record.message, showDebug, getSenderReply))
     );
   }
 
@@ -339,7 +366,12 @@ export default function MessagesPane(props: MessagesPaneProps) {
       <MessagesPaneHeader
         session={session}
         onClearHistory={handleClearMemory}
-        debugMode={debugMode}
+        debugMode={showDebug}
+        runStatus={
+          messageToSend
+            ? (runStatus ?? 'sending')
+            : (assistantStatus ?? runStatus)
+        }
         fullscreenMode={fullscreenMode}
         disabled={!!messageToSend}
         disableBackgroundSetting={background === ''}
@@ -372,45 +404,45 @@ export default function MessagesPane(props: MessagesPaneProps) {
                 {!isYou && avatarWithStatus}
                 <ChatBubble
                   key={`message-${index}`}
-                  debugMode={debugMode}
+                  debugMode={showDebug}
                   session={session}
                   record={record}
                   variant={isYou ? 'sent' : 'received'}
-                  onReplay={() => handleChatReplay(index)}
+                  pending={!!messageToSend}
+                  onReplay={() =>
+                    handleChatReplay(chatMessages.indexOf(record))
+                  }
                 />
               </Stack>
             );
           })}
 
-          {/* streaming message */}
-          {(messageToSend || errorMessage) && context?.chatId && (
-            <Stack
-              key={`message-container-${getDisplayMessages().length}`}
-              direction="row"
-              spacing={2}
-            >
+          {visibleStream && (
+            <Stack key="streaming-message" direction="row" spacing={2}>
               {avatarWithStatus}
-              {errorMessage ? (
-                <ChatBubble
-                  session={session}
-                  record={errorMessageRecord(errorMessage)}
-                  variant="received"
-                  onReplay={handleResend}
-                />
-              ) : (
-                messageToSend && (
-                  <ChatBubble
-                    session={session}
-                    record={messageToSend}
-                    variant="received"
-                    debugMode={debugMode}
-                    apiPath={`/api/v2/chat/send/stream/${context?.chatId}`}
-                    onFinish={handleReceiveFinish}
-                    onError={handleReceiveError}
-                  />
-                )
-              )}
+              <ChatBubble
+                session={session}
+                record={{
+                  message: streamResult?.message,
+                  gmtCreate: messageToSend?.gmtCreate,
+                }}
+                variant="received"
+                debugMode={showDebug}
+                pending
+              />
             </Stack>
+          )}
+          {errorMessage && (
+            <Alert
+              severity={runStatus === 'cancelled' ? 'info' : 'error'}
+              action={
+                <Button color="inherit" onClick={handleResend}>
+                  {t('Retry the request.')}
+                </Button>
+              }
+            >
+              {t(errorMessage)}
+            </Alert>
           )}
         </Stack>
       </Box>
@@ -418,6 +450,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
       {/* input message */}
       <MessageInput
         chatId={context?.chatId}
+        onRunStatus={setAssistantStatus}
         disabled={!!messageToSend}
         textAreaValue={textAreaValue}
         setTextAreaValue={setTextAreaValue}

@@ -18,19 +18,15 @@ import {
   styled,
 } from '@mui/material';
 import {
-  ChatContent,
   FlexBox,
   ImagePreview,
   LinePlaceholder,
   MarkdownContent,
   TextPreviewWindow,
 } from '..';
-import {
-  ChatMessageRecordDTO,
-  ChatSessionDTO,
-  LlmResultDTO,
-} from 'freechat-sdk';
+import { ChatMessageRecordDTO, ChatSessionDTO } from 'freechat-sdk';
 import { getDateLabel } from '../../libs/date_utils';
+import { getChatRunContents } from '../../libs/chat_run';
 import { getSenderName, getSenderReply } from '../../libs/chat_utils';
 import {
   useErrorMessageBusContext,
@@ -91,10 +87,7 @@ type ChatBubbleProps = {
   record: ChatMessageRecordDTO;
   variant: 'sent' | 'received';
   debugMode?: boolean;
-  apiPath?: string;
-  onFinish?: (result: LlmResultDTO | undefined) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onError?: (reason: any) => void;
+  pending?: boolean;
   onReplay?: () => void;
 };
 
@@ -108,9 +101,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
     record,
     variant,
     debugMode = false,
-    apiPath,
-    onFinish,
-    onError = handleError,
+    pending = false,
     onReplay,
   } = props;
 
@@ -130,6 +121,9 @@ export default function ChatBubble(props: ChatBubbleProps) {
     getSenderName(sender);
   const message = record.message;
   const ext = record.ext;
+  const displayContents = isSent
+    ? (message?.contents ?? [])
+    : getChatRunContents(message, debugMode, getSenderReply);
 
   let tokenUsage: number[];
   let systemPrompt: string;
@@ -227,24 +221,9 @@ export default function ChatBubble(props: ChatBubbleProps) {
 
       <LinePlaceholder />
 
-      {apiPath ? (
-        <BubbleContainer isSent={isSent}>
-          <ChatContent
-            debugMode={debugMode}
-            url={getServiceUrl(apiPath)}
-            body={JSON.stringify(record.message)}
-            onFinish={onFinish}
-            onError={onError}
-            sx={(theme) => ({
-              color: isSent
-                ? theme.palette.common.white
-                : theme.palette.text.primary,
-            })}
-          />
-        </BubbleContainer>
-      ) : (
+      {displayContents.length > 0 && (
         <Fragment>
-          {message?.contents?.map((content, index) => (
+          {displayContents.map((content, index) => (
             <BubbleContainer key={`message-${index}`} isSent={isSent}>
               {content.type === 'image' ? (
                 <ImagePreview src={content.content} />
@@ -265,7 +244,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
                   )}
                 </MarkdownContent>
               )}
-              {!isSent && !apiPath && (
+              {!isSent && !pending && (
                 <Fragment>
                   <Divider sx={{ mt: 1, mb: 1 }} />
                   <Box

@@ -35,6 +35,12 @@ public interface ChatService {
 
     ChatStreamHandle streamSendManaged(String chatId, ChatMessage message, String context);
 
+    ChatRunHandle startRun(
+            String chatId, ChatMessage message, String context, java.util.function.Consumer<ChatRunEvent> observer);
+
+    ChatRunHandle startAssistantRun(
+            String chatId, String assistantUid, java.util.function.Consumer<ChatRunEvent> observer);
+
     static Object asMemoryId(String chatId) {
         return chatId;
     }

@@ -32,6 +32,11 @@ public final class MemoryStreamingModel implements StreamingChatModel {
     private final MemoryTurnLifetime lifetime;
     private final Set<StreamingHandle> handles = Collections.newSetFromMap(new IdentityHashMap<>());
 
+    /** Decorate only the main model, after memory/skill preparation and before durable response accounting. */
+    public MemoryStreamingModel observeModel(java.util.function.UnaryOperator<StreamingChatModel> observer) {
+        return new MemoryStreamingModel(observer.apply(delegate), invocation, lifetime);
+    }
+
     public MemoryStreamingModel(StreamingChatModel delegate, MemoryInvocation invocation, MemoryTurnLifetime lifetime) {
         this.delegate = delegate;
         this.invocation = invocation;

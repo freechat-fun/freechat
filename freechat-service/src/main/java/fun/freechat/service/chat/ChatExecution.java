@@ -27,6 +27,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public final class ChatExecution {
     private final ChatSession session;
+    private final ChatRun run;
     private final Object memoryId;
     private final ChatMemory memory;
     private final Map<ToolSpecification, ToolExecutor> tools;
@@ -36,22 +37,35 @@ public final class ChatExecution {
     private Long messageId;
 
     public ChatExecution(ChatSession session, Object memoryId) {
+        this(session, memoryId, null);
+    }
+
+    public ChatExecution(ChatSession session, Object memoryId, ChatRun run) {
+        this.run = run;
         this.session = session;
         this.memoryId = memoryId;
         this.memory = session.getChatMemory(memoryId);
         this.invocation = session.bindInvocation();
         var connectors = invocation.connectors();
-        if (connectors == null) {
-            this.tools = invocation.tools();
-        } else {
-            this.tools = new LinkedHashMap<>(invocation.tools());
-            this.tools.replaceAll((specification, executor) -> (request, id) -> connectors.guard(() -> {
-                connectors.check();
-                String result = executor.execute(request, id);
-                connectors.check();
+        this.tools = new LinkedHashMap<>(invocation.tools());
+        this.tools.replaceAll((specification, executor) -> (request, id) -> {
+            if (run != null) run.toolStarted(request);
+            boolean error = true;
+            try {
+                String result = connectors == null
+                        ? executor.execute(request, id)
+                        : connectors.guard(() -> {
+                            connectors.check();
+                            String value = executor.execute(request, id);
+                            connectors.check();
+                            return value;
+                        });
+                error = false;
                 return result;
-            }));
-        }
+            } finally {
+                if (run != null) run.toolCompleted(request, error);
+            }
+        });
         this.skills = invocation.skills();
     }
 
@@ -73,7 +87,9 @@ public final class ChatExecution {
                         binding.lifetime().check();
                     }
                     if (invocation.connectors() != null) invocation.connectors().check();
-                    ChatResponse response = delegate.chat(skills == null ? request : skills.request(request));
+                    ChatRequest prepared = skills == null ? request : skills.request(request);
+                    if (run != null) run.waitingModel();
+                    ChatResponse response = delegate.chat(prepared);
                     return guard(() -> {
                         if (binding != null
                                 && !binding.memory().response(UUID.randomUUID().toString(), response)) {
@@ -127,6 +143,11 @@ public final class ChatExecution {
     public TokenStream stream() {
         try {
             var model = session.getStreamingChatModel();
+            if (run != null) {
+                model = model instanceof fun.freechat.service.chat.memory.MemoryStreamingModel memoryModel
+                        ? memoryModel.observeModel(delegate -> new RunStreamingModel(delegate, run))
+                        : new RunStreamingModel(model, run);
+            }
             if (skills != null && !(memory instanceof fun.freechat.service.chat.memory.MemoryInvocation)) {
                 model = new fun.freechat.service.skills.SkillStreamingModel(model, skills);
             }

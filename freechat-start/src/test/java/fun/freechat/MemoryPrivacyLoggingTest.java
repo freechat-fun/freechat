@@ -36,10 +36,11 @@ import fun.freechat.service.channel.ChannelBackendEvents;
 import fun.freechat.service.channel.ChannelRegistry;
 import fun.freechat.service.channel.ChannelRuntime;
 import fun.freechat.service.character.CharacterBackendEvent;
+import fun.freechat.service.chat.ChatRunEvent;
+import fun.freechat.service.chat.ChatRunHandle;
 import fun.freechat.service.chat.ChatService;
 import fun.freechat.service.chat.ChatSession;
 import fun.freechat.service.chat.ChatSessionService;
-import fun.freechat.service.chat.ChatStreamHandle;
 import fun.freechat.service.chat.TgChatBindingService;
 import fun.freechat.service.chat.TgMessageService;
 import fun.freechat.service.chat.memory.LongTermMemoryProperties;
@@ -73,6 +74,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import javax.crypto.Cipher;
@@ -504,7 +506,7 @@ class MemoryPrivacyLoggingTest {
         PARTIAL,
         FINAL,
         EDIT,
-        SPLIT_PLACEHOLDER,
+        SECOND_SEGMENT,
         PHOTO,
         TYPING
     }
@@ -515,49 +517,87 @@ class MemoryPrivacyLoggingTest {
         var turn = new TelegramTurn();
         switch (phase) {
             case PARTIAL, FINAL ->
-                when(turn.client.execute(any(EditMessageText.class)))
+                when(turn.client.execute(any(SendMessage.class)))
                         .thenThrow(new IllegalStateException(PAYLOAD, telegramApiFailure()));
             case EDIT -> when(turn.client.execute(any(EditMessageText.class))).thenThrow(telegramApiFailure());
-            case SPLIT_PLACEHOLDER ->
+            case SECOND_SEGMENT ->
                 when(turn.client.execute(any(SendMessage.class)))
-                        .thenReturn(turn.placeholder)
+                        .thenReturn(turn.textMessage)
                         .thenThrow(telegramApiFailure());
             case PHOTO -> when(turn.client.execute(any(SendPhoto.class))).thenThrow(telegramApiFailure());
             case TYPING -> when(turn.client.execute(any(SendChatAction.class))).thenThrow(telegramApiFailure());
         }
         var emitter = new TelegramStreamingReplyEmitter(turn);
         emitter.start().get(5, TimeUnit.SECONDS);
-        emitter.append(
+        verifyNoInteractions(turn.client);
+        var run = new TelegramRun();
+        run.start(emitter::onRunEvent);
+        run.emit("run.started", Map.of("phase", "preparing"));
+        run.emit("run.status", Map.of("phase", "waiting_model"));
+        verify(turn.client).execute(any(SendChatAction.class));
+        verify(turn.client, never()).execute(any(SendMessage.class));
+        String body =
                 switch (phase) {
-                    case SPLIT_PLACEHOLDER -> PAYLOAD + "x".repeat(4001);
+                    case SECOND_SEGMENT -> PAYLOAD + "x".repeat(4001) + PAYLOAD;
                     case PHOTO -> PAYLOAD + "![img](https://unused.invalid/" + PAYLOAD + ")";
                     default -> PAYLOAD;
-                });
+                };
+        run.emit("message.delta", Map.of("delta", body));
         if (phase == TelegramFailure.PARTIAL || phase == TelegramFailure.EDIT) {
             turn.flush();
         }
-        var completion = emitter.complete();
+        if (phase == TelegramFailure.EDIT) {
+            // An edit needs a confirmed real body, not a startup placeholder.
+            assertEquals(PAYLOAD, emitter.confirmedReply().text());
+            body += " " + PAYLOAD;
+            run.emit("message.delta", Map.of("delta", " " + PAYLOAD));
+            turn.flush();
+            assertFalse(emitter.completion().isDone(), "A failed partial edit still permits final delivery");
+        }
+        run.complete(body);
+        var completion = emitter.completion();
         if (phase == TelegramFailure.TYPING) {
             assertEquals(PAYLOAD, completion.get(5, TimeUnit.SECONDS).text());
-            verify(turn.client).execute(any(SendChatAction.class));
         } else {
-            assertSafeChannelFailure(completion);
+            ChannelFailure safe = assertSafeChannelFailure(completion);
+            assertEquals(
+                    phase == TelegramFailure.EDIT ? ChannelFailure.Kind.RETRYABLE : ChannelFailure.Kind.AMBIGUOUS,
+                    safe.kind());
         }
         assertEquals(1, turn.typingClosed.get());
         if (phase == TelegramFailure.FINAL
                 || phase == TelegramFailure.PHOTO
-                || phase == TelegramFailure.SPLIT_PLACEHOLDER) {
+                || phase == TelegramFailure.SECOND_SEGMENT) {
             verify(turn.timer).cancel(false);
         }
-        if (phase == TelegramFailure.PHOTO) {
-            verify(turn.client).execute(any(SendPhoto.class));
-            assertTrue(emitter.confirmedReply().images().isEmpty());
-            assertEquals(PAYLOAD, emitter.confirmedReply().text());
+        assertTrue(emitter.confirmedReply().images().isEmpty());
+        switch (phase) {
+            case PARTIAL, FINAL -> {
+                assertEquals("", emitter.confirmedReply().text());
+                assertNull(emitter.confirmedReply().lastMessageId());
+            }
+            case EDIT, PHOTO, TYPING -> {
+                assertEquals(PAYLOAD, emitter.confirmedReply().text());
+                assertEquals("42", emitter.confirmedReply().lastMessageId());
+            }
+            case SECOND_SEGMENT -> {
+                assertEquals(body.substring(0, 4000), emitter.confirmedReply().text());
+                assertEquals("42", emitter.confirmedReply().lastMessageId());
+            }
         }
-        if (phase == TelegramFailure.SPLIT_PLACEHOLDER) {
-            verify(turn.client, times(2)).execute(any(SendMessage.class));
-            verify(turn.client, times(1)).execute(any(EditMessageText.class));
+        ArgumentCaptor<SendMessage> sent = ArgumentCaptor.forClass(SendMessage.class);
+        verify(turn.client, times(phase == TelegramFailure.SECOND_SEGMENT ? 2 : 1))
+                .execute(sent.capture());
+        assertTrue(sent.getAllValues().stream()
+                .allMatch(message ->
+                        !message.getText().isBlank() && !message.getText().equals("…")));
+        if (phase == TelegramFailure.SECOND_SEGMENT) {
+            assertEquals(body.substring(0, 4000), sent.getAllValues().getFirst().getText());
+            assertEquals(body.substring(4000), sent.getAllValues().getLast().getText());
         }
+        verify(turn.client, times(phase == TelegramFailure.EDIT ? 2 : 0)).execute(any(EditMessageText.class));
+        verify(turn.client, times(phase == TelegramFailure.PHOTO ? 1 : 0)).execute(any(SendPhoto.class));
+        verifyNoMoreInteractions(turn.client);
         assertTelegramDiagnosticsSafe();
     }
 
@@ -573,11 +613,22 @@ class MemoryPrivacyLoggingTest {
         when(turn.client.execute(any(EditMessageText.class))).thenThrow(failure);
         var emitter = new TelegramStreamingReplyEmitter(turn);
         emitter.start().get(5, TimeUnit.SECONDS);
-        emitter.append(PAYLOAD);
+        verifyNoInteractions(turn.client);
+        var run = new TelegramRun();
+        run.start(emitter::onRunEvent);
+        verify(turn.client, never()).execute(any(SendMessage.class));
+        run.emit("message.delta", Map.of("delta", PAYLOAD));
+        turn.flush();
+        run.complete(PAYLOAD);
         // The runtime, not emitter-private deadlines, now owns retry scheduling.
-        ChannelFailure safe = assertSafeChannelFailure(emitter.complete());
+        ChannelFailure safe = assertSafeChannelFailure(emitter.completion());
         assertEquals(ChannelFailure.Kind.RATE_LIMITED, safe.kind());
         assertEquals(Duration.ofSeconds(60), safe.retryAfter());
+        assertEquals(PAYLOAD, emitter.confirmedReply().text());
+        assertEquals("42", emitter.confirmedReply().lastMessageId());
+        verify(turn.client).execute(any(SendMessage.class));
+        verify(turn.client).execute(any(EditMessageText.class));
+        verify(turn.client).execute(any(SendChatAction.class));
         assertEquals(1, turn.typingClosed.get());
         assertTelegramDiagnosticsSafe();
     }
@@ -684,11 +735,13 @@ class MemoryPrivacyLoggingTest {
     }
 
     enum TelegramSetupFailure {
-        PLACEHOLDER,
-        ACQUIRE,
-        READY,
-        REGISTER,
-        START,
+        FIRST_BODY,
+        ENQUEUE,
+        QUEUED_FAILURE,
+        PREPARATION,
+        EMITTER_REGISTER,
+        CANCEL_REGISTER,
+        EXECUTION,
         ASYNC_ERROR,
         CANCEL,
         CANCEL_FAILURE,
@@ -698,100 +751,157 @@ class MemoryPrivacyLoggingTest {
 
     @ParameterizedTest
     @EnumSource(TelegramSetupFailure.class)
-    void telegramHandlerSanitizesErrorsAndClosesAdmittedStreams(TelegramSetupFailure phase) throws Exception {
+    void telegramHandlerSanitizesErrorsAndClosesAdmittedRuns(TelegramSetupFailure phase) throws Exception {
         var fixture = new TelegramDispatchFixture();
-        var managed = new TelegramChannelPipelineTest.ManagedStream();
-        when(fixture.chats.streamSendManaged(eq("chat"), any(), isNull())).thenReturn(managed);
+        var run = new TelegramRun();
+        when(fixture.chats.startRun(eq("chat"), any(), isNull(), any())).thenAnswer(call -> {
+            run.start(call.getArgument(3));
+            return run;
+        });
         switch (phase) {
-            case PLACEHOLDER ->
+            case FIRST_BODY ->
                 when(fixture.turn.client.execute(any(SendMessage.class))).thenThrow(telegramApiFailure());
-            case ACQUIRE ->
-                when(fixture.chats.streamSendManaged(eq("chat"), any(), isNull()))
+            case ENQUEUE ->
+                when(fixture.chats.startRun(eq("chat"), any(), isNull(), any()))
                         .thenThrow(FailureKind.RUNTIME.create());
-            case READY -> {
-                ChatStreamHandle handle = subclassMock(ChatStreamHandle.class);
-                when(handle.ready()).thenReturn(CompletableFuture.failedFuture(FailureKind.RUNTIME.create()));
-                when(handle.settled()).thenReturn(managed.settlement);
-                doAnswer(call -> {
-                            managed.cancel();
-                            return null;
-                        })
-                        .when(handle)
-                        .cancel();
-                when(fixture.chats.streamSendManaged(eq("chat"), any(), isNull()))
-                        .thenReturn(handle);
+            case EMITTER_REGISTER, CANCEL_REGISTER -> {
+                fixture.turn.cancelRegistrationFailure = new IllegalStateException(PAYLOAD, telegramApiFailure());
+                fixture.turn.failCancelRegistrationAt = phase == TelegramSetupFailure.EMITTER_REGISTER ? 1 : 2;
             }
-            case REGISTER ->
-                doThrow(FailureKind.RUNTIME.create()).when(managed.stream).onPartialResponse(any());
-            case START ->
-                doThrow(FailureKind.RUNTIME.create()).when(managed.stream).start();
-            case CANCEL_FAILURE ->
-                managed.cancellationFailure = new IllegalStateException(PAYLOAD, telegramApiFailure());
+            case CANCEL_FAILURE -> run.cancellationFailure = new IllegalStateException(PAYLOAD, telegramApiFailure());
             default -> {}
         }
         CompletableFuture<Void> result = fixture.dispatcher
                 .handle(new ChannelEnvelope<>(fixture.turn.address(), "1", telegramUpdate(1, PAYLOAD)), fixture.turn)
                 .toCompletableFuture();
-        switch (phase) {
-            case ASYNC_ERROR -> managed.error.accept(FailureKind.RUNTIME.create());
-            case CANCEL, CANCEL_FAILURE -> fixture.turn.cancel();
-            case SUCCESS -> {
-                managed.partial.accept(PAYLOAD + "![img](https://unused.invalid/" + PAYLOAD + ")");
-                managed.complete();
-                managed.complete();
+        boolean admitted = phase != TelegramSetupFailure.ENQUEUE
+                && phase != TelegramSetupFailure.EMITTER_REGISTER
+                && phase != TelegramSetupFailure.CANCEL_REGISTER;
+        if (admitted) {
+            verify(fixture.turn.client, never()).execute(any(SendMessage.class));
+            verify(fixture.turn.client).execute(any(SendChatAction.class));
+            if (phase != TelegramSetupFailure.QUEUED_FAILURE) {
+                run.emit("run.started", Map.of("phase", "preparing"));
             }
-            case SETTLEMENT -> managed.complete();
+        }
+        String safeNotice =
+                switch (phase) {
+                    case ENQUEUE, CANCEL_REGISTER -> "Sorry, I couldn't start this reply. Please try again.";
+                    case PREPARATION -> "Conversation memory is still being prepared. Please retry your message.";
+                    case QUEUED_FAILURE, EXECUTION, ASYNC_ERROR -> "The chat could not be completed. Please try again.";
+                    default -> null;
+                };
+        switch (phase) {
+            case FIRST_BODY -> {
+                run.emit("message.delta", Map.of("delta", PAYLOAD));
+                fixture.turn.flush();
+            }
+            case QUEUED_FAILURE -> run.fail("CHAT_QUEUE_UNAVAILABLE", safeNotice, false);
+            case PREPARATION -> run.fail("CHAT_MEMORY_PREPARING", safeNotice, false);
+            case EXECUTION -> {
+                run.emit("run.status", Map.of("phase", "waiting_model"));
+                run.fail("CHAT_RUN_FAILED", safeNotice, false);
+            }
+            case ASYNC_ERROR -> {
+                run.emit("run.status", Map.of("phase", "responding"));
+                run.emit("message.delta", Map.of("delta", PAYLOAD));
+                fixture.turn.flush();
+                run.emit(
+                        "message.delta",
+                        Map.of("delta", " " + PAYLOAD + "![img](https://unused.invalid/" + PAYLOAD + ")"));
+                run.fail("CHAT_RUN_FAILED", safeNotice, true);
+                run.complete(PAYLOAD); // A late success must not finalize the unconfirmed suffix or photo.
+            }
+            case CANCEL, CANCEL_FAILURE -> {
+                run.emit("message.delta", Map.of("delta", PAYLOAD + "![img](https://unused.invalid/" + PAYLOAD + ")"));
+                fixture.turn.cancel();
+                fixture.turn.cancel();
+                run.complete(PAYLOAD);
+            }
+            case SUCCESS -> {
+                String body = PAYLOAD + "![img](https://unused.invalid/" + PAYLOAD + ")";
+                run.emit("message.delta", Map.of("delta", body));
+                run.complete(body);
+                run.complete(body);
+                run.fail("CHAT_RUN_FAILED", "The chat could not be completed. Please try again.", true);
+            }
+            case SETTLEMENT -> run.complete(PAYLOAD);
             default -> {}
         }
-        boolean admitted = phase != TelegramSetupFailure.PLACEHOLDER && phase != TelegramSetupFailure.ACQUIRE;
         if (admitted) {
             assertFalse(result.isDone(), "Neither terminal delivery nor cancellation may fake service settlement");
             if (phase == TelegramSetupFailure.SETTLEMENT) {
-                managed.settlement.completeExceptionally(FailureKind.RUNTIME.create());
+                run.settlement.completeExceptionally(FailureKind.RUNTIME.create());
             } else {
-                managed.settlement.complete(null);
+                run.settlement.complete(null);
             }
         }
-        if (phase == TelegramSetupFailure.SUCCESS || phase == TelegramSetupFailure.ASYNC_ERROR) {
+        if (phase == TelegramSetupFailure.SUCCESS) {
             result.get(5, TimeUnit.SECONDS);
-            assertEquals(0, managed.cancelled.get());
         } else {
-            assertSafeChannelFailure(result);
+            ChannelFailure safe = assertSafeChannelFailure(result);
+            assertEquals(
+                    switch (phase) {
+                        case FIRST_BODY -> ChannelFailure.Kind.AMBIGUOUS;
+                        case CANCEL, CANCEL_FAILURE -> ChannelFailure.Kind.CANCELLED;
+                        default -> ChannelFailure.Kind.FAILED;
+                    },
+                    safe.kind());
         }
-        if (List.of(
-                        TelegramSetupFailure.READY,
-                        TelegramSetupFailure.REGISTER,
-                        TelegramSetupFailure.START,
-                        TelegramSetupFailure.CANCEL,
-                        TelegramSetupFailure.CANCEL_FAILURE)
-                .contains(phase)) {
-            assertTrue(managed.cancelled.get() > 0, "Managed cancellation owns stream cleanup");
+        assertEquals(
+                admitted && phase != TelegramSetupFailure.SUCCESS && phase != TelegramSetupFailure.SETTLEMENT ? 1 : 0,
+                run.cancelled.get(),
+                "Admitted work must receive cancellation exactly once, without replacing actual settlement");
+        if (phase == TelegramSetupFailure.EMITTER_REGISTER || phase == TelegramSetupFailure.CANCEL_REGISTER) {
+            verifyNoInteractions(fixture.chats);
+        } else {
+            verify(fixture.chats).startRun(eq("chat"), any(), isNull(), any());
+            verifyNoMoreInteractions(fixture.chats);
         }
-        if (phase == TelegramSetupFailure.PLACEHOLDER) {
-            verify(fixture.chats, never()).streamSendManaged(anyString(), any(), any());
+        verify(fixture.messages).record("chat", 1L, null, "in", "text", PAYLOAD, null);
+        if (phase == TelegramSetupFailure.SUCCESS
+                || phase == TelegramSetupFailure.SETTLEMENT
+                || phase == TelegramSetupFailure.ASYNC_ERROR) {
+            verify(fixture.messages).record("chat", 42L, null, "out", "text", PAYLOAD, null);
         }
         if (phase == TelegramSetupFailure.SUCCESS) {
-            verify(fixture.messages).record("chat", 42L, null, "out", "text", PAYLOAD, null);
             verify(fixture.messages)
                     .record("chat", 43L, null, "out", "photo", "https://unused.invalid/" + PAYLOAD, null);
-            verify(managed.stream).start();
         }
-        assertEquals(1, fixture.turn.typingClosed.get());
+        verifyNoMoreInteractions(fixture.messages); // Notices and unconfirmed content are never assistant history.
+        List<String> expectedTexts =
+                switch (phase) {
+                    case FIRST_BODY, SETTLEMENT, SUCCESS -> List.of(PAYLOAD);
+                    case ASYNC_ERROR -> List.of(PAYLOAD, safeNotice);
+                    case ENQUEUE, CANCEL_REGISTER, QUEUED_FAILURE, PREPARATION, EXECUTION -> List.of(safeNotice);
+                    default -> List.of();
+                };
+        ArgumentCaptor<SendMessage> sent = ArgumentCaptor.forClass(SendMessage.class);
+        verify(fixture.turn.client, times(expectedTexts.size())).execute(sent.capture());
+        assertEquals(
+                expectedTexts,
+                sent.getAllValues().stream().map(SendMessage::getText).toList());
+        verify(fixture.turn.client, never()).execute(any(EditMessageText.class));
+        verify(fixture.turn.client, times(phase == TelegramSetupFailure.SUCCESS ? 1 : 0))
+                .execute(any(SendPhoto.class));
+        verify(fixture.turn.client, times(admitted ? 1 : 0)).execute(any(SendChatAction.class));
+        verifyNoMoreInteractions(fixture.turn.client);
+        assertEquals(admitted ? 1 : 0, fixture.turn.typingClosed.get());
         if (phase == TelegramSetupFailure.CANCEL_FAILURE) {
-            assertTrue(events.list.stream()
-                    .anyMatch(event ->
-                            "Telegram chat stream cancellation failed for chat {}".equals(event.getMessage())));
+            assertTelegramLog(
+                    ChatBindingTelegramMessageHandler.class,
+                    Level.WARN,
+                    "Telegram chat stream cancellation failed for chat {}");
         }
-        if (phase == TelegramSetupFailure.ASYNC_ERROR) {
-            var diagnostic = events.list.stream()
-                    .filter(event ->
-                            "Streaming reply errored for chat {} (type={}, causeType={})".equals(event.getMessage()))
-                    .findFirst()
-                    .orElseThrow();
-            assertEquals(
-                    FailureKind.RUNTIME.create().getClass().getName(),
-                    diagnostic.getArgumentArray()[1]);
-            assertNull(diagnostic.getThrowableProxy());
+        if (phase == TelegramSetupFailure.ENQUEUE || phase == TelegramSetupFailure.CANCEL_REGISTER) {
+            assertTelegramLog(
+                    ChatBindingTelegramMessageHandler.class, Level.WARN, "Failed to construct chat run for chat {}");
+        }
+        if (phase != TelegramSetupFailure.SUCCESS
+                && phase != TelegramSetupFailure.SETTLEMENT
+                && phase != TelegramSetupFailure.EMITTER_REGISTER) {
+            assertTelegramLog(
+                    ChatBindingTelegramMessageHandler.class, Level.WARN, "Telegram reply delivery failed for chat {}");
         }
         assertTelegramDiagnosticsSafe();
     }
@@ -1114,6 +1224,69 @@ class MemoryPrivacyLoggingTest {
         }
     }
 
+    /** Service-owned run events with independently controlled settlement; no raw TokenStream API. */
+    private static final class TelegramRun implements ChatRunHandle {
+        final CompletableFuture<Void> settlement = new CompletableFuture<>();
+        final CompletableFuture<Void> eventDelivery = new CompletableFuture<>();
+        final AtomicInteger cancelled = new AtomicInteger();
+        Consumer<ChatRunEvent> observer;
+        RuntimeException cancellationFailure;
+        long seq;
+
+        void start(Consumer<ChatRunEvent> listener) {
+            observer = listener;
+            emit("run.queued", Map.of("phase", "queued"));
+        }
+
+        void emit(String event, Map<String, Object> data) {
+            observer.accept(new ChatRunEvent(event, runId(), "chat", ++seq, Instant.now(), data));
+        }
+
+        void complete(String body) {
+            emit("run.status", Map.of("phase", "finalizing"));
+            emit(
+                    "run.completed",
+                    Map.of(
+                            "response",
+                            dev.langchain4j.model.chat.response.ChatResponse.builder()
+                                    .aiMessage(dev.langchain4j.data.message.AiMessage.from(body))
+                                    .build(),
+                            "completed",
+                            true,
+                            "partial",
+                            false));
+        }
+
+        void fail(String errorCode, String safeMessage, boolean partial) {
+            assertFalse(safeMessage.contains(PAYLOAD), "Only service-approved safe text belongs in run.failed");
+            Map<String, Object> data = new HashMap<>(
+                    Map.of("errorCode", errorCode, "message", safeMessage, "completed", false, "partial", partial));
+            if ("CHAT_MEMORY_PREPARING".equals(errorCode)) {
+                data.put("retryAfter", 1);
+            }
+            emit("run.failed", data);
+        }
+
+        public String runId() {
+            return "run";
+        }
+
+        public CompletableFuture<Void> settled() {
+            return settlement;
+        }
+
+        public CompletableFuture<Void> eventsDelivered() {
+            return eventDelivery;
+        }
+
+        public void cancel() {
+            cancelled.incrementAndGet();
+            if (cancellationFailure != null) {
+                throw cancellationFailure;
+            }
+        }
+    }
+
     private static final class TelegramDispatchFixture {
         final TelegramTurn turn;
         final TgChatBindingService bindings = subclassMock(TgChatBindingService.class);
@@ -1138,10 +1311,13 @@ class MemoryPrivacyLoggingTest {
     private static final class TelegramTurn implements ChannelTurnContext, ChannelOutbound {
         final TelegramClient client = subclassMock(TelegramClient.class);
         final DefaultTelegramChannel transport;
-        final Message placeholder = new Message();
+        final Message textMessage = new Message();
         final ScheduledFuture<?> timer = subclassMock(ScheduledFuture.class);
         final AtomicInteger typingClosed = new AtomicInteger();
         final List<Runnable> cancellations = new CopyOnWriteArrayList<>();
+        RuntimeException cancelRegistrationFailure;
+        int failCancelRegistrationAt;
+        int cancelRegistrations;
         Runnable scheduled;
         boolean cancelled;
 
@@ -1149,10 +1325,10 @@ class MemoryPrivacyLoggingTest {
             var manager = subclassMock(TelegramChannelManager.class);
             when(manager.getClient("backend")).thenReturn(client);
             transport = new DefaultTelegramChannel(manager);
-            placeholder.setMessageId(42);
+            textMessage.setMessageId(42);
             Message photo = new Message();
             photo.setMessageId(43);
-            when(client.execute(any(SendMessage.class))).thenReturn(placeholder);
+            when(client.execute(any(SendMessage.class))).thenReturn(textMessage);
             when(client.execute(any(SendPhoto.class))).thenReturn(photo);
             when(client.execute(any(EditMessageText.class))).thenReturn(Boolean.TRUE);
             when(client.execute(any(SendChatAction.class))).thenReturn(Boolean.TRUE);
@@ -1175,6 +1351,9 @@ class MemoryPrivacyLoggingTest {
         }
 
         public void onCancel(Runnable action) {
+            if (++cancelRegistrations == failCancelRegistrationAt) {
+                throw cancelRegistrationFailure;
+            }
             cancellations.add(action);
         }
 
