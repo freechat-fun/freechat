@@ -74,6 +74,8 @@
   "Include connectors (without credentials)": "இணைப்பிகளைச் சேர்க்கவும் (நற்சான்றுகள் இன்றி)",
   "Connectors are excluded by default. When selected, only connectors bound to the published character are exported, never credentials.": "இயல்பாக இணைப்பிகள் சேர்க்கப்படாது. தேர்வுசெய்தால், வெளியிடப்பட்ட கதாபாத்திரத்துடன் இணைக்கப்பட்ட இணைப்பிகள் மட்டுமே ஏற்றுமதி செய்யப்படும்; நற்சான்றுகள் ஒருபோதும் ஏற்றுமதி செய்யப்படாது.",
   "Export": "ஏற்றுமதி செய்க",
+  "Continue export": "ஏற்றுமதியைத் தொடர்க",
+  "Some knowledge source documents are missing. Continuing will include only the documents that still exist, and the imported knowledge base may be incomplete. Continue?": "அறிவுத் தளத்தின் சில மூல ஆவணங்கள் காணவில்லை. தொடர்ந்தால், இன்னும் இருக்கும் ஆவணங்கள் மட்டுமே சேர்க்கப்படும்; இறக்குமதி செய்யப்பட்ட அறிவுத் தளம் முழுமையற்றதாக இருக்கலாம். தொடரவா?",
   "Import character": "கதாபாத்திரத்தை இறக்குமதி செய்க",
   "Choose file": "கோப்பைத் தேர்வுசெய்க",
   "Character import failed. Check the file and try again.": "கதாபாத்திர இறக்குமதி தோல்வியடைந்தது. கோப்பைச் சரிபார்த்து மறுபடி முயல்க.",

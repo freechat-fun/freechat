@@ -25,6 +25,7 @@ import {
 import {
   characterExportUrl,
   exportCharacter,
+  isMissingCharacterDocumentsError,
 } from '../src/libs/character_utils.ts';
 
 const en = JSON.parse(
@@ -758,9 +759,41 @@ test('export includes the query only on explicit opt-in and never serializes IDs
     characterExportUrl(42, true),
     '/api/v2/character/export/42?includeConnectors=true'
   );
+  for (const [includeConnectors, force, query] of [
+    [false, false, ''],
+    [true, false, '?includeConnectors=true'],
+    [false, true, '?force=true'],
+    [true, true, '?includeConnectors=true&force=true'],
+  ]) {
+    assert.equal(
+      characterExportUrl(42, includeConnectors, force),
+      `/api/v2/character/export/42${query}`
+    );
+  }
+  for (const force of [undefined, null, 0, 1, '', 'false', 'true']) {
+    assert.equal(
+      characterExportUrl(42, false, force),
+      '/api/v2/character/export/42'
+    );
+  }
 });
 
-function mockCharacterDownload(t, { status = 200, disposition = null } = {}) {
+const missingDocumentsCode = 'CHARACTER_EXPORT_DOCUMENTS_MISSING';
+const missingDocumentsBody = {
+  code: 409,
+  errorCode: missingDocumentsCode,
+  message: 'Some knowledge source documents are missing.',
+};
+
+function mockCharacterDownload(
+  t,
+  {
+    status = 200,
+    disposition = null,
+    contentType = 'application/gzip',
+    body = { message: 'secret-response' },
+  } = {}
+) {
   const events = [];
   const blob = new Blob(['archive']);
   const response = {
@@ -768,11 +801,12 @@ function mockCharacterDownload(t, { status = 200, disposition = null } = {}) {
     status,
     statusText: 'secret-status',
     headers: new Headers({
-      'Content-Type': 'application/gzip',
+      'Content-Type': contentType,
       ...(disposition ? { 'Content-Disposition': disposition } : {}),
     }),
     blob: t.mock.fn(async () => blob),
     text: t.mock.fn(async () => 'secret-response'),
+    json: t.mock.fn(async () => body),
   };
   const anchor = {
     href: '',
@@ -875,6 +909,27 @@ test('export opts into connectors only when requested and uses a default archive
   assert.equal(download.anchor.download, 'character-42.tar.gz');
 });
 
+test('explicit force requests preserve connectors and never persist force to the next export', async (t) => {
+  for (const includeConnectors of [false, true]) {
+    await t.test(`includeConnectors=${includeConnectors}`, async (t) => {
+      const download = mockCharacterDownload(t);
+      await exportCharacter(42, includeConnectors, true);
+      assert.deepEqual(download.fetch.mock.calls[0].arguments, [
+        `/api/v2/character/export/42?${includeConnectors ? 'includeConnectors=true&' : ''}force=true`,
+        { credentials: 'same-origin', redirect: 'manual' },
+      ]);
+      await exportCharacter(42, includeConnectors);
+      assert.equal(
+        download.fetch.mock.calls[1].arguments[0],
+        `/api/v2/character/export/42${includeConnectors ? '?includeConnectors=true' : ''}`
+      );
+      assert.equal(download.fetch.mock.callCount(), 2);
+      assert.equal(download.anchor.click.mock.callCount(), 2);
+      assert.equal(download.revokeObjectURL.mock.callCount(), 2);
+    });
+  }
+});
+
 test('export accepts safe Content-Disposition names and rejects unsafe or malformed names', async (t) => {
   const fallback = 'character-42.tar.gz';
   for (const [disposition, expected] of [
@@ -934,6 +989,217 @@ test('HTTP failures reject with safe status and message, without reading or down
   }
 });
 
+function assertSafeExportError(error, status, missing = false) {
+  assert.ok(error instanceof Error);
+  assert.equal(error.status, status);
+  assert.equal(error.message, 'Character export failed. Please try again.');
+  assert.equal(isMissingCharacterDocumentsError(error), missing);
+  assert.deepEqual(
+    { ...error },
+    missing ? { status, errorCode: missingDocumentsCode } : { status }
+  );
+  assert.deepEqual(
+    Object.getOwnPropertyNames(error).sort(),
+    (missing
+      ? ['errorCode', 'message', 'stack', 'status']
+      : ['message', 'stack', 'status']
+    ).sort()
+  );
+  assert.doesNotMatch(
+    JSON.stringify(error, Object.getOwnPropertyNames(error)),
+    /secret|Bearer|Some knowledge source documents are missing/
+  );
+  return true;
+}
+
+function assertNoExportDownload(download, jsonReads = 0) {
+  assert.equal(download.fetch.mock.callCount(), 1);
+  assert.equal(download.response.json.mock.callCount(), jsonReads);
+  assert.equal(download.response.text.mock.callCount(), 0);
+  assert.equal(download.response.blob.mock.callCount(), 0);
+  assert.equal(download.document.createElement.mock.callCount(), 0);
+  assert.deepEqual(download.events, []);
+}
+
+test('only the exact missing-documents code on an export Error with HTTP 409 passes the predicate', () => {
+  assert.equal(
+    isMissingCharacterDocumentsError(
+      Object.assign(new Error(), {
+        status: 409,
+        errorCode: missingDocumentsCode,
+      })
+    ),
+    true
+  );
+  for (const reason of [
+    null,
+    undefined,
+    409,
+    missingDocumentsCode,
+    missingDocumentsBody,
+    { status: 409, errorCode: missingDocumentsCode },
+    new Error(missingDocumentsCode),
+    Object.assign(new Error(), {
+      status: '409',
+      errorCode: missingDocumentsCode,
+    }),
+    Object.assign(new Error(), {
+      status: 500,
+      errorCode: missingDocumentsCode,
+    }),
+    Object.assign(new Error(), {
+      status: 409,
+      errorCode: `${missingDocumentsCode}_OTHER`,
+    }),
+    Object.assign(new Error(), { status: 409, body: missingDocumentsBody }),
+  ]) {
+    assert.equal(isMissingCharacterDocumentsError(reason), false);
+  }
+});
+
+test('409 JSON missing-documents errors expose only the fixed code, never raw payloads or automatic retries', async (t) => {
+  for (const [contentType, body] of [
+    ['application/json', missingDocumentsBody],
+    [
+      'Application/JSON; charset=utf-8',
+      {
+        ...missingDocumentsBody,
+        status: 401,
+        message: 'secret server message: /secret/documents/file.txt',
+        path: '/secret/documents/file.txt',
+        documents: ['secret document contents'],
+        credentials: { Authorization: 'Bearer secret-token' },
+        ['__proto__']: { message: 'secret-prototype' },
+      },
+    ],
+  ]) {
+    await t.test(contentType, async (t) => {
+      const download = mockCharacterDownload(t, {
+        status: 409,
+        contentType,
+        body,
+      });
+      await assert.rejects(exportCharacter(42, true), (error) =>
+        assertSafeExportError(error, 409, true)
+      );
+      assertNoExportDownload(download, 1);
+    });
+  }
+});
+
+test('ordinary 409 JSON responses and lookalike codes never become missing-documents errors', async (t) => {
+  for (const body of [
+    null,
+    [],
+    409,
+    missingDocumentsCode,
+    { code: 409, message: missingDocumentsCode },
+    { errorCode: 'OTHER_ERROR', message: 'secret-response' },
+    { errorCode: missingDocumentsCode.toLowerCase() },
+    { errorCode: `${missingDocumentsCode} ` },
+    { errorCode: `${missingDocumentsCode}_OTHER` },
+    { errorCode: [missingDocumentsCode] },
+    { body: missingDocumentsBody },
+    [missingDocumentsBody],
+  ]) {
+    await t.test(JSON.stringify(body), async (t) => {
+      const download = mockCharacterDownload(t, {
+        status: 409,
+        contentType: 'application/json',
+        body,
+      });
+      await assert.rejects(exportCharacter(42), (error) =>
+        assertSafeExportError(error, 409)
+      );
+      assertNoExportDownload(download, 1);
+    });
+  }
+});
+
+test('409 with non-JSON MIME never reads the body or enables force confirmation', async (t) => {
+  for (const contentType of [
+    'text/html',
+    'text/plain',
+    'application/gzip',
+    'application/jsonp',
+    'application/problem+json',
+    '',
+  ]) {
+    await t.test(contentType || 'missing MIME', async (t) => {
+      const download = mockCharacterDownload(t, {
+        status: 409,
+        contentType,
+        body: missingDocumentsBody,
+      });
+      if (!contentType) download.response.headers.delete('Content-Type');
+      await assert.rejects(exportCharacter(42), (error) =>
+        assertSafeExportError(error, 409)
+      );
+      assertNoExportDownload(download);
+    });
+  }
+});
+
+test('JSON bodies on other HTTP statuses and redirects cannot enable force confirmation', async (t) => {
+  for (const patch of [
+    { status: 400 },
+    { status: 401 },
+    { status: 403 },
+    { status: 404 },
+    { status: 500 },
+    { status: 302 },
+    { status: 0, type: 'opaqueredirect' },
+    { status: 409, redirected: true },
+  ]) {
+    await t.test(JSON.stringify(patch), async (t) => {
+      const download = mockCharacterDownload(t, {
+        status: patch.status,
+        contentType: 'application/json',
+        body: missingDocumentsBody,
+      });
+      Object.assign(download.response, patch);
+      const expectedStatus =
+        patch.status === 302 || patch.redirected || patch.type
+          ? 401
+          : patch.status;
+      await assert.rejects(exportCharacter(42), (error) =>
+        assertSafeExportError(error, expectedStatus)
+      );
+      assertNoExportDownload(download);
+    });
+  }
+});
+
+test('409 JSON parsing failures are sanitized and never enable force confirmation', async (t) => {
+  const download = mockCharacterDownload(t, {
+    status: 409,
+    contentType: 'application/json',
+  });
+  download.response.json.mock.mockImplementation(async () =>
+    JSON.parse('secret-invalid-json')
+  );
+  await assert.rejects(exportCharacter(42), (error) =>
+    assertSafeExportError(error, 409)
+  );
+  assertNoExportDownload(download, 1);
+});
+
+test('a failed forced request is returned once without falling back or retrying', async (t) => {
+  const download = mockCharacterDownload(t, {
+    status: 409,
+    contentType: 'application/json',
+    body: missingDocumentsBody,
+  });
+  await assert.rejects(exportCharacter(42, true, true), (error) =>
+    assertSafeExportError(error, 409, true)
+  );
+  assert.equal(
+    download.fetch.mock.calls[0].arguments[0],
+    '/api/v2/character/export/42?includeConnectors=true&force=true'
+  );
+  assertNoExportDownload(download, 1);
+});
+
 test('export preserves 401 for the existing normalized authentication handler', async (t) => {
   const download = mockCharacterDownload(t, { status: 401 });
   await assert.rejects(exportCharacter(42), (error) => {
@@ -968,14 +1234,14 @@ test('login redirects never become successful archive downloads', async (t) => {
 test('successful non-archive responses are rejected before creating a download', async (t) => {
   for (const contentType of ['text/html', 'application/json', '']) {
     await t.test(contentType || 'missing MIME type', async (t) => {
-      const download = mockCharacterDownload(t);
-      download.response.headers.set('Content-Type', contentType);
-      await assert.rejects(
-        exportCharacter(42),
-        (error) => error.status === 502
+      const download = mockCharacterDownload(t, {
+        contentType,
+        body: missingDocumentsBody,
+      });
+      await assert.rejects(exportCharacter(42), (error) =>
+        assertSafeExportError(error, 502)
       );
-      assert.equal(download.response.blob.mock.callCount(), 0);
-      assert.deepEqual(download.events, []);
+      assertNoExportDownload(download);
     });
   }
 });
@@ -986,17 +1252,14 @@ test('network and blob failures reject safely without starting a download', asyn
       const download = mockCharacterDownload(t);
       const mock = phase === 'fetch' ? download.fetch : download.response.blob;
       mock.mock.mockImplementation(async () => {
-        throw new Error('secret-network-details');
+        throw Object.assign(new Error('secret-network-details'), {
+          status: 409,
+          errorCode: missingDocumentsCode,
+        });
       });
-      await assert.rejects(exportCharacter(42), (error) => {
-        assert.equal(error.status, phase === 'fetch' ? -1 : 200);
-        assert.equal(
-          error.message,
-          'Character export failed. Please try again.'
-        );
-        assert.doesNotMatch(String(error) + JSON.stringify(error), /secret/);
-        return true;
-      });
+      await assert.rejects(exportCharacter(42), (error) =>
+        assertSafeExportError(error, phase === 'fetch' ? -1 : 200)
+      );
       assert.equal(download.createObjectURL.mock.callCount(), 0);
       assert.deepEqual(download.events, []);
     });
@@ -1079,6 +1342,7 @@ test('all connector UI and validation strings have matching en/zh/ta resources',
     'pages/character/Characters.tsx',
     'libs/connector_utils.ts',
   ];
+  const exportDialogKeys = new Set();
   for (const file of files) {
     const source = await readFile(
       new URL(`../src/${file}`, import.meta.url),
@@ -1105,6 +1369,9 @@ test('all connector UI and validation strings have matching en/zh/ta resources',
           rawKey.startsWith('connector:')
         ) {
           const key = rawKey.replace(/^connector:/, '');
+          if (file === 'components/character/CharacterExportDialog.tsx') {
+            exportDialogKeys.add(key);
+          }
           assert.ok(Object.hasOwn(en, key), `${file}: English ${key}`);
           assert.ok(Object.hasOwn(zh, key), `${file}: Chinese ${key}`);
           assert.ok(Object.hasOwn(ta, key), `${file}: Tamil ${key}`);
@@ -1114,6 +1381,22 @@ test('all connector UI and validation strings have matching en/zh/ta resources',
     };
     visit(ast);
   }
+  const warningKey =
+    'Some knowledge source documents are missing. Continuing will include only the documents that still exist, and the imported knowledge base may be incomplete. Continue?';
+  for (const key of ['Continue export', warningKey]) {
+    assert.ok(
+      exportDialogKeys.has(key),
+      `Export confirmation key scanned: ${key}`
+    );
+    assert.equal(en[key], key);
+    assert.notEqual(zh[key], key);
+    assert.notEqual(ta[key], key);
+  }
+  assert.equal(zh['Continue export'], '继续导出');
+  assert.equal(
+    zh[warningKey],
+    '部分知识库原始文档已缺失；继续只包含仍存在的文档，导入后的知识库可能不完整，是否继续？'
+  );
 });
 
 test('connector entry is desktop-only, CRUD/test use SDK, credentials are not persisted or logged', async () => {

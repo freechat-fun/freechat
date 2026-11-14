@@ -74,6 +74,8 @@
   "Include connectors (without credentials)": "包含连接器（不含凭证）",
   "Connectors are excluded by default. When selected, only connectors bound to the published character are exported, never credentials.": "默认不包含连接器。勾选后仅导出角色正式版本绑定的连接器，绝不导出凭据。",
   "Export": "导出",
+  "Continue export": "继续导出",
+  "Some knowledge source documents are missing. Continuing will include only the documents that still exist, and the imported knowledge base may be incomplete. Continue?": "部分知识库原始文档已缺失；继续只包含仍存在的文档，导入后的知识库可能不完整，是否继续？",
   "Import character": "导入角色",
   "Choose file": "选择文件",
   "Character import failed. Check the file and try again.": "角色导入失败。请检查文件后重试。",

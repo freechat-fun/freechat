@@ -64,6 +64,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -82,6 +83,28 @@ import org.yaml.snakeyaml.representer.Representer;
 @Slf4j
 @SuppressWarnings("unused")
 public class CharacterApi {
+    public static final String EXPORT_DOCUMENTS_MISSING = "CHARACTER_EXPORT_DOCUMENTS_MISSING";
+
+    private static final class MissingDocumentsException extends ResponseStatusException {
+        private MissingDocumentsException() {
+            super(HttpStatus.CONFLICT, EXPORT_DOCUMENTS_MISSING);
+        }
+    }
+
+    @ExceptionHandler(MissingDocumentsException.class)
+    public ResponseEntity<Map<String, Object>> missingDocuments() {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.CACHE_CONTROL, "no-store")
+                .body(Map.of(
+                        "code",
+                        HttpStatus.CONFLICT.value(),
+                        "errorCode",
+                        EXPORT_DOCUMENTS_MISSING,
+                        "message",
+                        "Some knowledge source documents are missing."));
+    }
+
     @Value("${chat.memory.minMessageWindowSize:10}")
     private Integer minMessageWindowSize;
 
@@ -1179,13 +1202,25 @@ public class CharacterApi {
             operationId = "exportCharacter",
             summary = "Export Character Configuration",
             description =
-                    "Export character configuration in tar.gz format, including settings, documents and pictures.")
+                    "Export character configuration in tar.gz format, including settings, documents and pictures. "
+                            + "Missing knowledge source documents return HTTP 409 with errorCode "
+                            + "CHARACTER_EXPORT_DOCUMENTS_MISSING. Set force=true to omit missing documents and their RAG task definitions.")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "409",
+            description =
+                    "CHARACTER_EXPORT_DOCUMENTS_MISSING: confirm incomplete knowledge export before retrying with force=true",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @GetMapping(value = "/export/{characterId}", produces = "application/gzip")
     public void exportCharacter(
             @Parameter(description = "Character identifier") @PathVariable("characterId") @Positive Long characterId,
             @Parameter(description = "Include credentialless connector definitions (character owner only)")
                     @RequestParam(defaultValue = "false")
                     boolean includeConnectors,
+            @Parameter(
+                            description =
+                                    "Omit missing knowledge source documents and their RAG tasks; other validation still applies")
+                    @RequestParam(defaultValue = "false")
+                    boolean force,
             HttpServletRequest request,
             HttpServletResponse response) {
         User currentUser = AccountUtils.currentUser();
@@ -1258,12 +1293,19 @@ public class CharacterApi {
                         addFile(entries, archivePath, path, store);
                         documents.add(path);
                     }
+                    int missingReferences = 0;
                     for (RagTask task : ragTaskService.list(uid)) {
                         String sourcePath = task.getSource();
                         if (SourceType.FILE.text().equals(task.getSourceType())) {
                             if (!documents.contains(sourcePath)) {
-                                throw new ResponseStatusException(
-                                        HttpStatus.CONFLICT, "A knowledge document is unavailable");
+                                if (!force) {
+                                    log.warn(
+                                            "Character {} export requires confirmation for missing knowledge documents",
+                                            characterId);
+                                    throw new MissingDocumentsException();
+                                }
+                                missingReferences++;
+                                continue;
                             }
                             sourcePath = "documents/" + Path.of(sourcePath).getFileName();
                         }
@@ -1273,6 +1315,12 @@ public class CharacterApi {
                                 .maxSegmentSize(task.getMaxSegmentSize())
                                 .maxOverlapSize(task.getMaxOverlapSize())
                                 .build());
+                    }
+                    if (missingReferences > 0) {
+                        log.info(
+                                "Exporting character {} without {} missing knowledge document references",
+                                characterId,
+                                missingReferences);
                     }
                 }
             }
@@ -1349,7 +1397,11 @@ public class CharacterApi {
     }
 
     private static List<String> listFiles(FileStore store, String directory) throws IOException {
-        return store.exists(directory) ? store.list(directory, null, false) : List.of();
+        try {
+            return store.list(directory, null, false);
+        } catch (java.nio.file.NoSuchFileException e) {
+            return List.of();
+        }
     }
 
     private static void addFile(List<TarUtils.Entry> entries, String name, String path, FileStore store)

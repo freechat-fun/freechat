@@ -626,6 +626,172 @@ class CharacterTransferIT {
                         .getStatusCode());
     }
 
+    @Test
+    void missingKnowledgeSourcesRequireExplicitForceWithoutWritingAnArchive() throws Exception {
+        Stored source = seedSource();
+        RagTask missing = addMissingDocument(source);
+        Map<String, Long> rowsBefore = rowCounts();
+        Map<String, String> filesBefore = files();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        ResponseStatusException failure = assertThrows(
+                ResponseStatusException.class,
+                () -> api.exportCharacter(
+                        source.character().getCharacterId(), false, false, new MockHttpServletRequest(), response));
+        assertEquals(HttpStatus.CONFLICT, failure.getStatusCode());
+        assertEquals(CharacterApi.EXPORT_DOCUMENTS_MISSING, failure.getReason());
+        assertEquals(0, response.getContentAsByteArray().length);
+        assertEquals(rowsBefore, rowCounts());
+        assertEquals(filesBefore, files());
+        assertFalse(store.exists(missing.getSource()));
+    }
+
+    @Test
+    void forcedExportContainsOnlyAvailableDocumentsAndRemainsImportable() throws Exception {
+        Stored source = seedSource();
+        RagTask missing = addMissingDocument(source);
+        Map<String, Long> rowsBefore = rowCounts();
+        Map<String, String> filesBefore = files();
+        byte[] archive = export(source.character().getCharacterId(), true);
+        Path extracted = Files.createTempDirectory(root, "partial-export-");
+        TarUtils.extractGzip(new ByteArrayInputStream(archive), extracted);
+        CharacterConfigurationDTO conf =
+                CharacterConfigurationDTO.fromJson(Files.readString(extracted.resolve("character.json")));
+        assertEquals(
+                List.of("documents/notes.txt"),
+                conf.getRagTasks().stream().map(RagTaskDTO::getSource).toList());
+        assertEquals(RESOURCES.get("documents/notes.txt"), Files.readString(extracted.resolve("documents/notes.txt")));
+        assertFalse(Files.exists(extracted.resolve("documents/missing.txt")));
+        assertEquals(rowsBefore, rowCounts());
+        assertEquals(filesBefore, files());
+        assertFalse(store.exists(missing.getSource()));
+        authenticate("importer");
+        Stored imported = stored(importArchive(archive));
+        List<RagTask> importedTasks = rags.list(imported.character().getCharacterUid());
+        assertEquals(1, importedTasks.size());
+        assertTrue(store.exists(importedTasks.getFirst().getSource()));
+        assertEquals(2, rags.list(source.character().getCharacterUid()).size());
+    }
+
+    @Test
+    void forcedExportRetainsUrlKnowledgeWithoutFetchingOrRestoringSources() throws Exception {
+        Stored source = seedSource();
+        addMissingDocument(source);
+        assertTrue(rags.create(new RagTask()
+                .withCharacterUid(source.character().getCharacterUid())
+                .withSourceType("url")
+                .withSource("https://example.com/knowledge")
+                .withMaxSegmentSize(500)
+                .withMaxOverlapSize(50)));
+        Path extracted = Files.createTempDirectory(root, "url-export-");
+        TarUtils.extractGzip(new ByteArrayInputStream(export(source.character().getCharacterId(), true)), extracted);
+        var conf = CharacterConfigurationDTO.fromJson(Files.readString(extracted.resolve("character.json")));
+        assertEquals(
+                Set.of("documents/notes.txt", "https://example.com/knowledge"),
+                new HashSet<>(
+                        conf.getRagTasks().stream().map(RagTaskDTO::getSource).toList()));
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void forcedExportCanOmitAllMissingKnowledgeDocuments(boolean removeDirectory) throws Exception {
+        Stored source = seedSource();
+        String document =
+                rags.list(source.character().getCharacterUid()).getFirst().getSource();
+        store.delete(document);
+        if (removeDirectory) store.delete(Path.of(document).getParent().toString());
+        Path extracted = Files.createTempDirectory(root, "empty-knowledge-export-");
+        TarUtils.extractGzip(new ByteArrayInputStream(export(source.character().getCharacterId(), true)), extracted);
+        var conf = CharacterConfigurationDTO.fromJson(Files.readString(extracted.resolve("character.json")));
+        assertTrue(conf.getRagTasks().isEmpty());
+        assertFalse(Files.exists(extracted.resolve("documents")));
+        assertEquals(1, rags.list(source.character().getCharacterUid()).size());
+    }
+
+    @Test
+    void forceDoesNotChangeCompleteArchiveContent() throws Exception {
+        Stored source = seedSource();
+        Path normal = Files.createTempDirectory(root, "complete-normal-");
+        Path forced = Files.createTempDirectory(root, "complete-forced-");
+        TarUtils.extractGzip(new ByteArrayInputStream(export(source.character().getCharacterId())), normal);
+        TarUtils.extractGzip(new ByteArrayInputStream(export(source.character().getCharacterId(), true)), forced);
+        assertEquals(
+                Files.readString(normal.resolve("character.json")), Files.readString(forced.resolve("character.json")));
+        assertEquals(
+                Files.readString(normal.resolve("documents/notes.txt")),
+                Files.readString(forced.resolve("documents/notes.txt")));
+    }
+
+    @Test
+    void forceDoesNotBypassUnpublishedPromptsOrPrivateCharacterAccess() throws Exception {
+        Stored source = seedSource();
+        sql.update(
+                "UPDATE prompt_info SET version = 0 WHERE prompt_id = ?",
+                source.prompt().getPromptId());
+        ResponseStatusException promptFailure = assertThrows(
+                ResponseStatusException.class, () -> export(source.character().getCharacterId(), true));
+        assertEquals(HttpStatus.CONFLICT, promptFailure.getStatusCode());
+        assertNotEquals(CharacterApi.EXPORT_DOCUMENTS_MISSING, promptFailure.getReason());
+        sql.update(
+                "UPDATE character_info SET visibility = 'private' WHERE character_id = ?",
+                source.character().getCharacterId());
+        authenticate("viewer");
+        assertEquals(
+                HttpStatus.NOT_FOUND,
+                assertThrows(
+                                ResponseStatusException.class,
+                                () -> export(source.character().getCharacterId(), true))
+                        .getStatusCode());
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void forceDoesNotSuppressDocumentIoFailures(boolean force) throws Exception {
+        Stored source = seedSource();
+        String document =
+                rags.list(source.character().getCharacterUid()).getFirst().getSource();
+        LocalFileStoreImpl broken = realSpy(store);
+        var failure = new java.nio.file.AccessDeniedException(document);
+        doThrow(failure).when(broken).size(document);
+        setField(StoreUtils.class, "localFileStore", broken);
+        ResponseStatusException error = assertThrows(
+                ResponseStatusException.class, () -> export(source.character().getCharacterId(), force));
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, error.getStatusCode());
+        assertSame(failure, error.getCause());
+        assertNotEquals(CharacterApi.EXPORT_DOCUMENTS_MISSING, error.getReason());
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void inaccessibleDocumentDirectoryIsNeverTreatedAsMissing(boolean force) throws Exception {
+        Stored source = seedSource();
+        String document =
+                rags.list(source.character().getCharacterUid()).getFirst().getSource();
+        String directory = Path.of(document).getParent().toString();
+        LocalFileStoreImpl inaccessible = realSpy(store);
+        doReturn(false).when(inaccessible).exists(directory);
+        var failure = new java.nio.file.AccessDeniedException(directory);
+        doThrow(failure).when(inaccessible).list(directory, null, false);
+        setField(StoreUtils.class, "localFileStore", inaccessible);
+        ResponseStatusException error = assertThrows(
+                ResponseStatusException.class, () -> export(source.character().getCharacterId(), force));
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, error.getStatusCode());
+        assertSame(failure, error.getCause());
+        assertNotEquals(CharacterApi.EXPORT_DOCUMENTS_MISSING, error.getReason());
+        assertTrue(store.exists(document));
+    }
+
+    private RagTask addMissingDocument(Stored source) {
+        RagTask missing = new RagTask()
+                .withCharacterUid(source.character().getCharacterUid())
+                .withSourceType("file")
+                .withSource("private/creator/character/document/"
+                        + source.character().getCharacterUid() + "/missing.txt")
+                .withMaxSegmentSize(500)
+                .withMaxOverlapSize(50);
+        assertTrue(rags.create(missing));
+        return missing;
+    }
+
     private CharacterConfigurationDTO configuration() {
         String picture = "https://source.invalid/pictures/p.png", video = "https://source.invalid/videos/v.mp4";
         Map<String, List<String>> urls = new LinkedHashMap<>();
@@ -749,8 +915,12 @@ class CharacterTransferIT {
     }
 
     private byte[] export(Long id) {
+        return export(id, false);
+    }
+
+    private byte[] export(Long id, boolean force) {
         MockHttpServletResponse response = new MockHttpServletResponse();
-        api.exportCharacter(id, false, new MockHttpServletRequest(), response);
+        api.exportCharacter(id, false, force, new MockHttpServletRequest(), response);
         return response.getContentAsByteArray();
     }
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
@@ -12,7 +12,10 @@ import {
   Typography,
 } from '@mui/material';
 import { useErrorMessageBusContext } from '../../contexts';
-import { exportCharacter } from '../../libs/character_utils';
+import {
+  exportCharacter,
+  isMissingCharacterDocumentsError,
+} from '../../libs/character_utils';
 import { normalizeConnectorError } from '../../libs/connector_utils';
 
 type Props = { characterId: number; onClose: () => void };
@@ -22,29 +25,53 @@ export default function CharacterExportDialog({ characterId, onClose }: Props) {
   const { handleError } = useErrorMessageBusContext();
   const [includeConnectors, setIncludeConnectors] = useState(false);
   const [busy, setBusy] = useState(false);
+  const busyRef = useRef(false);
+  const [pendingExport, setPendingExport] = useState<{
+    includeConnectors: boolean;
+  }>();
   const [errorKey, setErrorKey] = useState<string>();
-  async function download() {
-    if (busy) return;
+
+  function close() {
+    if (busyRef.current) return;
+    setPendingExport(undefined);
+    setIncludeConnectors(false);
+    setErrorKey(undefined);
+    onClose();
+  }
+
+  async function download(force = false) {
+    if (busyRef.current || (force && !pendingExport)) return;
+    const requestedConnectors =
+      pendingExport?.includeConnectors ?? includeConnectors;
+    busyRef.current = true;
     setBusy(true);
     setErrorKey(undefined);
     try {
-      await exportCharacter(characterId, includeConnectors);
+      await exportCharacter(characterId, requestedConnectors, force);
+      setPendingExport(undefined);
       onClose();
     } catch (reason) {
-      const error = normalizeConnectorError(reason);
-      setErrorKey(
-        error.known
-          ? error.messageKey
-          : 'Character export failed. Please try again.'
-      );
-      if (error.code === 401)
-        handleError({ code: 401, message: t(error.messageKey) });
+      if (!force && isMissingCharacterDocumentsError(reason)) {
+        setPendingExport({ includeConnectors: requestedConnectors });
+      } else {
+        // A failed forced request requires a new normal attempt, not a loop.
+        setPendingExport(undefined);
+        const error = normalizeConnectorError(reason);
+        setErrorKey(
+          error.known
+            ? error.messageKey
+            : 'Character export failed. Please try again.'
+        );
+        if (error.code === 401)
+          handleError({ code: 401, message: t(error.messageKey) });
+      }
     } finally {
+      busyRef.current = false;
       setBusy(false);
     }
   }
   return (
-    <Dialog open onClose={() => !busy && onClose()} fullWidth maxWidth="sm">
+    <Dialog open onClose={close} fullWidth maxWidth="sm">
       <DialogTitle>{t('Export character')}</DialogTitle>
       <DialogContent>
         <Typography variant="body2">
@@ -56,7 +83,7 @@ export default function CharacterExportDialog({ characterId, onClose }: Props) {
           control={
             <Checkbox
               checked={includeConnectors}
-              disabled={busy}
+              disabled={busy || !!pendingExport}
               onChange={(event) => setIncludeConnectors(event.target.checked)}
             />
           }
@@ -72,6 +99,13 @@ export default function CharacterExportDialog({ characterId, onClose }: Props) {
             'Imported connectors are private inactive copies owned by the importing user. Review and configure them before use; existing IDs and credentials are never reused across accounts.'
           )}
         </Typography>
+        {pendingExport && (
+          <Alert severity="warning" sx={{ mt: 2 }}>
+            {t(
+              'Some knowledge source documents are missing. Continuing will include only the documents that still exist, and the imported knowledge base may be incomplete. Continue?'
+            )}
+          </Alert>
+        )}
         {errorKey && (
           <Alert severity="error" sx={{ mt: 2 }}>
             {t(errorKey)}
@@ -79,15 +113,15 @@ export default function CharacterExportDialog({ characterId, onClose }: Props) {
         )}
       </DialogContent>
       <DialogActions>
-        <Button disabled={busy} onClick={onClose}>
+        <Button disabled={busy} onClick={close}>
           {t('Cancel')}
         </Button>
         <Button
           disabled={busy}
           variant="contained"
-          onClick={() => void download()}
+          onClick={() => void download(!!pendingExport)}
         >
-          {t('Export')}
+          {pendingExport ? t('Continue export') : t('Export')}
         </Button>
       </DialogActions>
     </Dialog>

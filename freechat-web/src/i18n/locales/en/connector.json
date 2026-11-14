@@ -74,6 +74,8 @@
   "Include connectors (without credentials)": "Include connectors (without credentials)",
   "Connectors are excluded by default. When selected, only connectors bound to the published character are exported, never credentials.": "Connectors are excluded by default. When selected, only connectors bound to the published character are exported, never credentials.",
   "Export": "Export",
+  "Continue export": "Continue export",
+  "Some knowledge source documents are missing. Continuing will include only the documents that still exist, and the imported knowledge base may be incomplete. Continue?": "Some knowledge source documents are missing. Continuing will include only the documents that still exist, and the imported knowledge base may be incomplete. Continue?",
   "Import character": "Import character",
   "Choose file": "Choose file",
   "Character import failed. Check the file and try again.": "Character import failed. Check the file and try again.",
