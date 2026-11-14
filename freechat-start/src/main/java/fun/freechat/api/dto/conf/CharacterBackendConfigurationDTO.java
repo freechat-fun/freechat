@@ -20,4 +20,5 @@ public class CharacterBackendConfigurationDTO {
     private PromptTaskDTO chatPromptTask;
     private PromptCreateDTO greetingPrompt;
     private PromptTaskDTO greetingPromptTask;
+    private String voicePath;
 }

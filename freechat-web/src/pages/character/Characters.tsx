@@ -188,6 +188,7 @@ export default function Characters() {
   const [recordExported, setRecordExported] = useState<CharacterSummaryDTO>();
   const [importWarning, setImportWarning] = useState(false);
   const [importErrorKey, setImportErrorKey] = useState<string>();
+  const [importSucceeded, setImportSucceeded] = useState(false);
 
   const fileInputId = useRef(
     `character-configuration-input-${idCounter}`
@@ -350,9 +351,13 @@ export default function Characters() {
     if (file && characterApi) {
       setCharacterUploading(true);
       setImportErrorKey(undefined);
+      setImportSucceeded(false);
       characterApi
         .importCharacter(file)
-        .then(() => doSearch())
+        .then(() => {
+          setImportSucceeded(true);
+          doSearch();
+        })
         .catch((reason: unknown) => {
           const error = normalizeConnectorError(reason);
           setImportErrorKey(
@@ -445,6 +450,18 @@ export default function Characters() {
         </ButtonGroup>
       </Box>
       <LinePlaceholder />
+      {importSucceeded && (
+        <Alert
+          severity="info"
+          sx={{ mb: 2 }}
+          onClose={() => setImportSucceeded(false)}
+        >
+          {t(
+            'Character imported. Before use, check model credentials and user-level dependencies (Skills and named keys), review any imported connectors, and rebuild knowledge indexes.',
+            { ns: 'connector' }
+          )}
+        </Alert>
+      )}
       {importErrorKey && (
         <Alert severity="error" sx={{ mb: 2 }}>
           {t(importErrorKey, { ns: 'connector' })}
@@ -547,9 +564,16 @@ export default function Characters() {
       >
         <DialogTitle>{t('connector:Import character')}</DialogTitle>
         <DialogContent>
+          <Typography variant="body2" sx={{ mb: 2 }}>
+            {t(
+              'Only published content is transferred. Character and prompt drafts, credentials, user-level Skills and named key settings are not included.',
+              { ns: 'connector' }
+            )}
+          </Typography>
           <Alert severity="warning">
             {t(
-              'connector:Imported connectors are private inactive copies owned by the importing user. Review and configure them before use; existing IDs and credentials are never reused across accounts.'
+              'Imported connectors are private inactive copies owned by the importing user. Review and configure them before use; existing IDs and credentials are never reused across accounts.',
+              { ns: 'connector' }
             )}
           </Alert>
         </DialogContent>

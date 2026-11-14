@@ -26,6 +26,7 @@ export default function CharacterExportDialog({ characterId, onClose }: Props) {
   async function download() {
     if (busy) return;
     setBusy(true);
+    setErrorKey(undefined);
     try {
       await exportCharacter(characterId, includeConnectors);
       onClose();
@@ -48,7 +49,7 @@ export default function CharacterExportDialog({ characterId, onClose }: Props) {
       <DialogContent>
         <Typography variant="body2">
           {t(
-            'Exports the saved character configuration. Unsaved edits are not included.'
+            'Only published content is transferred. Character and prompt drafts, credentials, user-level Skills and named key settings are not included.'
           )}
         </Typography>
         <FormControlLabel
@@ -63,7 +64,7 @@ export default function CharacterExportDialog({ characterId, onClose }: Props) {
         />
         <Alert severity="info">
           {t(
-            'Connector credentials are never exported. Connector configuration is included only when selected.'
+            'Connectors are excluded by default. When selected, only connectors bound to the published character are exported, never credentials.'
           )}
         </Alert>
         <Typography variant="body2" sx={{ mt: 2 }}>
