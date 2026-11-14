@@ -14,6 +14,7 @@ import fun.freechat.api.dto.*;
 import fun.freechat.api.dto.conf.CharacterBackendConfigurationDTO;
 import fun.freechat.api.dto.conf.CharacterConfigurationDTO;
 import fun.freechat.api.util.CharacterUtils;
+import fun.freechat.api.util.CharacterVoiceFiles;
 import fun.freechat.api.util.FileUtils;
 import fun.freechat.api.util.PromptUtils;
 import fun.freechat.mapper.*;
@@ -125,6 +126,7 @@ class CharacterTransferIT {
     private final PromptTaskServiceImpl tasks = new PromptTaskServiceImpl();
     private final RagTaskServiceImpl rags = realSpy(new RagTaskServiceImpl());
     private final LocalFileStoreImpl store = new LocalFileStoreImpl();
+    private final TtsService tts = fake(TtsService.class);
     private Object[] previousStatics;
     private SecurityContext previousSecurity;
 
@@ -202,7 +204,15 @@ class CharacterTransferIT {
         setField(api, "ragTaskService", rags);
         setField(api, "toolRegistry", tools);
         setField(api, "connectorPolicy", fake(ConnectorCharacterPolicy.class));
-        setField(api, "ttsService", fake(TtsService.class));
+        setField(api, "ttsService", tts);
+        when(tts.isEnabled()).thenReturn(true);
+        when(tts.uploadVoice(anyString())).thenAnswer(call -> {
+            assertFalse(TransactionSynchronizationManager.isActualTransactionActive());
+            String name = Path.of((String) call.getArgument(0)).getFileName().toString();
+            return name.substring(
+                            0,
+                            name.length() - CharacterVoiceFiles.extension(name).length()) + ".wav";
+        });
         setField(api, "transactionManager", new DataSourceTransactionManager(dataSource));
         setField(store, "basePathStr", root.resolve("store").toString());
         store.postConstruct();
@@ -289,6 +299,7 @@ class CharacterTransferIT {
                         "![portrait](" + source.character().getPicture() + ") [video]("
                                 + source.character().getVideo() + ")");
         ((ObjectNode) json.path("backends").get(0)).remove("voicePath");
+        ((ObjectNode) json.path("backends").get(0).path("backend")).put("ttsSpeakerWav", "speaker.wav");
         List<TarUtils.Entry> entries = new ArrayList<>();
         Map<String, String> contents = new LinkedHashMap<>(RESOURCES);
         contents.put("manifest.yml", "apiVersion: v2\n");
@@ -317,7 +328,222 @@ class CharacterTransferIT {
         assertEquals(
                 256,
                 rags.list(imported.character().getCharacterUid()).getFirst().getMaxSegmentSize());
-        assertEquals("speaker.wav", imported.backend().getTtsSpeakerWav());
+        assertTrue(imported.backend().getTtsSpeakerWav().endsWith(".wav"));
+        assertNotEquals("speaker.wav", imported.backend().getTtsSpeakerWav());
+    }
+
+    @Test
+    void historicalMp3SourceExportsWithoutRenamingItToTheTtsWavIdentifier() throws Exception {
+        Stored source = seedSource();
+        String directory = voiceDirectory(source);
+        String original =
+                CharacterVoiceFiles.resolve(store, directory, source.backend().getTtsSpeakerWav());
+        String mp3 = directory + "/historical-s_voice.mp3";
+        store.move(original, mp3);
+        sql.update(
+                "UPDATE character_backend SET tts_speaker_wav = ? WHERE backend_id = ?",
+                "historical-s_voice.wav",
+                source.backend().getBackendId());
+        CharacterConfigurationDTO exported =
+                exportedConfiguration(source.character().getCharacterId());
+        assertEquals(
+                "voices/0/historical-s_voice.mp3",
+                exported.getBackends().getFirst().getVoicePath());
+        assertEquals(
+                "historical-s_voice.wav",
+                exported.getBackends().getFirst().getBackend().getTtsSpeakerWav());
+        assertEquals(RESOURCES.get("voices/0/speaker.wav"), store.readString(mp3));
+        assertFalse(store.exists(directory + "/historical-s_voice.wav"));
+    }
+
+    @Test
+    void importedMp3UsesAndRemembersTheActualTtsIdentifierAfterCommit() throws Exception {
+        when(tts.uploadVoice(anyString())).thenAnswer(call -> {
+            assertFalse(TransactionSynchronizationManager.isActualTransactionActive());
+            assertTrue(((String) call.getArgument(0)).endsWith(".mp3"));
+            return "provider-assigned-name.wav";
+        });
+        Stored imported = stored(importArchive(mp3Archive()));
+        assertEquals("provider-assigned-name.wav", imported.backend().getTtsSpeakerWav());
+        assertEquals((byte) 1, imported.backend().getEnableTts());
+        String directory = voiceDirectory(imported);
+        String original =
+                CharacterVoiceFiles.resolve(store, directory, imported.backend().getTtsSpeakerWav());
+        assertTrue(original.endsWith(".mp3"));
+        assertNotEquals("speaker.mp3", Path.of(original).getFileName().toString());
+        assertEquals(RESOURCES.get("voices/0/speaker.wav"), store.readString(original));
+        assertFalse(store.exists(CharacterVoiceFiles.mappingPath(directory, null)));
+        CharacterConfigurationDTO exported =
+                exportedConfiguration(imported.character().getCharacterId());
+        assertEquals(
+                "voices/0/" + Path.of(original).getFileName(),
+                exported.getBackends().getFirst().getVoicePath());
+        verify(tts).uploadVoice(original);
+    }
+
+    @Test
+    void repeatedImportsDoNotReuseSourceAccountVoiceIdentifiersOrFilenames() throws Exception {
+        byte[] archive = mp3Archive();
+        Stored first = stored(importArchive(archive));
+        authenticate("importer");
+        Stored second = stored(importArchive(archive));
+        assertNotEquals(first.backend().getTtsSpeakerWav(), second.backend().getTtsSpeakerWav());
+        String firstSource = CharacterVoiceFiles.resolve(
+                store, voiceDirectory(first), first.backend().getTtsSpeakerWav());
+        String secondSource = CharacterVoiceFiles.resolve(
+                store, voiceDirectory(second), second.backend().getTtsSpeakerWav());
+        assertNotEquals(
+                Path.of(firstSource).getFileName(), Path.of(secondSource).getFileName());
+        assertTrue(firstSource.endsWith(".mp3"));
+        assertTrue(secondSource.endsWith(".mp3"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"offline", "failure", "blank", "database-update"})
+    void registrationFailureKeepsCommittedSourceExportableWithoutBorrowingForeignVoice(String failure)
+            throws Exception {
+        switch (failure) {
+            case "offline" -> when(tts.isEnabled()).thenReturn(false);
+            case "failure" ->
+                when(tts.uploadVoice(anyString())).thenThrow(new IllegalStateException("TTS unavailable"));
+            case "blank" -> when(tts.uploadVoice(anyString())).thenReturn(" ");
+            case "database-update" -> doReturn(false).when(characters).updateBackend(any(CharacterBackend.class));
+            default -> throw new AssertionError(failure);
+        }
+        Stored imported = stored(importArchive(mp3Archive()));
+        assertNull(imported.backend().getTtsSpeakerWav());
+        assertEquals((byte) 0, imported.backend().getEnableTts());
+        String original = CharacterVoiceFiles.resolve(store, voiceDirectory(imported), null);
+        assertTrue(original.endsWith(".mp3"));
+        assertEquals(RESOURCES.get("voices/0/speaker.wav"), store.readString(original));
+        CharacterConfigurationDTO exported =
+                exportedConfiguration(imported.character().getCharacterId());
+        assertEquals(
+                "voices/0/" + Path.of(original).getFileName(),
+                exported.getBackends().getFirst().getVoicePath());
+        assertNull(exported.getBackends().getFirst().getBackend().getTtsSpeakerWav());
+    }
+
+    @Test
+    void missingVoiceLogsOriginalExceptionWithoutDumpingCharacterCredentialsOrDrafts() throws Exception {
+        Stored source = seedSource();
+        String original = CharacterVoiceFiles.resolve(
+                store, voiceDirectory(source), source.backend().getTtsSpeakerWav());
+        store.delete(original);
+        var logger = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(CharacterApi.class);
+        var events = new ch.qos.logback.core.read.ListAppender<ch.qos.logback.classic.spi.ILoggingEvent>();
+        boolean additive = logger.isAdditive();
+        events.start();
+        logger.setAdditive(false);
+        logger.addAppender(events);
+        try {
+            ResponseStatusException error = assertThrows(
+                    ResponseStatusException.class,
+                    () -> export(source.character().getCharacterId()));
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, error.getStatusCode());
+            assertInstanceOf(java.nio.file.NoSuchFileException.class, error.getCause());
+            assertEquals(1, events.list.size());
+            var event = events.list.getFirst();
+            assertSame(
+                    error.getCause(),
+                    ((ch.qos.logback.classic.spi.ThrowableProxy) event.getThrowableProxy()).getThrowable());
+            String log = event.getFormattedMessage()
+                    + ch.qos.logback.classic.spi.ThrowableProxyUtil.asString(event.getThrowableProxy());
+            assertTrue(log.contains("CharacterApi.exportCharacter"));
+            assertTrue(log.contains("NoSuchFileException"));
+            assertFalse(log.contains(SECRET));
+            assertFalse(log.contains("PRIVATE_DRAFT_SENTINEL"));
+            assertFalse(log.contains("SYSTEM_VALUE_SENTINEL"));
+        } finally {
+            logger.detachAppender(events);
+            logger.setAdditive(additive);
+            events.stop();
+        }
+    }
+
+    @Test
+    void uploadsAndDeletesUseSeparateSourceAndTtsNames() throws Exception {
+        Stored source = seedSource();
+        RuntimeConfig config = fake(RuntimeConfig.class);
+        when(config.getLong(anyString())).thenReturn(1024L * 1024);
+        when(config.getInt(anyString())).thenReturn(1);
+        setField(api, "runtimeConfig", config);
+        when(tts.uploadVoice(anyString())).thenReturn("new-provider-voice.wav");
+        String speaker = api.uploadVoice(
+                new MockMultipartFile("file", "upload.mp3", "audio/mpeg", new byte[] {1, 2, 3}),
+                source.backend().getBackendId());
+        String directory = voiceDirectory(source);
+        String original = CharacterVoiceFiles.resolve(store, directory, speaker);
+        assertTrue(original.endsWith("-upload.mp3"));
+        assertEquals("new-provider-voice.wav", speaker);
+        assertEquals(
+                source.backend().getTtsSpeakerWav(),
+                stored(source.character().getCharacterId()).backend().getTtsSpeakerWav());
+        assertTrue(api.deleteVoice(source.backend().getBackendId(), speaker));
+        verify(tts).deleteVoice(speaker);
+        assertFalse(store.exists(original));
+        assertFalse(store.exists(CharacterVoiceFiles.mappingPath(directory, speaker)));
+    }
+
+    @Test
+    void backendsSharingOneArchiveVoiceGetIndependentSourceFilesAndRegistrations() throws Exception {
+        CharacterConfigurationDTO conf = configuration();
+        var first = conf.getBackends().getFirst();
+        first.getBackend().setEnableTts(true);
+        var second =
+                CharacterConfigurationDTO.fromJson(conf.toJson()).getBackends().getFirst();
+        second.getBackend().setIsDefault(false);
+        second.getBackend().setEnableTts(false);
+        conf.setBackends(List.of(first, second));
+        Long id = importArchive(archive(conf.toJson(), "apiVersion: v3\n"));
+        CharacterInfo character = sessions.getMapper(CharacterInfoMapper.class)
+                .selectByPrimaryKey(id)
+                .orElseThrow();
+        var backends = sessions.getMapper(CharacterBackendMapper.class)
+                .select(query -> query.where(
+                        CharacterBackendDynamicSqlSupport.characterUid, isEqualTo(character.getCharacterUid())));
+        assertEquals(2, backends.size());
+        assertEquals(
+                2,
+                backends.stream()
+                        .map(CharacterBackend::getTtsSpeakerWav)
+                        .distinct()
+                        .count());
+        assertEquals(
+                Set.of((byte) 0, (byte) 1),
+                new HashSet<>(
+                        backends.stream().map(CharacterBackend::getEnableTts).toList()));
+        for (CharacterBackend backend : backends) {
+            String directory =
+                    "private/creator/character/voices/" + character.getCharacterUid() + "/" + backend.getBackendId();
+            String source = CharacterVoiceFiles.resolve(store, directory, backend.getTtsSpeakerWav());
+            assertEquals(RESOURCES.get("voices/0/speaker.wav"), store.readString(source));
+        }
+        verify(tts, times(2)).uploadVoice(anyString());
+    }
+
+    private CharacterConfigurationDTO exportedConfiguration(Long id) throws Exception {
+        Path extracted = Files.createTempDirectory(root, "voice-export-");
+        TarUtils.extractGzip(new ByteArrayInputStream(export(id)), extracted);
+        try (var files = Files.walk(extracted)) {
+            assertTrue(files.noneMatch(path -> path.toString().contains(".sources")));
+        }
+        return CharacterConfigurationDTO.fromJson(Files.readString(extracted.resolve("character.json")));
+    }
+
+    private String voiceDirectory(Stored character) {
+        return "private/" + character.character().getUserId() + "/character/voices/"
+                + character.character().getCharacterUid() + "/"
+                + character.backend().getBackendId();
+    }
+
+    private byte[] mp3Archive() throws Exception {
+        CharacterConfigurationDTO conf = configuration();
+        conf.getBackends().getFirst().setVoicePath("voices/0/speaker.mp3");
+        conf.getBackends().getFirst().getBackend().setEnableTts(true);
+        Map<String, String> resources = new LinkedHashMap<>(RESOURCES);
+        resources.put("voices/0/speaker.mp3", resources.remove("voices/0/speaker.wav"));
+        return archive(conf.toJson(), "apiVersion: v3\n", resources);
     }
 
     @Test
@@ -334,7 +560,7 @@ class CharacterTransferIT {
                         long delta = table.equals("tag") ? 2 : table.equals("interactive_stats") ? 0 : 1;
                         assertEquals(beforeRows.get(table) + delta, during.get(table), table);
                     }
-                    assertEquals(beforeFiles.size() + RESOURCES.size(), files().size());
+                    assertEquals(beforeFiles.size() + RESOURCES.size() + 1, files().size());
                     return false;
                 })
                 .when(rags)
@@ -535,7 +761,11 @@ class CharacterTransferIT {
     }
 
     private byte[] archive(String json, String manifest) throws Exception {
-        Map<String, String> contents = new LinkedHashMap<>(RESOURCES);
+        return archive(json, manifest, RESOURCES);
+    }
+
+    private byte[] archive(String json, String manifest, Map<String, String> resources) throws Exception {
+        Map<String, String> contents = new LinkedHashMap<>(resources);
         contents.put("manifest.yml", manifest);
         contents.put("character.json", json);
         List<TarUtils.Entry> entries = new ArrayList<>();

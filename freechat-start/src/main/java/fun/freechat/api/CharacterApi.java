@@ -33,6 +33,7 @@ import fun.freechat.service.stats.InteractiveStatsService;
 import fun.freechat.service.tools.ToolRegistry;
 import fun.freechat.service.util.StoreUtils;
 import fun.freechat.util.AppMetaUtils;
+import fun.freechat.util.IdUtils;
 import fun.freechat.util.TarUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -1084,7 +1085,11 @@ public class CharacterApi {
         try {
             String dstDir = PRIVATE_DIR + userId + "/character/voices/" + characterUid + "/" + characterBackendId;
             String dstPath = FileUtils.transfer(file, fileStore, dstDir, maxCount);
-            return ttsService.uploadVoice(dstPath);
+            String speaker = ttsService.uploadVoice(dstPath);
+            if (StringUtils.isBlank(speaker)) throw new IllegalStateException("TTS returned an empty voice identifier");
+            CharacterVoiceFiles.remember(
+                    fileStore, dstDir, speaker, Path.of(dstPath).getFileName().toString());
+            return speaker;
         } catch (IOException | IllegalStateException e) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage());
         }
@@ -1112,10 +1117,11 @@ public class CharacterApi {
             if (!userId.equals(ownerId)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Document doesn't belong to you");
             }
-            String dstPath =
-                    PRIVATE_DIR + userId + "/character/voices/" + characterUid + "/" + characterBackendId + "/" + key;
-            fileStore.delete(dstPath);
-            ttsService.deleteVoice(dstPath);
+            String directory = PRIVATE_DIR + userId + "/character/voices/" + characterUid + "/" + characterBackendId;
+            String source = CharacterVoiceFiles.resolve(fileStore, directory, key);
+            ttsService.deleteVoice(key);
+            fileStore.delete(source);
+            fileStore.tryDelete(CharacterVoiceFiles.mappingPath(directory, key));
             return true;
         } catch (AccessDeniedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
@@ -1219,16 +1225,16 @@ public class CharacterApi {
                         .greetingPrompt(exportPrompt(greeting, currentUser))
                         .greetingPromptTask(CharacterTransferUtils.exportTask(greeting))
                         .build();
-                if ("wav".equals(dto.getTtsSpeakerType()) && StringUtils.isNotBlank(dto.getTtsSpeakerWav())) {
-                    String name = dto.getTtsSpeakerWav();
-                    if (!name.equals(Path.of(name).getFileName().toString()) || name.contains("\\")) {
-                        throw CharacterTransferUtils.invalid();
+                if ("wav".equals(dto.getTtsSpeakerType())) {
+                    String directory = PRIVATE_DIR + character.getUserId() + "/character/voices/" + uid + "/"
+                            + backend.getBackendId();
+                    String path = CharacterVoiceFiles.resolve(store, directory, dto.getTtsSpeakerWav());
+                    if (path != null) {
+                        String archivePath = "voices/" + configurations.size() + "/"
+                                + Path.of(path).getFileName();
+                        addFile(entries, archivePath, path, store);
+                        conf.setVoicePath(archivePath);
                     }
-                    String path = PRIVATE_DIR + character.getUserId() + "/character/voices/" + uid + "/"
-                            + backend.getBackendId() + "/" + name;
-                    String archivePath = "voices/" + configurations.size() + "/" + name;
-                    addFile(entries, archivePath, path, store);
-                    conf.setVoicePath(archivePath);
                 }
                 configurations.add(conf);
             }
@@ -1292,6 +1298,7 @@ public class CharacterApi {
             response.setContentType("application/gzip");
             TarUtils.compressGzip(entries, response.getOutputStream());
         } catch (IOException e) {
+            log.error("Failed to export character {}", characterId, e);
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR, "Failed to export character configuration", e);
         }
@@ -1415,7 +1422,7 @@ public class CharacterApi {
         String userId = AccountUtils.currentUser().getUserId();
         Map<String, String> createdConnectors = new LinkedHashMap<>();
         List<String> createdFiles = new ArrayList<>();
-        List<String> voices = new ArrayList<>();
+        List<ImportedVoice> voices = new ArrayList<>();
         Path tempDir = null;
         try {
             tempDir = Files.createTempDirectory("freechat-character-");
@@ -1441,13 +1448,7 @@ public class CharacterApi {
                             HttpStatus.INTERNAL_SERVER_ERROR, "Failed to store character resources", e);
                 }
             });
-            for (String voice : voices) {
-                try {
-                    if (ttsService.isEnabled()) ttsService.uploadVoice(voice);
-                } catch (RuntimeException e) {
-                    log.warn("Imported voice requires TTS registration", e);
-                }
-            }
+            voices.forEach(this::registerImportedVoice);
             return id;
         } catch (IOException e) {
             cleanupImportedFiles(createdFiles);
@@ -1486,7 +1487,7 @@ public class CharacterApi {
             Path root,
             Map<String, String> createdConnectors,
             List<String> createdFiles,
-            List<String> voices)
+            List<ImportedVoice> voices)
             throws IOException {
         CharacterCreateDTO character = conf.getCharacter();
         List<ConnectorConfigurationDTO> descriptors = conf.getConnectors() == null ? List.of() : conf.getConnectors();
@@ -1534,14 +1535,23 @@ public class CharacterApi {
             dto.setChatPromptTaskId(createPromptTask(backendConf.getChatPrompt(), backendConf.getChatPromptTask()));
             dto.setGreetingPromptTaskId(
                     createPromptTask(backendConf.getGreetingPrompt(), backendConf.getGreetingPromptTask()));
+            boolean enableTts = Boolean.TRUE.equals(dto.getEnableTts());
+            if ("wav".equals(dto.getTtsSpeakerType()) || backendConf.getVoicePath() != null) {
+                dto.setTtsSpeakerWav(null);
+                dto.setEnableTts(false);
+            }
             CharacterBackend backend = dto.toCharacterBackend(uid);
             if (StringUtils.isBlank(characterService.addBackend(backend))) throw importFailed();
             if (backendConf.getVoicePath() != null) {
                 String directory = PRIVATE_DIR + owner + "/character/voices/" + uid + "/" + backend.getBackendId();
-                String path = copyImportedFile(root, backendConf.getVoicePath(), directory, createdFiles);
-                voices.add(path);
-                backend.setTtsSpeakerWav(Path.of(path).getFileName().toString());
-                if (!characterService.updateBackend(backend)) throw importFailed();
+                String sourceName =
+                        Path.of(backendConf.getVoicePath()).getFileName().toString();
+                String name = IdUtils.newId() + CharacterVoiceFiles.extension(sourceName);
+                String path = copyImportedFile(root, backendConf.getVoicePath(), directory, name, createdFiles);
+                createdFiles.add(directory + ".sources");
+                createdFiles.add(CharacterVoiceFiles.mappingPath(directory, null));
+                CharacterVoiceFiles.remember(StoreUtils.defaultFileStore(), directory, null, name);
+                voices.add(new ImportedVoice(backend.getBackendId(), uid, path, enableTts));
             }
         }
         Path documents = root.resolve("documents");
@@ -1568,6 +1578,34 @@ public class CharacterApi {
         return info.getCharacterId();
     }
 
+    private record ImportedVoice(String backendId, String characterUid, String source, boolean enableTts) {}
+
+    private void registerImportedVoice(ImportedVoice voice) {
+        if (!ttsService.isEnabled()) {
+            log.warn("TTS registration deferred for imported backend {}: service unavailable", voice.backendId());
+            return;
+        }
+        try {
+            String speaker = ttsService.uploadVoice(voice.source());
+            if (StringUtils.isBlank(speaker)) throw new IllegalStateException("TTS returned an empty voice identifier");
+            FileStore store = StoreUtils.defaultFileStore();
+            Path path = Path.of(voice.source());
+            String directory = path.getParent().toString();
+            CharacterVoiceFiles.remember(
+                    store, directory, speaker, path.getFileName().toString());
+            if (!characterService.updateBackend(new CharacterBackend()
+                    .withBackendId(voice.backendId())
+                    .withCharacterUid(voice.characterUid())
+                    .withTtsSpeakerWav(speaker)
+                    .withEnableTts(voice.enableTts() ? (byte) 1 : (byte) 0))) {
+                throw new IllegalStateException("Failed to save imported voice identifier");
+            }
+            store.delete(CharacterVoiceFiles.mappingPath(directory, null));
+        } catch (IOException | RuntimeException e) {
+            log.warn("Failed to finish voice registration for imported backend {}", voice.backendId(), e);
+        }
+    }
+
     private static ResponseStatusException importFailed() {
         return new ResponseStatusException(
                 HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create character configuration");
@@ -1575,8 +1613,14 @@ public class CharacterApi {
 
     private static String copyImportedFile(Path root, String source, String directory, List<String> created)
             throws IOException {
+        return copyImportedFile(
+                root, source, directory, Path.of(source).getFileName().toString(), created);
+    }
+
+    private static String copyImportedFile(
+            Path root, String source, String directory, String name, List<String> created) throws IOException {
         Path file = CharacterTransferUtils.resource(root, source);
-        String destination = directory + "/" + file.getFileName();
+        String destination = directory + "/" + name;
         FileStore store = StoreUtils.defaultFileStore();
         if (store.exists(destination)) throw new IOException("Import destination already exists");
         if (!store.exists(directory)) {
@@ -1720,10 +1764,15 @@ public class CharacterApi {
             for (var backend : conf.getBackends()) {
                 if (backend == null || backend.getBackend() == null) continue;
                 String speaker = backend.getBackend().getTtsSpeakerWav();
-                if (StringUtils.isNotBlank(speaker)
-                        && speaker.equals(Path.of(speaker).getFileName().toString())
-                        && Files.isRegularFile(root.resolve("voices").resolve(speaker))) {
-                    backend.setVoicePath("voices/" + speaker);
+                if (StringUtils.isNotBlank(speaker) && Files.isDirectory(root.resolve("voices"))) {
+                    try (Stream<Path> sources = Files.list(root.resolve("voices"))) {
+                        String source = CharacterVoiceFiles.match(
+                                speaker,
+                                sources.filter(Files::isRegularFile)
+                                        .map(Path::toString)
+                                        .toList());
+                        backend.setVoicePath("voices/" + Path.of(source).getFileName());
+                    }
                 }
             }
         }

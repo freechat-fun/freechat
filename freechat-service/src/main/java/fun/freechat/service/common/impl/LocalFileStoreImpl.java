@@ -130,6 +130,50 @@ public class LocalFileStoreImpl implements FileStore {
     }
 
     @Override
+    public boolean isRegularFile(String path) {
+        try {
+            return Files.isRegularFile(regularFilePath(path, false), LinkOption.NOFOLLOW_LINKS);
+        } catch (IOException | InvalidPathException | SecurityException ignored) {
+            return false;
+        }
+    }
+
+    @Override
+    public void writeRegularFile(String path, byte[] bytes) throws IOException {
+        Files.write(
+                regularFilePath(path, true),
+                bytes,
+                StandardOpenOption.WRITE,
+                StandardOpenOption.CREATE,
+                StandardOpenOption.TRUNCATE_EXISTING,
+                LinkOption.NOFOLLOW_LINKS);
+    }
+
+    private Path regularFilePath(String path, boolean createParents) throws IOException {
+        if (path == null) throw new IOException("Invalid file path");
+        Path relative = Path.of(path);
+        if (relative.isAbsolute()) throw new IOException("Expected a relative file path");
+        Path root = toPath("").toRealPath();
+        Path file = root;
+        int index = 0;
+        for (Path component : relative) {
+            if (!Files.isDirectory(file, LinkOption.NOFOLLOW_LINKS)) throw new IOException("Invalid parent directory");
+            // Check each component before a later ".." can remove it from the path.
+            file = file.resolve(component).normalize();
+            if (!file.startsWith(root) || Files.isSymbolicLink(file)) throw new IOException("Unsafe file path");
+            if (++index < relative.getNameCount() && createParents && !Files.exists(file, LinkOption.NOFOLLOW_LINKS)) {
+                try {
+                    Files.createDirectory(file);
+                } catch (FileAlreadyExistsException ignored) {
+                    if (!Files.isDirectory(file, LinkOption.NOFOLLOW_LINKS))
+                        throw new IOException("Invalid parent directory");
+                }
+            }
+        }
+        return file;
+    }
+
+    @Override
     public void delete(String path) throws IOException {
         Files.deleteIfExists(toPath(path));
     }

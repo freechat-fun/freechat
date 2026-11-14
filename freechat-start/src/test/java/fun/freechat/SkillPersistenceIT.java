@@ -943,6 +943,16 @@ class SkillPersistenceIT {
         }
 
         @Override
+        public boolean isRegularFile(String path) {
+            return objects.containsKey(path);
+        }
+
+        @Override
+        public void writeRegularFile(String path, byte[] bytes) throws IOException {
+            write(path, bytes);
+        }
+
+        @Override
         public void delete(String path) throws IOException {
             assertNoTransaction();
             deletes.incrementAndGet();

@@ -60,6 +60,12 @@ public interface FileStore extends Closeable {
 
     boolean exists(String path);
 
+    /** Regular file under the storage root, without traversing symbolic links. */
+    boolean isRegularFile(String path);
+
+    /** Write a regular file, creating parents without following symbolic links. */
+    void writeRegularFile(String path, byte[] bytes) throws IOException;
+
     void delete(String path) throws IOException;
 
     default void tryDelete(String path) {
