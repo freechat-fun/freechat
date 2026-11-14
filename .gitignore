@@ -69,6 +69,7 @@ dist-ssr/
 *.local
 local-data/
 freechat-start/src/main/resources/static/img/
+freechat-start/src/main/resources/static/assets/
 
 .openapi-generator
 */*/.gitignore
