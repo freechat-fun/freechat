@@ -160,7 +160,7 @@ class ConnectorCharacterTransferTest {
         var response = new MockHttpServletResponse();
         ResponseStatusException failure = assertThrows(
                 ResponseStatusException.class,
-                () -> api.exportCharacter(1L, false, new MockHttpServletRequest(), response));
+                () -> api.exportCharacter(1L, false, false, new MockHttpServletRequest(), response));
         assertEquals(HttpStatus.BAD_REQUEST, failure.getStatusCode());
         assertEquals(0, response.getContentAsByteArray().length);
     }
@@ -171,11 +171,15 @@ class ConnectorCharacterTransferTest {
                 "exportCharacter",
                 Long.class,
                 boolean.class,
+                boolean.class,
                 jakarta.servlet.http.HttpServletRequest.class,
                 jakarta.servlet.http.HttpServletResponse.class);
         assertEquals(
                 "false",
                 method.getParameters()[1].getAnnotation(RequestParam.class).defaultValue());
+        assertEquals(
+                "false",
+                method.getParameters()[2].getAnnotation(RequestParam.class).defaultValue());
         JsonNode archive = export(false, root);
         assertFalse(archive.has("connectors"));
         assertClearedExt(archive.path("character").path("ext").asText());
@@ -282,7 +286,7 @@ class ConnectorCharacterTransferTest {
                     assertThrows(
                                     ResponseStatusException.class,
                                     () -> api.exportCharacter(
-                                            1L, includeConnectors, new MockHttpServletRequest(), response))
+                                            1L, includeConnectors, false, new MockHttpServletRequest(), response))
                             .getStatusCode());
             assertEquals(0, response.getContentAsByteArray().length);
         }
@@ -313,7 +317,7 @@ class ConnectorCharacterTransferTest {
                 assertThrows(
                                 ResponseStatusException.class,
                                 () -> api.exportCharacter(
-                                        1L, true, new MockHttpServletRequest(), new MockHttpServletResponse()))
+                                        1L, true, false, new MockHttpServletRequest(), new MockHttpServletResponse()))
                         .getStatusCode());
         assertFalse(export(false, root).has("connectors"));
         verifyNoInteractions(connectors);
@@ -327,7 +331,7 @@ class ConnectorCharacterTransferTest {
                 assertThrows(
                                 ResponseStatusException.class,
                                 () -> api.exportCharacter(
-                                        1L, true, new MockHttpServletRequest(), new MockHttpServletResponse()))
+                                        1L, true, false, new MockHttpServletRequest(), new MockHttpServletResponse()))
                         .getStatusCode());
         verifyNoInteractions(connectors, characters);
     }
@@ -341,7 +345,7 @@ class ConnectorCharacterTransferTest {
                 assertThrows(
                                 ConnectorException.class,
                                 () -> api.exportCharacter(
-                                        1L, true, new MockHttpServletRequest(), new MockHttpServletResponse()))
+                                        1L, true, false, new MockHttpServletRequest(), new MockHttpServletResponse()))
                         .code());
         verify(connectors, never()).resolve(anyString(), anyString());
     }
@@ -690,7 +694,7 @@ class ConnectorCharacterTransferTest {
 
     private JsonNode export(boolean includeConnectors, Path root) throws Exception {
         MockHttpServletResponse response = new MockHttpServletResponse();
-        api.exportCharacter(1L, includeConnectors, new MockHttpServletRequest(), response);
+        api.exportCharacter(1L, includeConnectors, false, new MockHttpServletRequest(), response);
         Path directory = Files.createTempDirectory(root, "export-");
         TarUtils.extractGzip(new ByteArrayInputStream(response.getContentAsByteArray()), directory);
         assertEquals("application/gzip", response.getContentType());

@@ -1,8 +1,32 @@
+const MISSING_DOCUMENTS_ERROR_CODE = 'CHARACTER_EXPORT_DOCUMENTS_MISSING';
+
+type MissingCharacterDocumentsError = Error & {
+  status: 409;
+  errorCode: typeof MISSING_DOCUMENTS_ERROR_CODE;
+};
+
+export function isMissingCharacterDocumentsError(
+  reason: unknown
+): reason is MissingCharacterDocumentsError {
+  return (
+    reason instanceof Error &&
+    'status' in reason &&
+    reason.status === 409 &&
+    'errorCode' in reason &&
+    reason.errorCode === MISSING_DOCUMENTS_ERROR_CODE
+  );
+}
+
 export function characterExportUrl(
   characterId: number,
-  includeConnectors = false
+  includeConnectors = false,
+  force = false
 ): string {
-  return `/api/v2/character/export/${characterId}${includeConnectors ? '?includeConnectors=true' : ''}`;
+  const params = new URLSearchParams();
+  if (includeConnectors) params.set('includeConnectors', 'true');
+  if (force === true) params.set('force', 'true');
+  const query = params.toString();
+  return `/api/v2/character/export/${characterId}${query ? `?${query}` : ''}`;
 }
 
 function exportFilename(
@@ -44,14 +68,16 @@ function exportFilename(
 
 export async function exportCharacter(
   characterId: number,
-  includeConnectors = false
+  includeConnectors = false,
+  force = false
 ) {
   let status = -1;
+  let errorCode: typeof MISSING_DOCUMENTS_ERROR_CODE | undefined;
   let a: HTMLAnchorElement | undefined;
   let objectUrl: string | undefined;
   try {
     const response = await fetch(
-      characterExportUrl(characterId, includeConnectors),
+      characterExportUrl(characterId, includeConnectors, force),
       {
         credentials: 'same-origin',
         redirect: 'manual',
@@ -66,12 +92,25 @@ export async function exportCharacter(
       status = 401;
       throw new Error();
     }
-    if (!response.ok) throw new Error();
     const contentType = response.headers
       .get('Content-Type')
       ?.split(';')[0]
       .trim()
       .toLowerCase();
+    if (!response.ok) {
+      if (status === 409 && contentType === 'application/json') {
+        const payload: unknown = await response.json();
+        if (
+          payload !== null &&
+          typeof payload === 'object' &&
+          'errorCode' in payload &&
+          payload.errorCode === MISSING_DOCUMENTS_ERROR_CODE
+        ) {
+          errorCode = MISSING_DOCUMENTS_ERROR_CODE;
+        }
+      }
+      throw new Error();
+    }
     if (
       contentType !== 'application/gzip' &&
       contentType !== 'application/x-gzip'
@@ -91,11 +130,12 @@ export async function exportCharacter(
     document.body.appendChild(a);
     a.click();
   } catch {
-    // Preserve authentication/HTTP status without exposing response bodies or URLs.
+    // Only the allowlisted code and HTTP status may escape, never raw payloads.
     throw Object.assign(
       new Error('Character export failed. Please try again.'),
       {
         status,
+        ...(errorCode ? { errorCode } : {}),
       }
     );
   } finally {
