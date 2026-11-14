@@ -634,6 +634,16 @@ class SystemPromptSnapshotStoreTest {
         }
 
         @Override
+        public boolean isRegularFile(String path) {
+            return objects.containsKey(path);
+        }
+
+        @Override
+        public void writeRegularFile(String path, byte[] bytes) throws IOException {
+            write(path, bytes);
+        }
+
+        @Override
         public void delete(String path) {
             throw new AssertionError("Ambiguous writes must not be cleaned up");
         }
