@@ -58,13 +58,14 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -139,6 +140,9 @@ public class CharacterApi {
 
     @Autowired
     private ConnectorService connectorService;
+
+    @Autowired
+    private PlatformTransactionManager transactionManager;
 
     private void validateCharacterTools(String ext) {
         try {
@@ -1176,127 +1180,142 @@ public class CharacterApi {
             @Parameter(description = "Include credentialless connector definitions (character owner only)")
                     @RequestParam(defaultValue = "false")
                     boolean includeConnectors,
+            HttpServletRequest request,
             HttpServletResponse response) {
         User currentUser = AccountUtils.currentUser();
-        String currentUserId = currentUser.getUserId();
-        var characterTriple = characterService.details(characterId, currentUser);
-        if (characterTriple == null || characterTriple.getLeft() == null) {
+        var source = characterService.details(characterId, currentUser);
+        if (source == null || source.getLeft() == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Character not found");
         }
-        List<ConnectorConfigurationDTO> connectorConfigurations =
-                includeConnectors ? exportConnectors(characterTriple.getLeft(), currentUserId) : null;
-        CharacterCreateDTO characterCreateDTO =
-                CharacterCreateDTO.from(Pair.of(characterTriple.getLeft(), characterTriple.getMiddle()));
-        characterCreateDTO.setExt(
-                fun.freechat.service.skills.CharacterSkillConfiguration.withoutSkills(characterCreateDTO.getExt()));
-        characterCreateDTO.setDraft(fun.freechat.service.skills.CharacterSkillConfiguration.withoutDraftSkills(
-                characterCreateDTO.getDraft()));
-        if (!includeConnectors) {
-            characterCreateDTO.setExt(CharacterConnectorConfiguration.withoutConnectors(characterCreateDTO.getExt()));
-            characterCreateDTO.setDraft(
-                    CharacterConnectorConfiguration.withoutDraftConnectors(characterCreateDTO.getDraft()));
+        CharacterInfo character = source.getLeft();
+        if (character.getVersion() == null || character.getVersion() < 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Publish the character before exporting");
         }
-
-        List<CharacterBackend> backends =
-                characterTriple.getRight() != null ? characterTriple.getRight() : Collections.emptyList();
-        List<CharacterBackendConfigurationDTO> characterBackendConfList = backends.stream()
-                .map(backend -> {
-                    CharacterBackendDTO backendDTO = CharacterBackendDTO.from(backend);
-
-                    PromptTask chatPromptTask = backend.getChatPromptTaskId() != null
-                            ? promptTaskService.get(backend.getChatPromptTaskId())
-                            : null;
-
-                    PromptCreateDTO chatPromptCreateDTO = Optional.ofNullable(chatPromptTask)
-                            .map(PromptTask::getPromptUid)
-                            .map(promptUid -> promptService.getLatestIdByUid(promptUid, currentUser))
-                            .map(promptId -> promptService.details(promptId, currentUser))
-                            .map(PromptCreateDTO::from)
-                            .orElse(null);
-
-                    PromptTaskDTO chatPromptTaskDTO =
-                            chatPromptTask != null ? PromptTaskDTO.from(chatPromptTask.withPromptUid(null)) : null;
-
-                    PromptTask greetingPromptTask = backend.getGreetingPromptTaskId() != null
-                            ? promptTaskService.get(backend.getGreetingPromptTaskId())
-                            : null;
-
-                    PromptCreateDTO greetingPromptCreateDTO = Optional.ofNullable(greetingPromptTask)
-                            .map(PromptTask::getPromptUid)
-                            .map(promptUid -> promptService.getLatestIdByUid(promptUid, currentUser))
-                            .map(promptId -> promptService.details(promptId, currentUser))
-                            .map(PromptCreateDTO::from)
-                            .orElse(null);
-
-                    PromptTaskDTO greetingPromptTaskDTO = greetingPromptTask != null
-                            ? PromptTaskDTO.from(greetingPromptTask.withPromptUid(null))
-                            : null;
-
-                    return CharacterBackendConfigurationDTO.builder()
-                            .backend(backendDTO)
-                            .chatPrompt(chatPromptCreateDTO)
-                            .chatPromptTask(chatPromptTaskDTO)
-                            .greetingPrompt(greetingPromptCreateDTO)
-                            .greetingPromptTask(greetingPromptTaskDTO)
-                            .build();
-                })
-                .toList();
-
-        CharacterConfigurationDTO characterConf = CharacterConfigurationDTO.builder()
-                .character(characterCreateDTO)
-                .backends(characterBackendConfList)
-                .connectors(connectorConfigurations)
-                .build();
-
-        LinkedList<Triple<String, InputStream, Long>> entries = new LinkedList<>();
-
-        // manifest.yml
-        String manifestFilename = "manifest.yml";
-        byte[] manifestContent = new ManifestInfo().toYaml().getBytes(StandardCharsets.UTF_8);
-        entries.add(
-                Triple.of(manifestFilename, new ByteArrayInputStream(manifestContent), (long) manifestContent.length));
-
-        // character.json
-        String characterFilename = "character.json";
-        String characterJson = characterConf.toJson();
-        byte[] characterContent = characterJson.getBytes(StandardCharsets.UTF_8);
-        entries.add(Triple.of(
-                characterFilename, new ByteArrayInputStream(characterContent), (long) characterContent.length));
-
-        String characterUid = characterService.getUid(characterId);
-        if (StringUtils.isNotBlank(characterUid)) {
-            // voices
-            for (CharacterBackend backend : backends) {
-                entries.addAll(voices(currentUserId, characterUid, backend.getBackendId()));
-            }
-
-            // documents
-            entries.addAll(documents(currentUserId, characterUid));
-
-            // pictures
-            entries.addAll(pictures(currentUserId, characterUid));
-
-            // videos
-            entries.addAll(videos(currentUserId, characterUid));
-
-            // avatars
-            avatar(currentUserId, characterUid, characterTriple.getLeft().getAvatar())
-                    .ifPresent(entries::add);
+        boolean owner = currentUser.getUserId().equals(character.getUserId());
+        var connectors = includeConnectors ? exportConnectors(character, currentUser.getUserId()) : null;
+        CharacterCreateDTO portable = CharacterCreateDTO.from(Pair.of(character, source.getMiddle()));
+        CharacterTransferUtils.sanitize(portable);
+        if (!includeConnectors) portable.setExt(CharacterConnectorConfiguration.withoutConnectors(portable.getExt()));
+        List<CharacterBackend> backends = owner && source.getRight() != null ? source.getRight() : List.of();
+        if (backends.size() > CharacterTransferUtils.MAX_BACKENDS) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Too many character backends to export");
         }
-
-        String encodedFilename =
-                URLEncoder.encode(characterConf.getCharacter().getName() + ".tar.gz", StandardCharsets.UTF_8);
-        response.setHeader(
-                HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + encodedFilename + "\"; filename*=UTF-8''" + encodedFilename);
-        response.setContentType("application/gzip");
-
+        List<CharacterBackendConfigurationDTO> configurations = new ArrayList<>();
+        List<TarUtils.Entry> entries = new ArrayList<>();
+        Map<String, List<String>> urls = new LinkedHashMap<>();
+        List<RagTaskDTO> ragTasks = new ArrayList<>();
+        FileStore store = StoreUtils.defaultFileStore();
+        String uid = character.getCharacterUid();
         try {
+            for (CharacterBackend backend : backends) {
+                CharacterBackendDTO dto = CharacterBackendDTO.from(backend);
+                CharacterTransferUtils.sanitize(dto);
+                PromptTask chat = exportPromptTask(backend.getChatPromptTaskId());
+                PromptTask greeting = exportPromptTask(backend.getGreetingPromptTaskId());
+                var conf = CharacterBackendConfigurationDTO.builder()
+                        .backend(dto)
+                        .chatPrompt(exportPrompt(chat, currentUser))
+                        .chatPromptTask(CharacterTransferUtils.exportTask(chat))
+                        .greetingPrompt(exportPrompt(greeting, currentUser))
+                        .greetingPromptTask(CharacterTransferUtils.exportTask(greeting))
+                        .build();
+                if ("wav".equals(dto.getTtsSpeakerType()) && StringUtils.isNotBlank(dto.getTtsSpeakerWav())) {
+                    String name = dto.getTtsSpeakerWav();
+                    if (!name.equals(Path.of(name).getFileName().toString()) || name.contains("\\")) {
+                        throw CharacterTransferUtils.invalid();
+                    }
+                    String path = PRIVATE_DIR + character.getUserId() + "/character/voices/" + uid + "/"
+                            + backend.getBackendId() + "/" + name;
+                    String archivePath = "voices/" + configurations.size() + "/" + name;
+                    addFile(entries, archivePath, path, store);
+                    conf.setVoicePath(archivePath);
+                }
+                configurations.add(conf);
+            }
+            CharacterConfigurationDTO conf = CharacterConfigurationDTO.builder()
+                    .character(portable)
+                    .backends(configurations)
+                    .connectors(connectors)
+                    .resourceUrls(urls)
+                    .ragTasks(ragTasks)
+                    .build();
+            if (StringUtils.isNotBlank(uid)) {
+                String publicRoot = PUBLIC_DIR + character.getUserId() + "/character/";
+                exportMedia(request, conf, "pictures", publicRoot + "picture/" + uid, entries, store);
+                exportMedia(request, conf, "videos", publicRoot + "video/" + uid, entries, store);
+                exportAvatar(request, conf, publicRoot + "avatar/" + uid, entries, store);
+                if (owner) {
+                    String documentRoot = PRIVATE_DIR + character.getUserId() + "/character/document/" + uid;
+                    Set<String> documents = new HashSet<>();
+                    for (String path : listFiles(store, documentRoot)) {
+                        String archivePath = "documents/" + Path.of(path).getFileName();
+                        addFile(entries, archivePath, path, store);
+                        documents.add(path);
+                    }
+                    for (RagTask task : ragTaskService.list(uid)) {
+                        String sourcePath = task.getSource();
+                        if (SourceType.FILE.text().equals(task.getSourceType())) {
+                            if (!documents.contains(sourcePath)) {
+                                throw new ResponseStatusException(
+                                        HttpStatus.CONFLICT, "A knowledge document is unavailable");
+                            }
+                            sourcePath = "documents/" + Path.of(sourcePath).getFileName();
+                        }
+                        ragTasks.add(RagTaskDTO.builder()
+                                .sourceType(task.getSourceType())
+                                .source(sourcePath)
+                                .maxSegmentSize(task.getMaxSegmentSize())
+                                .maxOverlapSize(task.getMaxOverlapSize())
+                                .build());
+                    }
+                }
+            }
+            byte[] manifest = new ManifestInfo().toYaml().getBytes(StandardCharsets.UTF_8);
+            byte[] content = conf.toJson().getBytes(StandardCharsets.UTF_8);
+            if (content.length > 4 * 1024 * 1024)
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Character configuration is too large");
+            entries.addFirst(
+                    new TarUtils.Entry("character.json", () -> new ByteArrayInputStream(content), content.length));
+            entries.addFirst(
+                    new TarUtils.Entry("manifest.yml", () -> new ByteArrayInputStream(manifest), manifest.length));
+            if (entries.size() * 2 > TarUtils.DEFAULT_LIMITS.maxEntries()
+                    || entries.stream().anyMatch(entry -> entry.size() > TarUtils.DEFAULT_LIMITS.maxFileBytes())
+                    || entries.stream().mapToLong(TarUtils.Entry::size).sum()
+                            > TarUtils.DEFAULT_LIMITS.maxTotalBytes()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Character archive is too large");
+            }
+            String filename = URLEncoder.encode(portable.getName() + ".tar.gz", StandardCharsets.UTF_8)
+                    .replace("+", "%20");
+            response.setHeader(
+                    HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=\"character.tar.gz\"; filename*=UTF-8''" + filename);
+            response.setContentType("application/gzip");
             TarUtils.compressGzip(entries, response.getOutputStream());
         } catch (IOException e) {
             throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR, "Failed to compress character configuration", e);
+                    HttpStatus.INTERNAL_SERVER_ERROR, "Failed to export character configuration", e);
         }
+    }
+
+    private PromptTask exportPromptTask(String taskId) {
+        if (StringUtils.isBlank(taskId)) return null;
+        PromptTask task = promptTaskService.get(taskId);
+        if (task == null) throw new ResponseStatusException(HttpStatus.CONFLICT, "A prompt task is unavailable");
+        return task;
+    }
+
+    private PromptCreateDTO exportPrompt(PromptTask task, User user) {
+        if (task == null) return null;
+        Long id = promptService.getLatestIdByUid(task.getPromptUid(), user);
+        var details = id == null ? null : promptService.details(id, user);
+        if (details == null
+                || details.getLeft().getVersion() == null
+                || details.getLeft().getVersion() < 1) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "A published prompt is unavailable");
+        }
+        PromptCreateDTO prompt = PromptCreateDTO.from(details);
+        CharacterTransferUtils.sanitize(prompt);
+        return prompt;
     }
 
     private List<ConnectorConfigurationDTO> exportConnectors(CharacterInfo character, String currentUserId) {
@@ -1306,9 +1325,6 @@ public class CharacterApi {
         }
         Set<String> references = new TreeSet<>(
                 CharacterConnectorConfiguration.parse(character.getExt()).enabled());
-        references.addAll(
-                CharacterConnectorConfiguration.parse(CharacterConnectorConfiguration.draftExt(character.getDraft()))
-                        .enabled());
         if (references.isEmpty()) {
             return List.of();
         }
@@ -1325,71 +1341,66 @@ public class CharacterApi {
         return descriptors;
     }
 
-    private static List<Triple<String, InputStream, Long>> voices(
-            String userId, String characterUid, String characterBackendId) {
-        String dir = PRIVATE_DIR + userId + "/character/voices/" + characterUid + "/" + characterBackendId;
-        return listFileStreams("voices", dir);
+    private static List<String> listFiles(FileStore store, String directory) throws IOException {
+        return store.exists(directory) ? store.list(directory, null, false) : List.of();
     }
 
-    private static List<Triple<String, InputStream, Long>> documents(String userId, String characterUid) {
-        String dir = PRIVATE_DIR + userId + "/character/document/" + characterUid;
-        return listFileStreams("documents", dir);
+    private static void addFile(List<TarUtils.Entry> entries, String name, String path, FileStore store)
+            throws IOException {
+        entries.add(new TarUtils.Entry(name, () -> store.newInputStream(path), store.size(path)));
     }
 
-    private static List<Triple<String, InputStream, Long>> pictures(String userId, String characterUid) {
-        String dir = PUBLIC_DIR + userId + "/character/picture/" + characterUid;
-        return listFileStreams("pictures", dir);
-    }
-
-    private static List<Triple<String, InputStream, Long>> videos(String userId, String characterUid) {
-        String dir = PUBLIC_DIR + userId + "/character/videos/" + characterUid;
-        return listFileStreams("videos", dir);
-    }
-
-    private Optional<Triple<String, InputStream, Long>> avatar(String userId, String characterUid, String avatarUrl) {
-        if (StringUtils.isBlank(avatarUrl)) {
-            return Optional.empty();
+    private void exportMedia(
+            HttpServletRequest request,
+            CharacterConfigurationDTO conf,
+            String category,
+            String directory,
+            List<TarUtils.Entry> entries,
+            FileStore store)
+            throws IOException {
+        for (String path : listFiles(store, directory)) {
+            String name = category + "/" + Path.of(path).getFileName();
+            addFile(entries, name, path, store);
+            conf.getResourceUrls().put(name, mediaUrls(request, conf, path, category, store));
         }
+    }
 
-        FileStore fileStore = StoreUtils.defaultFileStore();
-        try {
-            String key = getKeyFromUrl(avatarUrl);
-            String path = FileUtils.getDefaultPublicPath(key);
-            String dir = PUBLIC_DIR + userId + "/character/avatar/" + characterUid;
-            if (path.startsWith(dir) && fileStore.exists(path)) {
-                String filePath = "avatar" + path.substring(dir.length());
-                Long fileSize = fileStore.size(path);
-                InputStream fileStream = fileStore.newInputStream(path);
-                return Optional.of(Triple.of(filePath, fileStream, fileSize));
+    private List<String> mediaUrls(
+            HttpServletRequest request, CharacterConfigurationDTO conf, String path, String category, FileStore store) {
+        Set<String> urls = new LinkedHashSet<>();
+        String shared = store.getShareUrl(path, Integer.MAX_VALUE);
+        if (StringUtils.isNotBlank(shared)) urls.add(shared);
+        urls.add(
+                "videos".equals(category)
+                        ? FileUtils.getDefaultPublicUrlForVideo(request, path)
+                        : FileUtils.getDefaultPublicUrlForImage(request, path));
+        String key = FileUtils.getDefaultPublicKey(path);
+        var matcher = java.util.regex.Pattern.compile("https?://[^\\s\\\"<>\\\\)\\]]+")
+                .matcher(conf.toJson());
+        while (matcher.find()) {
+            String candidate = matcher.group();
+            if (getKeyFromUrl(candidate).equals(key)) urls.add(candidate);
+        }
+        return List.copyOf(urls);
+    }
+
+    private void exportAvatar(
+            HttpServletRequest request,
+            CharacterConfigurationDTO conf,
+            String directory,
+            List<TarUtils.Entry> entries,
+            FileStore store)
+            throws IOException {
+        String avatar = conf.getCharacter().getAvatar();
+        if (StringUtils.isBlank(avatar)) return;
+        for (String path : listFiles(store, directory)) {
+            List<String> urls = mediaUrls(request, conf, path, "avatar", store);
+            if (urls.contains(avatar)) {
+                String name = "avatar/" + Path.of(path).getFileName();
+                addFile(entries, name, path, store);
+                conf.getResourceUrls().put(name, urls);
+                return;
             }
-        } catch (AccessDeniedException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        } catch (IOException ignored) {
-            // ignored
-        }
-        return Optional.empty();
-    }
-
-    private static List<Triple<String, InputStream, Long>> listFileStreams(String prefix, String dir) {
-        FileStore fileStore = StoreUtils.defaultFileStore();
-        try {
-            return fileStore.list(dir, null, false).stream()
-                    .map(path -> {
-                        try {
-                            String filePath = prefix + path.substring(dir.length());
-                            Long fileSize = fileStore.size(path);
-                            InputStream fileStream = fileStore.newInputStream(path);
-                            return Triple.of(filePath, fileStream, fileSize);
-                        } catch (IOException e) {
-                            return null;
-                        }
-                    })
-                    .filter(Objects::nonNull)
-                    .toList();
-        } catch (IOException e) {
-            return Collections.emptyList();
         }
     }
 
@@ -1401,111 +1412,199 @@ public class CharacterApi {
     public Long importCharacter(
             HttpServletRequest request,
             @Parameter(description = "Character avatar") @RequestParam("file") @NotNull MultipartFile file) {
-        FileStore fileStore = StoreUtils.defaultFileStore();
         String userId = AccountUtils.currentUser().getUserId();
         Map<String, String> createdConnectors = new LinkedHashMap<>();
-
+        List<String> createdFiles = new ArrayList<>();
+        List<String> voices = new ArrayList<>();
+        Path tempDir = null;
         try {
-            Path tempDir = Files.createTempDirectory(file.getOriginalFilename() + "-");
-            TarUtils.extractGzip(file.getInputStream(), tempDir);
-
-            handleManifestYaml(tempDir);
-            Pair<CharacterInfo, List<CharacterBackend>> characterConf = handleCharacterJson(tempDir, createdConnectors);
-            CharacterInfo characterInfo = characterConf.getLeft();
-            List<CharacterBackend> backends = characterConf.getRight();
-            handleAvatar(request, userId, characterInfo, tempDir);
-            handlePictures(userId, characterInfo, tempDir);
-            handleVideos(userId, characterInfo, tempDir);
-            handleDocuments(userId, characterInfo, tempDir);
-            handleVoices(userId, characterInfo, backends, tempDir);
-
-            cleanUpTempDirectory(tempDir);
-            return characterInfo.getCharacterId();
-        } catch (IOException | NullPointerException e) {
+            tempDir = Files.createTempDirectory("freechat-character-");
+            try {
+                TarUtils.extractGzip(file.getInputStream(), tempDir);
+            } catch (IOException | IllegalArgumentException e) {
+                throw CharacterTransferUtils.invalid();
+            }
+            String version = handleManifestYaml(tempDir);
+            CharacterConfigurationDTO configuration = CharacterConfigurationDTO.fromJson(
+                    readConfiguration(tempDir.resolve("character.json"), 4 * 1024 * 1024));
+            if ("v2".equals(version)) upgradeLegacyArchive(configuration, tempDir);
+            if (configuration.getResourceUrls() == null || configuration.getRagTasks() == null)
+                throw CharacterTransferUtils.invalid();
+            CharacterTransferUtils.validate(configuration, tempDir);
+            validateCharacterTools(configuration.getCharacter().getExt());
+            Path root = tempDir;
+            Long id = new TransactionTemplate(transactionManager).execute(status -> {
+                try {
+                    return handleCharacterJson(configuration, request, root, createdConnectors, createdFiles, voices);
+                } catch (IOException e) {
+                    throw new ResponseStatusException(
+                            HttpStatus.INTERNAL_SERVER_ERROR, "Failed to store character resources", e);
+                }
+            });
+            for (String voice : voices) {
+                try {
+                    if (ttsService.isEnabled()) ttsService.uploadVoice(voice);
+                } catch (RuntimeException e) {
+                    log.warn("Imported voice requires TTS registration", e);
+                }
+            }
+            return id;
+        } catch (IOException e) {
+            cleanupImportedFiles(createdFiles);
             cleanupImportedConnectors(userId, createdConnectors);
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR, "Failed to import character configuration");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to read character configuration");
         } catch (RuntimeException failure) {
+            cleanupImportedFiles(createdFiles);
             cleanupImportedConnectors(userId, createdConnectors);
             throw failure;
+        } finally {
+            if (tempDir != null) cleanUpTempDirectory(tempDir);
         }
     }
 
-    private void handleManifestYaml(Path confPath) throws IOException {
-        Path manifestFile = confPath.resolve("manifest.yml");
-        String manifestYaml = Files.readString(manifestFile, StandardCharsets.UTF_8);
-        ManifestInfo manifestInfo = ManifestInfo.fromYaml(manifestYaml);
+    private static String readConfiguration(Path file, int limit) throws IOException {
+        if (!Files.isRegularFile(file) || Files.size(file) > limit) throw CharacterTransferUtils.invalid();
+        return Files.readString(file, StandardCharsets.UTF_8);
+    }
 
-        if (!ManifestInfo.API_VERSION.equals(manifestInfo.getApiVersion())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Incompatible character configuration");
+    private String handleManifestYaml(Path confPath) throws IOException {
+        try {
+            ManifestInfo manifest =
+                    ManifestInfo.fromYaml(readConfiguration(confPath.resolve("manifest.yml"), 64 * 1024));
+            if (manifest == null || !Set.of("v2", ManifestInfo.API_VERSION).contains(manifest.getApiVersion())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Incompatible character configuration");
+            }
+            return manifest.getApiVersion();
+        } catch (org.yaml.snakeyaml.error.YAMLException | NullPointerException e) {
+            throw CharacterTransferUtils.invalid();
         }
     }
 
-    private Pair<CharacterInfo, List<CharacterBackend>> handleCharacterJson(
-            Path confPath, Map<String, String> createdConnectors) throws IOException {
-        Path characterFile = confPath.resolve("character.json");
-        String characterJson = Files.readString(characterFile, StandardCharsets.UTF_8);
-        CharacterConfigurationDTO characterConf = CharacterConfigurationDTO.fromJson(characterJson);
-
-        // Archive references are remapping keys only; never copy live source IDs into the new character.
-        CharacterCreateDTO characterCreateDTO = characterConf.getCharacter();
-        List<ConnectorConfigurationDTO> descriptors =
-                characterConf.getConnectors() == null ? List.of() : characterConf.getConnectors();
+    private Long handleCharacterJson(
+            CharacterConfigurationDTO conf,
+            HttpServletRequest request,
+            Path root,
+            Map<String, String> createdConnectors,
+            List<String> createdFiles,
+            List<String> voices)
+            throws IOException {
+        CharacterCreateDTO character = conf.getCharacter();
+        List<ConnectorConfigurationDTO> descriptors = conf.getConnectors() == null ? List.of() : conf.getConnectors();
         Set<String> enabled = descriptors.isEmpty()
                 ? Set.of()
-                : CharacterConnectorConfiguration.parse(characterCreateDTO.getExt())
-                        .enabled();
-        Set<String> draftEnabled = descriptors.isEmpty()
-                ? Set.of()
-                : CharacterConnectorConfiguration.parse(
-                                CharacterConnectorConfiguration.draftExt(characterCreateDTO.getDraft()))
-                        .enabled();
-        characterCreateDTO.setExt(CharacterConnectorConfiguration.withoutConnectors(characterCreateDTO.getExt()));
-        characterCreateDTO.setDraft(
-                CharacterConnectorConfiguration.withoutDraftConnectors(characterCreateDTO.getDraft()));
-        characterCreateDTO.setExt(
-                fun.freechat.service.skills.CharacterSkillConfiguration.withoutSkills(characterCreateDTO.getExt()));
-        characterCreateDTO.setDraft(fun.freechat.service.skills.CharacterSkillConfiguration.withoutDraftSkills(
-                characterCreateDTO.getDraft()));
-        validateCharacterTools(characterCreateDTO.getExt());
-        var characterPair = characterCreateDTO.toCharacterInfo();
-        CharacterUtils.resetCharacterInfoPair(characterPair, null);
-        createImportedCharacter(characterPair, descriptors, enabled, draftEnabled, createdConnectors);
-
-        CharacterInfo characterInfo = characterPair.getLeft();
-        String characterUid = characterInfo.getCharacterUid();
-
-        // create backends
-        List<CharacterBackend> backends =
-                new ArrayList<>(characterConf.getBackends().size());
-        for (CharacterBackendConfigurationDTO backendConf : characterConf.getBackends()) {
-            CharacterBackendDTO backendDTO = backendConf.getBackend();
-            if (backendDTO == null) {
-                continue;
-            }
-
-            // create prompt tasks
-            String chatPromptTaskId = createPromptTask(backendConf.getChatPrompt(), backendConf.getChatPromptTask());
-            String greetingPromptTaskId =
-                    createPromptTask(backendConf.getGreetingPrompt(), backendConf.getGreetingPromptTask());
-
-            // add backend
-            backendDTO.setChatPromptTaskId(chatPromptTaskId);
-            backendDTO.setGreetingPromptTaskId(greetingPromptTaskId);
-            CharacterBackend backend = backendDTO.toCharacterBackend(characterUid);
-
-            characterService.addBackend(backend);
-            backends.add(backend);
+                : CharacterConnectorConfiguration.parse(character.getExt()).enabled();
+        character.setExt(CharacterConnectorConfiguration.withoutConnectors(character.getExt()));
+        var pair = character.toCharacterInfo();
+        CharacterUtils.resetCharacterInfoPair(pair, null);
+        createImportedCharacter(pair, descriptors, enabled, createdConnectors);
+        CharacterInfo info = pair.getLeft();
+        String uid = info.getCharacterUid();
+        String owner = info.getUserId();
+        Map<String, String> paths = new LinkedHashMap<>();
+        Map<String, String> urls = new LinkedHashMap<>();
+        for (var entry : conf.getResourceUrls().entrySet()) {
+            String category = entry.getKey().substring(0, entry.getKey().indexOf('/'));
+            String directory = PUBLIC_DIR + owner + "/character/"
+                    + switch (category) {
+                        case "pictures" -> "picture";
+                        case "videos" -> "video";
+                        default -> "avatar";
+                    }
+                    + "/" + uid;
+            String path = copyImportedFile(root, entry.getKey(), directory, createdFiles);
+            paths.put(entry.getKey(), path);
+            String url = StoreUtils.defaultFileStore().getShareUrl(path, Integer.MAX_VALUE);
+            if (StringUtils.isBlank(url))
+                url = "videos".equals(category)
+                        ? FileUtils.getDefaultPublicUrlForVideo(request, path)
+                        : FileUtils.getDefaultPublicUrlForImage(request, path);
+            for (String source : entry.getValue()) urls.put(source, url);
         }
+        conf = CharacterTransferUtils.remapUrls(conf, urls);
+        CharacterInfo updated = conf.getCharacter().toCharacterInfo().getLeft();
+        updated.setCharacterId(info.getCharacterId());
+        updated.setName(info.getName());
+        updated.setVersion(info.getVersion());
+        updated.setExt(CharacterConnectorConfiguration.withEnabled(
+                updated.getExt(),
+                CharacterConnectorConfiguration.parse(info.getExt()).enabled()));
+        if (!characterService.update(Pair.of(updated, null))) throw importFailed();
+        for (var backendConf : conf.getBackends()) {
+            CharacterBackendDTO dto = backendConf.getBackend();
+            dto.setChatPromptTaskId(createPromptTask(backendConf.getChatPrompt(), backendConf.getChatPromptTask()));
+            dto.setGreetingPromptTaskId(
+                    createPromptTask(backendConf.getGreetingPrompt(), backendConf.getGreetingPromptTask()));
+            CharacterBackend backend = dto.toCharacterBackend(uid);
+            if (StringUtils.isBlank(characterService.addBackend(backend))) throw importFailed();
+            if (backendConf.getVoicePath() != null) {
+                String directory = PRIVATE_DIR + owner + "/character/voices/" + uid + "/" + backend.getBackendId();
+                String path = copyImportedFile(root, backendConf.getVoicePath(), directory, createdFiles);
+                voices.add(path);
+                backend.setTtsSpeakerWav(Path.of(path).getFileName().toString());
+                if (!characterService.updateBackend(backend)) throw importFailed();
+            }
+        }
+        Path documents = root.resolve("documents");
+        if (Files.isDirectory(documents)) {
+            try (Stream<Path> files = Files.list(documents)) {
+                for (Path file : files.filter(Files::isRegularFile).toList()) {
+                    String source = "documents/" + file.getFileName();
+                    paths.put(
+                            source,
+                            copyImportedFile(
+                                    root, source, PRIVATE_DIR + owner + "/character/document/" + uid, createdFiles));
+                }
+            }
+        }
+        for (RagTaskDTO task : conf.getRagTasks()) {
+            RagTask rag = new RagTask()
+                    .withCharacterUid(uid)
+                    .withSourceType(task.getSourceType())
+                    .withSource("file".equals(task.getSourceType()) ? paths.get(task.getSource()) : task.getSource())
+                    .withMaxSegmentSize(task.getMaxSegmentSize())
+                    .withMaxOverlapSize(task.getMaxOverlapSize());
+            if (!ragTaskService.create(rag)) throw importFailed();
+        }
+        return info.getCharacterId();
+    }
 
-        return Pair.of(characterInfo, backends);
+    private static ResponseStatusException importFailed() {
+        return new ResponseStatusException(
+                HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create character configuration");
+    }
+
+    private static String copyImportedFile(Path root, String source, String directory, List<String> created)
+            throws IOException {
+        Path file = CharacterTransferUtils.resource(root, source);
+        String destination = directory + "/" + file.getFileName();
+        FileStore store = StoreUtils.defaultFileStore();
+        if (store.exists(destination)) throw new IOException("Import destination already exists");
+        if (!store.exists(directory)) {
+            store.createDirectories(directory);
+            created.add(directory);
+        }
+        created.add(destination);
+        try (InputStream input = Files.newInputStream(file)) {
+            store.write(destination, input);
+        }
+        return destination;
+    }
+
+    private static void cleanupImportedFiles(List<String> paths) {
+        FileStore store = StoreUtils.defaultFileStore();
+        for (String path : paths.reversed()) {
+            try {
+                store.delete(path);
+            } catch (IOException e) {
+                log.warn("Failed to clean up an imported resource", e);
+            }
+        }
     }
 
     private void createImportedCharacter(
             Pair<CharacterInfo, List<String>> characterPair,
             List<ConnectorConfigurationDTO> descriptors,
             Set<String> enabled,
-            Set<String> draftEnabled,
             Map<String, String> createdRevisions) {
         if (descriptors.size() > ConnectorConfigurationDTO.MAX_DESCRIPTORS) {
             throw new ConnectorException(ConnectorException.Code.CONNECTOR_INVALID_CONFIGURATION);
@@ -1522,35 +1621,22 @@ public class CharacterApi {
         CharacterInfo character = characterPair.getLeft();
         character.setUserId(ownerId);
         Map<String, String> mapping = new HashMap<>();
-        try {
-            for (var entry : configurations.entrySet()) {
-                ConnectorService.Summary created = connectorService.create(ownerId, entry.getValue(), false);
-                createdRevisions.put(created.connectorId(), created.revision());
-                mapping.put(entry.getKey(), created.connectorId());
-            }
-            if (!descriptors.isEmpty()) {
-                character.setVisibility(Visibility.PRIVATE.text());
-            }
-            // resetCharacterInfoPair strips bindings for all clones; restore only fresh, importer-owned references
-            // here.
-            character.setExt(
-                    CharacterConnectorConfiguration.withEnabled(character.getExt(), remapConnectors(enabled, mapping)));
-            String draftExt = CharacterConnectorConfiguration.draftExt(character.getDraft());
-            if (draftExt != null) {
-                var draft = (com.fasterxml.jackson.databind.node.ObjectNode)
-                        fun.freechat.service.tools.ToolArguments.parse(character.getDraft());
-                draft.put(
-                        "ext",
-                        CharacterConnectorConfiguration.withEnabled(draftExt, remapConnectors(draftEnabled, mapping)));
-                character.setDraft(fun.freechat.service.tools.ToolArguments.result(draft));
-            }
-            connectorPolicy.validate(ownerId, character.getExt(), character.getDraft());
-            if (!characterService.create(characterPair)) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create character.");
-            }
-        } catch (RuntimeException failure) {
-            cleanupImportedConnectors(ownerId, createdRevisions);
-            throw failure;
+        for (var entry : configurations.entrySet()) {
+            if (!enabled.contains(entry.getKey())) continue;
+            ConnectorService.Summary created = connectorService.create(ownerId, entry.getValue(), false);
+            createdRevisions.put(created.connectorId(), created.revision());
+            mapping.put(entry.getKey(), created.connectorId());
+        }
+        if (!descriptors.isEmpty()) {
+            character.setVisibility(Visibility.PRIVATE.text());
+        }
+        // resetCharacterInfoPair strips bindings for all clones; restore only fresh, importer-owned references
+        // here.
+        character.setExt(
+                CharacterConnectorConfiguration.withEnabled(character.getExt(), remapConnectors(enabled, mapping)));
+        connectorPolicy.validate(ownerId, character.getExt(), character.getDraft());
+        if (!characterService.create(characterPair)) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create character.");
         }
     }
 
@@ -1578,124 +1664,68 @@ public class CharacterApi {
         return remapped;
     }
 
-    private void handleAvatar(HttpServletRequest request, String userId, CharacterInfo characterInfo, Path confPath)
-            throws IOException {
-        Path srcPath = confPath.resolve("avatar");
-        if (Files.notExists(srcPath)) return;
-        String dir = PUBLIC_DIR + userId + "/character/avatar/" + characterInfo.getCharacterUid();
-        FileStore fileStore = StoreUtils.defaultFileStore();
-        try (Stream<Path> stream = Files.list(srcPath)) {
-            stream.filter(Files::isRegularFile)
-                    .map(avatarPath -> {
-                        try {
-                            return FileUtils.move(avatarPath, fileStore, dir);
-                        } catch (IOException e) {
-                            log.warn("Failed to move file from {} to {}", avatarPath, dir, e);
-                            return null;
-                        }
-                    })
-                    .filter(StringUtils::isNotBlank)
-                    .findAny()
-                    .map(avatarFile -> {
-                        String shareUrl = fileStore.getShareUrl(avatarFile, Integer.MAX_VALUE);
-                        if (StringUtils.isBlank(shareUrl)) {
-                            shareUrl = FileUtils.getDefaultPublicUrlForImage(request, avatarFile);
-                        }
-                        return shareUrl;
-                    })
-                    .ifPresent(avatarUrl -> {
-                        CharacterInfo newCharacterInfo = new CharacterInfo()
-                                .withCharacterId(characterInfo.getCharacterId())
-                                .withAvatar(avatarUrl);
-                        characterService.update(Pair.of(newCharacterInfo, null));
-                    });
-        }
-    }
-
-    private void handlePictures(String userId, CharacterInfo characterInfo, Path confPath) throws IOException {
-        Path srcPath = confPath.resolve("pictures");
-        if (Files.notExists(srcPath)) return;
-        String dir = PUBLIC_DIR + userId + "/character/picture/" + characterInfo.getCharacterUid();
-        FileStore fileStore = StoreUtils.defaultFileStore();
-        try (Stream<Path> stream = Files.list(srcPath)) {
-            stream.filter(Files::isRegularFile).forEach(picturePath -> {
-                try {
-                    FileUtils.move(picturePath, fileStore, dir);
-                } catch (IOException e) {
-                    log.warn("Failed to move file from {} to {}", picturePath, dir, e);
+    private void upgradeLegacyArchive(CharacterConfigurationDTO conf, Path root) throws IOException {
+        Map<String, List<String>> urls = new LinkedHashMap<>();
+        CharacterTransferUtils.sanitize(conf.getCharacter());
+        if (conf.getBackends() != null) {
+            for (var backend : conf.getBackends()) {
+                if (backend != null) {
+                    CharacterTransferUtils.sanitize(backend.getChatPrompt());
+                    CharacterTransferUtils.sanitize(backend.getGreetingPrompt());
                 }
-            });
+            }
         }
-    }
-
-    private void handleVideos(String userId, CharacterInfo characterInfo, Path confPath) throws IOException {
-        Path srcPath = confPath.resolve("videos");
-        if (Files.notExists(srcPath)) return;
-        String dir = PUBLIC_DIR + userId + "/character/videos/" + characterInfo.getCharacterUid();
-        FileStore fileStore = StoreUtils.defaultFileStore();
-        try (Stream<Path> stream = Files.list(srcPath)) {
-            stream.filter(Files::isRegularFile).forEach(videoPath -> {
-                try {
-                    FileUtils.move(videoPath, fileStore, dir);
-                } catch (IOException e) {
-                    log.warn("Failed to move file from {} to {}", videoPath, dir, e);
-                }
-            });
-        }
-    }
-
-    private void handleDocuments(String userId, CharacterInfo characterInfo, Path confPath) throws IOException {
-        Path srcPath = confPath.resolve("documents");
-        if (Files.notExists(srcPath)) return;
-        String dir = PRIVATE_DIR + userId + "/character/document/" + characterInfo.getCharacterUid();
-        FileStore fileStore = StoreUtils.defaultFileStore();
-        try (Stream<Path> stream = Files.list(srcPath)) {
-            stream.filter(Files::isRegularFile)
-                    .map(documentPath -> {
+        String configuration = conf.toJson();
+        for (String category : List.of("avatar", "pictures", "videos")) {
+            Path directory = root.resolve(category);
+            if (!Files.isDirectory(directory)) continue;
+            try (Stream<Path> stream = Files.list(directory)) {
+                for (Path file : stream.filter(Files::isRegularFile).toList()) {
+                    Set<String> references = new LinkedHashSet<>();
+                    var matcher = java.util.regex.Pattern.compile("https?://[^\\s\\\"<>\\\\)\\]]+")
+                            .matcher(configuration);
+                    while (matcher.find()) {
+                        String url = matcher.group();
                         try {
-                            return FileUtils.move(documentPath, fileStore, dir);
-                        } catch (IOException e) {
-                            log.warn("Failed to move file from {} to {}", documentPath, dir, e);
-                            return null;
+                            String source = FileUtils.getDefaultPublicPath(getKeyFromUrl(url));
+                            if (Path.of(source).getFileName().equals(file.getFileName())) references.add(url);
+                        } catch (IllegalArgumentException | IOException ignored) {
                         }
-                    })
-                    .filter(StringUtils::isNotBlank)
-                    .forEach(documentFile -> {
-                        RagTask ragTask = new RagTask()
-                                .withCharacterUid(characterInfo.getCharacterUid())
-                                .withSourceType(SourceType.FILE.text())
-                                .withSource(documentFile)
-                                .withMaxSegmentSize(defaultMaxSegmentSize)
-                                .withMaxOverlapSize(defaultMaxOverlapSize);
-                        ragTaskService.create(ragTask);
-                    });
+                    }
+                    if ("avatar".equals(category)
+                            && StringUtils.isNotBlank(conf.getCharacter().getAvatar())) {
+                        references.add(conf.getCharacter().getAvatar());
+                    }
+                    urls.put(category + "/" + file.getFileName(), List.copyOf(references));
+                }
+            }
         }
-    }
-
-    private void handleVoices(
-            String userId, CharacterInfo characterInfo, List<CharacterBackend> backends, Path confPath)
-            throws IOException {
-        Path srcPath = confPath.resolve("voices");
-        if (Files.notExists(srcPath)) return;
-        FileStore fileStore = StoreUtils.defaultFileStore();
-        try (Stream<Path> stream = Files.list(srcPath)) {
-            stream.filter(Files::isRegularFile).forEach(voicePath -> {
-                String voiceKey = getKeyFromUrl(voicePath.toString());
-                backends.stream()
-                        .filter(backend -> voiceKey.equals(backend.getTtsSpeakerWav()))
-                        .forEach(backend -> {
-                            String dir = PRIVATE_DIR + userId + "/character/voices/" + characterInfo.getCharacterUid()
-                                    + "/" + backend.getBackendId();
-                            try {
-                                String dstPath = FileUtils.move(voicePath, fileStore, dir);
-                                ttsService.uploadVoice(dstPath);
-                            } catch (IOException e) {
-                                log.warn("Failed to move file from {} to {}", voicePath, dir, e);
-                            } catch (IllegalStateException e) {
-                                log.warn("Failed to upload voice file {}", voicePath, e);
-                            }
-                        });
-            });
+        conf.setResourceUrls(urls);
+        List<RagTaskDTO> tasks = new ArrayList<>();
+        Path documents = root.resolve("documents");
+        if (Files.isDirectory(documents)) {
+            try (Stream<Path> stream = Files.list(documents)) {
+                for (Path document : stream.filter(Files::isRegularFile).toList()) {
+                    tasks.add(RagTaskDTO.builder()
+                            .sourceType("file")
+                            .source("documents/" + document.getFileName())
+                            .maxSegmentSize(defaultMaxSegmentSize)
+                            .maxOverlapSize(defaultMaxOverlapSize)
+                            .build());
+                }
+            }
+        }
+        conf.setRagTasks(tasks);
+        if (conf.getBackends() != null) {
+            for (var backend : conf.getBackends()) {
+                if (backend == null || backend.getBackend() == null) continue;
+                String speaker = backend.getBackend().getTtsSpeakerWav();
+                if (StringUtils.isNotBlank(speaker)
+                        && speaker.equals(Path.of(speaker).getFileName().toString())
+                        && Files.isRegularFile(root.resolve("voices").resolve(speaker))) {
+                    backend.setVoicePath("voices/" + speaker);
+                }
+            }
         }
     }
 
@@ -1711,8 +1741,8 @@ public class CharacterApi {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create prompt.");
             }
 
-            PromptTask promptTask = promptTaskDTO.toPromptTask();
-            promptTask.setPromptUid(promptInfo.getLeft().getPromptUid());
+            PromptTask promptTask = CharacterTransferUtils.importTask(
+                    promptTaskDTO, promptInfo.getLeft().getPromptUid());
 
             if (!promptTaskService.create(promptTask)) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create prompt task.");
@@ -1723,21 +1753,17 @@ public class CharacterApi {
         return null;
     }
 
-    private static void cleanUpTempDirectory(Path tempDir) throws IOException {
+    private static void cleanUpTempDirectory(Path tempDir) {
         try (Stream<Path> stream = Files.walk(tempDir)) {
-            stream.sorted(Comparator.reverseOrder()).forEach(p -> {
-                try {
-                    Files.delete(p);
-                } catch (IOException e) {
-                    log.warn("Failed to delete file {}", p, e);
-                }
-            });
+            for (Path path : stream.sorted(Comparator.reverseOrder()).toList()) Files.deleteIfExists(path);
+        } catch (IOException e) {
+            log.warn("Failed to clean up character import staging directory", e);
         }
     }
 
     @Data
     public static class ManifestInfo {
-        private static final String API_VERSION = "v2";
+        private static final String API_VERSION = "v3";
 
         private String apiVersion;
         private String appVersion;
@@ -1754,7 +1780,17 @@ public class CharacterApi {
         }
 
         static ManifestInfo fromYaml(String yaml) {
-            return yaml().loadAs(yaml, ManifestInfo.class);
+            var limits = new org.yaml.snakeyaml.LoaderOptions();
+            limits.setMaxAliasesForCollections(0);
+            limits.setAllowDuplicateKeys(false);
+            limits.setCodePointLimit(64 * 1024);
+            Object value = new Yaml(new org.yaml.snakeyaml.constructor.SafeConstructor(limits)).load(yaml);
+            if (!(value instanceof Map<?, ?> fields) || !(fields.get("apiVersion") instanceof String version)) {
+                throw CharacterTransferUtils.invalid();
+            }
+            ManifestInfo manifest = new ManifestInfo();
+            manifest.setApiVersion(version);
+            return manifest;
         }
 
         static Yaml yaml() {

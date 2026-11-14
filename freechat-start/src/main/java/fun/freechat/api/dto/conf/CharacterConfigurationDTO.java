@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import fun.freechat.api.dto.CharacterCreateDTO;
+import fun.freechat.api.dto.RagTaskDTO;
 import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
@@ -25,6 +26,8 @@ import org.springframework.web.server.ResponseStatusException;
 public class CharacterConfigurationDTO {
     private CharacterCreateDTO character;
     private List<CharacterBackendConfigurationDTO> backends;
+    private java.util.Map<String, List<String>> resourceUrls;
+    private List<RagTaskDTO> ragTasks;
 
     @Schema(
             description =

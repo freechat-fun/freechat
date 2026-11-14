@@ -22,7 +22,10 @@ import {
   parseCharacterSkillExt,
   setCharacterSkillIds,
 } from '../src/libs/skill_utils.ts';
-import { characterExportUrl } from '../src/libs/character_utils.ts';
+import {
+  characterExportUrl,
+  exportCharacter,
+} from '../src/libs/character_utils.ts';
 
 const en = JSON.parse(
   await readFile(
@@ -32,6 +35,11 @@ const en = JSON.parse(
 const zh = JSON.parse(
   await readFile(
     new URL('../src/i18n/locales/zh/connector.json', import.meta.url)
+  )
+);
+const ta = JSON.parse(
+  await readFile(
+    new URL('../src/i18n/locales/ta/connector.json', import.meta.url)
   )
 );
 const id = 'a'.repeat(32);
@@ -752,6 +760,276 @@ test('export includes the query only on explicit opt-in and never serializes IDs
   );
 });
 
+function mockCharacterDownload(t, { status = 200, disposition = null } = {}) {
+  const events = [];
+  const blob = new Blob(['archive']);
+  const response = {
+    ok: status >= 200 && status < 300,
+    status,
+    statusText: 'secret-status',
+    headers: new Headers({
+      'Content-Type': 'application/gzip',
+      ...(disposition ? { 'Content-Disposition': disposition } : {}),
+    }),
+    blob: t.mock.fn(async () => blob),
+    text: t.mock.fn(async () => 'secret-response'),
+  };
+  const anchor = {
+    href: '',
+    download: '',
+    click: t.mock.fn(() => events.push('click')),
+    remove: t.mock.fn(() => events.push('remove')),
+  };
+  const document = {
+    createElement: t.mock.fn((tag) => {
+      assert.equal(tag, 'a');
+      return anchor;
+    }),
+    body: {
+      appendChild: t.mock.fn((child) => {
+        assert.equal(child, anchor);
+        events.push('append');
+      }),
+    },
+  };
+  const originalDocument = Object.getOwnPropertyDescriptor(
+    globalThis,
+    'document'
+  );
+  Object.defineProperty(globalThis, 'document', {
+    configurable: true,
+    value: document,
+  });
+  t.after(() => {
+    if (originalDocument)
+      Object.defineProperty(globalThis, 'document', originalDocument);
+    else delete globalThis.document;
+  });
+  const fetch = t.mock.method(globalThis, 'fetch', async () => response);
+  const createObjectURL = t.mock.method(URL, 'createObjectURL', (value) => {
+    assert.equal(value, blob);
+    events.push('createURL');
+    return 'blob:character-export';
+  });
+  const revokeObjectURL = t.mock.method(URL, 'revokeObjectURL', (value) => {
+    assert.equal(value, 'blob:character-export');
+    events.push('revokeURL');
+  });
+  return {
+    events,
+    blob,
+    response,
+    anchor,
+    document,
+    fetch,
+    createObjectURL,
+    revokeObjectURL,
+  };
+}
+
+test('export waits for fetch and blob, downloads the filename and releases DOM and objectURL', async (t) => {
+  const download = mockCharacterDownload(t, {
+    disposition: 'attachment; filename="published-character.tar.gz"',
+  });
+  const responseReady = Promise.withResolvers();
+  const blobReady = Promise.withResolvers();
+  download.fetch.mock.mockImplementation(() => responseReady.promise);
+  download.response.blob.mock.mockImplementation(() => blobReady.promise);
+  let finished = false;
+  const pending = exportCharacter(42).then(() => {
+    finished = true;
+  });
+  assert.equal(finished, false);
+  assert.deepEqual(download.events, []);
+  responseReady.resolve(download.response);
+  await Promise.resolve();
+  assert.equal(download.response.blob.mock.callCount(), 1);
+  assert.equal(finished, false);
+  assert.deepEqual(download.events, []);
+  blobReady.resolve(download.blob);
+  await pending;
+  assert.equal(finished, true);
+  assert.deepEqual(download.fetch.mock.calls[0].arguments, [
+    '/api/v2/character/export/42',
+    { credentials: 'same-origin', redirect: 'manual' },
+  ]);
+  assert.equal(download.anchor.href, 'blob:character-export');
+  assert.equal(download.anchor.download, 'published-character.tar.gz');
+  assert.deepEqual(download.events, [
+    'createURL',
+    'append',
+    'click',
+    'remove',
+    'revokeURL',
+  ]);
+  assert.equal(download.revokeObjectURL.mock.callCount(), 1);
+});
+
+test('export opts into connectors only when requested and uses a default archive name', async (t) => {
+  const download = mockCharacterDownload(t);
+  await exportCharacter(42, true);
+  assert.equal(
+    download.fetch.mock.calls[0].arguments[0],
+    '/api/v2/character/export/42?includeConnectors=true'
+  );
+  assert.equal(download.anchor.download, 'character-42.tar.gz');
+});
+
+test('export accepts safe Content-Disposition names and rejects unsafe or malformed names', async (t) => {
+  const fallback = 'character-42.tar.gz';
+  for (const [disposition, expected] of [
+    ['attachment; filename=plain.tar.gz', 'plain.tar.gz'],
+    ['attachment; filename="semi;colon.tar.gz"', 'semi;colon.tar.gz'],
+    [
+      "attachment; filename=plain.tar.gz; filename*=UTF-8''%E8%A7%92%E8%89%B2.tar.gz",
+      '角色.tar.gz',
+    ],
+    ["attachment; FILENAME*=utf-8'en'%E6%96%87%E6%A1%A3.tar.gz", '文档.tar.gz'],
+    ["attachment; filename=plain.tar.gz; filename*=UTF-8''%zz", 'plain.tar.gz'],
+    ["attachment; filename*=UTF-8''%zz", fallback],
+    ['attachment; filename="../../secret.tar.gz"', fallback],
+    ['attachment; filename="C:\\secret.tar.gz"', fallback],
+    ["attachment; filename*=UTF-8''..%2Fsecret.tar.gz", fallback],
+    ["attachment; filename*=UTF-8''bad%00.tar.gz", fallback],
+    ["attachment; filename*=UTF-8''bad%0D%0A.tar.gz", fallback],
+    ["attachment; filename*=UTF-8''bad%E2%80%AE.tar.gz", fallback],
+    ['attachment; filename=".hidden.tar.gz"', fallback],
+    ['attachment; filename="payload.html"', fallback],
+    ['attachment; filename=""', fallback],
+    [`attachment; filename="${'a'.repeat(241)}.tar.gz"`, fallback],
+    [
+      `attachment; filename*=UTF-8''${encodeURIComponent('文'.repeat(81))}.tar.gz`,
+      fallback,
+    ],
+    ['attachment; note="ignore; filename=not-a-parameter.tar.gz"', fallback],
+  ]) {
+    await t.test(disposition, async (t) => {
+      const download = mockCharacterDownload(t, { disposition });
+      await exportCharacter(42);
+      assert.equal(download.anchor.download, expected);
+      assert.equal(download.revokeObjectURL.mock.callCount(), 1);
+    });
+  }
+});
+
+test('HTTP failures reject with safe status and message, without reading or downloading the error body', async (t) => {
+  for (const status of [400, 403, 404, 500]) {
+    await t.test(String(status), async (t) => {
+      const download = mockCharacterDownload(t, { status });
+      await assert.rejects(exportCharacter(42), (error) => {
+        assert.equal(error.status, status);
+        assert.equal(
+          error.message,
+          'Character export failed. Please try again.'
+        );
+        assert.equal(normalizeConnectorError(error).code, status);
+        assert.doesNotMatch(String(error) + JSON.stringify(error), /secret/);
+        return true;
+      });
+      assert.equal(download.response.blob.mock.callCount(), 0);
+      assert.equal(download.response.text.mock.callCount(), 0);
+      assert.equal(download.document.createElement.mock.callCount(), 0);
+      assert.deepEqual(download.events, []);
+    });
+  }
+});
+
+test('export preserves 401 for the existing normalized authentication handler', async (t) => {
+  const download = mockCharacterDownload(t, { status: 401 });
+  await assert.rejects(exportCharacter(42), (error) => {
+    assert.equal(error.status, 401);
+    assert.equal(normalizeConnectorError(error).code, 401);
+    assert.equal(error.message, 'Character export failed. Please try again.');
+    return true;
+  });
+  assert.deepEqual(download.events, []);
+});
+
+test('login redirects never become successful archive downloads', async (t) => {
+  for (const patch of [
+    { type: 'opaqueredirect', status: 0, ok: false },
+    { status: 302, ok: false },
+    { redirected: true, status: 200, ok: true },
+  ]) {
+    await t.test(JSON.stringify(patch), async (t) => {
+      const download = mockCharacterDownload(t);
+      Object.assign(download.response, patch);
+      download.response.headers.set('Content-Type', 'text/html');
+      await assert.rejects(exportCharacter(42), (error) => {
+        assert.equal(normalizeConnectorError(error).code, 401);
+        return true;
+      });
+      assert.equal(download.response.blob.mock.callCount(), 0);
+      assert.deepEqual(download.events, []);
+    });
+  }
+});
+
+test('successful non-archive responses are rejected before creating a download', async (t) => {
+  for (const contentType of ['text/html', 'application/json', '']) {
+    await t.test(contentType || 'missing MIME type', async (t) => {
+      const download = mockCharacterDownload(t);
+      download.response.headers.set('Content-Type', contentType);
+      await assert.rejects(
+        exportCharacter(42),
+        (error) => error.status === 502
+      );
+      assert.equal(download.response.blob.mock.callCount(), 0);
+      assert.deepEqual(download.events, []);
+    });
+  }
+});
+
+test('network and blob failures reject safely without starting a download', async (t) => {
+  for (const phase of ['fetch', 'blob']) {
+    await t.test(phase, async (t) => {
+      const download = mockCharacterDownload(t);
+      const mock = phase === 'fetch' ? download.fetch : download.response.blob;
+      mock.mock.mockImplementation(async () => {
+        throw new Error('secret-network-details');
+      });
+      await assert.rejects(exportCharacter(42), (error) => {
+        assert.equal(error.status, phase === 'fetch' ? -1 : 200);
+        assert.equal(
+          error.message,
+          'Character export failed. Please try again.'
+        );
+        assert.doesNotMatch(String(error) + JSON.stringify(error), /secret/);
+        return true;
+      });
+      assert.equal(download.createObjectURL.mock.callCount(), 0);
+      assert.deepEqual(download.events, []);
+    });
+  }
+});
+
+test('download failures still remove the anchor and revoke the objectURL', async (t) => {
+  const download = mockCharacterDownload(t);
+  download.anchor.click.mock.mockImplementation(() => {
+    download.events.push('click');
+    throw new Error('download blocked');
+  });
+  await assert.rejects(exportCharacter(42), /Character export failed/);
+  assert.deepEqual(download.events, [
+    'createURL',
+    'append',
+    'click',
+    'remove',
+    'revokeURL',
+  ]);
+  assert.equal(download.revokeObjectURL.mock.callCount(), 1);
+});
+
+test('the objectURL is revoked even if creating the anchor fails', async (t) => {
+  const download = mockCharacterDownload(t);
+  download.document.createElement.mock.mockImplementation(() => {
+    throw new Error('DOM unavailable');
+  });
+  await assert.rejects(exportCharacter(42), /Character export failed/);
+  assert.deepEqual(download.events, ['createURL', 'revokeURL']);
+  assert.equal(download.revokeObjectURL.mock.callCount(), 1);
+});
+
 test('all server error codes are sanitized, translated at render time, and preserve 401', async () => {
   const i18n = i18next.createInstance();
   await i18n.init({
@@ -788,8 +1066,9 @@ test('all server error codes are sanitized, translated at render time, and prese
   }
 });
 
-test('all connector UI and validation strings have matching bilingual resources', async () => {
+test('all connector UI and validation strings have matching en/zh/ta resources', async () => {
   assert.deepEqual(Object.keys(en).sort(), Object.keys(zh).sort());
+  assert.deepEqual(Object.keys(en).sort(), Object.keys(ta).sort());
   const files = [
     'components/connector/ConnectorEditor.tsx',
     'components/connector/ConnectorDialog.tsx',
@@ -797,6 +1076,7 @@ test('all connector UI and validation strings have matching bilingual resources'
     'pages/connector/ConnectorInfo.tsx',
     'components/character/CharacterConnectorSelector.tsx',
     'components/character/CharacterExportDialog.tsx',
+    'pages/character/Characters.tsx',
     'libs/connector_utils.ts',
   ];
   for (const file of files) {
@@ -819,9 +1099,16 @@ test('all connector UI and validation strings have matching bilingual resources'
         node.arguments[0] &&
         ts.isStringLiteral(node.arguments[0])
       ) {
-        const key = node.arguments[0].text;
-        assert.ok(Object.hasOwn(en, key), `${file}: English ${key}`);
-        assert.ok(Object.hasOwn(zh, key), `${file}: Chinese ${key}`);
+        const rawKey = node.arguments[0].text;
+        if (
+          file !== 'pages/character/Characters.tsx' ||
+          rawKey.startsWith('connector:')
+        ) {
+          const key = rawKey.replace(/^connector:/, '');
+          assert.ok(Object.hasOwn(en, key), `${file}: English ${key}`);
+          assert.ok(Object.hasOwn(zh, key), `${file}: Chinese ${key}`);
+          assert.ok(Object.hasOwn(ta, key), `${file}: Tamil ${key}`);
+        }
       }
       ts.forEachChild(node, visit);
     };

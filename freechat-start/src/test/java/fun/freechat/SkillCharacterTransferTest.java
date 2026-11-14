@@ -1,12 +1,10 @@
 package fun.freechat;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
-import fun.freechat.api.CharacterApi;
 import fun.freechat.api.dto.CharacterCreateDTO;
 import fun.freechat.api.dto.conf.CharacterConfigurationDTO;
-import fun.freechat.model.CharacterInfo;
+import fun.freechat.api.util.CharacterTransferUtils;
 import fun.freechat.service.skills.CharacterSkillConfiguration;
 import fun.freechat.service.tools.ToolArguments;
 import java.nio.file.Path;
@@ -14,19 +12,19 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.springframework.test.util.ReflectionTestUtils;
 
 class SkillCharacterTransferTest {
     @Test
     void optionalMediaDirectoriesCanBeAbsentInTextOnlyCharacterArchives(@TempDir Path root) {
-        CharacterApi api = new CharacterApi();
-        CharacterInfo character = new CharacterInfo().withCharacterUid("character");
-        assertDoesNotThrow(() -> ReflectionTestUtils.invokeMethod(api, "handleAvatar", null, "owner", character, root));
-        assertDoesNotThrow(() -> ReflectionTestUtils.invokeMethod(api, "handlePictures", "owner", character, root));
-        assertDoesNotThrow(() -> ReflectionTestUtils.invokeMethod(api, "handleVideos", "owner", character, root));
-        assertDoesNotThrow(() -> ReflectionTestUtils.invokeMethod(api, "handleDocuments", "owner", character, root));
-        assertDoesNotThrow(
-                () -> ReflectionTestUtils.invokeMethod(api, "handleVoices", "owner", character, List.of(), root));
+        CharacterConfigurationDTO configuration = CharacterConfigurationDTO.builder()
+                .character(
+                        CharacterCreateDTO.builder().name("Text-only character").build())
+                .backends(List.of())
+                .resourceUrls(Map.of())
+                .ragTasks(List.of())
+                .build();
+
+        assertDoesNotThrow(() -> CharacterTransferUtils.validate(configuration, root));
     }
 
     @Test
