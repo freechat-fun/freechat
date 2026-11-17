@@ -36,7 +36,7 @@
         <commons-lang3.version>3.22.0</commons-lang3.version>
         <redisson.version>4.8.0</redisson.version>
         <objenesis.version>3.6</objenesis.version>
-        <swagger-parser.version>2.1.48</swagger-parser.version>
+        <swagger-parser.version>2.1.49</swagger-parser.version>
         <langchain4j.version>1.23.0</langchain4j.version>
         <langchain4j-community.version>1.23.0-beta33</langchain4j-community.version>
         <telegrambots.version>10.3.0</telegrambots.version>
